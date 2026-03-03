@@ -17,10 +17,10 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image', spotId?: string) 
   const toggleVote = async (item: VoteableItem) => {
     if (item.hasVoted && item.voteId) {
       // Unlike
-      await deleteVote.mutateAsync(item.voteId);
+      await deleteVote.mutateAsync({ voteId: item.voteId, type });
     } else {
-      // Like (Upvote is always true)
-      await createVote.mutateAsync({ targetId: item.id, type, isUpvote: true });
+      // Like
+      await createVote.mutateAsync({ targetId: item.id, type });
     }
 
     // Targeted invalidation to keep the UI snappy
