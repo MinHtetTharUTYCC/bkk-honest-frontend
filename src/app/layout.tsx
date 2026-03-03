@@ -4,6 +4,7 @@ import "./globals.css";
 import QueryProvider from "@/components/providers/query-provider";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { CityProvider } from "@/components/providers/city-provider";
+import { createClient } from "@/lib/supabase/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,11 +21,17 @@ export const metadata: Metadata = {
   description: "A community platform for locals and tourists in Bangkok to share honest tips, real prices, and live city updates.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Refresh session server-side. Note: setAll in createClient (server.ts) 
+  // will fail in a layout, but getUser() still refreshes the token 
+  // in the Supabase state for this request.
+  const supabase = await createClient();
+  await supabase.auth.getUser();
+
   return (
     <html lang="en">
       <body

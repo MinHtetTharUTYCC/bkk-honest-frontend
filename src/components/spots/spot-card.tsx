@@ -40,39 +40,36 @@ export default function SpotCard({ spot }: { spot: any }) {
         </div>
       </div>
 
-      <div className="space-y-1 mb-5">
-        <h3 className="text-xl font-black text-gray-900 leading-tight line-clamp-1 italic uppercase tracking-tighter">{name}</h3>
-        <p className="text-gray-400 font-bold text-[9px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
-          <MapPin size={11} className="text-cyan-400" />
-          {address?.split(',')[0]}
-        </p>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-200/60">
-          <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">
-            Avg Price
-          </span>
-          <span className="text-sm font-black text-gray-900 tracking-tighter italic">
-            {(priceStats as any)?.avg ? `${(priceStats as any).avg} THB` : '--'}
-          </span>
-        </div>
-        <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-200/60">
-          <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">
-            Pulse
-          </span>
-          <span className="text-sm font-black text-gray-900 tracking-tighter italic">
-            {(priceStats as any)?.count || 0} Reports
-          </span>
-        </div>
-      </div>
-
       <Link 
         href={`/spots/${spot.id}`}
-        className="w-full bg-gray-900 text-white py-3.5 rounded-[20px] text-[9px] font-black uppercase tracking-widest hover:bg-cyan-400 transition-all shadow-xl shadow-gray-900/10 flex items-center justify-center gap-2 group-hover:gap-3"
+        className="block"
       >
-        Explore Full Guide
-        <ArrowRight size={14} />
+        <div className="space-y-1 mb-5">
+          <h3 className="text-xl font-black text-gray-900 leading-tight line-clamp-1 italic uppercase tracking-tighter">{name}</h3>
+          <p className="text-gray-400 font-bold text-[9px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
+            <MapPin size={11} className="text-cyan-400" />
+            {address?.split(',')[0]}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-200/60">
+            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">
+              Avg Price
+            </span>
+            <span className="text-sm font-black text-gray-900 tracking-tighter italic">
+              {(priceStats as any)?.avg ? `${(priceStats as any).avg} THB` : '--'}
+            </span>
+          </div>
+          <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-200/60">
+            <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">
+              Pulse
+            </span>
+            <span className="text-sm font-black text-gray-900 tracking-tighter italic">
+              {(priceStats as any)?.count || 0} Reports
+            </span>
+          </div>
+        </div>
       </Link>
     </div>
   );

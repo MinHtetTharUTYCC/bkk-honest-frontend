@@ -32,14 +32,18 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
     }
   }, [selectedCityId]);
 
-  // Try to pick a default if none selected (e.g. Bangkok)
+  // Try to pick a default if none selected (e.g. Bangkok) or if the saved city doesn't exist anymore
   useEffect(() => {
-    if (!selectedCityId && cities && cities.length > 0) {
-      const bangkok = cities.find((c: any) => c.name.toLowerCase() === 'bangkok');
-      if (bangkok) {
-        setSelectedCityId(bangkok.id);
-      } else {
-        setSelectedCityId(cities[0].id);
+    if (cities && cities.length > 0) {
+      const isValid = selectedCityId && cities.some((c: any) => c.id === selectedCityId);
+      
+      if (!selectedCityId || !isValid) {
+        const bangkok = cities.find((c: any) => c.name.toLowerCase() === 'bangkok');
+        if (bangkok) {
+          setSelectedCityId(bangkok.id);
+        } else {
+          setSelectedCityId(cities[0].id);
+        }
       }
     }
   }, [cities, selectedCityId]);

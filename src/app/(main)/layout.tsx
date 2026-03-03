@@ -1,12 +1,21 @@
 import NavDock from "@/components/layout/nav-dock";
 import TopBar from "@/components/layout/top-bar";
 import Sidebar from "@/components/layout/sidebar";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/dev-login");
+  }
+
   return (
     <div className="min-h-screen bg-[#FDFDFD] selection:bg-cyan-100 selection:text-cyan-900">
       <NavDock />

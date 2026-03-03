@@ -1,11 +1,12 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { components } from '@/types/api';
 
 type PaginatedSpots = components['schemas']['PaginatedSpotsWithStatsResponseDto'];
 type PaginatedScamAlerts = components['schemas']['PaginatedScamAlertsResponseDto'];
+type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto'];
 
 // --- Profiles ---
 
@@ -38,6 +39,17 @@ export function useUserScamAlerts(userId: string) {
     queryKey: ['user-scam-alerts', userId],
     queryFn: async () => {
       const { data } = await api.get(`/scam-alerts/user/${userId}`);
+      return data?.data || (Array.isArray(data) ? data : []);
+    },
+    enabled: !!userId,
+  });
+}
+
+export function useUserCommunityTips(userId: string) {
+  return useQuery({
+    queryKey: ['user-community-tips', userId],
+    queryFn: async () => {
+      const { data } = await api.get(`/community-tips/user/${userId}`);
       return data?.data || (Array.isArray(data) ? data : []);
     },
     enabled: !!userId,
@@ -77,6 +89,17 @@ export function useSpots(params?: { categoryId?: string; cityId?: string; search
   });
 }
 
+export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number }) {
+  return useQuery({
+    queryKey: ['spots-nearby', params],
+    queryFn: async () => {
+      const { data } = await api.get<PaginatedSpots>('/spots/nearby', { params });
+      return data?.data || (Array.isArray(data) ? data : []);
+    },
+    enabled: !!params.latitude && !!params.longitude,
+  });
+}
+
 export function useSpotPriceReports(spotId: string) {
   return useQuery({
     queryKey: ['price-reports', spotId],
@@ -96,6 +119,80 @@ export function useSpotTips(spotId: string) {
       return data?.data || (Array.isArray(data) ? data : []);
     },
     enabled: !!spotId,
+  });
+}
+
+export function useInfiniteSpotTips(spotId: string, type: 'TRY' | 'AVOID', sort: 'newest' | 'popular' = 'popular') {
+  return useInfiniteQuery({
+    queryKey: ['tips-infinite', spotId, type, sort],
+    queryFn: async ({ pageParam = 0 }) => {
+      const { data } = await api.get(`/community-tips/spot/${spotId}`, {
+        params: {
+          skip: pageParam,
+          take: 10,
+          type,
+          sort,
+        },
+      });
+      return data;
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: any) => {
+      if (!lastPage.pagination?.hasMore) return undefined;
+      return lastPage.pagination.skip + lastPage.pagination.take;
+    },
+    enabled: !!spotId,
+  });
+}
+
+export function useSpotGallery(spotId: string, limit: number = 12) {
+  return useQuery({
+    queryKey: ['gallery', spotId, limit],
+    queryFn: async () => {
+      const { data } = await api.get<PaginatedGallery>(`/gallery/spot/${spotId}?take=${limit}`);
+      return data;
+    },
+    enabled: !!spotId,
+  });
+}
+
+export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular' = 'popular') {
+  return useInfiniteQuery({
+    queryKey: ['gallery-infinite', spotId, sort],
+    queryFn: async ({ pageParam = 0 }) => {
+      const { data } = await api.get<PaginatedGallery>(`/gallery/spot/${spotId}`, {
+        params: {
+          skip: pageParam,
+          take: 12,
+          sort,
+        },
+      });
+      return data;
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: any) => {
+      if (!lastPage.pagination.hasMore) return undefined;
+      return lastPage.pagination.skip + lastPage.pagination.take;
+    },
+    enabled: !!spotId,
+  });
+}
+
+export function useUploadSpotImage() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ spotId, file }: { spotId: string; file: File }) => {
+      const formData = new FormData();
+      formData.append('image', file);
+      const { data } = await api.post(`/gallery/upload/${spotId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return data;
+    },
+    onSuccess: (_, { spotId }) => {
+      queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
+      queryClient.invalidateQueries({ queryKey: ['gallery-infinite', spotId] });
+    },
   });
 }
 
@@ -194,6 +291,48 @@ export function useCreateLiveVibe() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['live-vibes'] });
       queryClient.invalidateQueries({ queryKey: ['spots'] });
+    },
+  });
+}
+
+// --- Votes ---
+
+export function useCreateVote() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ targetId, type, isUpvote }: { targetId: string; type: 'tip' | 'alert' | 'image'; isUpvote?: boolean }) => {
+      let endpoint = '';
+      let payload: any = { isUpvote };
+      
+      if (type === 'tip') {
+        endpoint = '/votes/tip';
+        payload.communityTipId = targetId;
+      } else if (type === 'alert') {
+        endpoint = '/votes/alert';
+        payload.scamAlertId = targetId;
+      } else if (type === 'image') {
+        endpoint = '/votes/image';
+        payload.galleryImageId = targetId;
+      }
+
+      const { data } = await api.post(endpoint, payload);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(); // Invalidate all to be safe for now, can be more specific later
+    },
+  });
+}
+
+export function useDeleteVote() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (voteId: string) => {
+      const { data } = await api.delete(`/votes/${voteId}`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
     },
   });
 }

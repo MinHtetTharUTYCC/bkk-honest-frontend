@@ -1,8 +1,8 @@
 'use client';
 
 import { useAuth } from '@/components/providers/auth-provider';
-import { useProfile, useUserPriceReports, useUserScamAlerts } from '@/hooks/use-api';
-import { Zap, Shield, MapPin, DollarSign, Calendar, LogOut, ArrowRight, User as UserIcon } from 'lucide-react';
+import { useProfile, useUserPriceReports, useUserScamAlerts, useUserCommunityTips } from '@/hooks/use-api';
+import { Zap, Shield, MapPin, DollarSign, Calendar, LogOut, ArrowRight, User as UserIcon, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -20,6 +20,7 @@ export default function ProfilePage() {
   
   const { data: reports } = useUserPriceReports(displayUserId);
   const { data: scams } = useUserScamAlerts(displayUserId);
+  const { data: tips } = useUserCommunityTips(displayUserId);
 
   const supabase = createClient();
   const router = useRouter();
@@ -29,7 +30,7 @@ export default function ProfilePage() {
     router.push('/dev-login');
   };
 
-  const [activeTab, setActiveTab] = useState<'scams' | 'reports'>('scams');
+  const [activeTab, setActiveTab] = useState<'scams' | 'reports' | 'tips'>('scams');
 
   if (authLoading || profileLoading) {
     return (
@@ -42,6 +43,7 @@ export default function ProfilePage() {
 
   const reportsList = reports?.data || reports || [];
   const scamsList = scams?.data || scams || [];
+  const tipsList = tips?.data || tips || [];
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-24">
@@ -131,6 +133,15 @@ export default function ProfilePage() {
               Scam Alerts ({scamsList.length})
             </button>
             <button
+              onClick={() => setActiveTab('tips')}
+              className={cn(
+                "px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                activeTab === 'tips' ? "bg-white text-emerald-500 shadow-sm" : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              Tips ({tipsList.length})
+            </button>
+            <button
               onClick={() => setActiveTab('reports')}
               className={cn(
                 "px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
@@ -163,6 +174,41 @@ export default function ProfilePage() {
               ) : (
                 <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
                   <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic">No scam alerts reported yet</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'tips' && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {tipsList.length > 0 ? (
+                tipsList.map((tip: any) => (
+                  <div key={tip.id} className="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl shadow-gray-200/20 border-l-8 border-l-emerald-500">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className={cn(
+                        "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
+                        tip.type === 'TRY' ? "bg-emerald-50 text-emerald-500" : "bg-orange-50 text-orange-500"
+                      )}>
+                        {tip.type} TIP
+                      </span>
+                      <span className="text-[9px] font-black text-gray-300 uppercase tracking-tighter italic">{new Date(tip.createdAt).toLocaleDateString()}</span>
+                    </div>
+                    <h4 className="text-xl font-black text-gray-900 mb-2 italic tracking-tight">{tip.title}</h4>
+                    <p className="text-xs font-medium text-gray-600 line-clamp-2 mb-6 leading-relaxed">{tip.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                        <MapPin size={10} /> {tip.spot?.name}
+                      </span>
+                      <Link href={`/spots/${tip.spot?.id}`} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-cyan-400 hover:text-cyan-500 transition-colors">
+                        View Spot
+                        <ArrowRight size={14} />
+                      </Link>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
+                  <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic">No community tips shared yet</p>
                 </div>
               )}
             </div>

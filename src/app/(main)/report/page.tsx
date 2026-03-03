@@ -126,7 +126,14 @@ export default function ReportPage() {
               </div>
               <div className="space-y-4">
                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Price (THB)</label>
-                <input name="priceThb" type="number" required placeholder="0.00" className="w-full bg-gray-50 border-2 border-transparent focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold outline-none" />
+                <input 
+                  name="priceThb" 
+                  type="number" 
+                  step="0.01"
+                  required 
+                  placeholder="0.00" 
+                  className="w-full bg-gray-50 border-2 border-transparent focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold outline-none" 
+                />
               </div>
             </div>
 

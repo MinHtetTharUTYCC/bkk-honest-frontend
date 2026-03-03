@@ -1,0 +1,34 @@
+
+> bkk-honest-frontend@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://143.110.243.39:3001
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 2.6s
+ GET /profile/ 200 in 3.3s (compile: 1469ms, render: 1798ms)
+⚠ Cross origin request detected from 143.110.243.39 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET /discovery/ 200 in 146ms (compile: 84ms, render: 62ms)
+ GET /discovery/ 200 in 765ms (compile: 14ms, render: 751ms)
+ GET /discovery/ 200 in 577ms (compile: 62ms, render: 515ms)
+✓ Compiled in 4.9s
+✓ Compiled in 341ms
+✓ Compiled in 186ms
+ GET /discovery/ 200 in 148ms (compile: 12ms, render: 136ms)
+✓ Compiled in 550ms
+ GET /discovery/ 200 in 1269ms (compile: 437ms, render: 832ms)
+ GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 200 in 1433ms (compile: 1375ms, render: 58ms)
+✓ Compiled in 229ms
+⚠ Fast Refresh had to perform a full reload when ./src/components/providers/city-provider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 200 in 1743ms (compile: 529ms, render: 1215ms)
+ GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 307 in 470ms (compile: 110ms, render: 360ms)
+ GET /dev-login/ 200 in 1214ms (compile: 1106ms, render: 109ms)
+ GET /discovery/ 307 in 1016ms (compile: 270ms, render: 747ms)
+ HEAD /discovery/ 307 in 153ms (compile: 5ms, render: 148ms)
+ HEAD /discovery/ 307 in 140ms (compile: 13ms, render: 128ms)
+ GET /discovery/ 307 in 149ms (compile: 7ms, render: 143ms)
+[?25h
