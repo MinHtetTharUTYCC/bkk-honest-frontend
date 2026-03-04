@@ -12,6 +12,7 @@ export default function MapPage() {
   const { data: spotsResponse, isLoading } = useSpots({
     cityId: selectedCityId,
   });
+  // @ts-ignore
   const spots = spotsResponse?.data || spotsResponse || [];
 
   useEffect(() => {

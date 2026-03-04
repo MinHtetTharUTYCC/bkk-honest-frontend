@@ -28,7 +28,7 @@ export function useUserPriceReports(userId: string) {
     return useQuery({
         queryKey: ['user-price-reports', userId],
         queryFn: async () => {
-            const endpoint = userId === 'me' ? '/price-reports/me' : `/price-reports/user/${userId}`;
+            const endpoint = userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`;
             const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
@@ -40,7 +40,7 @@ export function useUserScamAlerts(userId: string) {
     return useQuery({
         queryKey: ['user-scam-alerts', userId],
         queryFn: async () => {
-            const endpoint = userId === 'me' ? '/scam-alerts/me' : `/scam-alerts/user/${userId}`;
+            const endpoint = userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`;
             const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
@@ -52,9 +52,85 @@ export function useUserCommunityTips(userId: string) {
     return useQuery({
         queryKey: ['user-community-tips', userId],
         queryFn: async () => {
-            const endpoint = userId === 'me' ? '/community-tips/me' : `/community-tips/user/${userId}`;
+            const endpoint = userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`;
             const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
+        },
+        enabled: !!userId,
+    });
+}
+
+export function useInfiniteUserPriceReports(userId: string) {
+    return useInfiniteQuery({
+        queryKey: ['user-price-reports-infinite', userId],
+        queryFn: async ({ pageParam = 0 }) => {
+            const endpoint = userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`;
+            const { data } = await api.get(endpoint, {
+                params: { skip: pageParam, take: 10 }
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            return skip + take < total ? skip + take : undefined;
+        },
+        enabled: !!userId,
+    });
+}
+
+export function useInfiniteUserScamAlerts(userId: string) {
+    return useInfiniteQuery({
+        queryKey: ['user-scam-alerts-infinite', userId],
+        queryFn: async ({ pageParam = 0 }) => {
+            const endpoint = userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`;
+            const { data } = await api.get(endpoint, {
+                params: { skip: pageParam, take: 10 }
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            return skip + take < total ? skip + take : undefined;
+        },
+        enabled: !!userId,
+    });
+}
+
+export function useInfiniteUserCommunityTips(userId: string) {
+    return useInfiniteQuery({
+        queryKey: ['user-community-tips-infinite', userId],
+        queryFn: async ({ pageParam = 0 }) => {
+            const endpoint = userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`;
+            const { data } = await api.get(endpoint, {
+                params: { skip: pageParam, take: 10 }
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            return skip + take < total ? skip + take : undefined;
+        },
+        enabled: !!userId,
+    });
+}
+
+export function useInfiniteUserSpots(userId: string) {
+    return useInfiniteQuery({
+        queryKey: ['user-spots-infinite', userId],
+        queryFn: async ({ pageParam = 0 }) => {
+            const endpoint = userId === 'me' ? '/spots/mine' : `/spots/user/${userId}`;
+            const { data } = await api.get(endpoint, {
+                params: { skip: pageParam, take: 10 }
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            return skip + take < total ? skip + take : undefined;
         },
         enabled: !!userId,
     });
@@ -257,12 +333,19 @@ export function useCreateSpot() {
     });
 }
 
-export function useScamAlerts(params?: { cityId?: string; categoryId?: string }) {
+export function useScamAlerts(params?: {
+    cityId?: string;
+    categoryId?: string;
+    sort?: 'newest' | 'popular';
+    search?: string;
+}) {
     // Clean up undefined parameters
     const cleanParams: any = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
+        if (params.sort) cleanParams.sort = params.sort;
+        if (params.search) cleanParams.search = params.search;
     }
 
     return useQuery({
@@ -272,6 +355,42 @@ export function useScamAlerts(params?: { cityId?: string; categoryId?: string })
                 params: cleanParams,
             });
             return data?.data || (Array.isArray(data) ? data : []);
+        },
+    });
+}
+
+export function useInfiniteScamAlerts(params?: {
+    cityId?: string;
+    categoryId?: string;
+    sort?: 'newest' | 'popular';
+    search?: string;
+    take?: number;
+}) {
+    const cleanParams: any = {};
+    if (params) {
+        if (params.cityId) cleanParams.cityId = params.cityId;
+        if (params.categoryId) cleanParams.categoryId = params.categoryId;
+        if (params.sort) cleanParams.sort = params.sort;
+        if (params.search) cleanParams.search = params.search;
+    }
+
+    return useInfiniteQuery({
+        queryKey: ['scam-alerts-infinite', cleanParams],
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get<PaginatedScamAlerts>('/scam-alerts', {
+                params: {
+                    ...cleanParams,
+                    skip: pageParam,
+                    take: params?.take || 10,
+                },
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            const nextSkip = skip + take;
+            return nextSkip < total ? nextSkip : undefined;
         },
     });
 }

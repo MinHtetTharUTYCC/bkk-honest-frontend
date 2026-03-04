@@ -14,9 +14,16 @@ export default function ReportPage() {
   const { selectedCityId, selectedCity } = useCity();
 
   // Data for Selects
-  const { data: spots } = useSpots({ cityId: selectedCityId });
-  const { data: categories } = useCategories();
-  const { data: cities } = useCities();
+  const { data: spotsResponse } = useSpots({ cityId: selectedCityId });
+  const { data: categoriesResponse } = useCategories();
+  const { data: citiesResponse } = useCities();
+
+  // @ts-ignore
+  const spots = spotsResponse?.data || spotsResponse || [];
+  // @ts-ignore
+  const categories = categoriesResponse?.data || categoriesResponse || [];
+  // @ts-ignore
+  const cities = citiesResponse?.data || citiesResponse || [];
 
   // Mutations
   const createPrice = useCreatePriceReport();
@@ -131,7 +138,7 @@ export default function ReportPage() {
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Location</label>
               <select name="spotId" required className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 placeholder:text-gray-500 outline-none appearance-none cursor-pointer">
                 <option value="">Select a spot...</option>
-                {spots?.map((s) => (
+                {spots?.map((s: any) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
@@ -173,7 +180,7 @@ export default function ReportPage() {
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Category</label>
               <select name="categoryId" required className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 placeholder:text-gray-500 outline-none appearance-none cursor-pointer">
                 <option value="">Select category...</option>
-                {categories?.map((c) => (
+                {categories?.map((c: any) => (
                   <option key={c.id} value={c.id}>{c.name}</option>
                 ))}
               </select>
@@ -202,7 +209,7 @@ export default function ReportPage() {
               <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Location</label>
               <select name="spotId" required className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 placeholder:text-gray-500 outline-none appearance-none cursor-pointer">
                 <option value="">Select a spot...</option>
-                {spots?.map((s) => (
+                {spots?.map((s: any) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
               </select>
@@ -251,7 +258,7 @@ export default function ReportPage() {
                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">City</label>
                 <select name="cityId" defaultValue={selectedCityId} required className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 placeholder:text-gray-500 outline-none appearance-none cursor-pointer">
                   <option value="">Select city...</option>
-                  {cities?.map((c) => (
+                  {cities?.map((c: any) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>
@@ -260,7 +267,7 @@ export default function ReportPage() {
                 <label className="block text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">Category</label>
                 <select name="categoryId" required className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 placeholder:text-gray-500 outline-none appearance-none cursor-pointer">
                   <option value="">Select category...</option>
-                  {categories?.map((c) => (
+                  {categories?.map((c: any) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
                 </select>

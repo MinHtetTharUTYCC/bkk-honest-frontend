@@ -1,19 +1,34 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useScamAlerts, useCategories } from '@/hooks/use-api';
+import { useInfiniteScamAlerts, useCategories } from '@/hooks/use-api';
+import { SearchInput } from '@/components/ui/search-input';
 import ScamAlertCard from '@/components/scams/scam-alert-card';
-import { Search, AlertTriangle, MapPin } from 'lucide-react';
+import { AlertTriangle, MapPin, TrendingUp, Clock, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { useInView } from 'react-intersection-observer';
+
+function useDebounce<T>(value: T, delay: number): T {
+    const [debouncedValue, setDebouncedValue] = useState<T>(value);
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedValue(value), delay);
+        return () => clearTimeout(handler);
+    }, [value, delay]);
+    return debouncedValue;
+}
 
 export default function ScamAlertsPage() {
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
     const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 500);
+    const [sort, setSort] = useState<'newest' | 'popular'>('newest');
     const { selectedCityId, selectedCity } = useCity();
 
     const [isClient, setIsClient] = useState(false);
+    const { ref, inView } = useInView();
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -21,13 +36,28 @@ export default function ScamAlertsPage() {
     const { data: categoriesResponse } = useCategories();
     const categories = categoriesResponse?.data || categoriesResponse || [];
 
-    const { data: alertsResponse, isLoading } = useScamAlerts({
+    const {
+        data,
+        isLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage
+    } = useInfiniteScamAlerts({
         cityId: selectedCityId,
         categoryId: selectedCategory,
+        sort,
+        search: debouncedSearch,
     });
-    const alerts = alertsResponse?.data || alertsResponse || [];
+
+    useEffect(() => {
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     if (!isClient) return null;
+
+    const alerts = data?.pages.flatMap((page) => page.data) || [];
 
     return (
         <div className="space-y-6 pb-24">
@@ -44,17 +74,36 @@ export default function ScamAlertsPage() {
                     </div>
                 </div>
 
-                <div className="relative group">
-                    <Search
-                        size={14}
-                        className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-cyan-400 transition-colors"
-                    />
-                    <input
-                        type="text"
-                        placeholder="Search scams..."
-                        className="w-full md:w-[280px] bg-white border border-gray-300 pl-12 pr-6 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-cyan-400/10 focus:border-cyan-400 transition-all shadow-lg shadow-gray-200/20"
+                <div className="flex flex-col sm:flex-row gap-3">
+                    {/* Sort Toggle */}
+                    <div className="flex bg-gray-100 p-1 rounded-2xl w-full sm:w-auto">
+                        <button
+                            onClick={() => setSort('newest')}
+                            className={cn(
+                                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                sort === 'newest' ? "bg-white text-gray-900 shadow-sm" : "text-gray-400 hover:text-gray-600"
+                            )}
+                        >
+                            <Clock size={12} />
+                            Newest
+                        </button>
+                        <button
+                            onClick={() => setSort('popular')}
+                            className={cn(
+                                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                sort === 'popular' ? "bg-white text-gray-900 shadow-sm" : "text-gray-400 hover:text-gray-600"
+                            )}
+                        >
+                            <TrendingUp size={12} />
+                            Popular
+                        </button>
+                    </div>
+
+                    <SearchInput
                         value={search}
-                        onChange={(e) => setSearch(e.target.value)}
+                        onChange={setSearch}
+                        placeholder="Search scams..."
+                        className="md:w-[240px]"
                     />
                 </div>
             </header>
@@ -120,7 +169,24 @@ export default function ScamAlertsPage() {
                         </div>
                     ))
                 ) : alerts && alerts.length > 0 ? (
-                    alerts.map((alert: any) => <ScamAlertCard key={alert.id} alert={alert} />)
+                    <>
+                        {alerts.map((alert: any) => (
+                            <ScamAlertCard key={alert.id} alert={alert} />
+                        ))}
+                        
+                        {/* Load More Trigger */}
+                        <div ref={ref} className="py-8 flex justify-center">
+                            {isFetchingNextPage ? (
+                                <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+                            ) : hasNextPage ? (
+                                <div className="h-1" />
+                            ) : (
+                                <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.2em]">
+                                    — You've reached the end —
+                                </p>
+                            )}
+                        </div>
+                    </>
                 ) : (
                     <div className="py-32 text-center space-y-4 bg-white rounded-[28px] border border-dashed border-gray-200">
                         <div className="w-20 h-20 bg-gray-50 rounded-[32px] flex items-center justify-center mx-auto text-gray-200">

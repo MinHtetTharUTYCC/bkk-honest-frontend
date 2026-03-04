@@ -3,14 +3,26 @@
 import { useState, useEffect } from 'react';
 import { useSpots, useCategories } from '@/hooks/use-api';
 import SpotCard from '@/components/spots/spot-card';
-import { Search, Filter, MapPin, Navigation } from 'lucide-react';
+import { SearchInput } from '@/components/ui/search-input';
+import { Filter, MapPin, Clock, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+}
+
 export default function DiscoveryPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 500);
+  const [sort, setSort] = useState<'newest' | 'popular'>('popular');
   const { selectedCityId, selectedCity } = useCity();
 
   const [isClient, setIsClient] = useState(false);
@@ -19,14 +31,16 @@ export default function DiscoveryPage() {
   }, []);
 
   const { data: categoriesResponse } = useCategories();
+  // @ts-ignore
   const categories = categoriesResponse?.data || categoriesResponse || [];
 
   const { data: spotsResponse, isLoading } = useSpots({
     cityId: selectedCityId,
     categoryId: selectedCategory,
-    search: search.length >= 3 ? search : undefined,
-    sort: 'popular',
+    search: debouncedSearch,
+    sort: sort,
   });
+  // @ts-ignore - API response structure varies during transition
   const spots = spotsResponse?.data || spotsResponse || [];
 
   if (!isClient) return null;
@@ -40,6 +54,39 @@ export default function DiscoveryPage() {
             <MapPin size={10} className="text-cyan-400" />
             <p className="text-gray-400 font-bold uppercase tracking-widest text-[9px]">Exploring {selectedCity?.name || 'Thailand'}</p>
           </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          {/* Sort Toggle */}
+          <div className="flex bg-gray-100 p-1 rounded-2xl w-full sm:w-auto">
+            <button
+              onClick={() => setSort('newest')}
+              className={cn(
+                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                sort === 'newest' ? "bg-white text-gray-900 shadow-sm" : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              <Clock size={12} />
+              Newest
+            </button>
+            <button
+              onClick={() => setSort('popular')}
+              className={cn(
+                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
+                sort === 'popular' ? "bg-white text-gray-900 shadow-sm" : "text-gray-400 hover:text-gray-600"
+              )}
+            >
+              <TrendingUp size={12} />
+              Popular
+            </button>
+          </div>
+
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Search spots..."
+            className="md:w-[240px]"
+          />
         </div>
       </header>
 
