@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, TrendingUp, Calendar, User, Info, CheckCircle2, Heart } from 'lucide-react';
+import { AlertTriangle, Calendar, User, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 
@@ -12,91 +12,77 @@ export default function ScamAlertCard({ alert }: ScamAlertCardProps) {
   const { toggleVote, isPending } = useVoteToggle('alert');
 
   return (
-    <div className="bg-white rounded-[40px] border-2 border-gray-300 shadow-xl shadow-gray-200/20 overflow-hidden group hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500">
+    <div className="bg-white rounded-[28px] border border-gray-200 shadow-sm overflow-hidden group hover:shadow-md transition-all duration-300 flex flex-row">
+      {/* Photo — left */}
       {alert.imageUrl && (
-        <div className="relative h-56 overflow-hidden">
-          <img 
-            src={alert.imageUrl} 
-            alt={alert.scamName} 
+        <div className="relative w-36 shrink-0 overflow-hidden">
+          <img
+            src={alert.imageUrl}
+            alt={alert.scamName}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
-          <div className="absolute top-6 left-6">
-            <span className="bg-red-500 text-white px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase shadow-lg shadow-red-500/20 flex items-center gap-2">
-              <AlertTriangle size={12} />
-              High Alert
-            </span>
-          </div>
         </div>
       )}
-      
-      <div className="p-8 space-y-6">
-        <div className="space-y-2">
+
+      {/* Content — right */}
+      <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
+        {/* Meta row */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="bg-red-100 text-red-500 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-widest uppercase flex items-center gap-1">
+            <AlertTriangle size={9} />
+            {alert.category?.name || 'Scam'}
+          </span>
+          <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+            <Calendar size={9} />
+            {new Date(alert.createdAt).toLocaleDateString()}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-base font-black text-gray-900 tracking-tight uppercase italic group-hover:text-red-500 transition-colors leading-tight">
+          {alert.scamName}
+        </h3>
+
+        {/* Description */}
+        <p className="text-xs text-gray-500 leading-relaxed line-clamp-2">
+          {alert.description}
+        </p>
+
+        {/* Prevention tip */}
+        {alert.preventionTip && (
+          <p className="text-xs text-emerald-600 leading-relaxed line-clamp-2 italic">
+            {alert.preventionTip}
+          </p>
+        )}
+
+        {/* Footer */}
+        <div className="mt-auto flex items-center justify-between pt-2 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <span className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
-              {alert.category?.name}
-            </span>
-            <span className="text-gray-300">•</span>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1">
-              <Calendar size={10} />
-              {new Date(alert.createdAt).toLocaleDateString()}
-            </span>
-          </div>
-          <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic group-hover:text-red-500 transition-colors">
-            {alert.scamName}
-          </h3>
-        </div>
-
-        <div className="space-y-4">
-          <div className="bg-red-50/50 p-6 rounded-3xl border border-red-100/50">
-            <span className="text-[10px] font-black text-red-500 uppercase tracking-widest block mb-2 flex items-center gap-2">
-              <Info size={12} />
-              The Scam
-            </span>
-            <p className="text-xs font-medium text-gray-600 leading-relaxed">
-              {alert.description}
-            </p>
-          </div>
-
-          <div className="bg-emerald-50/50 p-6 rounded-3xl border border-emerald-100/50">
-            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest block mb-2 flex items-center gap-2">
-              <CheckCircle2 size={12} />
-              How to Avoid
-            </span>
-            <p className="text-xs font-medium text-gray-600 leading-relaxed italic">
-              {alert.preventionTip}
-            </p>
-          </div>
-        </div>
-
-        <div className="pt-4 flex items-center justify-between border-t border-gray-300">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
-               <User size={14} />
+            <div className="w-6 h-6 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+              <User size={12} />
             </div>
-            <div className="flex flex-col">
-              <span className="text-[10px] font-black text-gray-900 uppercase tracking-tight">{alert.user?.name || 'Local Expert'}</span>
-              <span className="text-[8px] font-bold text-gray-400 uppercase tracking-widest">Level {alert.user?.level || '1'}</span>
-            </div>
+            <span className="text-[9px] font-black text-gray-500 uppercase tracking-tight">
+              {alert.user?.name || 'Local Expert'}
+            </span>
           </div>
 
-          <div className="flex bg-gray-50 p-1 rounded-[20px] border border-gray-300">
-            <button 
-              onClick={() => toggleVote(alert)}
-              disabled={isPending}
-              className={cn(
-                "flex items-center gap-2 px-6 py-2.5 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all",
-                alert.hasVoted 
-                  ? "bg-white text-red-500 shadow-lg shadow-red-500/10" 
-                  : "text-gray-400 hover:text-red-500"
-              )}
-            >
-              <Heart size={16} fill={alert.hasVoted ? "currentColor" : "none"} />
-              {alert._count?.votes || 0}
-            </button>
-          </div>
+          <button
+            onClick={() => toggleVote(alert)}
+            disabled={isPending}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border",
+              alert.hasVoted
+                ? "bg-red-50 border-red-200 text-red-500"
+                : "border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-200"
+            )}
+          >
+            <Heart size={12} fill={alert.hasVoted ? "currentColor" : "none"} />
+            {alert._count?.votes || 0}
+          </button>
         </div>
       </div>
     </div>
+  );
+}
   );
 }
