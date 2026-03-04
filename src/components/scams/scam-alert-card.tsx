@@ -12,7 +12,7 @@ export default function ScamAlertCard({ alert }: ScamAlertCardProps) {
   const { toggleVote, isPending } = useVoteToggle('alert');
 
   return (
-    <div className="bg-white rounded-[40px] border border-gray-100 shadow-xl shadow-gray-200/20 overflow-hidden group hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500">
+    <div className="bg-white rounded-[40px] border-2 border-gray-300 shadow-xl shadow-gray-200/20 overflow-hidden group hover:shadow-2xl hover:shadow-gray-200/40 transition-all duration-500">
       {alert.imageUrl && (
         <div className="relative h-56 overflow-hidden">
           <img 
@@ -69,7 +69,7 @@ export default function ScamAlertCard({ alert }: ScamAlertCardProps) {
           </div>
         </div>
 
-        <div className="pt-4 flex items-center justify-between border-t border-gray-50">
+        <div className="pt-4 flex items-center justify-between border-t border-gray-300">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center text-gray-400">
                <User size={14} />
@@ -80,7 +80,7 @@ export default function ScamAlertCard({ alert }: ScamAlertCardProps) {
             </div>
           </div>
 
-          <div className="flex bg-gray-50 p-1 rounded-[20px] border border-gray-100">
+          <div className="flex bg-gray-50 p-1 rounded-[20px] border border-gray-300">
             <button 
               onClick={() => toggleVote(alert)}
               disabled={isPending}

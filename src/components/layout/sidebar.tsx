@@ -26,38 +26,6 @@ export default function Sidebar() {
 
   return (
     <aside className="hidden lg:flex flex-col gap-8 w-80 min-h-screen px-6 py-10 sticky top-20">
-      {/* 1. Mini Map (Contextual) */}
-      <div className="relative group">
-        <div className="absolute -top-3 -right-2 z-10">
-          <div className="bg-gray-900 text-white p-2 rounded-xl shadow-xl shadow-gray-900/20 transform rotate-6 group-hover:rotate-0 transition-transform">
-            <Navigation size={14} fill="currentColor" className="text-cyan-400" />
-          </div>
-        </div>
-        
-        <div className="w-full h-48 bg-gray-100 rounded-[32px] border border-gray-200 overflow-hidden relative shadow-inner">
-          {/* Mock Map Background */}
-          <div className="absolute inset-0 opacity-40 bg-[url('https://api.mapbox.com/styles/v1/mapbox/light-v10/static/100.55,13.75,12,0/400x300?access_token=pk.eyJ1IjoibWlubWlubSIsImEiOiJjbHg0cWV4ZncwMHh4Mnh4YWFhYmJjY2RkIn0')] bg-cover bg-center" />
-          
-          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
-          
-          <div className="absolute bottom-4 left-4 right-4 flex flex-col items-start gap-1">
-            <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-gray-100 shadow-sm">
-              <MapPin size={10} className="text-cyan-400" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-900">{selectedCity?.name || 'Bangkok'}</span>
-            </div>
-          </div>
-          
-          <Link href="/map" className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900/10 backdrop-blur-[2px]">
-            <div className="bg-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl flex items-center gap-2">
-              Open Map
-              <ArrowUpRight size={14} />
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      <div className="w-full h-px bg-gray-100" />
-
       {/* 2. Trending Section */}
       <div>
         <h4 className="font-black text-xs uppercase tracking-widest text-gray-400 mb-6 flex items-center gap-2">
@@ -97,7 +65,7 @@ export default function Sidebar() {
         </div>
       </div>
       
-      <div className="mt-auto bg-gray-50/50 p-6 rounded-3xl border border-dashed border-gray-200">
+      <div className="mt-auto bg-gray-50/50 p-6 rounded-3xl border border-dashed border-gray-300">
         <h5 className="font-bold text-sm mb-2">{selectedCity?.name || 'Bangkok'} is changing fast.</h5>
         <p className="text-[11px] font-medium text-gray-500 leading-relaxed">Your reports help others navigate the city with confidence and honesty. Keep at it!</p>
       </div>

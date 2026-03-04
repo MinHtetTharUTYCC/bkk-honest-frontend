@@ -7,23 +7,27 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
-  
-  // For demonstration if not logged in, we use the Seed User's ID
-  const displayUserId = user?.id || '08ec1994-a7e5-42d3-b533-e52982fc2e2d';
-  
-  const { data: profileResponse, isLoading: profileLoading } = useProfile(displayUserId);
-  const profile = profileResponse?.data || profileResponse;
-  
-  const { data: reports } = useUserPriceReports(displayUserId);
-  const { data: scams } = useUserScamAlerts(displayUserId);
-  const { data: tips } = useUserCommunityTips(displayUserId);
-
   const supabase = createClient();
   const router = useRouter();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/dev-login');
+    }
+  }, [user, authLoading, router]);
+
+  // Use 'me' for authenticated user data to leverage backend's current user context
+  const { data: profileResponse, isLoading: profileLoading } = useProfile(user ? 'me' : '');
+  const profile = profileResponse?.data || profileResponse;
+  
+  const { data: reports } = useUserPriceReports(user ? 'me' : '');
+  const { data: scams } = useUserScamAlerts(user ? 'me' : '');
+  const { data: tips } = useUserCommunityTips(user ? 'me' : '');
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -48,7 +52,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-24">
       {/* 1. Profile Header */}
-      <header className="bg-white p-12 rounded-[40px] border border-gray-100 shadow-2xl shadow-gray-200/40 relative overflow-hidden">
+      <header className="bg-white p-12 rounded-[40px] border border-gray-300 shadow-2xl shadow-gray-200/40 relative overflow-hidden">
         {/* Background Accent */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-400/5 rounded-full -mr-32 -mt-32 blur-3xl" />
         
@@ -93,27 +97,27 @@ export default function ProfilePage() {
       </header>
 
       {/* 2. Impact Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-xl shadow-gray-200/20 text-center space-y-2 group hover:bg-cyan-400/5 transition-colors">
-          <div className="w-12 h-12 bg-cyan-100 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110">
-            <DollarSign size={24} />
+      <div className="grid grid-cols-3 gap-4 md:gap-8 px-2 md:px-0">
+        <div className="bg-white p-4 md:p-8 rounded-[30px] md:rounded-[40px] border border-gray-300 shadow-xl shadow-gray-200/20 text-center space-y-1 md:space-y-2 group hover:bg-cyan-400/5 transition-colors">
+          <div className="w-8 h-8 md:w-12 md:h-12 bg-cyan-100 text-cyan-400 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-4 transition-transform group-hover:scale-110">
+            <DollarSign size={16} className="md:w-6 md:h-6" />
           </div>
-          <div className="text-3xl font-black text-gray-900 tracking-tighter italic">{reportsList.length}</div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Prices Shared</div>
+          <div className="text-xl md:text-3xl font-black text-gray-900 tracking-tighter italic">{reportsList.length}</div>
+          <div className="text-[7px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Prices</div>
         </div>
-        <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-xl shadow-gray-200/20 text-center space-y-2 group hover:bg-red-400/5 transition-colors">
-          <div className="w-12 h-12 bg-red-100 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110">
-            <Shield size={24} />
+        <div className="bg-white p-4 md:p-8 rounded-[30px] md:rounded-[40px] border border-gray-300 shadow-xl shadow-gray-200/20 text-center space-y-1 md:space-y-2 group hover:bg-red-400/5 transition-colors">
+          <div className="w-8 h-8 md:w-12 md:h-12 bg-red-100 text-red-500 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-4 transition-transform group-hover:scale-110">
+            <Shield size={16} className="md:w-6 md:h-6" />
           </div>
-          <div className="text-3xl font-black text-gray-900 tracking-tighter italic">{scamsList.length}</div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Scams Blocked</div>
+          <div className="text-xl md:text-3xl font-black text-gray-900 tracking-tighter italic">{scamsList.length}</div>
+          <div className="text-[7px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Scams</div>
         </div>
-        <div className="bg-white p-8 rounded-[40px] border border-gray-100 shadow-xl shadow-gray-200/20 text-center space-y-2 group hover:bg-emerald-400/5 transition-colors">
-          <div className="w-12 h-12 bg-emerald-100 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-transform group-hover:scale-110">
-            <Zap size={24} />
+        <div className="bg-white p-4 md:p-8 rounded-[30px] md:rounded-[40px] border border-gray-300 shadow-xl shadow-gray-200/20 text-center space-y-1 md:space-y-2 group hover:bg-emerald-400/5 transition-colors">
+          <div className="w-8 h-8 md:w-12 md:h-12 bg-emerald-100 text-emerald-500 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-2 md:mb-4 transition-transform group-hover:scale-110">
+            <Zap size={16} className="md:w-6 md:h-6" />
           </div>
-          <div className="text-3xl font-black text-gray-900 tracking-tighter italic">98%</div>
-          <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Trust Rating</div>
+          <div className="text-xl md:text-3xl font-black text-gray-900 tracking-tighter italic">98%</div>
+          <div className="text-[7px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Trust</div>
         </div>
       </div>
 
@@ -158,7 +162,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {scamsList.length > 0 ? (
                 scamsList.map((scam: any) => (
-                  <div key={scam.id} className="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl shadow-gray-200/20 border-l-8 border-l-red-500">
+                  <div key={scam.id} className="bg-white rounded-[40px] p-8 border border-gray-300 shadow-xl shadow-gray-200/20 border-l-8 border-l-red-500">
                     <div className="flex items-center justify-between mb-4">
                       <span className="bg-red-50 text-red-500 px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase">Scam Alert</span>
                       <span className="text-[9px] font-black text-gray-300 uppercase tracking-tighter italic">{new Date(scam.createdAt).toLocaleDateString()}</span>
@@ -172,7 +176,7 @@ export default function ProfilePage() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
+                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-300">
                   <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic">No scam alerts reported yet</p>
                 </div>
               )}
@@ -183,7 +187,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {tipsList.length > 0 ? (
                 tipsList.map((tip: any) => (
-                  <div key={tip.id} className="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl shadow-gray-200/20 border-l-8 border-l-emerald-500">
+                  <div key={tip.id} className="bg-white rounded-[40px] p-8 border border-gray-300 shadow-xl shadow-gray-200/20 border-l-8 border-l-emerald-500">
                     <div className="flex items-center justify-between mb-4">
                       <span className={cn(
                         "px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase",
@@ -207,7 +211,7 @@ export default function ProfilePage() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
+                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-300">
                   <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic">No community tips shared yet</p>
                 </div>
               )}
@@ -218,7 +222,7 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {reportsList.length > 0 ? (
                 reportsList.map((report: any) => (
-                  <div key={report.id} className="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl shadow-gray-200/20 border-l-8 border-l-cyan-400">
+                  <div key={report.id} className="bg-white rounded-[40px] p-8 border border-gray-300 shadow-xl shadow-gray-200/20 border-l-8 border-l-cyan-400">
                     <div className="flex items-center justify-between mb-4">
                       <span className="bg-cyan-50 text-cyan-500 px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase">Price Report</span>
                       <span className="text-[9px] font-black text-gray-300 uppercase tracking-tighter italic">{new Date(report.timestamp).toLocaleDateString()}</span>
@@ -235,7 +239,7 @@ export default function ProfilePage() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-200">
+                <div className="col-span-2 py-20 text-center bg-gray-50 rounded-[40px] border border-dashed border-gray-300">
                   <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic">No price reports shared yet</p>
                 </div>
               )}

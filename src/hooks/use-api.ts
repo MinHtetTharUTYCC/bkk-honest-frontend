@@ -14,7 +14,8 @@ export function useProfile(id: string) {
     return useQuery({
         queryKey: ['profile', id],
         queryFn: async () => {
-            const response = await api.get<any>(`/profiles/${id}`);
+            const endpoint = id === 'me' ? '/profiles/me' : `/profiles/${id}`;
+            const response = await api.get<any>(endpoint);
             const data = response.data;
             return data?.data || data;
         },
@@ -27,7 +28,8 @@ export function useUserPriceReports(userId: string) {
     return useQuery({
         queryKey: ['user-price-reports', userId],
         queryFn: async () => {
-            const { data } = await api.get(`/price-reports/user/${userId}`);
+            const endpoint = userId === 'me' ? '/price-reports/me' : `/price-reports/user/${userId}`;
+            const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
         enabled: !!userId,
@@ -38,7 +40,8 @@ export function useUserScamAlerts(userId: string) {
     return useQuery({
         queryKey: ['user-scam-alerts', userId],
         queryFn: async () => {
-            const { data } = await api.get(`/scam-alerts/user/${userId}`);
+            const endpoint = userId === 'me' ? '/scam-alerts/me' : `/scam-alerts/user/${userId}`;
+            const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
         enabled: !!userId,
@@ -49,7 +52,8 @@ export function useUserCommunityTips(userId: string) {
     return useQuery({
         queryKey: ['user-community-tips', userId],
         queryFn: async () => {
-            const { data } = await api.get(`/community-tips/user/${userId}`);
+            const endpoint = userId === 'me' ? '/community-tips/me' : `/community-tips/user/${userId}`;
+            const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
         enabled: !!userId,
@@ -231,6 +235,28 @@ export function useCities() {
 
 // --- Social & Alerts ---
 
+export function useCreateSpot() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: {
+            name: string;
+            address: string;
+            categoryId: string;
+            cityId: string;
+            latitude: number;
+            longitude: number;
+            imageUrl?: string;
+        }) => {
+            const { data } = await api.post('/spots', payload);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['spots'] });
+            queryClient.invalidateQueries({ queryKey: ['spots-nearby'] });
+        },
+    });
+}
+
 export function useScamAlerts(params?: { cityId?: string; categoryId?: string }) {
     // Clean up undefined parameters
     const cleanParams: any = {};
@@ -256,6 +282,25 @@ export function useLiveVibes() {
         queryFn: async () => {
             const { data } = await api.get<any>('/live-vibes');
             return data?.data || (Array.isArray(data) ? data : []);
+        },
+    });
+}
+
+export function useCreateCommunityTip() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: {
+            spotId: string;
+            type: 'TRY' | 'AVOID';
+            title: string;
+            description: string;
+        }) => {
+            const { data } = await api.post('/community-tips', payload);
+            return data;
+        },
+        onSuccess: (_, { spotId }) => {
+            queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
         },
     });
 }

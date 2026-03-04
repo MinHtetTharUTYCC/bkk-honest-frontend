@@ -27,7 +27,7 @@ export default function CitySwitcher() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-gray-50/50 hover:bg-white border border-transparent hover:border-gray-100 transition-all hover:shadow-sm group active:scale-95"
+        className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-gray-50/50 hover:bg-white border border-transparent hover:border-gray-300 transition-all hover:shadow-sm group active:scale-95"
       >
         <div className="w-8 h-8 rounded-xl bg-cyan-100 flex items-center justify-center text-cyan-500 transition-transform group-hover:scale-110">
           <MapPin size={16} fill="currentColor" className="text-cyan-400" />
@@ -44,8 +44,8 @@ export default function CitySwitcher() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 left-0 w-48 bg-white rounded-[24px] border border-gray-100 shadow-2xl shadow-gray-200/40 p-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
-          <div className="px-3 py-2 border-b border-gray-50 mb-1">
+        <div className="absolute top-full mt-2 left-0 w-48 bg-white rounded-[24px] border border-gray-300 shadow-2xl shadow-gray-200/40 p-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="px-3 py-2 border-b border-gray-300 mb-1">
             <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest">Switch City</span>
           </div>
           <div className="space-y-1">

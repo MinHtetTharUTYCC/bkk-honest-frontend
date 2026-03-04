@@ -18,7 +18,7 @@ export default function NavDock() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-0 md:left-0 md:h-screen md:w-20 md:flex md:flex-col md:items-center md:justify-center md:border-r bg-white/80 backdrop-blur-xl border-t md:border-t-0 border-gray-100 px-6 py-4 md:px-0 md:py-8">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-0 md:left-0 md:h-screen md:w-20 md:flex md:flex-col md:items-center md:justify-center md:border-r bg-white/80 backdrop-blur-xl border-t md:border-t-0 border-gray-300 px-6 py-4 md:px-0 md:py-8">
       <div className="flex items-center justify-between w-full md:flex-col md:gap-12 max-w-md mx-auto md:mx-0">
         {navItems.map((item) => {
           const Icon = item.icon;

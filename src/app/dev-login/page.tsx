@@ -35,7 +35,7 @@ export default function DevLoginPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white rounded-[40px] p-12 border border-gray-100 shadow-2xl shadow-gray-200/40 space-y-8">
+      <div className="max-w-md w-full bg-white rounded-[40px] p-12 border border-gray-300 shadow-2xl shadow-gray-200/40 space-y-8">
         <header className="text-center space-y-2">
           <div className="w-16 h-16 bg-cyan-400 text-white rounded-3xl flex items-center justify-center mx-auto shadow-lg shadow-cyan-400/20 mb-6">
             <Zap size={32} fill="currentColor" />
@@ -59,7 +59,7 @@ export default function DevLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="user@example.com"
-              className="w-full bg-gray-50 border-2 border-transparent focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold outline-none" 
+              className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold outline-none" 
               required
             />
           </div>
@@ -71,7 +71,7 @@ export default function DevLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-gray-50 border-2 border-transparent focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold outline-none" 
+              className="w-full bg-gray-50 border-2 border-gray-300 focus:border-cyan-400 focus:bg-white transition-all rounded-2xl px-5 py-4 text-sm font-bold outline-none" 
               required
             />
           </div>

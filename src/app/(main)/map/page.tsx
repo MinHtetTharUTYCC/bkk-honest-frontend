@@ -30,7 +30,7 @@ export default function MapPage() {
         </div>
       </header>
 
-      <div className="flex-1 bg-white rounded-[40px] border border-gray-200 shadow-2xl shadow-gray-200/40 overflow-hidden relative group">
+      <div className="flex-1 bg-white rounded-[40px] border border-gray-300 shadow-2xl shadow-gray-200/40 overflow-hidden relative group">
         {/* Placeholder for real map */}
         <div className="absolute inset-0 bg-gray-50 flex items-center justify-center flex-col gap-4">
           <div className="w-20 h-20 bg-cyan-100 text-cyan-400 rounded-3xl flex items-center justify-center animate-pulse">
@@ -44,10 +44,10 @@ export default function MapPage() {
 
         {/* Map Controls Overlay */}
         <div className="absolute top-6 right-6 flex flex-col gap-3">
-          <button className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 text-gray-900 hover:bg-cyan-400 hover:text-white transition-all active:scale-95">
+          <button className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-gray-300 text-gray-900 hover:bg-cyan-400 hover:text-white transition-all active:scale-95">
             <Layers size={20} />
           </button>
-          <button className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-gray-100 text-gray-900 hover:bg-cyan-400 hover:text-white transition-all active:scale-95">
+          <button className="w-12 h-12 bg-white/90 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-lg border border-gray-300 text-gray-900 hover:bg-cyan-400 hover:text-white transition-all active:scale-95">
             <Navigation size={20} />
           </button>
         </div>

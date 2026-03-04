@@ -59,7 +59,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
       <div className="relative w-full max-w-6xl h-full bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col">
         
         {/* Header */}
-        <header className="p-8 border-b border-gray-100 flex items-center justify-between bg-white z-10">
+        <header className="p-8 border-b border-gray-300 flex items-center justify-between bg-white z-10">
           <div className="space-y-1">
             <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">{spotName} Gallery</h2>
             <div className="flex items-center gap-4">
@@ -87,21 +87,6 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
           </div>
 
           <div className="flex items-center gap-4">
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadMutation.isPending}
-              className="hidden md:flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-cyan-400 transition-all active:scale-95 disabled:opacity-50"
-            >
-              <Upload size={14} />
-              {uploadMutation.isPending ? 'Uploading...' : 'Upload Vibe'}
-            </button>
-            <input 
-              type="file" 
-              className="hidden" 
-              ref={fileInputRef} 
-              accept="image/*" 
-              onChange={handleFileUpload} 
-            />
             <button 
               onClick={onClose}
               className="p-3 bg-gray-100 rounded-2xl text-gray-400 hover:text-gray-900 transition-colors"
@@ -132,7 +117,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {images.map((img: any) => (
-                  <div key={img.id} className="bg-white rounded-[32px] overflow-hidden border border-gray-100 shadow-xl shadow-gray-200/20 group">
+                  <div key={img.id} className="bg-white rounded-[32px] overflow-hidden border border-gray-300 shadow-xl shadow-gray-200/20 group">
                     <div className="aspect-[4/5] relative overflow-hidden">
                       <img 
                         src={img.url} 
@@ -201,15 +186,6 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
             </>
           )}
         </div>
-
-        {/* Mobile FAB */}
-        <button 
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploadMutation.isPending}
-          className="md:hidden fixed bottom-12 right-12 w-16 h-16 bg-gray-900 text-white rounded-full shadow-2xl flex items-center justify-center active:scale-95 disabled:opacity-50 z-20"
-        >
-          {uploadMutation.isPending ? <Loader2 className="animate-spin" /> : <Camera />}
-        </button>
       </div>
     </div>
   );

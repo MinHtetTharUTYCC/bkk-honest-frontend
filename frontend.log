@@ -1,6 +1,6 @@
 
 > bkk-honest-frontend@0.1.0 dev
-> next dev -p 3001
+> next dev
 
 ▲ Next.js 16.1.6 (Turbopack)
 - Local:         http://localhost:3001
@@ -8,27 +8,221 @@
 - Environments: .env.local
 
 ✓ Starting...
-✓ Ready in 2.6s
- GET /profile/ 200 in 3.3s (compile: 1469ms, render: 1798ms)
+✓ Ready in 3.2s
 ⚠ Cross origin request detected from 143.110.243.39 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
- GET /discovery/ 200 in 146ms (compile: 84ms, render: 62ms)
- GET /discovery/ 200 in 765ms (compile: 14ms, render: 751ms)
- GET /discovery/ 200 in 577ms (compile: 62ms, render: 515ms)
-✓ Compiled in 4.9s
-✓ Compiled in 341ms
-✓ Compiled in 186ms
- GET /discovery/ 200 in 148ms (compile: 12ms, render: 136ms)
-✓ Compiled in 550ms
- GET /discovery/ 200 in 1269ms (compile: 437ms, render: 832ms)
- GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 200 in 1433ms (compile: 1375ms, render: 58ms)
-✓ Compiled in 229ms
-⚠ Fast Refresh had to perform a full reload when ./src/components/providers/city-provider.tsx changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
- GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 200 in 1743ms (compile: 529ms, render: 1215ms)
- GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 307 in 470ms (compile: 110ms, render: 360ms)
- GET /dev-login/ 200 in 1214ms (compile: 1106ms, render: 109ms)
- GET /discovery/ 307 in 1016ms (compile: 270ms, render: 747ms)
- HEAD /discovery/ 307 in 153ms (compile: 5ms, render: 148ms)
- HEAD /discovery/ 307 in 140ms (compile: 13ms, render: 128ms)
- GET /discovery/ 307 in 149ms (compile: 7ms, render: 143ms)
+ GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 200 in 3.7s (compile: 2.4s, render: 1383ms)
+ GET / 200 in 1205ms (compile: 1139ms, render: 66ms)
+ GET /profile/ 200 in 391ms (compile: 306ms, render: 85ms)
+ GET /scam-alerts/cmmb2e7li001a63nq0rn8v3nf/ 404 in 330ms (compile: 229ms, render: 100ms)
+ GET /scam-alerts/cmmb2e7li001a63nq0rn8v3nf/ 404 in 353ms (compile: 8ms, render: 344ms)
+ GET /profile/ 200 in 361ms (compile: 6ms, render: 355ms)
+ GET /scam-alerts/ 200 in 846ms (compile: 761ms, render: 85ms)
+ GET / 200 in 60ms (compile: 9ms, render: 51ms)
+ GET /map/ 200 in 119ms (compile: 64ms, render: 55ms)
+ GET /profile/ 200 in 50ms (compile: 6ms, render: 44ms)
+ GET /discovery/ 200 in 107ms (compile: 52ms, render: 55ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 183ms (compile: 87ms, render: 95ms)
+ GET /spots/cmmb2e4xh000f63nque9lopgg/ 200 in 205ms (compile: 63ms, render: 142ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 214ms (compile: 105ms, render: 109ms)
+✓ Compiled in 1315ms
+✓ Compiled in 1244ms
+ GET /profile/ 200 in 50ms (compile: 8ms, render: 42ms)
+✓ Compiled in 234ms
+✓ Compiled in 155ms
+✓ Compiled in 657ms
+✓ Compiled in 888ms
+✓ Compiled in 718ms
+✓ Compiled in 163ms
+✓ Compiled in 163ms
+✓ Compiled in 122ms
+✓ Compiled in 160ms
+✓ Compiled in 255ms
+✓ Compiled in 729ms
+✓ Compiled in 242ms
+✓ Compiled in 179ms
+✓ Compiled in 131ms
+ GET /discovery/ 200 in 63ms (compile: 11ms, render: 52ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 858ms (compile: 552ms, render: 307ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 241ms (compile: 99ms, render: 142ms)
+ GET /report/ 200 in 486ms (compile: 443ms, render: 43ms)
+ GET /profile/ 200 in 60ms (compile: 9ms, render: 51ms)
+ GET /profile/ 200 in 52ms (compile: 8ms, render: 44ms)
+✓ Compiled in 816ms
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 1872ms (compile: 308ms, render: 1564ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 307 in 356ms (compile: 73ms, render: 282ms)
+ GET /dev-login/ 200 in 768ms (compile: 568ms, render: 200ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 753ms (compile: 66ms, render: 686ms)
+✓ Compiled in 737ms
+✓ Compiled in 236ms
+✓ Compiled in 133ms
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 1770ms (compile: 254ms, render: 1516ms)
+✓ Compiled in 672ms
+✓ Compiled in 344ms
+✓ Compiled in 179ms
+✓ Compiled in 398ms
+✓ Compiled in 111ms
+✓ Compiled in 124ms
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 896ms (compile: 298ms, render: 598ms)
+✓ Compiled in 150ms
+✓ Compiled in 770ms
+✓ Compiled in 423ms
+✓ Compiled in 701ms
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 1934ms (compile: 657ms, render: 1278ms)
+ GET / 200 in 123ms (compile: 52ms, render: 71ms)
+✓ Compiled in 421ms
+ GET /report/ 200 in 105ms (compile: 35ms, render: 71ms)
+ GET / 200 in 350ms (compile: 215ms, render: 135ms)
+ GET /profile/ 200 in 94ms (compile: 39ms, render: 55ms)
+✓ Compiled in 3.6s
+ GET /profile/ 200 in 1542ms (compile: 302ms, render: 1240ms)
+✓ Compiled in 890ms
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 4.1s (compile: 2.8s, render: 1344ms)
+✓ Compiled in 316ms
+ GET /report/ 200 in 971ms (compile: 752ms, render: 219ms)
+ GET /report/ 200 in 42ms (compile: 6ms, render: 36ms)
+✓ Compiled in 507ms
+ GET /discovery/ 200 in 337ms (compile: 240ms, render: 97ms)
+ GET /profile/ 200 in 574ms (compile: 488ms, render: 86ms)
+ GET /report/ 200 in 59ms (compile: 9ms, render: 50ms)
+ GET / 200 in 405ms (compile: 300ms, render: 105ms)
+ GET /discovery/ 200 in 49ms (compile: 4ms, render: 45ms)
+✓ Compiled in 647ms
+⚠ Fast Refresh had to perform a full reload when ./src/hooks/use-api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /discovery/ 200 in 1577ms (compile: 461ms, render: 1116ms)
+✓ Compiled in 1230ms
+✓ Compiled in 1007ms
+ GET /discovery/ 200 in 475ms (compile: 12ms, render: 463ms)
+✓ Compiled in 505ms
+ GET /discovery/ 200 in 103ms (compile: 6ms, render: 97ms)
+ GET /report/ 200 in 518ms (compile: 430ms, render: 88ms)
+✓ Compiled in 1267ms
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET /report/ 200 in 1319ms (compile: 450ms, render: 868ms)
+ GET /spots/cmmb2e4xh000i63nqtah7ct2v/ 200 in 4.4s (compile: 2.1s, render: 2.3s)
+ GET / 200 in 340ms (compile: 264ms, render: 76ms)
+ GET /discovery/ 200 in 29ms (compile: 6ms, render: 23ms)
+ GET /report/ 200 in 46ms (compile: 7ms, render: 39ms)
+ GET /discovery/ 200 in 35ms (compile: 5ms, render: 30ms)
+ GET /map/ 200 in 207ms (compile: 145ms, render: 61ms)
+ GET / 200 in 21ms (compile: 4ms, render: 17ms)
+ GET /discovery/ 200 in 39ms (compile: 8ms, render: 31ms)
+ GET / 200 in 23ms (compile: 3ms, render: 19ms)
+ GET /report/ 200 in 29ms (compile: 5ms, render: 24ms)
+✓ Compiled in 343ms
+⚠ Fast Refresh had to perform a full reload when ./src/hooks/use-api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 1147ms (compile: 144ms, render: 1003ms)
+ GET /profile/ 200 in 339ms (compile: 256ms, render: 83ms)
+✓ Compiled in 279ms
+✓ Compiled in 620ms
+⚠ Fast Refresh had to perform a full reload when ./src/hooks/use-api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./src/hooks/use-api.ts changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /profile/ 200 in 4.1s (compile: 2.4s, render: 1720ms)
+✓ Compiled in 1ms
+⨯ Error: No QueryClient set, use QueryClientProvider to set one
+    at useProfile (src/hooks/use-api.ts:14:20)
+    at ProfilePage (src/app/(main)/profile/page.tsx:25:74)
+  12 |
+  13 | export function useProfile(id: string) {
+> 14 |     return useQuery({
+     |                    ^
+  15 |         queryKey: ['profile', id],
+  16 |         queryFn: async () => {
+  17 |             const endpoint = id === 'me' ? '/profiles/me' : `/profiles/${id}`; {
+  digest: '3957437771'
+}
+ GET /profile/ 200 in 2.0s (compile: 283ms, render: 1747ms)
+ GET /discovery/ 200 in 265ms (compile: 195ms, render: 70ms)
+ GET /discovery/ 200 in 597ms (compile: 4ms, render: 592ms)
+ GET /report/ 200 in 324ms (compile: 252ms, render: 72ms)
+ GET /scam-alerts/ 200 in 758ms (compile: 688ms, render: 70ms)
+✓ Compiled in 945ms
+✓ Compiled in 161ms
+ GET /discovery/ 200 in 221ms (compile: 158ms, render: 63ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 3.9s (compile: 3.0s, render: 909ms)
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 2.7s (compile: 73ms, render: 2.6s)
+✓ Compiled in 710ms
+✓ Compiled in 4.5s
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 4.8s (compile: 1844ms, render: 2.9s)
+✓ Compiled in 1650ms
+✓ Compiled in 1520ms
+⨯ ./src/app/(main)/spots/[id]/page.tsx:533:13
+Parsing ecmascript source code failed
+[0m [90m 531 |[39m                 [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 532 |[39m               [33m<[39m[33m/[39m[33mScrollArea[39m[33m>[39m
+[31m[1m>[22m[39m[90m 533 |[39m             )}
+ [90m     |[39m             [31m[1m^[22m[39m
+ [90m 534 |[39m           [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 535 |[39m         [33m<[39m[33m/[39m[33msection[39m[33m>[39m
+ [90m 536 |[39m       [33m<[39m[33m/[39m[33mdiv[39m[33m>[39m[0m
+
+Expected '</', got ')'
+
+Import traces:
+  Client Component Browser:
+    ./src/app/(main)/spots/[id]/page.tsx [Client Component Browser]
+    ./src/app/(main)/spots/[id]/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/app/(main)/spots/[id]/page.tsx [Client Component SSR]
+    ./src/app/(main)/spots/[id]/page.tsx [Server Component]
+
+
+○ Compiling /_error ...
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 500 in 4.7s (compile: 4.4s, render: 344ms)
+✓ Compiled in 395ms
+ GET /spots/cmmb2e4xg000e63nqtw6qpxqy/ 200 in 4.8s (compile: 1246ms, render: 3.5s)
+Error: Can't resolve 'tw-animate-css' in '/root/.openclaw/workspace/bkk-honest-frontend/src/app'
+    [2m[at finishWithoutResolve (/root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/Resolver.js:586:18)][0m
+    [2m[at /root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/Resolver.js:678:14][0m
+    [2m[at /root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/Resolver.js:739:5][0m
+    [2m[at eval (eval at create (/root/.openclaw/workspace/bkk-honest-frontend/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/Resolver.js:739:5][0m
+    [2m[at eval (eval at create (/root/.openclaw/workspace/bkk-honest-frontend/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:27:1)][0m
+    [2m[at /root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/DescriptionFilePlugin.js:89:43][0m
+    [2m[at /root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/Resolver.js:739:5][0m
+    [2m[at eval (eval at create (/root/.openclaw/workspace/bkk-honest-frontend/node_modules/tapable/lib/HookCodeFactory.js:31:10), <anonymous>:15:1)][0m
+    [2m[at /root/.openclaw/workspace/bkk-honest-frontend/node_modules/enhanced-resolve/lib/Resolver.js:739:5][0m {
+  details: "resolve 'tw-animate-css' in '/root/.openclaw/workspace/bkk-honest-frontend/src/app'\n" +
+    '  Parsed request is a module\n' +
+    '  using description file: /root/.openclaw/workspace/bkk-honest-frontend/package.json (relative path: ./src/app)\n' +
+    '    resolve as module\n' +
+    "      /root/.openclaw/workspace/bkk-honest-frontend/src/app/node_modules doesn't exist or is not a directory\n" +
+    "      /root/.openclaw/workspace/bkk-honest-frontend/src/node_modules doesn't exist or is not a directory\n" +
+    '      looking for modules in /root/.openclaw/workspace/bkk-honest-frontend/node_modules\n' +
+    '        single file module\n' +
+    '          using description file: /root/.openclaw/workspace/bkk-honest-frontend/package.json (relative path: ./node_modules/tw-animate-css)\n' +
+    '            no extension\n' +
+    "              /root/.openclaw/workspace/bkk-honest-frontend/node_modules/tw-animate-css doesn't exist\n" +
+    '            .css\n' +
+    "              /root/.openclaw/workspace/bkk-honest-frontend/node_modules/tw-animate-css.css doesn't exist\n" +
+    "        /root/.openclaw/workspace/bkk-honest-frontend/node_modules/tw-animate-css doesn't exist\n" +
+    "      /root/.openclaw/workspace/node_modules doesn't exist or is not a directory\n" +
+    "      /root/.openclaw/node_modules doesn't exist or is not a directory\n" +
+    "      /root/node_modules doesn't exist or is not a directory\n" +
+    "      /node_modules doesn't exist or is not a directory"
+}
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to /tmp/next-panic-de3904ce1da9f794160f284b1551f82e.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20Next.js%20package%20not%20found&body=Turbopack%20version%3A%20%600c06f068%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20Next.js%20package%20not%20found%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+
+-----
+[1m[31mFATAL[39m[0m: An unexpected Turbopack error occurred. A panic log has been written to /tmp/next-panic-de3904ce1da9f794160f284b1551f82e.log.
+
+To help make Turbopack better, report this error by clicking here: https://github.com/vercel/next.js/discussions/new?category=turbopack-error-report&title=Turbopack%20Error%3A%20Next.js%20package%20not%20found&body=Turbopack%20version%3A%20%600c06f068%60%0ANext.js%20version%3A%20%600.0.0%60%0A%0AError%20message%3A%0A%60%60%60%0ATurbopack%20Error%3A%20Next.js%20package%20not%20found%0A%60%60%60&labels=Turbopack,Turbopack%20Panic%20Backtrace
+-----
+
+Error: Turbopack build failed with 1 errors:
+./src/app
+Error: Next.js inferred your workspace root, but it may not be correct.
+    We couldn't find the Next.js package (next/package.json) from the project directory: /root/.openclaw/workspace/bkk-honest-frontend/src/app
+     To fix this, set turbopack.root in your Next.js config, or ensure the Next.js package is resolvable from this directory.
+    Note: For security and performance reasons, files outside of the project directory will not be compiled.
+    See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+
+    at ignore-listed frames
 [?25h

@@ -12,9 +12,9 @@ export default function SpotCard({ spot }: { spot: any }) {
   const displayImage = imageUrl || (images && images.length > 0 ? images[0].url : null);
 
   return (
-    <div className="flex-shrink-0 w-full bg-white rounded-[32px] p-6 border border-gray-200 shadow-xl shadow-gray-200/40 group hover:scale-[1.01] transition-all duration-500">
+    <div className="flex-shrink-0 w-full bg-white rounded-[32px] p-6 border-2 border-gray-300 shadow-xl shadow-gray-200/40 group hover:scale-[1.01] transition-all duration-500">
       {/* Image Section */}
-      <div className="relative w-full h-52 mb-6 rounded-[24px] overflow-hidden bg-gray-100 border border-gray-200">
+      <div className="relative w-full h-52 mb-6 rounded-[24px] overflow-hidden bg-gray-100 border-2 border-gray-300">
         {displayImage ? (
           <img 
             src={displayImage} 
@@ -53,7 +53,7 @@ export default function SpotCard({ spot }: { spot: any }) {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-200/60">
+          <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-300/60">
             <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">
               Avg Price
             </span>
@@ -61,7 +61,7 @@ export default function SpotCard({ spot }: { spot: any }) {
               {(priceStats as any)?.avg ? `${(priceStats as any).avg} THB` : '--'}
             </span>
           </div>
-          <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-200/60">
+          <div className="bg-gray-50/80 p-3.5 rounded-[20px] border border-gray-300/60">
             <span className="text-[8px] font-black text-gray-400 uppercase tracking-widest block mb-1">
               Pulse
             </span>

@@ -1,0 +1,30 @@
+
+> bkk-honest-frontend@0.1.0 dev
+> next dev -p 3001
+
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3001
+- Network:       http://143.110.243.39:3001
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 2.8s
+ HEAD / 404 in 5.7s (compile: 3.7s, render: 1970ms)
+ HEAD / 307 in 832ms (compile: 321ms, render: 512ms)
+ GET / 200 in 1861ms (compile: 8ms, render: 1852ms)
+⚠ Cross origin request detected from 143.110.243.39 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET /profile/ 200 in 243ms (compile: 153ms, render: 90ms)
+ GET / 200 in 90ms (compile: 14ms, render: 76ms)
+✓ Compiled in 3.6s
+ GET / 200 in 1533ms (compile: 431ms, render: 1102ms)
+ GET /map/ 200 in 749ms (compile: 609ms, render: 139ms)
+ GET /profile/ 200 in 580ms (compile: 426ms, render: 154ms)
+ GET / 200 in 81ms (compile: 13ms, render: 69ms)
+✓ Compiled in 620ms
+✓ Compiled in 406ms
+✓ Compiled in 1488ms
+✓ Compiled in 190ms
+✓ Compiled in 119ms
+✓ Compiled in 118ms
+✓ Compiled in 557ms
