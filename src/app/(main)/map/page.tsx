@@ -68,6 +68,8 @@ export default function MapPage() {
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
   // Skip geolocation if we already have a position from URL (returning user)
   const [hasRequestedLocation, setHasRequestedLocation] = useState(hasUrlPosition);
+  // Flag: set when user switches category so next spot load triggers auto-fit if needed
+  const shouldAutoFit = useRef(false);
 
   const [searchParams, setSearchParams] = useState({
     latitude: initialCenter.latitude,
@@ -127,6 +129,26 @@ export default function MapPage() {
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
+
+  // After a category switch, auto-fit map to new spots if they're outside current viewport
+  useEffect(() => {
+    if (!shouldAutoFit.current || spotsFetching || !spots || !mapRef.current) return;
+    shouldAutoFit.current = false;
+
+    if (spots.length === 0) return;
+
+    const bounds = mapRef.current.getBounds();
+    const anyVisible = spots.some((s: any) => bounds?.contains([s.longitude, s.latitude]));
+
+    if (!anyVisible) {
+      const lngs = spots.map((s: any) => s.longitude as number);
+      const lats = spots.map((s: any) => s.latitude as number);
+      mapRef.current.fitBounds(
+        [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
+        { padding: 80, maxZoom: 15, duration: 900 }
+      );
+    }
+  }, [spots, spotsFetching]);
 
   // Handle Initial Location
   useEffect(() => {
@@ -267,6 +289,7 @@ export default function MapPage() {
           <button
             onClick={() => {
               setActiveCategoryId(undefined);
+              shouldAutoFit.current = true;
               syncUrl(searchParams.latitude, searchParams.longitude, searchParams.zoom, undefined);
             }}
             className={cn(
@@ -289,6 +312,7 @@ export default function MapPage() {
                 key={cat.id}
                 onClick={() => {
                   setActiveCategoryId(cat.id);
+                  shouldAutoFit.current = true;
                   syncUrl(searchParams.latitude, searchParams.longitude, searchParams.zoom, cat.id);
                 }}
                 className={cn(
@@ -320,6 +344,21 @@ export default function MapPage() {
           >
             <Info size={14} />
             Zoom in to see more spots
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* NO SPOTS EMPTY STATE */}
+      <AnimatePresence>
+        {!spotsFetching && spots !== undefined && spots.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-24 left-1/2 -translate-x-1/2 z-30 bg-zinc-900/90 backdrop-blur-md border border-white/10 text-white/70 px-5 py-3 rounded-2xl text-sm font-semibold shadow-2xl flex items-center gap-2 whitespace-nowrap"
+          >
+            <MapPin size={15} className="text-amber-400 shrink-0" />
+            No spots found in this area
           </motion.div>
         )}
       </AnimatePresence>
