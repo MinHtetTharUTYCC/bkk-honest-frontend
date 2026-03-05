@@ -99,11 +99,13 @@ export default function ProfilePage() {
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Image Upload State
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Initialize edit state when profile loads
   useEffect(() => {
@@ -115,13 +117,14 @@ export default function ProfilePage() {
 
   const handleSaveProfile = async () => {
     try {
+      setSaveError(null);
       setIsSaving(true);
       await api.patch("/profiles/me", { name: editName, bio: editBio });
       await queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
       setIsEditing(false);
     } catch (err) {
       console.error(err);
-      alert("Failed to update profile");
+      setSaveError("Failed to update profile. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -138,6 +141,7 @@ export default function ProfilePage() {
   const handleUploadAvatar = async () => {
     if (!selectedFile) return;
     try {
+      setUploadError(null);
       setIsUploading(true);
       const formData = new FormData();
       formData.append("image", selectedFile);
@@ -150,7 +154,7 @@ export default function ProfilePage() {
       setPreviewUrl(null);
     } catch (err) {
       console.error(err);
-      alert("Failed to upload avatar");
+      setUploadError("Failed to upload avatar. Please try again.");
     } finally {
       setIsUploading(false);
     }
@@ -234,6 +238,7 @@ export default function ProfilePage() {
                 onClick={() => {
                   setSelectedFile(null);
                   setPreviewUrl(null);
+                  setUploadError(null);
                 }}
                 disabled={isUploading}
                 className="flex-1 py-3 px-4 rounded-2xl bg-white/8 text-white/40 font-bold uppercase tracking-widest text-xs hover:bg-white/15 transition-colors disabled:opacity-50"
@@ -252,6 +257,9 @@ export default function ProfilePage() {
                 )}
               </button>
             </div>
+            {uploadError && (
+              <p className="mt-4 text-xs text-red-400 text-center font-medium">{uploadError}</p>
+            )}
           </div>
         </div>
       )}
@@ -261,7 +269,7 @@ export default function ProfilePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
           <div className="bg-card rounded-2xl p-8 max-w-lg w-full shadow-2xl border border-white/8 relative">
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={() => { setIsEditing(false); setSaveError(null); }}
               className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/8 transition-colors"
             >
               <X size={20} className="text-white/40" />
@@ -297,9 +305,13 @@ export default function ProfilePage() {
                 />
               </div>
 
+              {saveError && (
+                <p className="text-xs text-red-400 font-medium">{saveError}</p>
+              )}
+
               <div className="pt-4 flex gap-4">
                 <button
-                  onClick={() => setIsEditing(false)}
+                  onClick={() => { setIsEditing(false); setSaveError(null); }}
                   disabled={isSaving}
                   className="flex-1 py-4 px-6 rounded-2xl bg-white/8 text-white/40 font-bold uppercase tracking-widest text-xs hover:bg-white/15 transition-all disabled:opacity-50"
                 >
@@ -371,9 +383,6 @@ export default function ProfilePage() {
               className="text-white/40 font-medium uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2 mb-4"
               suppressHydrationWarning
             >
-              <MapPin size={14} className="text-white/20" />
-              From USA
-              <span className="text-white/15 mx-1">•</span>
               <Calendar size={14} className="text-white/20" />
               Joined{" "}
               {profile?.createdAt
@@ -381,10 +390,18 @@ export default function ProfilePage() {
                 : "Mar 2026"}
             </p>
 
-            <p className="text-white/50 font-medium leading-relaxed max-w-lg mb-8 text-sm md:text-base">
-              {profile?.bio ||
-                "Exploring Bangkok with honesty and sharing real experiences from the streets."}
-            </p>
+            {profile?.bio ? (
+              <p className="text-white/50 font-medium leading-relaxed max-w-lg mb-8 text-sm md:text-base">
+                {profile.bio}
+              </p>
+            ) : (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="text-white/25 font-medium text-sm mb-8 hover:text-amber-400/60 transition-colors italic"
+              >
+                + Add a bio…
+              </button>
+            )}
 
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 w-full">
               <div className="flex items-center gap-2 bg-gradient-to-r from-amber-400 to-orange-400 text-black px-6 py-3 rounded-2xl shadow-xl shadow-amber-400/20">
@@ -408,6 +425,25 @@ export default function ProfilePage() {
                 <LogOut size={16} />
                 Sign Out
               </button>
+            </div>
+
+            {/* Contribution stats strip */}
+            <div className="flex gap-2 mt-6 flex-wrap">
+              {[
+                { label: 'Scams', count: scamsTotal, tab: 'scams', color: 'text-red-400 bg-red-500/10 border-red-500/20 hover:border-red-500/40' },
+                { label: 'Tips', count: tipsTotal, tab: 'tips', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20 hover:border-emerald-500/40' },
+                { label: 'Prices', count: reportsTotal, tab: 'reports', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20 hover:border-amber-500/40' },
+                { label: 'Spots', count: spotsTotal, tab: 'spots', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20 hover:border-orange-500/40' },
+              ].map(({ label, count, tab, color }) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn("flex flex-col items-center px-4 py-2.5 rounded-2xl border transition-all", color)}
+                >
+                  <span className="text-lg font-black leading-none">{count}</span>
+                  <span className="text-[9px] font-bold uppercase tracking-widest opacity-70 mt-0.5">{label}</span>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -483,7 +519,12 @@ export default function ProfilePage() {
         <div className="space-y-6">
           {activeTab === "scams" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {scamsList.length > 0 ? (
+              {!scamsData ? (
+                // Loading skeleton
+                [1, 2].map(i => (
+                  <div key={i} className="bg-card rounded-2xl p-6 border border-white/8 h-40 animate-pulse" />
+                ))
+              ) : scamsList.length > 0 ? (
                 scamsList.map((scam: any) => (
                   <div
                     key={scam.id}
@@ -521,10 +562,13 @@ export default function ProfilePage() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-2 py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                <div className="col-span-2 py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
                   <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                     No scam alerts reported yet
                   </p>
+                  <Link href="/report" className="text-xs font-bold text-red-400 hover:text-red-300 transition-colors uppercase tracking-widest flex items-center gap-1">
+                    Report a Scam <ArrowRight size={12} />
+                  </Link>
                 </div>
               )}
             </div>
@@ -532,7 +576,11 @@ export default function ProfilePage() {
 
           {activeTab === "tips" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {tipsList.length > 0 ? (
+              {!tipsData ? (
+                [1, 2].map(i => (
+                  <div key={i} className="bg-card rounded-2xl p-6 border border-white/8 h-40 animate-pulse" />
+                ))
+              ) : tipsList.length > 0 ? (
                 tipsList.map((tip: any) => (
                   <div
                     key={tip.id}
@@ -577,6 +625,9 @@ export default function ProfilePage() {
                   <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                     No community tips shared yet
                   </p>
+                  <Link href="/report" className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors uppercase tracking-widest flex items-center gap-1">
+                    Share a Tip <ArrowRight size={12} />
+                  </Link>
                 </div>
               )}
             </div>
@@ -584,7 +635,11 @@ export default function ProfilePage() {
 
           {activeTab === "reports" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {reportsList.length > 0 ? (
+              {!reportsData ? (
+                [1, 2].map(i => (
+                  <div key={i} className="bg-card rounded-2xl p-6 border border-white/8 h-40 animate-pulse" />
+                ))
+              ) : reportsList.length > 0 ? (
                 reportsList.map((report: any) => (
                   <div
                     key={report.id}
@@ -625,10 +680,13 @@ export default function ProfilePage() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-2 py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                <div className="col-span-2 py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
                   <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                     No price reports shared yet
                   </p>
+                  <Link href="/report" className="text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors uppercase tracking-widest flex items-center gap-1">
+                    Report a Price <ArrowRight size={12} />
+                  </Link>
                 </div>
               )}
             </div>
@@ -636,7 +694,11 @@ export default function ProfilePage() {
 
           {activeTab === "spots" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {spotsList.length > 0 ? (
+              {!spotsData ? (
+                [1, 2].map(i => (
+                  <div key={i} className="bg-card rounded-2xl p-6 border border-white/8 h-40 animate-pulse" />
+                ))
+              ) : spotsList.length > 0 ? (
                 spotsList.map((spot: any) => (
                   <div
                     key={spot.id}
@@ -675,10 +737,13 @@ export default function ProfilePage() {
                   </div>
                 ))
               ) : (
-                <div className="col-span-2 py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                <div className="col-span-2 py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
                   <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                     No spots added yet
                   </p>
+                  <Link href="/report" className="text-xs font-bold text-orange-400 hover:text-orange-300 transition-colors uppercase tracking-widest flex items-center gap-1">
+                    Add a Spot <ArrowRight size={12} />
+                  </Link>
                 </div>
               )}
             </div>
