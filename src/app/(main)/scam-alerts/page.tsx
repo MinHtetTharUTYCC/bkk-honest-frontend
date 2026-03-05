@@ -38,18 +38,13 @@ export default function ScamAlertsPage() {
     const { data: categoriesResponse } = useCategories();
     const categories = categoriesResponse?.data || categoriesResponse || [];
 
-    const {
-        data,
-        isLoading,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage
-    } = useInfiniteScamAlerts({
-        cityId: selectedCityId,
-        categoryId: selectedCategory,
-        sort,
-        search: debouncedSearch,
-    });
+    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+        useInfiniteScamAlerts({
+            cityId: selectedCityId,
+            categoryId: selectedCategory,
+            sort,
+            search: debouncedSearch,
+        });
 
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) {
@@ -64,19 +59,16 @@ export default function ScamAlertsPage() {
     return (
         <div className="space-y-6 pb-24">
             {selectedAlert && (
-                <ScamDetailsModal 
-                    alert={selectedAlert} 
-                    onClose={() => setSelectedAlert(null)} 
-                />
+                <ScamDetailsModal alert={selectedAlert} onClose={() => setSelectedAlert(null)} />
             )}
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="space-y-0.5">
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tighter uppercase italic">
+                    <h1 className="font-display text-2xl font-bold text-foreground tracking-tight">
                         Scam Alerts
                     </h1>
                     <div className="flex items-center gap-2">
-                        <MapPin size={10} className="text-cyan-400" />
-                        <p className="text-gray-400 font-bold uppercase tracking-widest text-[9px]">
+                        <MapPin size={10} className="text-amber-400" />
+                        <p className="text-white/40 font-medium uppercase tracking-widest text-[9px]">
                             Real-time Warnings in {selectedCity?.name || 'Thailand'}
                         </p>
                     </div>
@@ -84,12 +76,14 @@ export default function ScamAlertsPage() {
 
                 <div className="flex flex-col sm:flex-row gap-3">
                     {/* Sort Toggle */}
-                    <div className="flex bg-gray-100 p-1 rounded-2xl w-full sm:w-auto">
+                    <div className="flex bg-white/8 p-1 rounded-2xl w-full sm:w-auto">
                         <button
                             onClick={() => setSort('newest')}
                             className={cn(
-                                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                                sort === 'newest' ? "bg-white text-gray-900 shadow-sm" : "text-gray-400 hover:text-gray-600"
+                                'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all',
+                                sort === 'newest'
+                                    ? 'bg-white/10 text-foreground shadow-sm'
+                                    : 'text-white/40 hover:text-white/70',
                             )}
                         >
                             <Clock size={12} />
@@ -98,8 +92,10 @@ export default function ScamAlertsPage() {
                         <button
                             onClick={() => setSort('popular')}
                             className={cn(
-                                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                                sort === 'popular' ? "bg-white text-gray-900 shadow-sm" : "text-gray-400 hover:text-gray-600"
+                                'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all',
+                                sort === 'popular'
+                                    ? 'bg-white/10 text-foreground shadow-sm'
+                                    : 'text-white/40 hover:text-white/70',
                             )}
                         >
                             <TrendingUp size={12} />
@@ -111,7 +107,7 @@ export default function ScamAlertsPage() {
                         value={search}
                         onChange={setSearch}
                         placeholder="Search scams..."
-                        className="md:w-[240px]"
+                        className="md:w-60"
                     />
                 </div>
             </header>
@@ -122,7 +118,7 @@ export default function ScamAlertsPage() {
                     <button
                         onClick={() => setSelectedCategory(undefined)}
                         className={cn(
-                            'flex-shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
+                            'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
                             !selectedCategory
                                 ? 'bg-cyan-400 text-white shadow-lg shadow-cyan-400/20'
                                 : 'bg-white border border-gray-300 text-gray-400 hover:bg-gray-50',
@@ -135,10 +131,10 @@ export default function ScamAlertsPage() {
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
                             className={cn(
-                                'flex-shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
+                                'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
                                 selectedCategory === cat.id
-                                    ? 'bg-cyan-400 text-white shadow-lg shadow-cyan-400/20'
-                                    : 'bg-white border border-gray-300 text-gray-400 hover:bg-gray-50',
+                                    ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
+                                    : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
                             )}
                         >
                             {cat.name}
@@ -147,8 +143,8 @@ export default function ScamAlertsPage() {
                                     className={cn(
                                         'px-1.5 py-0.5 rounded-md text-[9px]',
                                         selectedCategory === cat.id
-                                            ? 'bg-white/20 text-white'
-                                            : 'bg-gray-100 text-gray-400',
+                                            ? 'bg-white/20 text-black'
+                                            : 'bg-white/8 text-white/40',
                                     )}
                                 >
                                     {cat._count.scamAlerts}
@@ -166,49 +162,49 @@ export default function ScamAlertsPage() {
                     Array.from({ length: 4 }).map((_, i) => (
                         <div
                             key={i}
-                            className="h-28 bg-white rounded-[28px] border border-gray-200 shadow-sm animate-pulse flex overflow-hidden"
+                            className="h-28 bg-card rounded-2xl border border-white/8 shadow-sm animate-pulse flex overflow-hidden"
                         >
-                            <div className="w-36 shrink-0 bg-gray-100" />
+                            <div className="w-36 shrink-0 bg-white/5" />
                             <div className="flex-1 p-5 space-y-3">
-                                <div className="h-3 w-24 bg-gray-100 rounded-full" />
-                                <div className="h-4 w-3/4 bg-gray-100 rounded-full" />
-                                <div className="h-3 w-full bg-gray-100 rounded-full" />
+                                <div className="h-3 w-24 bg-white/5 rounded-full" />
+                                <div className="h-4 w-3/4 bg-white/5 rounded-full" />
+                                <div className="h-3 w-full bg-white/5 rounded-full" />
                             </div>
                         </div>
                     ))
                 ) : alerts && alerts.length > 0 ? (
                     <>
                         {alerts.map((alert: any) => (
-                            <ScamAlertCard 
-                                key={alert.id} 
-                                alert={alert} 
+                            <ScamAlertCard
+                                key={alert.id}
+                                alert={alert}
                                 onClick={() => setSelectedAlert(alert)}
                             />
                         ))}
-                        
+
                         {/* Load More Trigger */}
                         <div ref={ref} className="py-8 flex justify-center">
                             {isFetchingNextPage ? (
-                                <Loader2 className="w-6 h-6 animate-spin text-cyan-400" />
+                                <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
                             ) : hasNextPage ? (
                                 <div className="h-1" />
                             ) : (
-                                <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.2em]">
+                                <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">
                                     — You've reached the end —
                                 </p>
                             )}
                         </div>
                     </>
                 ) : (
-                    <div className="py-32 text-center space-y-4 bg-white rounded-[28px] border border-dashed border-gray-200">
-                        <div className="w-20 h-20 bg-gray-50 rounded-[32px] flex items-center justify-center mx-auto text-gray-200">
+                    <div className="py-32 text-center space-y-4 bg-card rounded-2xl border border-dashed border-white/10">
+                        <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto text-white/15">
                             <AlertTriangle size={32} />
                         </div>
                         <div className="space-y-2">
-                            <h4 className="text-xl font-black text-gray-900 uppercase italic tracking-tight">
+                            <h4 className="font-display text-xl font-bold text-foreground tracking-tight">
                                 Zero alerts reported
                             </h4>
-                            <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">
+                            <p className="text-xs text-white/40 font-medium uppercase tracking-widest">
                                 It's quiet for now. Stay vigilant regardless!
                             </p>
                         </div>

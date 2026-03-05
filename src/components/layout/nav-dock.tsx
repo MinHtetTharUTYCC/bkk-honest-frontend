@@ -19,7 +19,7 @@ export default function NavDock() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-0 md:left-0 md:h-screen md:w-20 md:flex md:flex-col md:items-center md:justify-center md:border-r bg-white/80 backdrop-blur-xl border-t md:border-t-0 border-gray-300 px-6 py-4 md:px-0 md:py-8">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-0 md:left-0 md:h-screen md:w-20 md:flex md:flex-col md:items-center md:justify-center md:border-r bg-background/90 backdrop-blur-xl border-t md:border-t-0 border-white/8 px-6 py-4 md:px-0 md:py-8">
       <div className="flex items-center justify-between w-full md:flex-col md:gap-12 max-w-md mx-auto md:mx-0">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -30,7 +30,7 @@ export default function NavDock() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative -top-10 md:static flex items-center justify-center w-14 h-14 bg-cyan-400 rounded-2xl shadow-xl shadow-cyan-400/30 text-white transition-transform active:scale-95"
+                className="relative -top-10 md:static flex items-center justify-center w-14 h-14 bg-amber-400 rounded-2xl shadow-xl shadow-amber-400/30 text-black transition-transform active:scale-95"
               >
                 <Icon size={28} />
               </Link>
@@ -43,7 +43,7 @@ export default function NavDock() {
               href={item.href}
               className={cn(
                 "flex flex-col items-center gap-1 transition-all",
-                isActive ? "text-cyan-400" : "text-gray-400 hover:text-gray-600"
+                isActive ? "text-amber-400" : "text-white/30 hover:text-white/70"
               )}
             >
               <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
