@@ -64,6 +64,7 @@ export default function MapPage() {
   });
 
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
+  const [nearMeActive, setNearMeActive] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
   // Skip geolocation if we already have a position from URL (returning user)
@@ -122,6 +123,11 @@ export default function MapPage() {
     const zoom = evt.viewState.zoom;
     setSearchParams({ latitude: lat, longitude: lng, zoom });
     syncUrl(lat, lng, zoom, activeCategoryId);
+    // Deactivate Near Me if user panned significantly away from their location
+    if (nearMeActive && userLocation) {
+      const dist = Math.abs(lat - userLocation.lat) + Math.abs(lng - userLocation.lng);
+      if (dist > 0.02) setNearMeActive(false);
+    }
   };
 
   // Lock body scroll while map page is mounted
@@ -161,6 +167,7 @@ export default function MapPage() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setUserLocation({ lat: latitude, lng: longitude });
+          setNearMeActive(true);
           setViewState(prev => ({ ...prev, latitude, longitude, zoom: 15 }));
           setSearchParams({ latitude, longitude, zoom: 15 });
           syncUrl(latitude, longitude, 15, activeCategoryId);
@@ -203,6 +210,34 @@ export default function MapPage() {
   const handleNavigateToGoogleMaps = () => {
     if (!selectedSpot) return;
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedSpot.latitude},${selectedSpot.longitude}`, '_blank');
+  };
+
+  const handleNearMe = () => {
+    if (!('geolocation' in navigator)) return;
+
+    if (userLocation) {
+      // Already have location — fly back to it and re-center fetch
+      mapRef.current?.flyTo({ center: [userLocation.lng, userLocation.lat], zoom: 15, duration: 800 });
+      setSearchParams({ latitude: userLocation.lat, longitude: userLocation.lng, zoom: 15 });
+      syncUrl(userLocation.lat, userLocation.lng, 15, activeCategoryId);
+      setNearMeActive(true);
+    } else {
+      // Request geolocation for the first time
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          setNearMeActive(true);
+          mapRef.current?.flyTo({ center: [longitude, latitude], zoom: 15, duration: 800 });
+          setSearchParams({ latitude, longitude, zoom: 15 });
+          syncUrl(latitude, longitude, 15, activeCategoryId);
+        },
+        (error) => {
+          console.warn('Geolocation denied or failed', error);
+        },
+        { timeout: 10000, enableHighAccuracy: true }
+      );
+    }
   };
 
   const getCategoryConfig = (slug: string) => {
@@ -283,8 +318,23 @@ export default function MapPage() {
         })}
       </Map>
 
+      {/* NEAR ME TOGGLE — top right */}
+      <button
+        onClick={handleNearMe}
+        title="Near Me"
+        className={cn(
+          "absolute top-4 right-4 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all shadow-xl",
+          nearMeActive
+            ? "bg-cyan-500 text-black shadow-cyan-500/40"
+            : "bg-black/60 backdrop-blur-md border border-white/10 text-white/60 hover:text-cyan-400 hover:border-cyan-400/40"
+        )}
+      >
+        <Navigation size={14} className={nearMeActive ? "fill-black" : ""} />
+        Near Me
+      </button>
+
       {/* TOP FILTER BAR */}
-      <div className="absolute top-4 left-0 right-0 z-40 px-4">
+      <div className="absolute top-4 left-0 right-28 z-40 px-4">
         <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide snap-x">
           <button
             onClick={() => {
