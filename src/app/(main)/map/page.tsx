@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Map, { Marker, ViewState, MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useNearbySpots, usePopularArea, useCategories } from '@/hooks/use-api';
@@ -40,26 +40,39 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 
 export default function MapPage() {
   const router = useRouter();
+  const urlParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
-  
+
+  // Read initial state from URL (restores state when coming back from spot page)
+  const urlLat = parseFloat(urlParams.get('lat') || '');
+  const urlLng = parseFloat(urlParams.get('lng') || '');
+  const urlZoom = parseFloat(urlParams.get('zoom') || '');
+  const urlCat = urlParams.get('cat') || undefined;
+  const hasUrlPosition = !isNaN(urlLat) && !isNaN(urlLng);
+
+  const initialCenter = hasUrlPosition
+    ? { latitude: urlLat, longitude: urlLng, zoom: isNaN(urlZoom) ? DEFAULT_CENTER.zoom : urlZoom }
+    : DEFAULT_CENTER;
+
   const [viewState, setViewState] = useState<ViewState>({
-    latitude: DEFAULT_CENTER.latitude,
-    longitude: DEFAULT_CENTER.longitude,
-    zoom: DEFAULT_CENTER.zoom,
+    latitude: initialCenter.latitude,
+    longitude: initialCenter.longitude,
+    zoom: initialCenter.zoom,
     bearing: 0,
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 }
   });
 
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
-  const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(undefined);
+  const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
-  const [hasRequestedLocation, setHasRequestedLocation] = useState(false);
+  // Skip geolocation if we already have a position from URL (returning user)
+  const [hasRequestedLocation, setHasRequestedLocation] = useState(hasUrlPosition);
 
   const [searchParams, setSearchParams] = useState({
-    latitude: DEFAULT_CENTER.latitude,
-    longitude: DEFAULT_CENTER.longitude,
-    zoom: DEFAULT_CENTER.zoom
+    latitude: initialCenter.latitude,
+    longitude: initialCenter.longitude,
+    zoom: initialCenter.zoom
   });
 
   // Data Fetching
@@ -90,13 +103,23 @@ export default function MapPage() {
     limit: searchConfig.limit,
   });
 
+  // Build and sync map state to URL (router.replace keeps history clean)
+  const syncUrl = (lat: number, lng: number, zoom: number, cat?: string) => {
+    const params = new URLSearchParams();
+    params.set('lat', snapCoord(lat).toString());
+    params.set('lng', snapCoord(lng).toString());
+    params.set('zoom', Math.round(zoom * 10) / 10 + '');
+    if (cat) params.set('cat', cat);
+    router.replace(`/map?${params.toString()}`);
+  };
+
   // Sync searchParams when map move ends — always update, snapping coords to ~1km grid
   const handleMoveEnd = (evt: any) => {
-    setSearchParams({
-      latitude: snapCoord(evt.viewState.latitude),
-      longitude: snapCoord(evt.viewState.longitude),
-      zoom: evt.viewState.zoom,
-    });
+    const lat = snapCoord(evt.viewState.latitude);
+    const lng = snapCoord(evt.viewState.longitude);
+    const zoom = evt.viewState.zoom;
+    setSearchParams({ latitude: lat, longitude: lng, zoom });
+    syncUrl(lat, lng, zoom, activeCategoryId);
   };
 
   // Lock body scroll while map page is mounted
@@ -118,6 +141,7 @@ export default function MapPage() {
           setUserLocation({ lat: latitude, lng: longitude });
           setViewState(prev => ({ ...prev, latitude, longitude, zoom: 15 }));
           setSearchParams({ latitude, longitude, zoom: 15 });
+          syncUrl(latitude, longitude, 15, activeCategoryId);
         },
         (error) => {
           console.warn('Geolocation blocked or failed. Using fallback.', error);
@@ -133,6 +157,7 @@ export default function MapPage() {
               longitude: popularArea.longitude, 
               zoom: 14 
             });
+            syncUrl(popularArea.latitude, popularArea.longitude, 14, activeCategoryId);
           }
         },
         { timeout: 10000, enableHighAccuracy: true }
@@ -149,6 +174,7 @@ export default function MapPage() {
         longitude: popularArea.longitude, 
         zoom: 14 
       });
+      syncUrl(popularArea.latitude, popularArea.longitude, 14, activeCategoryId);
     }
   }, [hasRequestedLocation, popularArea]);
 
@@ -239,7 +265,10 @@ export default function MapPage() {
       <div className="absolute top-4 left-0 right-0 z-40 px-4">
         <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide snap-x">
           <button
-            onClick={() => setActiveCategoryId(undefined)}
+            onClick={() => {
+              setActiveCategoryId(undefined);
+              syncUrl(searchParams.latitude, searchParams.longitude, searchParams.zoom, undefined);
+            }}
             className={cn(
               "whitespace-nowrap px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-xl snap-center flex items-center gap-2",
               !activeCategoryId 
@@ -258,7 +287,10 @@ export default function MapPage() {
             return (
               <button
                 key={cat.id}
-                onClick={() => setActiveCategoryId(cat.id)}
+                onClick={() => {
+                  setActiveCategoryId(cat.id);
+                  syncUrl(searchParams.latitude, searchParams.longitude, searchParams.zoom, cat.id);
+                }}
                 className={cn(
                   "whitespace-nowrap px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-xl snap-center flex items-center gap-2",
                   isSelected 
