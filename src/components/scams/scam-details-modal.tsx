@@ -27,7 +27,7 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
     const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);
     const { data: comments, isLoading: commentsLoading } = useScamComments(alert.id);
-    const createCommentMutation = useCreateComment, useUpdateComment, useDeleteComment();
+    const createCommentMutation = useCreateComment();
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const [newComment, setNewComment] = useState('');
 
