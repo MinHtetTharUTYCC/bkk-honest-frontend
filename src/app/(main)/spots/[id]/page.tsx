@@ -1,12 +1,13 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage } from '@/hooks/use-api';
+import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2 } from 'lucide-react';
+import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,17 +16,76 @@ import api from '@/lib/api';
 
 export default function SpotDetailPage() {
   const { id } = useParams() as { id: string };
+  const { user: authUser } = useAuth();
   const router = useRouter();
   const { data: spot, isLoading: spotLoading } = useSpot(id);
   const { data: reports } = useSpotPriceReports(id);
   const { data: galleryResponse } = useSpotGallery(id, 6);
+  const { data: missionsData } = useMissions();
+  const addMission = useAddMission();
+  const updateSpotMutation = useUpdateSpot();
+  const { data: categories } = useCategories();
+  const { data: cities } = useCities();
+  
+  const missionsList = missionsData?.pages.flatMap(page => page.data || []) || [];
+  const isInMissions = missionsList.some((m: any) => m.spot?.id === id);
+  const currentMission = missionsList.find((m: any) => m.spot?.id === id);
   const gallery = galleryResponse?.data || [];
   
+  const isOwner = authUser?.id === spot?.userId;
+
   const [isClient, setIsClient] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showTipModal, setShowTipModal] = useState(false);
   const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips'>('tips');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editAddress, setEditAddress] = useState('');
+  const [editCategory, setEditCategory] = useState('');
+  const [editCity, setEditCity] = useState('');
+  const [editFile, setEditFile] = useState<File | null>(null);
+  const [editPreview, setEditPreview] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (spot) {
+      setEditName(spot.name);
+      setEditAddress(spot.address);
+      setEditCategory(spot.categoryId || (spot.category as any)?.id);
+      setEditCity(spot.cityId || (spot.city as any)?.id);
+    }
+  }, [spot]);
+
+  const handleUpdateSpot = async () => {
+    try {
+      await updateSpotMutation.mutateAsync({
+        id,
+        payload: {
+          name: editName,
+          address: editAddress,
+          categoryId: editCategory,
+          cityId: editCity,
+          image: editFile || undefined,
+        }
+      });
+      setIsEditing(false);
+      setEditFile(null);
+      setEditPreview(null);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update spot');
+    }
+  };
+
+  const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setEditFile(file);
+      setEditPreview(URL.createObjectURL(file));
+    }
+  };
   
   const [tipType, setTipType] = useState<'TRY' | 'AVOID'>('TRY');
   const [tipSort, setTipSort] = useState<'popular' | 'newest'>('popular');
@@ -118,6 +178,141 @@ export default function SpotDetailPage() {
           onClose={() => setShowTipModal(false)} 
         />
       )}
+
+      {/* Edit Spot Modal */}
+      {isEditing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-[40px] p-8 max-w-lg w-full shadow-2xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setIsEditing(false)}
+              className="absolute top-6 right-6 p-2 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <X size={20} className="text-gray-400" />
+            </button>
+
+            <h3 className="text-2xl font-black text-gray-900 uppercase italic tracking-tighter mb-8">
+              Edit Spot
+            </h3>
+
+            <div className="space-y-6">
+              {/* Image Preview/Upload */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                  Spot Image
+                </label>
+                <div 
+                  onClick={() => editFileInputRef.current?.click()}
+                  className="relative h-48 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 overflow-hidden cursor-pointer group hover:border-cyan-400 transition-colors"
+                >
+                  {editPreview || spot.imageUrl ? (
+                    <img 
+                      src={editPreview || spot.imageUrl} 
+                      className="w-full h-full object-cover transition-opacity group-hover:opacity-50" 
+                      alt="Spot preview" 
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-300">
+                      <Camera size={32} />
+                      <span className="text-[10px] font-black uppercase tracking-widest mt-2">Upload Image</span>
+                    </div>
+                  )}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Camera size={24} className="text-cyan-500" />
+                  </div>
+                </div>
+                <input 
+                  type="file" 
+                  ref={editFileInputRef} 
+                  className="hidden" 
+                  accept="image/*" 
+                  onChange={handleEditFileChange} 
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                  Spot Name
+                </label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-lg font-bold text-gray-900 focus:outline-none focus:border-cyan-400 transition-all"
+                  placeholder="Spot name"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  value={editAddress}
+                  onChange={(e) => setEditAddress(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm font-medium text-gray-600 focus:outline-none focus:border-cyan-400 transition-all"
+                  placeholder="Address"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                    Category
+                  </label>
+                  <select
+                    value={editCategory}
+                    onChange={(e) => setEditCategory(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 focus:outline-none focus:border-cyan-400 transition-all"
+                  >
+                    {categories?.map((cat: any) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                    City
+                  </label>
+                  <select
+                    value={editCity}
+                    onChange={(e) => setEditCity(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3 text-sm font-bold text-gray-900 focus:outline-none focus:border-cyan-400 transition-all"
+                  >
+                    {cities?.map((city: any) => (
+                      <option key={city.id} value={city.id}>{city.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-4 flex gap-4">
+                <button
+                  onClick={() => setIsEditing(false)}
+                  disabled={updateSpotMutation.isPending}
+                  className="flex-1 py-4 px-6 rounded-2xl bg-gray-100 text-gray-500 font-black uppercase tracking-widest text-xs hover:bg-gray-200 transition-all disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleUpdateSpot}
+                  disabled={updateSpotMutation.isPending}
+                  className="flex-1 py-4 px-6 rounded-2xl bg-cyan-500 text-white font-black uppercase tracking-widest text-xs hover:bg-cyan-400 transition-all shadow-xl shadow-cyan-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {updateSpotMutation.isPending ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Save size={16} />
+                  )}
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 1. Header & Hero Image */}
       <header className="space-y-6">
         <Link href="/" className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-cyan-400 transition-colors">
@@ -152,6 +347,41 @@ export default function SpotDetailPage() {
               </p>
             </div>
             <div className="flex gap-4">
+              <button 
+                onClick={() => !isInMissions && addMission.mutate(id)}
+                disabled={addMission.isPending || isInMissions}
+                className={cn(
+                  "bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center gap-3 text-[10px] font-black uppercase tracking-widest",
+                  isInMissions 
+                    ? "bg-emerald-500/80 border-emerald-400 text-white" 
+                    : "hover:bg-cyan-400 border-white/20"
+                )}
+              >
+                {addMission.isPending ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : isInMissions ? (
+                  <>
+                    <CheckCircle2 size={18} />
+                    Mission Accepted
+                  </>
+                ) : (
+                  <>
+                    <Target size={18} />
+                    Accept Mission
+                  </>
+                )}
+              </button>
+              
+              {isOwner && (
+                <button 
+                  onClick={() => setIsEditing(true)}
+                  className="bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-cyan-400 transition-all active:scale-95 border border-white/20 shadow-xl"
+                  title="Edit Spot"
+                >
+                  <Edit2 size={18} />
+                </button>
+              )}
+
               <button 
                 onClick={() => deleteSpotMutation.mutate()}
                 disabled={deleteSpotMutation.isPending}

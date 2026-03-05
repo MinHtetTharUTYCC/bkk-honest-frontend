@@ -333,6 +333,29 @@ export function useCreateSpot() {
     });
 }
 
+export function useUpdateSpot() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, payload }: { id: string; payload: any }) => {
+            const formData = new FormData();
+            Object.keys(payload).forEach(key => {
+                if (payload[key] !== undefined) {
+                    formData.append(key, payload[key]);
+                }
+            });
+            const { data } = await api.patch(`/spots/${id}`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            return data;
+        },
+        onSuccess: (_, { id }) => {
+            queryClient.invalidateQueries({ queryKey: ['spot', id] });
+            queryClient.invalidateQueries({ queryKey: ['spots'] });
+            queryClient.invalidateQueries({ queryKey: ['user-spots-infinite'] });
+        },
+    });
+}
+
 export function useScamAlerts(params?: {
     cityId?: string;
     categoryId?: string;
@@ -405,6 +428,53 @@ export function useLiveVibes() {
     });
 }
 
+// --- Comments ---
+
+export function useScamComments(scamAlertId: string) {
+    return useQuery({
+        queryKey: ['scam-comments', scamAlertId],
+        queryFn: async () => {
+            const { data } = await api.get(`/comments/alert/${scamAlertId}`);
+            return data?.data || (Array.isArray(data) ? data : []);
+        },
+        enabled: !!scamAlertId,
+    });
+}
+
+export function useCreateComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: {
+            scamAlertId?: string;
+            communityTipId?: string;
+            content: string;
+        }) => {
+            const apiPayload: any = {
+                text: payload.content,
+            };
+            
+            if (payload.scamAlertId) {
+                apiPayload.targetType = 'SCAM_ALERT';
+                apiPayload.scamAlertId = payload.scamAlertId;
+            } else if (payload.communityTipId) {
+                apiPayload.targetType = 'COMMUNITY_TIP';
+                apiPayload.communityTipId = payload.communityTipId;
+            }
+
+            const { data } = await api.post('/comments', apiPayload);
+            return data;
+        },
+        onSuccess: (_, variables) => {
+            if (variables.scamAlertId) {
+                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
+            }
+            if (variables.communityTipId) {
+                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
+            }
+        },
+    });
+}
+
 export function useCreateCommunityTip() {
     const queryClient = useQueryClient();
     return useMutation({
@@ -454,6 +524,42 @@ export function useCreateScamAlert() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
+        },
+    });
+}
+
+export function useUpdateScamAlert() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, payload }: { id: string; payload: any }) => {
+            const formData = new FormData();
+            Object.keys(payload).forEach(key => {
+                if (payload[key] !== undefined) {
+                    formData.append(key, payload[key]);
+                }
+            });
+            const { data } = await api.patch(`/scam-alerts/${id}`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            return data;
+        },
+        onSuccess: (_, { id }) => {
+            queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
+            queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
+        },
+    });
+}
+
+export function useDeleteScamAlert() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const { data } = await api.delete(`/scam-alerts/${id}`);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
+            queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
         },
     });
 }
@@ -526,6 +632,83 @@ export function useDeleteVote() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries();
+        },
+    });
+}
+
+// --- Missions (Checklist) ---
+
+export function useMissions(userId: string = 'me') {
+    return useInfiniteQuery({
+        queryKey: ['missions-infinite', userId],
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get('/checklist', {
+                params: { skip: pageParam, take: 20 }
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            return skip + take < total ? skip + take : undefined;
+        },
+        enabled: !!userId,
+    });
+}
+
+export function useMissionStats() {
+    return useQuery({
+        queryKey: ['mission-stats'],
+        queryFn: async () => {
+            const { data } = await api.get('/checklist/stats');
+            return data;
+        },
+    });
+}
+
+export function useAddMission() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (spotId: string) => {
+            const { data } = await api.post('/checklist', { spotId });
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
+            queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
+            queryClient.invalidateQueries({ queryKey: ['spot'] });
+            queryClient.invalidateQueries({ queryKey: ['spots'] });
+        },
+    });
+}
+
+export function useUpdateMission() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, completed }: { id: string; completed: boolean }) => {
+            const { data } = await api.patch(`/checklist/${id}`, { completed });
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
+            queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
+            queryClient.invalidateQueries({ queryKey: ['profile'] });
+            queryClient.invalidateQueries({ queryKey: ['spot'] });
+            queryClient.invalidateQueries({ queryKey: ['spots'] });
+        },
+    });
+}
+
+export function useDeleteMission() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const { data } = await api.delete(`/checklist/${id}`);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
+            queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
         },
     });
 }

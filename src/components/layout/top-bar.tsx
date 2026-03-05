@@ -18,7 +18,7 @@ export default function TopBar() {
           <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-400 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-cyan-400/20">
             H
           </div>
-          <span className="hidden lg:block font-black text-xl tracking-tight text-gray-900 italic uppercase">HONEST.BKK</span>
+          <span className="hidden lg:block font-black text-xl tracking-tight text-gray-900 italic uppercase">BKK Honest</span>
         </Link>
         <div className="hidden md:block">
           <CitySwitcher />
@@ -39,7 +39,7 @@ export default function TopBar() {
       <div className="flex items-center gap-3 md:gap-6">
         <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full border border-emerald-100 shadow-sm transition-transform hover:scale-105 cursor-default">
           <Zap className="w-4 h-4 fill-emerald-500 text-emerald-500" />
-          <span className="text-xs font-black tracking-widest">{profile?.reputation || 0} ⚡</span>
+          <span className="text-xs font-black tracking-widest">{profile?.reputation || 0}</span>
         </div>
       </div>
     </header>
