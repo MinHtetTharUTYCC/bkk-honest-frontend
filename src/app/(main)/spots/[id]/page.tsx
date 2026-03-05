@@ -636,8 +636,8 @@ export default function SpotDetailPage() {
                 <button
                   onClick={() => setTipType('TRY')}
                   className={cn(
-                    "flex-1 py-3 rounded-2xl text-[10px] font-semibold tracking-wide transition-all border-2",
-                    tipType === 'TRY' ? "bg-emerald-50 text-emerald-500 border-emerald-500/20 shadow-sm" : "bg-white/5 text-white/50 border-border hover:bg-white/10"
+                    "flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border",
+                    tipType === 'TRY' ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-white/5 text-white/50 border-border hover:bg-white/10"
                   )}
                 >
                   To Try
@@ -645,8 +645,8 @@ export default function SpotDetailPage() {
                 <button
                   onClick={() => setTipType('AVOID')}
                   className={cn(
-                    "flex-1 py-3 rounded-2xl text-[10px] font-semibold tracking-wide transition-all border-2",
-                    tipType === 'AVOID' ? "bg-red-50 text-red-500 border-red-500/20 shadow-sm" : "bg-white/5 text-white/50 border-border hover:bg-white/10"
+                    "flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border",
+                    tipType === 'AVOID' ? "bg-red-500/20 text-red-400 border-red-500/30" : "bg-white/5 text-white/50 border-border hover:bg-white/10"
                   )}
                 >
                   To Avoid
@@ -661,8 +661,8 @@ export default function SpotDetailPage() {
                 <button 
                   onClick={() => setTipSort('popular')}
                   className={cn(
-                    "px-4 py-1.5 rounded-lg text-[10px] font-semibold tracking-wide transition-all",
-                    tipSort === 'popular' ? "bg-white text-amber-400 shadow-sm border border-border" : "text-white/50"
+                    "px-4 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                    tipSort === 'popular' ? "bg-white/10 text-amber-400" : "text-white/50 hover:text-white/70"
                   )}
                 >
                   Popular
@@ -670,8 +670,8 @@ export default function SpotDetailPage() {
                 <button 
                   onClick={() => setTipSort('newest')}
                   className={cn(
-                    "px-4 py-1.5 rounded-lg text-[10px] font-semibold tracking-wide transition-all",
-                    tipSort === 'newest' ? "bg-white text-amber-400 shadow-sm border border-border" : "text-white/50"
+                    "px-4 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                    tipSort === 'newest' ? "bg-white/10 text-amber-400" : "text-white/50 hover:text-white/70"
                   )}
                 >
                   Newest
@@ -704,19 +704,19 @@ export default function SpotDetailPage() {
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <p className="text-[10px] font-semibold text-white leading-none">
+                                <p className="text-xs font-semibold text-white leading-none">
                                   {tip.user?.name || 'local'}
                                 </p>
                                 {tip.user?.level && (
                                   <span className={cn(
-                                    "px-1.5 py-0.5 rounded-md text-[6px] font-semibold tracking-tighter",
+                                    "px-1.5 py-0.5 rounded text-[8px] font-semibold",
                                     tip.type === 'AVOID' ? "bg-red-500/20 text-red-400" : "bg-emerald-500/20 text-emerald-400"
                                   )}>
                                     Lvl {tip.user.level === 'LOCAL_GURU' ? '3' : tip.user.level === 'EXPLORER' ? '2' : '1'}
                                   </span>
                                 )}
                               </div>
-                              <span className="text-[7px] font-bold text-white/50 uppercase tracking-widest block leading-tight">
+                              <span className="text-[9px] font-medium text-white/40 block">
                                 {new Date(tip.createdAt).toLocaleDateString()}
                               </span>
                             </div>
@@ -727,10 +727,10 @@ export default function SpotDetailPage() {
                               onClick={() => toggleTipVote(tip)}
                               disabled={tipVotePending}
                               className={cn(
-                                "flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[8px] font-semibold transition-all",
+                                "flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all",
                                 tip.hasVoted
-                                  ? "bg-red-50 text-red-500" 
-                                  : "text-white/50 hover:text-red-500 hover:bg-red-50/50"
+                                  ? "bg-red-500/20 text-red-400" 
+                                  : "text-white/50 hover:text-red-400 hover:bg-red-500/10"
                               )}
                             >
                               <Heart size={8} fill={tip.hasVoted ? "currentColor" : "none"} />
@@ -740,8 +740,8 @@ export default function SpotDetailPage() {
                         </div>
 
                         <div className="pl-8">
-                          <h4 className="text-xs font-semibold text-white tracking-tight leading-none mb-1">{tip.title}</h4>
-                          <p className="text-[11px] font-medium text-white/70 leading-snug">{tip.description}</p>
+                          <h4 className="text-sm font-semibold text-white leading-tight mb-1">{tip.title}</h4>
+                          <p className="text-xs font-normal text-white/60 leading-relaxed">{tip.description}</p>
                         </div>
                       </div>
                     </div>
