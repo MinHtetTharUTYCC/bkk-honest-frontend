@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import {
     X,
     AlertTriangle,
-    MessageSquare,
+    MessageSquare, Edit2, Trash2,
     Send,
     Loader2,
     Heart,
@@ -13,7 +13,7 @@ import {
     ShieldCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useScamComments, useCreateComment } from '@/hooks/use-api';
+import { useScamComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -27,9 +27,14 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
     const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);
     const { data: comments, isLoading: commentsLoading } = useScamComments(alert.id);
-    const createCommentMutation = useCreateComment();
+    const createCommentMutation = useCreateComment, useUpdateComment, useDeleteComment();
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const [newComment, setNewComment] = useState('');
+
+    const updateCommentMutation = useUpdateComment();
+    const deleteCommentMutation = useDeleteComment();
+    const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+    const [editContent, setEditContent] = useState('');
 
     const handleSendComment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,6 +49,31 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
         } catch (err) {
             console.error(err);
             alert('Failed to post comment');
+        }
+    };
+
+    const handleEditSubmit = async (commentId: string) => {
+        if (!editContent.trim()) return;
+        try {
+            await updateCommentMutation.mutateAsync({
+                id: commentId,
+                content: editContent.trim(),
+                scamAlertId: alert.id,
+            });
+            setEditingCommentId(null);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update comment');
+        }
+    };
+
+    const handleDeleteComment = async (commentId: string) => {
+        if (!confirm('Are you sure you want to delete this comment?')) return;
+        try {
+            await deleteCommentMutation.mutateAsync({ id: commentId, scamAlertId: alert.id });
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete comment');
         }
     };
 
@@ -160,21 +190,47 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                 <User size={14} />
                                             </div>
                                             <div className="flex-1 space-y-1">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-[10px] font-bold text-foreground uppercase tracking-tight">
-                                                        {comment.user?.name || 'Local'}
-                                                    </span>
-                                                    <span className="text-[8px] font-medium text-white/30 uppercase tracking-widest">
-                                                        {new Date(
-                                                            comment.createdAt,
-                                                        ).toLocaleDateString()}
-                                                    </span>
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-bold text-foreground uppercase tracking-tight">
+                                                            {comment.user?.name || 'Local'}
+                                                        </span>
+                                                        <span className="text-[8px] font-medium text-white/30 uppercase tracking-widest">
+                                                            {new Date(
+                                                                comment.createdAt,
+                                                            ).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                    {user?.id === comment.userId && (
+                                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.text); }} className="text-white/40 hover:text-cyan-400"><Edit2 size={10} /></button>
+                                                            <button onClick={() => handleDeleteComment(comment.id)} className="text-white/40 hover:text-red-400"><Trash2 size={10} /></button>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className="bg-white/5 rounded-2xl rounded-tl-none p-4">
-                                                    <p className="text-sm text-white/60 font-medium leading-relaxed">
-                                                        {comment.text}
-                                                    </p>
-                                                </div>
+                                                
+                                                {editingCommentId === comment.id ? (
+                                                    <div className="mt-2 space-y-2">
+                                                        <input 
+                                                            type="text" 
+                                                            value={editContent}
+                                                            onChange={(e) => setEditContent(e.target.value)}
+                                                            className="w-full bg-black/40 border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400/50"
+                                                        />
+                                                        <div className="flex gap-2 justify-end">
+                                                            <button onClick={() => setEditingCommentId(null)} className="text-[9px] font-semibold text-white/50 hover:text-white">Cancel</button>
+                                                            <button onClick={() => handleEditSubmit(comment.id)} disabled={updateCommentMutation.isPending} className="text-[9px] font-semibold text-cyan-400 hover:text-cyan-300">
+                                                                {updateCommentMutation.isPending ? 'Saving...' : 'Save'}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="bg-white/5 rounded-2xl rounded-tl-none p-4">
+                                                        <p className="text-sm text-white/60 font-medium leading-relaxed">
+                                                            {comment.text}
+                                                        </p>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     ))

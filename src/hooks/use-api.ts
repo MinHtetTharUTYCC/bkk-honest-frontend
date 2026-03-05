@@ -430,6 +430,17 @@ export function useLiveVibes() {
 
 // --- Comments ---
 
+export function useTipComments(tipId: string) {
+    return useQuery({
+        queryKey: ['tip-comments', tipId],
+        queryFn: async () => {
+            const { data } = await api.get(`/comments/tip/${tipId}`);
+            return data?.data || (Array.isArray(data) ? data : []);
+        },
+        enabled: !!tipId,
+    });
+}
+
 export function useScamComments(scamAlertId: string) {
     return useQuery({
         queryKey: ['scam-comments', scamAlertId],
@@ -467,11 +478,51 @@ export function useCreateComment() {
         onSuccess: (_, variables) => {
             if (variables.scamAlertId) {
                 queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
+                queryClient.invalidateQueries({ queryKey: ['scam-alerts-infinite'] });
+            }
+            if (variables.communityTipId) {
+                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
+                queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
+            }
+        },
+    });
+}
+
+export function useUpdateComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: { id: string; content: string; scamAlertId?: string; communityTipId?: string }) => {
+            const { data } = await api.patch(`/comments/${payload.id}`, { text: payload.content });
+            return data;
+        },
+        onSuccess: (_, variables) => {
+            if (variables.scamAlertId) {
+                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
             }
             if (variables.communityTipId) {
                 queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
             }
+        }
+    });
+}
+
+export function useDeleteComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: { id: string; scamAlertId?: string; communityTipId?: string }) => {
+            const { data } = await api.delete(`/comments/${payload.id}`);
+            return data;
         },
+        onSuccess: (_, variables) => {
+            if (variables.scamAlertId) {
+                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
+                queryClient.invalidateQueries({ queryKey: ['scam-alerts-infinite'] });
+            }
+            if (variables.communityTipId) {
+                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
+                queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
+            }
+        }
     });
 }
 

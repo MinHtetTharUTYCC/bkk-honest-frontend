@@ -3,13 +3,14 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X } from 'lucide-react';
+import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
 import CreateTipModal from '@/components/tips/create-tip-modal';
+import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
@@ -37,6 +38,7 @@ export default function SpotDetailPage() {
   const [isClient, setIsClient] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showTipModal, setShowTipModal] = useState(false);
+  const [selectedTip, setSelectedTip] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips'>('tips');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
@@ -176,6 +178,12 @@ export default function SpotDetailPage() {
         <CreateTipModal 
           spotId={id} 
           onClose={() => setShowTipModal(false)} 
+        />
+      )}
+      {selectedTip && (
+        <TipCommentsModal 
+          tip={selectedTip}
+          onClose={() => setSelectedTip(null)}
         />
       )}
 
@@ -722,20 +730,31 @@ export default function SpotDetailPage() {
                             </div>
                           </div>
 
-                          <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                            <button 
-                              onClick={() => toggleTipVote(tip)}
-                              disabled={tipVotePending}
-                              className={cn(
-                                "flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all",
-                                tip.hasVoted
-                                  ? "bg-red-500/20 text-red-400" 
-                                  : "text-white/50 hover:text-red-400 hover:bg-red-500/10"
-                              )}
-                            >
-                              <Heart size={8} fill={tip.hasVoted ? "currentColor" : "none"} />
-                              {tip._count?.votes || 0}
-                            </button>
+                          <div className="flex items-center gap-1">
+                            <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
+                              <button 
+                                onClick={() => setSelectedTip(tip)}
+                                className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all text-white/50 hover:text-cyan-400 hover:bg-cyan-500/10"
+                              >
+                                <MessageSquare size={10} />
+                                {tip._count?.comments || 0}
+                              </button>
+                            </div>
+                            <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
+                              <button 
+                                onClick={() => toggleTipVote(tip)}
+                                disabled={tipVotePending}
+                                className={cn(
+                                  "flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all",
+                                  tip.hasVoted
+                                    ? "bg-red-500/20 text-red-400" 
+                                    : "text-white/50 hover:text-red-400 hover:bg-red-500/10"
+                                )}
+                              >
+                                <Heart size={8} fill={tip.hasVoted ? "currentColor" : "none"} />
+                                {tip._count?.votes || 0}
+                              </button>
+                            </div>
                           </div>
                         </div>
 
