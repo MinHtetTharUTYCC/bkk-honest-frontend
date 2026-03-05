@@ -577,9 +577,9 @@ export default function SpotDetailPage() {
       </section>
 
       {/* 4. Detailed Data Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+      <div className="flex flex-col gap-12">
         {/* Price History Table */}
-        <section className={cn("md:col-span-2 space-y-8 md:block", activeTab === 'prices' ? "block" : "hidden")}>
+        <section className={cn("space-y-8 md:block", activeTab === 'prices' ? "block" : "hidden")}>
           <header className="flex items-center justify-between px-2">
             <h3 className="text-2xl font-display font-bold text-white">Recent Price Reports</h3>
             <Info size={16} className="text-white/40" />
@@ -703,40 +703,40 @@ export default function SpotDetailPage() {
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-lg bg-white/10 border border-border flex items-center justify-center text-white/50 overflow-hidden shadow-sm">
+                            <div className="w-9 h-9 rounded-lg bg-white/10 border border-border flex items-center justify-center text-white/50 overflow-hidden shadow-sm">
                               {tip.user?.avatarUrl ? (
                                 <img src={tip.user.avatarUrl} className="w-full h-full object-cover" />
                               ) : (
-                                <User size={10} />
+                                <User size={16} />
                               )}
                             </div>
                             <div>
                               <div className="flex items-center gap-2">
-                                <p className="text-xs font-semibold text-white leading-none">
+                                <p className="text-sm font-semibold text-white leading-none">
                                   {tip.user?.name || 'local'}
                                 </p>
                                 {tip.user?.level && (
                                   <span className={cn(
-                                    "px-1.5 py-0.5 rounded text-[8px] font-semibold",
+                                    "px-1.5 py-0.5 rounded text-xs font-semibold",
                                     tip.type === 'AVOID' ? "bg-red-500/20 text-red-400" : "bg-emerald-500/20 text-emerald-400"
                                   )}>
                                     Lvl {tip.user.level === 'LOCAL_GURU' ? '3' : tip.user.level === 'EXPLORER' ? '2' : '1'}
                                   </span>
                                 )}
                               </div>
-                              <span className="text-[9px] font-medium text-white/40 block">
+                              <span className="text-xs font-medium text-white/40 block mt-1">
                                 {new Date(tip.createdAt).toLocaleDateString()}
                               </span>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-2">
                             <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
                               <button 
                                 onClick={() => setSelectedTip(tip)}
-                                className="flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all text-white/50 hover:text-cyan-400 hover:bg-cyan-500/10"
+                                className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-all text-white/50 hover:text-cyan-400 hover:bg-cyan-500/10"
                               >
-                                <MessageSquare size={10} />
+                                <MessageSquare size={14} />
                                 {tip._count?.comments || 0}
                               </button>
                             </div>
@@ -745,22 +745,22 @@ export default function SpotDetailPage() {
                                 onClick={() => toggleTipVote(tip)}
                                 disabled={tipVotePending}
                                 className={cn(
-                                  "flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-semibold transition-all",
+                                  "flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-all",
                                   tip.hasVoted
                                     ? "bg-red-500/20 text-red-400" 
                                     : "text-white/50 hover:text-red-400 hover:bg-red-500/10"
                                 )}
                               >
-                                <Heart size={8} fill={tip.hasVoted ? "currentColor" : "none"} />
+                                <Heart size={14} fill={tip.hasVoted ? "currentColor" : "none"} />
                                 {tip._count?.votes || 0}
                               </button>
                             </div>
                           </div>
                         </div>
 
-                        <div className="pl-8">
-                          <h4 className="text-sm font-semibold text-white leading-tight mb-1">{tip.title}</h4>
-                          <p className="text-xs font-normal text-white/60 leading-relaxed">{tip.description}</p>
+                        <div className="pl-10 pt-2">
+                          <h4 className="text-base font-bold text-white leading-tight mb-2">{tip.title}</h4>
+                          <p className="text-sm font-normal text-white/70 leading-relaxed">{tip.description}</p>
                         </div>
                       </div>
                     </div>

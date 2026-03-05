@@ -174,14 +174,26 @@ export function useSpots(params?: {
     });
 }
 
-export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number }) {
+export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number; categoryId?: string; limit?: number }, enabled = true) {
     return useQuery({
         queryKey: ['spots-nearby', params],
         queryFn: async () => {
             const { data } = await api.get<PaginatedSpots>('/spots/nearby', { params });
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!params.latitude && !!params.longitude,
+        enabled: enabled && !!params.latitude && !!params.longitude,
+        placeholderData: (prev: any) => prev,
+        staleTime: 60_000,
+    });
+}
+
+export function usePopularArea() {
+    return useQuery({
+        queryKey: ['popular-area'],
+        queryFn: async () => {
+            const { data } = await api.get<{ latitude: number; longitude: number; cityName: string; spotCount: number }>('/spots/popular-area');
+            return data;
+        },
     });
 }
 

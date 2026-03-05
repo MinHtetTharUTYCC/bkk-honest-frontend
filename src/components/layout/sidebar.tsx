@@ -10,6 +10,8 @@ export default function Sidebar() {
     const pathname = usePathname();
     const { selectedCity } = useCity();
     const isDiscovery = pathname?.includes('/discovery');
+    const isSpotDetail = pathname?.startsWith('/spots/');
+    const isMap = pathname === '/map';
 
     const hashtags = [
         { tag: 'SongkranPrep', count: '1.2k' },
@@ -23,6 +25,8 @@ export default function Sidebar() {
         { name: '@BkkNomad', rep: '3,210', color: 'bg-emerald-400/15 text-emerald-400' },
         { name: '@NanaGuide', rep: '2,950', color: 'bg-orange-400/15 text-orange-400' },
     ];
+
+    if (isSpotDetail || isMap) return null;
 
     return (
         <aside className="hidden lg:flex flex-col gap-8 w-80 min-h-screen px-6 py-10 sticky top-20">
