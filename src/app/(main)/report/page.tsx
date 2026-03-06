@@ -10,6 +10,7 @@ import {
     useCreateSpot,
     useCities,
 } from '@/hooks/use-api';
+import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
@@ -166,23 +167,12 @@ export default function ReportPage() {
             <div className="bg-card rounded-2xl p-8 md:p-10 border border-white/8 shadow-2xl shadow-black/30">
                 {activeTab === 'price' && (
                     <form onSubmit={handlePriceSubmit} className="space-y-8">
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Location
-                            </label>
-                            <select
-                                name="spotId"
-                                required
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Select a spot...</option>
-                                {spots?.map((s: any) => (
-                                    <option key={s.id} value={s.id}>
-                                        {s.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <SearchableSpotSelect
+                            name="spotId"
+                            required
+                            placeholder="Search spots..."
+                            cityId={selectedCityId}
+                        />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
@@ -290,23 +280,12 @@ export default function ReportPage() {
 
                 {activeTab === 'vibe' && (
                     <form onSubmit={handleVibeSubmit} className="space-y-8">
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Location
-                            </label>
-                            <select
-                                name="spotId"
-                                required
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Select a spot...</option>
-                                {spots?.map((s: any) => (
-                                    <option key={s.id} value={s.id}>
-                                        {s.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <SearchableSpotSelect
+                            name="spotId"
+                            required
+                            placeholder="Search spots..."
+                            cityId={selectedCityId}
+                        />
 
                         <div className="space-y-6">
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1 text-center">

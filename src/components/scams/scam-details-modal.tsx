@@ -99,9 +99,9 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
             {/* Main Content */}
             <div
                 className={cn(
-                    'relative bg-white w-full shadow-2xl overflow-hidden flex flex-col transition-all duration-300 animate-in',
+                    'relative bg-card w-full shadow-2xl overflow-hidden flex flex-col transition-all duration-300 animate-in',
                     'h-[80vh] md:h-auto md:max-h-[85vh] md:max-w-lg md:rounded-[40px]',
-                    'rounded-t-[40px] md:rounded-b-[40px]', // Drawer style for mobile
+                    'rounded-t-[40px] md:rounded-b-[40px] border border-white/8', // Drawer style for mobile
                 )}
             >
                 {/* Mobile Header Drag Handle */}
@@ -203,7 +203,7 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                     </div>
                                                     {user?.id === comment.userId && (
                                                         <div className="flex items-center gap-2">
-                                                            <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.text); }} className="text-white/40 hover:text-cyan-400 p-1"><Edit2 size={16} /></button>
+                                                            <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.text); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={16} /></button>
                                                             <button onClick={() => handleDeleteComment(comment.id)} className="text-white/40 hover:text-red-400 p-1"><Trash2 size={16} /></button>
                                                         </div>
                                                     )}
@@ -215,11 +215,11 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                             type="text" 
                                                             value={editContent}
                                                             onChange={(e) => setEditContent(e.target.value)}
-                                                            className="w-full bg-black/40 border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400/50"
+                                                            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
                                                         />
                                                         <div className="flex gap-2 justify-end mt-1">
                                                             <button onClick={() => setEditingCommentId(null)} className="text-xs px-2 py-1 font-semibold text-white/50 hover:text-white transition-colors">Cancel</button>
-                                                            <button onClick={() => handleEditSubmit(comment.id)} disabled={updateCommentMutation.isPending} className="text-xs px-2 py-1 font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+                                                            <button onClick={() => handleEditSubmit(comment.id)} disabled={updateCommentMutation.isPending} className="text-xs px-2 py-1 font-semibold text-amber-400 hover:text-amber-300 transition-colors">
                                                                 {updateCommentMutation.isPending ? 'Saving...' : 'Save'}
                                                             </button>
                                                         </div>

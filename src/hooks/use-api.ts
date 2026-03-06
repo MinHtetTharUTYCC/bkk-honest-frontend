@@ -208,6 +208,21 @@ export function usePopularArea() {
     });
 }
 
+export function useSpotSearch(query: string, cityId?: string, limit: number = 20) {
+    return useQuery({
+        queryKey: ['spot-search', query, cityId],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            if (query) params.set('q', query);
+            if (cityId) params.set('cityId', cityId);
+            if (limit !== 20) params.set('limit', limit.toString());
+            const { data } = await api.get(`/spots/search${params.toString() ? `?${params}` : ''}`);
+            return Array.isArray(data) ? data : data?.data || [];
+        },
+        enabled: query.trim().length >= 1,
+    });
+}
+
 export function useSpotPriceReports(spotId: string) {
     return useQuery({
         queryKey: ['price-reports', spotId],

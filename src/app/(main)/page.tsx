@@ -67,8 +67,8 @@ export default function HomeFeed() {
                         </div>
                     </header>
 
-                    <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
-                        <div className="flex gap-6 pb-8">
+                    <ScrollArea className="w-full whitespace-nowrap -mx-8">
+                        <div className="flex gap-6 pb-8 px-8">
                             {nearbyLoading ? (
                                 Array.from({ length: 4 }).map((_, i) => (
                                     <div
@@ -133,8 +133,8 @@ export default function HomeFeed() {
                     </Link>
                 </header>
 
-                <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
-                    <div className="flex gap-6 pb-8">
+                <ScrollArea className="w-full whitespace-nowrap -mx-8">
+                    <div className="flex gap-6 pb-8 px-8">
                         {spotsLoading ? (
                             Array.from({ length: 4 }).map((_, i) => (
                                 <div
@@ -256,9 +256,10 @@ export default function HomeFeed() {
                             <div className="h-40 bg-white/5 rounded-2xl animate-pulse" />
                         ) : Array.isArray(vibes) && vibes.length > 0 ? (
                             vibes.slice(0, 3).map((vibe: any) => (
-                                <div
+                                <Link
                                     key={vibe.id}
-                                    className="bg-card rounded-2xl p-7 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.01] transition-transform"
+                                    href={`/spots/${vibe.spotId || vibe.spot?.id}`}
+                                    className="block bg-card rounded-2xl p-7 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.01] transition-transform"
                                 >
                                     <div className="flex items-start justify-between mb-4">
                                         <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-widest">
@@ -302,7 +303,7 @@ export default function HomeFeed() {
                                             {vibe.waitTimeMinutes}m Wait
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))
                         ) : !vibesLoading ? (
                             <div className="py-12 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
@@ -324,8 +325,8 @@ export default function HomeFeed() {
                                 Browse by Category
                             </h4>
                         </header>
-                        <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
-                            <div className="flex gap-4 pb-4">
+                        <ScrollArea className="w-full whitespace-nowrap -mx-8">
+                            <div className="flex gap-4 pb-4 px-8">
                                 {Array.isArray(categories) && categories.map((cat: any) => (
                                     <Link
                                         key={cat.id}
