@@ -98,6 +98,7 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState("");
   const [editBio, setEditBio] = useState("");
+  const [editCountry, setEditCountry] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
 
@@ -112,6 +113,7 @@ export default function ProfilePage() {
     if (profile) {
       setEditName(profile.name || "");
       setEditBio(profile.bio || "");
+      setEditCountry(profile.country || "");
     }
   }, [profile]);
 
@@ -119,7 +121,7 @@ export default function ProfilePage() {
     try {
       setSaveError(null);
       setIsSaving(true);
-      await api.patch("/profiles/me", { name: editName, bio: editBio });
+      await api.patch("/profiles/me", { name: editName, bio: editBio, country: editCountry });
       await queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
       setIsEditing(false);
     } catch (err) {
@@ -305,6 +307,19 @@ export default function ProfilePage() {
                 />
               </div>
 
+              <div className="space-y-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
+                  Country (optional)
+                </label>
+                <input
+                  type="text"
+                  value={editCountry}
+                  onChange={(e) => setEditCountry(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400/50 focus:ring-4 focus:ring-amber-400/10 transition-all placeholder:text-white/20"
+                  placeholder="e.g. Thailand, Japan, USA…"
+                />
+              </div>
+
               {saveError && (
                 <p className="text-xs text-red-400 font-medium">{saveError}</p>
               )}
@@ -389,6 +404,13 @@ export default function ProfilePage() {
                 ? new Date(profile.createdAt).toLocaleDateString()
                 : "Mar 2026"}
             </p>
+
+            {profile?.country && (
+              <p className="text-white/40 font-medium uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2 mb-4">
+                <MapPin size={12} className="text-white/20" />
+                {profile.country}
+              </p>
+            )}
 
             {profile?.bio ? (
               <p className="text-white/50 font-medium leading-relaxed max-w-lg mb-8 text-sm md:text-base">
