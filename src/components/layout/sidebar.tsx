@@ -1,54 +1,42 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Navigation, ArrowUpRight } from 'lucide-react';
+import { MapPin, ArrowUpRight } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
+import { useCategories } from '@/hooks/use-api';
+import { LeaderboardSidebarList } from '@/components/leaderboard-list';
 
 export default function Sidebar() {
     const pathname = usePathname();
     const { selectedCity } = useCity();
+    const { data: categories } = useCategories();
     const isDiscovery = pathname?.includes('/discovery');
     const isSpotDetail = pathname?.startsWith('/spots/');
     const isMap = pathname === '/map';
-
-    const hashtags = [
-        { tag: 'SongkranPrep', count: '1.2k' },
-        { tag: 'TukTukRates', count: '850' },
-        { tag: 'MichelinStreetFood', count: '2.4k' },
-        { tag: 'SukhumvitTraffic', count: '5.1k' },
-    ];
-
-    const topContributors = [
-        { name: '@LocalGuru_Aum', rep: '5,430', color: 'bg-amber-400/15 text-amber-300' },
-        { name: '@BkkNomad', rep: '3,210', color: 'bg-emerald-400/15 text-emerald-400' },
-        { name: '@NanaGuide', rep: '2,950', color: 'bg-orange-400/15 text-orange-400' },
-    ];
 
     if (isSpotDetail || isMap) return null;
 
     return (
         <aside className="hidden lg:flex flex-col gap-8 w-80 min-h-screen px-6 py-10 sticky top-20">
-            {/* 2. Trending Section */}
+            {/* Categories */}
             <div>
                 <h4 className="font-bold text-xs uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                    Trending in {selectedCity?.name || 'BKK'}
+                    Browse Categories
                 </h4>
                 <div className="space-y-4">
-                    {hashtags.map(({ tag, count }) => (
+                    {Array.isArray(categories) && categories.slice(0, 6).map((cat: any) => (
                         <Link
-                            key={tag}
-                            href={`/search?q=${tag}`}
+                            key={cat.id}
+                            href={`/spots?categoryId=${cat.id}`}
                             className="flex items-center justify-between group"
                         >
                             <span className="text-sm font-medium text-white/60 group-hover:text-amber-400 transition-colors">
-                                #{tag}
+                                {cat.name}
                             </span>
-                            <span className="text-[10px] font-bold tracking-tighter text-white/20 group-hover:text-amber-400/60 transition-colors">
-                                {count}
-                            </span>
+                            <ArrowUpRight size={12} className="text-white/20 group-hover:text-amber-400/60 transition-colors" />
                         </Link>
                     ))}
                 </div>
@@ -56,31 +44,13 @@ export default function Sidebar() {
 
             <div className="w-full h-px bg-white/8" />
 
-            {/* 3. Top Contributors */}
+            {/* Top Contributors */}
             <div>
                 <h4 className="font-bold text-xs uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                     Top Contributors
                 </h4>
-                <div className="space-y-5">
-                    {topContributors.map((c) => (
-                        <div key={c.name} className="flex items-center gap-3">
-                            <div
-                                className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs ${c.color} shadow-sm`}
-                            >
-                                {c.name.charAt(1).toUpperCase()}
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-sm font-semibold text-foreground leading-tight">
-                                    {c.name}
-                                </span>
-                                <span className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">
-                                    {c.rep} XP
-                                </span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <LeaderboardSidebarList take={5} />
             </div>
 
             <div className="mt-auto bg-white/5 p-6 rounded-3xl border border-dashed border-white/10">

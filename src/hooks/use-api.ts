@@ -10,6 +10,17 @@ type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto
 
 // --- Profiles ---
 
+export function useLeaderboard(take = 5) {
+    return useQuery({
+        queryKey: ['leaderboard', take],
+        queryFn: async () => {
+            const { data } = await api.get(`/profiles/leaderboard/top?take=${take}`);
+            return data?.data || data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+}
+
 export function useProfile(id: string) {
     return useQuery({
         queryKey: ['profile', id],

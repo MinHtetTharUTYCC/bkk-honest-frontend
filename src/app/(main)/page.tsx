@@ -6,17 +6,16 @@ import {
     MessageCircle,
     ArrowRight,
     MapPin,
-    TrendingUp,
     Navigation,
     Heart,
     Hash,
     Trophy,
 } from 'lucide-react';
-import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots } from '@/hooks/use-api';
+import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
-import { useState, useEffect } from 'react';
+import { LeaderboardList } from '@/components/leaderboard-list';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -27,24 +26,13 @@ export default function HomeFeed() {
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const { latitude, longitude, error: geoError } = useGeolocation();
 
-    const hashtags = [
-        { tag: 'SongkranPrep', count: '1.2k' },
-        { tag: 'TukTukRates', count: '850' },
-        { tag: 'MichelinStreetFood', count: '2.4k' },
-        { tag: 'SukhumvitTraffic', count: '5.1k' },
-    ];
-
-    const topContributors = [
-        { name: '@LocalGuru_Aum', rep: '5,430', color: 'bg-amber-400/15 text-amber-300' },
-        { name: '@BkkNomad', rep: '3,210', color: 'bg-emerald-400/15 text-emerald-400' },
-        { name: '@NanaGuide', rep: '2,950', color: 'bg-orange-400/15 text-orange-400' },
-    ];
-
     const { data: nearbySpots, isLoading: nearbyLoading } = useNearbySpots({
         latitude: latitude || 0,
         longitude: longitude || 0,
         distance: 5,
-    });
+    }, !!(latitude && longitude));
+
+    const { data: categories } = useCategories();
 
     const { data: spots, isLoading: spotsLoading } = useSpots({
         cityId: selectedCityId,
@@ -57,17 +45,10 @@ export default function HomeFeed() {
 
     const { data: vibes, isLoading: vibesLoading } = useLiveVibes();
 
-    const [isClient, setIsClient] = useState(false);
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    if (!isClient) return <div className="animate-pulse h-screen bg-white/5 rounded-2xl" />;
-
     return (
         <div className="space-y-16">
             {/* 0. Nearby Pulse */}
-            {!geoError && latitude && longitude && (
+            {latitude && longitude ? (
                 <section className="space-y-8">
                     <header className="flex items-end justify-between px-2">
                         <div className="flex flex-col gap-1">
@@ -109,6 +90,21 @@ export default function HomeFeed() {
                         <ScrollBar orientation="horizontal" className="hidden" />
                     </ScrollArea>
                 </section>
+            ) : (
+                <section className="space-y-4">
+                    <header className="px-2">
+                        <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">Nearby Pulse</h2>
+                    </header>
+                    <div className="flex items-center gap-4 bg-white/5 border border-dashed border-white/10 rounded-2xl p-6">
+                        <div className="w-10 h-10 rounded-2xl bg-amber-400/10 flex items-center justify-center shrink-0">
+                            <Navigation size={18} className="text-amber-400" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-foreground">Enable Location for Nearby Pulse</p>
+                            <p className="text-[11px] text-white/40 font-medium mt-0.5">Allow location access in your browser to see spots near you</p>
+                        </div>
+                    </div>
+                </section>
             )}
 
             {/* 1. Honest Highlights (Popular Spots) */}
@@ -125,13 +121,13 @@ export default function HomeFeed() {
                             </p>
                         </div>
                     </div>
-                    <button className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors group">
+                    <Link href="/spots" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors group">
                         All Spots
                         <ArrowRight
                             size={14}
                             className="group-hover:translate-x-1 transition-transform"
                         />
-                    </button>
+                    </Link>
                 </header>
 
                 <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
@@ -164,13 +160,19 @@ export default function HomeFeed() {
             {/* 2. The Pulse (Scam Alerts & Vibes) */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
                 <section className="lg:col-span-2 space-y-8">
-                    <header className="flex flex-col gap-1 px-2">
-                        <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">
-                            The Pulse
-                        </h2>
-                        <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
-                            What is happening in {selectedCity?.name || 'this city'} right now
-                        </p>
+                    <header className="flex items-end justify-between px-2">
+                        <div className="flex flex-col gap-1">
+                            <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">
+                                The Pulse
+                            </h2>
+                            <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
+                                What is happening in {selectedCity?.name || 'this city'} right now
+                            </p>
+                        </div>
+                        <Link href="/scam-alerts" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors group">
+                            View All
+                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
                     </header>
 
                     <div className="space-y-6">
@@ -296,33 +298,39 @@ export default function HomeFeed() {
                                     </div>
                                 </div>
                             ))
+                        ) : !vibesLoading ? (
+                            <div className="py-12 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                                    No vibes checked in recently
+                                </p>
+                            </div>
                         ) : null}
                     </div>
                 </section>
 
                 {/* 3. Mobile Trending & Contributors (Only on small screens) */}
                 <div className="lg:hidden space-y-12 pb-12">
-                    {/* Trending Carousel */}
+                    {/* Categories Carousel */}
                     <section className="space-y-6">
                         <header className="px-2">
                             <h4 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
                                 <Hash size={20} className="text-amber-400" />
-                                Trending Pulse
+                                Browse by Category
                             </h4>
                         </header>
                         <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
                             <div className="flex gap-4 pb-4">
-                                {hashtags.map(({ tag, count }) => (
+                                {Array.isArray(categories) && categories.map((cat: any) => (
                                     <Link
-                                        key={tag}
-                                        href={`/search?q=${tag}`}
+                                        key={cat.id}
+                                        href={`/spots?categoryId=${cat.id}`}
                                         className="flex-shrink-0 bg-card px-6 py-4 rounded-2xl border border-white/8 shadow-xl shadow-black/30 flex flex-col gap-1 active:scale-95 transition-transform"
                                     >
                                         <span className="text-sm font-bold text-foreground">
-                                            #{tag}
+                                            {cat.name}
                                         </span>
                                         <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
-                                            {count} reports
+                                            Explore
                                         </span>
                                     </Link>
                                 ))}
@@ -339,34 +347,7 @@ export default function HomeFeed() {
                                 Local Gurus
                             </h4>
                         </header>
-                        <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
-                            <div className="flex gap-4 pb-4">
-                                {topContributors.map((c) => (
-                                    <div
-                                        key={c.name}
-                                        className="flex-shrink-0 bg-card p-5 rounded-2xl border border-white/8 shadow-xl shadow-black/30 flex items-center gap-4 min-w-[200px]"
-                                    >
-                                        <div
-                                            className={cn(
-                                                'w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shadow-sm',
-                                                c.color,
-                                            )}
-                                        >
-                                            {c.name.charAt(1).toUpperCase()}
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-foreground">
-                                                {c.name}
-                                            </span>
-                                            <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
-                                                {c.rep} XP
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <ScrollBar orientation="horizontal" className="hidden" />
-                        </ScrollArea>
+                        <LeaderboardList />
                     </section>
                 </div>
             </div>
