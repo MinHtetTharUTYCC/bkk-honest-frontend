@@ -1,15 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useInfiniteScamAlerts, useCategories } from '@/hooks/use-api';
+import { useSpots, useCategories } from '@/hooks/use-api';
+import SpotCard from '@/components/spots/spot-card';
 import { SearchInput } from '@/components/ui/search-input';
-import ScamAlertCard from '@/components/scams/scam-alert-card';
-import ScamDetailsModal from '@/components/scams/scam-details-modal';
-import { AlertTriangle, MapPin, TrendingUp, Clock, Loader2 } from 'lucide-react';
+import { Filter, MapPin, Clock, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { useInView } from 'react-intersection-observer';
 
 function useDebounce<T>(value: T, delay: number): T {
     const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -20,56 +18,44 @@ function useDebounce<T>(value: T, delay: number): T {
     return debouncedValue;
 }
 
-export default function ScamAlertsPage() {
+export default function DiscoveryPage() {
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
     const [search, setSearch] = useState('');
     const debouncedSearch = useDebounce(search, 500);
-    const [sort, setSort] = useState<'newest' | 'popular'>('newest');
+    const [sort, setSort] = useState<'newest' | 'popular'>('popular');
     const { selectedCityId, selectedCity } = useCity();
-    const [selectedAlert, setSelectedAlert] = useState<any>(null);
 
     const [isClient, setIsClient] = useState(false);
-    const { ref, inView } = useInView();
-
     useEffect(() => {
         setIsClient(true);
     }, []);
 
     const { data: categoriesResponse } = useCategories();
+    // @ts-ignore
     const categories = categoriesResponse?.data || categoriesResponse || [];
 
-    const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
-        useInfiniteScamAlerts({
-            cityId: selectedCityId,
-            categoryId: selectedCategory,
-            sort,
-            search: debouncedSearch,
-        });
-
-    useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-        }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    const { data: spotsResponse, isLoading } = useSpots({
+        cityId: selectedCityId,
+        categoryId: selectedCategory,
+        search: debouncedSearch,
+        sort: sort,
+    });
+    // @ts-ignore - API response structure varies during transition
+    const spots = spotsResponse?.data || spotsResponse || [];
 
     if (!isClient) return null;
 
-    const alerts = data?.pages.flatMap((page) => page.data) || [];
-
     return (
         <div className="space-y-6 pb-24">
-            {selectedAlert && (
-                <ScamDetailsModal alert={selectedAlert} onClose={() => setSelectedAlert(null)} />
-            )}
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="space-y-0.5">
                     <h1 className="font-display text-2xl font-bold text-foreground tracking-tight">
-                        Scam Alerts
+                        Discovery
                     </h1>
                     <div className="flex items-center gap-2">
                         <MapPin size={10} className="text-amber-400" />
                         <p className="text-white/40 font-medium uppercase tracking-widest text-[9px]">
-                            Real-time Warnings in {selectedCity?.name || 'Thailand'}
+                            Exploring {selectedCity?.name || 'Thailand'}
                         </p>
                     </div>
                 </div>
@@ -106,8 +92,8 @@ export default function ScamAlertsPage() {
                     <SearchInput
                         value={search}
                         onChange={setSearch}
-                        placeholder="Search scams..."
-                        className="md:w-60"
+                        placeholder="Search spots..."
+                        className="md:w-[240px]"
                     />
                 </div>
             </header>
@@ -118,27 +104,27 @@ export default function ScamAlertsPage() {
                     <button
                         onClick={() => setSelectedCategory(undefined)}
                         className={cn(
-                            'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
+                            'flex-shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
                             !selectedCategory
-                                ? 'bg-cyan-400 text-white shadow-lg shadow-cyan-400/20'
-                                : 'bg-white border border-gray-300 text-gray-400 hover:bg-gray-50',
+                                ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
+                                : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
                         )}
                     >
-                        All Scams
+                        All Pulse
                     </button>
                     {categories?.map((cat: any) => (
                         <button
                             key={cat.id}
                             onClick={() => setSelectedCategory(cat.id)}
                             className={cn(
-                                'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
+                                'flex-shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
                                 selectedCategory === cat.id
                                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
                                     : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
                             )}
                         >
                             {cat.name}
-                            {cat._count?.scamAlerts > 0 && (
+                            {cat._count?.spots > 0 && (
                                 <span
                                     className={cn(
                                         'px-1.5 py-0.5 rounded-md text-[9px]',
@@ -147,7 +133,7 @@ export default function ScamAlertsPage() {
                                             : 'bg-white/8 text-white/40',
                                     )}
                                 >
-                                    {cat._count.scamAlerts}
+                                    {cat._count.spots}
                                 </span>
                             )}
                         </button>
@@ -156,56 +142,32 @@ export default function ScamAlertsPage() {
                 <ScrollBar orientation="horizontal" className="hidden" />
             </ScrollArea>
 
-            {/* List of Alerts */}
-            <div className="flex flex-col gap-4 pt-2">
+            {/* Grid of Spots */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">
                 {isLoading ? (
-                    Array.from({ length: 4 }).map((_, i) => (
+                    Array.from({ length: 6 }).map((_, i) => (
                         <div
                             key={i}
-                            className="h-28 bg-card rounded-2xl border border-white/8 shadow-sm animate-pulse flex overflow-hidden"
+                            className="h-[420px] bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 animate-pulse p-8 space-y-6"
                         >
-                            <div className="w-36 shrink-0 bg-white/5" />
-                            <div className="flex-1 p-5 space-y-3">
-                                <div className="h-3 w-24 bg-white/5 rounded-full" />
-                                <div className="h-4 w-3/4 bg-white/5 rounded-full" />
-                                <div className="h-3 w-full bg-white/5 rounded-full" />
-                            </div>
+                            <div className="w-full h-48 bg-white/5 rounded-xl" />
+                            <div className="h-6 w-3/4 bg-white/5 rounded-full" />
+                            <div className="h-4 w-1/2 bg-white/5 rounded-full" />
                         </div>
                     ))
-                ) : alerts && alerts.length > 0 ? (
-                    <>
-                        {alerts.map((alert: any) => (
-                            <ScamAlertCard
-                                key={alert.id}
-                                alert={alert}
-                                onClick={() => setSelectedAlert(alert)}
-                            />
-                        ))}
-
-                        {/* Load More Trigger */}
-                        <div ref={ref} className="py-8 flex justify-center">
-                            {isFetchingNextPage ? (
-                                <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
-                            ) : hasNextPage ? (
-                                <div className="h-1" />
-                            ) : (
-                                <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">
-                                    — You've reached the end —
-                                </p>
-                            )}
-                        </div>
-                    </>
+                ) : spots && spots.length > 0 ? (
+                    spots.map((spot: any) => <SpotCard key={spot.id} spot={spot} />)
                 ) : (
-                    <div className="py-32 text-center space-y-4 bg-card rounded-2xl border border-dashed border-white/10">
+                    <div className="col-span-full py-40 text-center space-y-6 bg-card rounded-2xl border border-dashed border-white/10 shadow-sm">
                         <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto text-white/15">
-                            <AlertTriangle size={32} />
+                            <Filter size={32} />
                         </div>
                         <div className="space-y-2">
                             <h4 className="font-display text-xl font-bold text-foreground tracking-tight">
-                                Zero alerts reported
+                                No spots found
                             </h4>
                             <p className="text-xs text-white/40 font-medium uppercase tracking-widest">
-                                It's quiet for now. Stay vigilant regardless!
+                                Try changing your filters or searching for something else
                             </p>
                         </div>
                     </div>

@@ -81,18 +81,18 @@ export default function MissionsPage() {
             {/* 1. Progress Header */}
             <header className="relative bg-gray-900 rounded-[40px] p-8 md:p-12 overflow-hidden shadow-2xl shadow-gray-900/20">
                 <div className="absolute top-0 right-0 p-8 opacity-10">
-                    <Trophy size={160} className="text-cyan-400 rotate-12" />
+                    <Trophy size={160} className="text-amber-400 rotate-12" />
                 </div>
                 
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
-                            <span className="bg-cyan-400 text-white px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase">
+                            <span className="bg-amber-400 text-black px-3 py-1 rounded-full text-[10px] font-bold tracking-widest uppercase">
                                 Active Missions
                             </span>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic">
-                            {selectedCity?.name || 'Bangkok'} <span className="text-cyan-400">Scout</span>
+                        <h1 className="font-display text-4xl md:text-6xl font-bold text-white tracking-tight">
+                            {selectedCity?.name || 'Bangkok'} <span className="text-amber-400">Scout</span>
                         </h1>
                         <p className="text-gray-400 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
                             Complete missions and enjoy your stay
@@ -106,7 +106,7 @@ export default function MissionsPage() {
                         </div>
                         <div className="h-3 bg-white/10 rounded-full overflow-hidden border border-white/10">
                             <div 
-                                className="h-full bg-cyan-400 transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(34,211,238,0.5)]"
+                                className="h-full bg-amber-400 transition-all duration-1000 ease-out shadow-[0_0_20px_rgba(251,191,36,0.4)]"
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
@@ -118,18 +118,18 @@ export default function MissionsPage() {
             <div className="space-y-6">
                 <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
                     <div className="flex items-center gap-3">
-                        <Target size={20} className="text-cyan-400" />
-                        <h3 className="text-2xl font-black text-gray-900 tracking-tighter uppercase italic">Current Missions</h3>
+                        <Target size={20} className="text-amber-400" />
+                        <h3 className="font-display text-2xl font-bold text-foreground tracking-tight">Current Missions</h3>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
                         {/* Status Tabs */}
-                        <div className="flex bg-gray-100 p-1 rounded-xl border-2 border-gray-900/10">
+                        <div className="flex bg-white/8 p-1 rounded-xl border border-white/10">
                             <button 
                                 onClick={() => setStatusFilter('pending')}
                                 className={cn(
                                     "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all",
-                                    statusFilter === 'pending' ? "bg-white text-cyan-400 shadow-sm border border-gray-900/10" : "text-gray-400"
+                                    statusFilter === 'pending' ? "bg-amber-400 text-black shadow-sm" : "text-white/40"
                                 )}
                             >
                                 Active
@@ -138,7 +138,7 @@ export default function MissionsPage() {
                                 onClick={() => setStatusFilter('completed')}
                                 className={cn(
                                     "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all",
-                                    statusFilter === 'completed' ? "bg-white text-emerald-500 shadow-sm border border-gray-900/10" : "text-gray-400"
+                                    statusFilter === 'completed' ? "bg-emerald-400 text-black shadow-sm" : "text-white/40"
                                 )}
                             >
                                 Completed
@@ -147,7 +147,7 @@ export default function MissionsPage() {
                                 onClick={() => setStatusFilter('all')}
                                 className={cn(
                                     "px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all",
-                                    statusFilter === 'all' ? "bg-white text-gray-900 shadow-sm border border-gray-900/10" : "text-gray-400"
+                                    statusFilter === 'all' ? "bg-white/15 text-foreground shadow-sm" : "text-white/40"
                                 )}
                             >
                                 All
@@ -157,7 +157,7 @@ export default function MissionsPage() {
                         {/* Sort Toggle */}
                         <button 
                             onClick={() => setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest')}
-                            className="flex items-center gap-2 px-4 py-2.5 bg-white rounded-xl border-2 border-gray-900/10 text-[10px] font-black uppercase tracking-widest text-gray-600 hover:bg-gray-50 transition-all"
+                            className="flex items-center gap-2 px-4 py-2.5 bg-white/8 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/12 transition-all"
                         >
                             {sortOrder === 'newest' ? <SortDesc size={14} /> : <SortAsc size={14} />}
                             {sortOrder}
@@ -166,18 +166,18 @@ export default function MissionsPage() {
                 </header>
 
                 {missions.length === 0 ? (
-                    <div className="py-20 text-center bg-gray-50 rounded-[40px] border-2 border-dashed border-gray-200">
+                    <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
                         <div className="flex flex-col items-center gap-4">
-                            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-gray-300 shadow-sm border border-gray-100">
+                            <div className="w-16 h-16 rounded-full bg-white/8 flex items-center justify-center text-white/20">
                                 <Zap size={24} />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-sm font-black text-gray-900 uppercase italic">No missions accepted</p>
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Find a spot on the map and add it to your missions</p>
+                                <p className="font-display text-sm font-bold text-foreground">No missions accepted</p>
+                                <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest">Find a spot on the map and add it to your missions</p>
                             </div>
                             <Link 
-                                href="/discovery" 
-                                className="mt-4 bg-gray-900 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-cyan-400 transition-all active:scale-95 flex items-center gap-2"
+                                href="/spots" 
+                                className="mt-4 bg-amber-400 text-black px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-amber-300 transition-all active:scale-95 flex items-center gap-2"
                             >
                                 Explore {selectedCity?.name || 'City'} <ArrowRight size={14} />
                             </Link>
@@ -189,14 +189,14 @@ export default function MissionsPage() {
                             <div 
                                 key={mission.id}
                                 className={cn(
-                                    "group relative bg-white p-6 md:p-8 rounded-[30px] md:rounded-[40px] border-2 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden",
+                                    "group relative bg-card p-6 md:p-8 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden",
                                     mission.completed 
-                                        ? "border-emerald-500/20 bg-emerald-50/10" 
-                                        : "border-gray-900/10 shadow-xl shadow-gray-200/20 hover:border-cyan-400/30"
+                                        ? "border-emerald-500/20 bg-emerald-400/5" 
+                                        : "border-white/8 shadow-xl shadow-black/20 hover:border-amber-400/30"
                                 )}
                             >
                                 <div className="flex items-center gap-6">
-                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border-2 border-gray-900/5 flex-shrink-0">
+                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 flex-shrink-0">
                                         <img 
                                             src={mission.spot?.imageUrl || 'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=200'} 
                                             alt={mission.spot?.name}
@@ -205,18 +205,18 @@ export default function MissionsPage() {
                                     </div>
                                     <div className="space-y-1">
                                         <h4 className={cn(
-                                            "text-xl md:text-2xl font-black tracking-tighter uppercase italic leading-none",
-                                            mission.completed ? "text-emerald-600/50 line-through" : "text-gray-900"
+                                            "font-display text-xl md:text-2xl font-bold tracking-tight leading-none",
+                                            mission.completed ? "text-emerald-400/50 line-through" : "text-foreground"
                                         )}>
                                             {mission.spot?.name}
                                         </h4>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                                        <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-1">
                                             <MapPin size={10} /> {mission.spot?.name} Area
                                         </p>
                                         <div className="pt-2 flex gap-2">
                                             <Link 
                                                 href={`/spots/${mission.spot?.id}`}
-                                                className="text-[9px] font-black text-cyan-500 uppercase tracking-widest hover:underline flex items-center gap-1"
+                                                className="text-[9px] font-bold text-amber-400 uppercase tracking-widest hover:underline flex items-center gap-1"
                                             >
                                                 View Spot <ArrowRight size={10} />
                                             </Link>
@@ -231,8 +231,8 @@ export default function MissionsPage() {
                                         className={cn(
                                             "flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg",
                                             mission.completed
-                                                ? "bg-emerald-500 text-white shadow-emerald-500/20"
-                                                : "bg-gray-100 text-gray-400 hover:bg-gray-900 hover:text-white border border-gray-900/5"
+                                                ? "bg-emerald-400 text-black shadow-emerald-400/20"
+                                                : "bg-white/8 text-white/40 hover:bg-white/15 hover:text-white border border-white/8"
                                         )}
                                     >
                                         {updateMission.isPending ? (
@@ -253,7 +253,7 @@ export default function MissionsPage() {
                                     <button 
                                         onClick={() => handleRemoveLocally(mission.id)}
                                         disabled={deleteMission.isPending}
-                                        className="p-4 rounded-2xl bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-all border border-red-500/10"
+                                        className="p-4 rounded-2xl bg-red-400/10 text-red-400 hover:bg-red-500 hover:text-white transition-all border border-red-400/20"
                                     >
                                         {deleteMission.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
                                     </button>
@@ -264,11 +264,11 @@ export default function MissionsPage() {
                         {/* Infinite Scroll Target */}
                         <div ref={observerTarget} className="py-12 flex justify-center">
                             {isFetchingNextPage ? (
-                                <Loader2 size={24} className="text-cyan-400 animate-spin" />
+                                <Loader2 size={24} className="text-amber-400 animate-spin" />
                             ) : hasNextPage ? (
                                 <div className="h-4 w-4" />
                             ) : missions.length > 0 ? (
-                                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest italic">End of missions</p>
+                                <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">End of missions</p>
                             ) : null}
                         </div>
                     </div>

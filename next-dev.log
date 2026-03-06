@@ -28,3 +28,9 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
 ✓ Compiled in 119ms
 ✓ Compiled in 118ms
 ✓ Compiled in 557ms
+ GET / 200 in 2.3s (compile: 696ms, render: 1641ms)
+ GET /discovery/ 200 in 2.4s (compile: 2.3s, render: 95ms)
+ GET /discovery/ 200 in 81ms (compile: 9ms, render: 72ms)
+ GET /discovery/ 200 in 67ms (compile: 7ms, render: 60ms)
+ GET /scam-alerts/ 200 in 1562ms (compile: 1441ms, render: 121ms)
+[?25h

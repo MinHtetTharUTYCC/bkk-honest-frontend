@@ -10,6 +10,17 @@ type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto
 
 // --- Profiles ---
 
+export function useLeaderboard(take = 5) {
+    return useQuery({
+        queryKey: ['leaderboard', take],
+        queryFn: async () => {
+            const { data } = await api.get(`/profiles/leaderboard/top?take=${take}`);
+            return data?.data || data;
+        },
+        staleTime: 5 * 60 * 1000,
+    });
+}
+
 export function useProfile(id: string) {
     return useQuery({
         queryKey: ['profile', id],
@@ -174,14 +185,41 @@ export function useSpots(params?: {
     });
 }
 
-export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number }) {
+export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number; categoryId?: string; limit?: number }, enabled = true) {
     return useQuery({
         queryKey: ['spots-nearby', params],
         queryFn: async () => {
             const { data } = await api.get<PaginatedSpots>('/spots/nearby', { params });
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!params.latitude && !!params.longitude,
+        enabled: enabled && !!params.latitude && !!params.longitude,
+        placeholderData: (prev: any) => prev,
+        staleTime: 60_000,
+    });
+}
+
+export function usePopularArea() {
+    return useQuery({
+        queryKey: ['popular-area'],
+        queryFn: async () => {
+            const { data } = await api.get<{ latitude: number; longitude: number; cityName: string; spotCount: number }>('/spots/popular-area');
+            return data;
+        },
+    });
+}
+
+export function useSpotSearch(query: string, cityId?: string, limit: number = 20) {
+    return useQuery({
+        queryKey: ['spot-search', query, cityId],
+        queryFn: async () => {
+            const params = new URLSearchParams();
+            if (query) params.set('q', query);
+            if (cityId) params.set('cityId', cityId);
+            if (limit !== 20) params.set('limit', limit.toString());
+            const { data } = await api.get(`/spots/search${params.toString() ? `?${params}` : ''}`);
+            return Array.isArray(data) ? data : data?.data || [];
+        },
+        enabled: query.trim().length >= 1,
     });
 }
 
@@ -293,7 +331,7 @@ export function useCategories() {
     return useQuery({
         queryKey: ['categories'],
         queryFn: async () => {
-            const { data } = await api.get<components['schemas']['CategoryDto'][]>('/categories');
+            const { data } = await api.get<any>('/categories');
             return Array.isArray(data) ? data : (data as any)?.data || [];
         },
     });
@@ -418,17 +456,32 @@ export function useInfiniteScamAlerts(params?: {
     });
 }
 
-export function useLiveVibes() {
+export function useLiveVibes(params?: { spotId?: string; cityId?: string }) {
+    const query = new URLSearchParams();
+    if (params?.spotId) query.set('spotId', params.spotId);
+    if (params?.cityId) query.set('cityId', params.cityId);
+    const qs = query.toString();
     return useQuery({
-        queryKey: ['live-vibes'],
+        queryKey: ['live-vibes', params],
         queryFn: async () => {
-            const { data } = await api.get<any>('/live-vibes');
+            const { data } = await api.get<any>(`/live-vibes${qs ? `?${qs}` : ''}`);
             return data?.data || (Array.isArray(data) ? data : []);
         },
     });
 }
 
 // --- Comments ---
+
+export function useTipComments(tipId: string) {
+    return useQuery({
+        queryKey: ['tip-comments', tipId],
+        queryFn: async () => {
+            const { data } = await api.get(`/comments/tip/${tipId}`);
+            return data?.data || (Array.isArray(data) ? data : []);
+        },
+        enabled: !!tipId,
+    });
+}
 
 export function useScamComments(scamAlertId: string) {
     return useQuery({
@@ -467,11 +520,51 @@ export function useCreateComment() {
         onSuccess: (_, variables) => {
             if (variables.scamAlertId) {
                 queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
+                queryClient.invalidateQueries({ queryKey: ['scam-alerts-infinite'] });
+            }
+            if (variables.communityTipId) {
+                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
+                queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
+            }
+        },
+    });
+}
+
+export function useUpdateComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: { id: string; content: string; scamAlertId?: string; communityTipId?: string }) => {
+            const { data } = await api.patch(`/comments/${payload.id}`, { text: payload.content });
+            return data;
+        },
+        onSuccess: (_, variables) => {
+            if (variables.scamAlertId) {
+                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
             }
             if (variables.communityTipId) {
                 queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
             }
+        }
+    });
+}
+
+export function useDeleteComment() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: { id: string; scamAlertId?: string; communityTipId?: string }) => {
+            const { data } = await api.delete(`/comments/${payload.id}`);
+            return data;
         },
+        onSuccess: (_, variables) => {
+            if (variables.scamAlertId) {
+                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
+                queryClient.invalidateQueries({ queryKey: ['scam-alerts-infinite'] });
+            }
+            if (variables.communityTipId) {
+                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
+                queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
+            }
+        }
     });
 }
 
@@ -570,7 +663,7 @@ export function useCreateLiveVibe() {
         mutationFn: async (payload: {
             spotId: string;
             crowdLevel: number;
-            waitTimeMinutes: number;
+            waitTimeMinutes?: number;
         }) => {
             const { data } = await api.post('/live-vibes', payload);
             return data;
@@ -585,7 +678,6 @@ export function useCreateLiveVibe() {
 // --- Votes ---
 
 export function useCreateVote() {
-    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({
             targetId,
@@ -611,14 +703,10 @@ export function useCreateVote() {
             const { data } = await api.post(endpoint, payload);
             return data;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(); // Invalidate all to be safe for now, can be more specific later
-        },
     });
 }
 
 export function useDeleteVote() {
-    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({
             voteId,
@@ -629,9 +717,6 @@ export function useDeleteVote() {
         }) => {
             const { data } = await api.delete(`/votes/${type}/${voteId}`);
             return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries();
         },
     });
 }
@@ -709,6 +794,15 @@ export function useDeleteMission() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
             queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
+        },
+    });
+}
+
+export function useReverseGeocode() {
+    return useMutation({
+        mutationFn: async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
+            const { data } = await api.post('/spots/reverse-geocode', { latitude, longitude });
+            return data?.address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
         },
     });
 }
