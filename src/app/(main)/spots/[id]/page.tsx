@@ -3,7 +3,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare } from 'lucide-react';
+import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare, Navigation } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
@@ -379,6 +379,15 @@ export default function SpotDetailPage() {
                     Accept Mission
                   </>
                 )}
+              </button>
+
+              <button 
+                onClick={() => router.push(`/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`)}
+                className="bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center gap-3 text-[10px] font-semibold tracking-wide"
+                title="Navigate to this spot"
+              >
+                <Navigation size={18} />
+                Navigate
               </button>
               
               {isOwner && (
