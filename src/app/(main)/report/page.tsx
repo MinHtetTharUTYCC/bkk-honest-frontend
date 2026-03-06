@@ -6,11 +6,11 @@ import {
     useCategories,
     useCreatePriceReport,
     useCreateScamAlert,
-    useCreateLiveVibe,
     useCreateSpot,
     useCities,
 } from '@/hooks/use-api';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
+import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
@@ -37,7 +37,6 @@ export default function ReportPage() {
     // Mutations
     const createPrice = useCreatePriceReport();
     const createScam = useCreateScamAlert();
-    const createVibe = useCreateLiveVibe();
     const createSpot = useCreateSpot();
 
     const handlePriceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,17 +61,6 @@ export default function ReportPage() {
             preventionTip: formData.get('preventionTip') as string,
             cityId: selectedCityId,
             categoryId: formData.get('categoryId') as string,
-        });
-        setSubmitted(true);
-    };
-
-    const handleVibeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        await createVibe.mutateAsync({
-            spotId: formData.get('spotId') as string,
-            crowdLevel: Number(formData.get('crowdLevel')),
-            waitTimeMinutes: Number(formData.get('waitTimeMinutes')),
         });
         setSubmitted(true);
     };
@@ -279,56 +267,11 @@ export default function ReportPage() {
                 )}
 
                 {activeTab === 'vibe' && (
-                    <form onSubmit={handleVibeSubmit} className="space-y-8">
-                        <SearchableSpotSelect
-                            name="spotId"
-                            required
-                            placeholder="Search spots..."
-                            cityId={selectedCityId}
-                        />
-
-                        <div className="space-y-6">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1 text-center">
-                                Crowd Level (1-5)
-                            </label>
-                            <div className="flex justify-between gap-4">
-                                {[1, 2, 3, 4, 5].map((level) => (
-                                    <label key={level} className="flex-1">
-                                        <input
-                                            type="radio"
-                                            name="crowdLevel"
-                                            value={level}
-                                            required
-                                            className="peer hidden"
-                                        />
-                                        <div className="w-full py-4 text-center rounded-2xl bg-white/5 text-white/40 font-bold cursor-pointer transition-all peer-checked:bg-amber-400 peer-checked:text-black peer-checked:shadow-lg peer-checked:shadow-amber-400/20">
-                                            {level}
-                                        </div>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Estimated Wait Time (Minutes)
-                            </label>
-                            <input
-                                name="waitTimeMinutes"
-                                type="number"
-                                defaultValue={0}
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
-                            />
-                        </div>
-
-                        <button
-                            disabled={createVibe.isPending}
-                            className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
-                        >
-                            <Zap size={16} fill="currentColor" />
-                            {createVibe.isPending ? 'Share Live Vibe' : 'Share Live Vibe'}
-                        </button>
-                    </form>
+                    <CreateVibeForm
+                        showSpotSelect
+                        cityId={selectedCityId}
+                        onSuccess={() => setSubmitted(true)}
+                    />
                 )}
 
                 {activeTab === 'spot' && (

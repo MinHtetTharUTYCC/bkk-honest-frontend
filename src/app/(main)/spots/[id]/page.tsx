@@ -11,6 +11,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import TipCommentsModal from '@/components/tips/tip-comments-modal';
+import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
@@ -28,7 +29,6 @@ export default function SpotDetailPage() {
   const { data: categories } = useCategories();
   const { data: cities } = useCities();
   const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: id });
-  const createVibeMutation = useCreateLiveVibe();
   
   const missionsList = missionsData?.pages.flatMap(page => page.data || []) || [];
   const isInMissions = missionsList.some((m: any) => m.spot?.id === id);
@@ -42,9 +42,6 @@ export default function SpotDetailPage() {
   const [showTipModal, setShowTipModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
-  const [vibeCrowdLevel, setVibeCrowdLevel] = useState(3);
-  const [vibeWaitTime, setVibeWaitTime] = useState('');
-  const [vibeSubmitting, setVibeSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -806,60 +803,7 @@ export default function SpotDetailPage() {
           </header>
 
           {/* Check-in Form */}
-          {authUser && (
-            <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
-              <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">Check In Your Vibe</p>
-              <div className="space-y-3">
-                <div>
-                  <label className="text-[10px] font-semibold text-white/50 uppercase tracking-widest block mb-2">
-                    Crowd Level: {vibeCrowdLevel}/5
-                  </label>
-                  <input
-                    type="range" min={1} max={5} step={1}
-                    value={vibeCrowdLevel}
-                    onChange={e => setVibeCrowdLevel(Number(e.target.value))}
-                    className="w-full accent-amber-400"
-                  />
-                  <div className="flex justify-between text-[10px] text-white/30 mt-1">
-                    <span>Empty</span><span>Moderate</span><span>Packed</span>
-                  </div>
-                </div>
-                <div>
-                  <label className="text-[10px] font-semibold text-white/50 uppercase tracking-widest block mb-2">
-                    Wait Time (minutes, optional)
-                  </label>
-                  <input
-                    type="number" min={0} placeholder="0"
-                    value={vibeWaitTime}
-                    onChange={e => setVibeWaitTime(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-amber-400/50"
-                  />
-                </div>
-                <button
-                  disabled={vibeSubmitting}
-                  onClick={async () => {
-                    if (!spot?.id) return;
-                    setVibeSubmitting(true);
-                    try {
-                      await createVibeMutation.mutateAsync({
-                        spotId: spot.id,
-                        crowdLevel: vibeCrowdLevel,
-                        waitTimeMinutes: vibeWaitTime ? Number(vibeWaitTime) : undefined,
-                      });
-                      setVibeWaitTime('');
-                      setVibeCrowdLevel(3);
-                    } finally {
-                      setVibeSubmitting(false);
-                    }
-                  }}
-                  className="w-full bg-amber-500 text-black py-3 rounded-xl text-xs font-semibold tracking-wide hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {vibeSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} fill="currentColor" />}
-                  Submit Vibe
-                </button>
-              </div>
-            </div>
-          )}
+          {authUser && <CreateVibeForm spotId={id} onSuccess={() => {}} />}
 
           {/* Vibe List */}
           {vibesLoading ? (
