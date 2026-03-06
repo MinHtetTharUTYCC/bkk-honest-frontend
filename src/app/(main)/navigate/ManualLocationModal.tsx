@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Map, { Marker } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MapPin, AlertCircle } from 'lucide-react';
+import { MapPin, AlertCircle, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface ManualLocationModalProps {
@@ -11,6 +11,7 @@ interface ManualLocationModalProps {
   destLng: number;
   destName: string;
   onLocationSelected: (lat: number, lng: number) => void;
+  onClose?: () => void;
   errorType: 'permission_denied' | 'timeout' | 'position_unavailable' | 'unknown';
 }
 
@@ -19,6 +20,7 @@ export default function ManualLocationModal({
   destLng,
   destName,
   onLocationSelected,
+  onClose,
   errorType,
 }: ManualLocationModalProps) {
   const mapRef = useRef<any>(null);
@@ -67,26 +69,37 @@ export default function ManualLocationModal({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 20 }}
         transition={{ type: 'spring', damping: 30 }}
-        className="bg-gray-900 rounded-3xl overflow-hidden w-full max-w-md max-h-[90vh] flex flex-col border border-amber-400/20"
+        className="bg-zinc-900 rounded-[32px] overflow-hidden w-full max-w-lg h-[80vh] flex flex-col border border-white/10 shadow-2xl shadow-black"
       >
-        <div className="p-6 border-b border-border/30">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <h2 className="text-white font-semibold mb-2">Mark Your Location</h2>
-              <p className="text-white/60 text-sm">{getErrorMessage()}</p>
+        <div className="p-6 border-b border-white/5 bg-zinc-900/50 backdrop-blur">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 bg-amber-400/10 rounded-2xl flex items-center justify-center text-amber-400 shrink-0">
+              <AlertCircle size={20} />
             </div>
+            <div className="flex-1">
+              <h2 className="text-white font-bold text-lg tracking-tight">Set Your Starting Point</h2>
+              <p className="text-white/40 text-xs leading-relaxed mt-1">{getErrorMessage()}</p>
+            </div>
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors shrink-0"
+                aria-label="Close dialog"
+              >
+                <X size={20} className="text-white/70 hover:text-white" />
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="flex-1 relative overflow-hidden">
+        <div className="flex-1 relative">
           {MAPBOX_TOKEN ? (
             <Map
               ref={mapRef}
@@ -99,7 +112,10 @@ export default function ManualLocationModal({
             >
               {selectedLocation && (
                 <Marker latitude={selectedLocation.lat} longitude={selectedLocation.lng}>
-                  <div className="w-4 h-4 bg-blue-400 rounded-full shadow-lg shadow-blue-400/50 border-2 border-white animate-pulse" />
+                  <div className="relative flex items-center justify-center">
+                    <div className="absolute w-8 h-8 bg-blue-500/30 rounded-full animate-ping" />
+                    <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                  </div>
                 </Marker>
               )}
 
@@ -115,33 +131,46 @@ export default function ManualLocationModal({
             </div>
           )}
 
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div className="text-center text-white/60 text-xs bg-black/40 px-3 py-2 rounded-full backdrop-blur">
-              Click map to mark your location
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-none z-10">
+            <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-full shadow-2xl">
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+              <span className="text-white font-bold text-[10px] uppercase tracking-widest whitespace-nowrap">
+                Tap anywhere to mark start
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="p-4 border-t border-border/30 space-y-3">
+        <div className="p-6 border-t border-white/5 bg-zinc-900/50 backdrop-blur space-y-4">
           {selectedLocation ? (
-            <>
-              <div className="bg-white/5 rounded-2xl p-3 text-center">
-                <p className="text-white/60 text-xs mb-1">Selected Location:</p>
-                <p className="text-white text-sm font-medium">
-                  {selectedLocation.lat.toFixed(4)}° N, {selectedLocation.lng.toFixed(4)}° E
-                </p>
+            <div className="space-y-4">
+              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between">
+                <div>
+                  <p className="text-white/30 text-[10px] uppercase font-bold tracking-widest mb-1">Marked Point</p>
+                  <p className="text-white text-sm font-mono font-medium tracking-tight">
+                    {selectedLocation.lat.toFixed(6)}, {selectedLocation.lng.toFixed(6)}
+                  </p>
+                </div>
+                <div className="w-8 h-8 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400">
+                  <MapPin size={16} />
+                </div>
               </div>
               <button
                 onClick={handleConfirm}
-                className="w-full bg-amber-400 text-black px-4 py-3 rounded-2xl font-semibold hover:bg-amber-300 transition-colors active:scale-95"
+                className="w-full bg-amber-400 text-black py-4 rounded-2xl font-bold text-sm hover:bg-amber-300 transition-all active:scale-[0.98] shadow-xl shadow-amber-400/20"
               >
-                Navigate from Here
+                Navigate from This Point
               </button>
-            </>
+            </div>
           ) : (
-            <p className="text-white/40 text-sm text-center py-3">
-              Tap on the map to select your location
-            </p>
+            <div className="py-4 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
+                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                <p className="text-white/60 text-[11px] font-bold uppercase tracking-wider">
+                  Select a spot on the map
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </motion.div>

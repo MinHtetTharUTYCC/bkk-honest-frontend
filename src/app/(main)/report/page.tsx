@@ -11,6 +11,8 @@ import {
 } from '@/hooks/use-api';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
+import LocationPicker from '@/components/spots/location-picker';
+import { Dropdown } from '@/components/ui/dropdown';
 import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
@@ -19,6 +21,11 @@ import { useCity } from '@/components/providers/city-provider';
 export default function ReportPage() {
     const [activeTab, setActiveTab] = useState<'price' | 'scam' | 'vibe' | 'spot'>('price');
     const [submitted, setSubmitted] = useState(false);
+    const [spotName, setSpotName] = useState('');
+    const [spotAddress, setSpotAddress] = useState('');
+    const [spotCity, setSpotCity] = useState('');
+    const [spotCategory, setSpotCategory] = useState('');
+    const [spotLocation, setSpotLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const router = useRouter();
     const { selectedCityId, selectedCity } = useCity();
 
@@ -65,17 +72,48 @@ export default function ReportPage() {
         setSubmitted(true);
     };
 
+    const fetchAddressFromLocation = async (latitude: number, longitude: number) => {
+        try {
+            // Try to use backend reverse geocoding endpoint
+            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+            if (!apiUrl) {
+                console.error('API URL not configured');
+                setSpotAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+                return;
+            }
+
+            const response = await fetch(`${apiUrl}/spots/reverse-geocode`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ latitude, longitude }),
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.address) {
+                    setSpotAddress(data.address);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch address:', error);
+            // Fallback: just show coordinates
+            setSpotAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        }
+    };
+
     const handleSpotSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
+        if (!spotLocation) {
+            alert('Please select a location on the map');
+            return;
+        }
         await createSpot.mutateAsync({
-            name: formData.get('name') as string,
-            address: formData.get('address') as string,
-            categoryId: formData.get('categoryId') as string,
-            cityId: formData.get('cityId') as string,
-            latitude: Number(formData.get('latitude')),
-            longitude: Number(formData.get('longitude')),
-            imageUrl: (formData.get('imageUrl') as string) || undefined,
+            name: spotName,
+            address: spotAddress,
+            categoryId: spotCategory,
+            cityId: spotCity,
+            latitude: spotLocation.latitude,
+            longitude: spotLocation.longitude,
         });
         setSubmitted(true);
     };
@@ -281,7 +319,8 @@ export default function ReportPage() {
                                 Spot Name
                             </label>
                             <input
-                                name="name"
+                                value={spotName}
+                                onChange={(e) => setSpotName(e.target.value)}
                                 required
                                 placeholder="e.g. Jek Pui Curry"
                                 className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
@@ -290,96 +329,55 @@ export default function ReportPage() {
 
                         <div className="space-y-4">
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Address
+                                Pick Location on Map
                             </label>
-                            <input
-                                name="address"
-                                required
-                                placeholder="e.g. 25 Mangkon Rd, Bangkok"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4">
-                                <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                    City
-                                </label>
-                                <select
-                                    name="cityId"
-                                    defaultValue={selectedCityId}
-                                    required
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground outline-none appearance-none cursor-pointer"
-                                >
-                                    <option value="">Select city...</option>
-                                    {cities?.map((c: any) => (
-                                        <option key={c.id} value={c.id}>
-                                            {c.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="space-y-4">
-                                <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                    Category
-                                </label>
-                                <select
-                                    name="categoryId"
-                                    required
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground outline-none appearance-none cursor-pointer"
-                                >
-                                    <option value="">Select category...</option>
-                                    {categories?.map((c: any) => (
-                                        <option key={c.id} value={c.id}>
-                                            {c.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4">
-                                <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                    Latitude
-                                </label>
-                                <input
-                                    name="latitude"
-                                    type="number"
-                                    step="any"
-                                    required
-                                    placeholder="13.7563"
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
-                                />
-                            </div>
-                            <div className="space-y-4">
-                                <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                    Longitude
-                                </label>
-                                <input
-                                    name="longitude"
-                                    type="number"
-                                    step="any"
-                                    required
-                                    placeholder="100.5018"
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                            <div className="rounded-2xl overflow-hidden h-96 border border-white/10">
+                                <LocationPicker
+                                    onLocationSelected={(loc) => {
+                                        setSpotLocation(loc);
+                                        // Auto-fetch address from location
+                                        fetchAddressFromLocation(loc.latitude, loc.longitude);
+                                    }}
+                                    initialLocation={spotLocation || undefined}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-4">
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Hero Image URL (Optional)
+                                Address
+                                <span className="text-white/60 text-[9px] ml-2">(Auto-populated, editable)</span>
                             </label>
-                            <input
-                                name="imageUrl"
-                                placeholder="https://..."
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                            <textarea
+                                value={spotAddress}
+                                onChange={(e) => setSpotAddress(e.target.value)}
+                                required
+                                placeholder="e.g. 25 Mangkon Rd, Bangkok"
+                                rows={3}
+                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
+                            />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <Dropdown
+                                label="City"
+                                options={cities || []}
+                                value={spotCity}
+                                onChange={setSpotCity}
+                                placeholder="Select city..."
+                            />
+                            <Dropdown
+                                label="Category"
+                                options={categories || []}
+                                value={spotCategory}
+                                onChange={setSpotCategory}
+                                placeholder="Select category..."
                             />
                         </div>
 
                         <button
-                            disabled={createSpot.isPending}
+                            type="submit"
+                            disabled={createSpot.isPending || !spotLocation}
                             className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <MapPin size={16} />

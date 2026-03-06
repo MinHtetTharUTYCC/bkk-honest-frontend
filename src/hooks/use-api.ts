@@ -331,7 +331,7 @@ export function useCategories() {
     return useQuery({
         queryKey: ['categories'],
         queryFn: async () => {
-            const { data } = await api.get<components['schemas']['CategoryDto'][]>('/categories');
+            const { data } = await api.get<any>('/categories');
             return Array.isArray(data) ? data : (data as any)?.data || [];
         },
     });
@@ -794,6 +794,15 @@ export function useDeleteMission() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
             queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
+        },
+    });
+}
+
+export function useReverseGeocode() {
+    return useMutation({
+        mutationFn: async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
+            const { data } = await api.post('/spots/reverse-geocode', { latitude, longitude });
+            return data?.address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
         },
     });
 }

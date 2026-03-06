@@ -151,6 +151,11 @@ export default function NavigatePage() {
     }
   };
 
+  const handleCloseManualLocation = () => {
+    setShowManualLocation(false);
+    router.back();
+  };
+
   const handleManualLocationSelected = (lat: number, lng: number) => {
     setUserLocation({ lat, lng });
     setViewState((prev) => ({
@@ -328,6 +333,7 @@ export default function NavigatePage() {
             destLng={destLng}
             destName={destName}
             onLocationSelected={handleManualLocationSelected}
+            onClose={handleCloseManualLocation}
             errorType={permissionError}
           />
         )}

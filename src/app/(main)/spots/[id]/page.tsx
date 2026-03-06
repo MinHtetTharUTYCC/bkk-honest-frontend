@@ -12,6 +12,7 @@ import GalleryModal from '@/components/spots/gallery-modal';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
+import { Dropdown } from '@/components/ui/dropdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
@@ -265,35 +266,20 @@ export default function SpotDetailPage() {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                    Category
-                  </label>
-                  <select
-                    value={editCategory}
-                    onChange={(e) => setEditCategory(e.target.value)}
-                    className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-sm font-semibold text-white focus:outline-none focus:border-amber-400 transition-all"
-                  >
-                    {categories?.map((cat: any) => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                    City
-                  </label>
-                  <select
-                    value={editCity}
-                    onChange={(e) => setEditCity(e.target.value)}
-                    className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-sm font-semibold text-white focus:outline-none focus:border-amber-400 transition-all"
-                  >
-                    {cities?.map((city: any) => (
-                      <option key={city.id} value={city.id}>{city.name}</option>
-                    ))}
-                  </select>
-                </div>
+                <Dropdown
+                  label="Category"
+                  options={categories || []}
+                  value={editCategory}
+                  onChange={setEditCategory}
+                  placeholder="Select category..."
+                />
+                <Dropdown
+                  label="City"
+                  options={cities || []}
+                  value={editCity}
+                  onChange={setEditCity}
+                  placeholder="Select city..."
+                />
               </div>
 
               <div className="pt-4 flex gap-4">
@@ -338,6 +324,27 @@ export default function SpotDetailPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
           
+          {/* Admin Actions - Mobile Only (Top Right) */}
+          <div className="absolute top-4 right-4 flex md:hidden gap-2 z-10">
+            {isOwner && (
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="bg-black/40 backdrop-blur-md text-white p-3 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform"
+                title="Edit Spot"
+              >
+                <Edit2 size={18} />
+              </button>
+            )}
+            <button 
+              onClick={() => deleteSpotMutation.mutate()}
+              disabled={deleteSpotMutation.isPending}
+              className="bg-black/40 backdrop-blur-md text-white p-3 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform"
+              title="Delete Spot"
+            >
+              {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+            </button>
+          </div>
+          
           <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -355,12 +362,13 @@ export default function SpotDetailPage() {
                 {spot.address}
               </p>
             </div>
-            <div className="flex gap-4">
+            
+            <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-3 md:gap-4">
               <button 
                 onClick={() => !isInMissions && addMission.mutate(id)}
                 disabled={addMission.isPending || isInMissions}
                 className={cn(
-                  "bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center gap-3 text-[10px] font-semibold tracking-wide",
+                  "flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide",
                   isInMissions 
                     ? "bg-emerald-500/80 border-emerald-400 text-white" 
                     : "hover:bg-amber-400 border-white/20"
@@ -371,19 +379,21 @@ export default function SpotDetailPage() {
                 ) : isInMissions ? (
                   <>
                     <CheckCircle2 size={18} />
-                    Mission Accepted
+                    <span className="hidden md:inline">Mission Accepted</span>
+                    <span className="md:hidden">Accepted</span>
                   </>
                 ) : (
                   <>
                     <Target size={18} />
-                    Accept Mission
+                    <span className="hidden md:inline">Accept Mission</span>
+                    <span className="md:hidden">Accept</span>
                   </>
                 )}
               </button>
 
               <button 
                 onClick={() => router.push(`/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`)}
-                className="bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center gap-3 text-[10px] font-semibold tracking-wide"
+                className="flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide"
                 title="Navigate to this spot"
               >
                 <Navigation size={18} />
@@ -393,7 +403,7 @@ export default function SpotDetailPage() {
               {isOwner && (
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl"
+                  className="hidden md:flex bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl"
                   title="Edit Spot"
                 >
                   <Edit2 size={18} />
@@ -403,7 +413,7 @@ export default function SpotDetailPage() {
               <button 
                 onClick={() => deleteSpotMutation.mutate()}
                 disabled={deleteSpotMutation.isPending}
-                className="bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-red-500 transition-all active:scale-95 border border-white/20 shadow-xl"
+                className="hidden md:flex bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-red-500 transition-all active:scale-95 border border-white/20 shadow-xl"
                 title="Delete Spot"
               >
                 {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
@@ -524,8 +534,8 @@ export default function SpotDetailPage() {
               onClick={() => setShowGalleryModal(true)}
               className="text-[10px] font-medium text-white/50 uppercase tracking-widest hover:text-cyan-400 transition-colors flex items-center gap-2"
             >
-              <span className="hidden md:inline">View All {galleryResponse?.pagination?.total || galleryList.length} Photos</span>
-              <span className="md:hidden">All ({galleryResponse?.pagination?.total || galleryList.length})</span>
+              <span className="hidden md:inline">View All {(galleryResponse as any)?.pagination?.total || galleryList.length} Photos</span>
+              <span className="md:hidden">All ({(galleryResponse as any)?.pagination?.total || galleryList.length})</span>
               <Maximize2 size={12} />
             </button>
           </div>
@@ -574,12 +584,12 @@ export default function SpotDetailPage() {
                   </div>
                 </div>
               ))}
-              {galleryResponse?.pagination?.total && galleryResponse.pagination.total > 5 ? (
+              {(galleryResponse as any)?.pagination?.total && (galleryResponse as any).pagination.total > 5 ? (
                 <button 
                   onClick={() => setShowGalleryModal(true)}
                   className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform"
                 >
-                  <span className="text-xl font-display font-bold">+{galleryResponse.pagination.total - 5}</span>
+                  <span className="text-xl font-display font-bold">+{(galleryResponse as any).pagination.total - 5}</span>
                   <span className="text-[8px] font-semibold tracking-wide">More Vibes</span>
                 </button>
               ) : galleryList.length > 5 ? (
