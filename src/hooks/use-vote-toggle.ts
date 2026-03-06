@@ -18,59 +18,52 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image', spotId?: string) 
   const deleteVote = useDeleteVote();
   const queryClient = useQueryClient();
 
-  const getQueryKey = () => {
+  const getQueryKeyPrefix = () => {
     if (type === 'image' && spotId) return ['gallery-infinite', spotId];
     if (type === 'tip' && spotId) return ['tips-infinite', spotId];
     if (type === 'alert') return ['scam-alerts'];
     return null;
   };
 
-  const toggleVote = async (item: VoteableItem) => {
-    const queryKey = getQueryKey();
-    if (!queryKey) return;
+  const updateItem = (target: any, item: VoteableItem) => {
+    if (target.id !== item.id) return target;
+    const isRemoving = !!item.hasVoted;
+    return {
+      ...target,
+      hasVoted: !isRemoving,
+      voteId: isRemoving ? null : 'temp-id',
+      _count: {
+        ...target._count,
+        votes: (target._count?.votes || 0) + (isRemoving ? -1 : 1),
+      },
+    };
+  };
 
-    // Snapshot of previous state
-    const previousData = queryClient.getQueryData(queryKey);
-
-    // Optimistically update
-    queryClient.setQueryData(queryKey, (old: any) => {
-      if (!old) return old;
-
-      const updateItem = (target: any) => {
-        if (target.id === item.id) {
-          const isRemoving = !!item.hasVoted;
-          return {
-            ...target,
-            hasVoted: !isRemoving,
-            voteId: isRemoving ? null : 'temp-id',
-            _count: {
-              ...target._count,
-              votes: (target._count?.votes || 0) + (isRemoving ? -1 : 1),
-            },
-          };
-        }
-        return target;
+  const applyUpdate = (old: any, item: VoteableItem): any => {
+    if (!old) return old;
+    if (Array.isArray(old)) return old.map(t => updateItem(t, item));
+    if (old.pages) {
+      return {
+        ...old,
+        pages: old.pages.map((page: any) => ({
+          ...page,
+          data: page.data?.map((t: any) => updateItem(t, item)) ?? page.map?.((t: any) => updateItem(t, item)),
+        })),
       };
+    }
+    if (old.data) return { ...old, data: old.data.map((t: any) => updateItem(t, item)) };
+    return old;
+  };
 
-      // Handle both flat arrays and infinite query structures
-      if (Array.isArray(old)) {
-        return old.map(updateItem);
-      } else if (old.pages) {
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => ({
-            ...page,
-            data: page.data?.map(updateItem) || page.map(updateItem),
-          })),
-        };
-      } else if (old.data) {
-        return {
-          ...old,
-          data: old.data.map(updateItem),
-        };
-      }
-      return old;
-    });
+  const toggleVote = async (item: VoteableItem) => {
+    const keyPrefix = getQueryKeyPrefix();
+    if (!keyPrefix) return;
+
+    // Snapshot all matching queries (handles parameterized keys like ['scam-alerts', {cityId}])
+    const snapshots = queryClient.getQueriesData<any>({ queryKey: keyPrefix });
+
+    // Optimistically update all matching queries
+    queryClient.setQueriesData<any>({ queryKey: keyPrefix }, (old: any) => applyUpdate(old, item));
 
     try {
       if (item.hasVoted && item.voteId) {
@@ -79,12 +72,12 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image', spotId?: string) 
         await createVote.mutateAsync({ targetId: item.id, type });
       }
     } catch (error) {
-      // Rollback on error
-      queryClient.setQueryData(queryKey, previousData);
+      // Rollback all snapshots on error
+      snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
       toast.error('Failed to update vote');
     } finally {
-      // Refresh to get actual DB state (IDs, counts)
-      queryClient.invalidateQueries({ queryKey });
+      // Refresh to get actual DB state (real voteId, counts)
+      queryClient.invalidateQueries({ queryKey: keyPrefix });
       if (type === 'image' && spotId) queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
       if (type === 'tip' && spotId) queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
     }

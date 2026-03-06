@@ -663,7 +663,6 @@ export function useCreateLiveVibe() {
 // --- Votes ---
 
 export function useCreateVote() {
-    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({
             targetId,
@@ -689,14 +688,10 @@ export function useCreateVote() {
             const { data } = await api.post(endpoint, payload);
             return data;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(); // Invalidate all to be safe for now, can be more specific later
-        },
     });
 }
 
 export function useDeleteVote() {
-    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({
             voteId,
@@ -707,9 +702,6 @@ export function useDeleteVote() {
         }) => {
             const { data } = await api.delete(`/votes/${type}/${voteId}`);
             return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries();
         },
     });
 }
