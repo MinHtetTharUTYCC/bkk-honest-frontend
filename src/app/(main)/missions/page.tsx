@@ -176,7 +176,7 @@ export default function MissionsPage() {
                                 <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest">Find a spot on the map and add it to your missions</p>
                             </div>
                             <Link 
-                                href="/discovery" 
+                                href="/spots" 
                                 className="mt-4 bg-amber-400 text-black px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-amber-300 transition-all active:scale-95 flex items-center gap-2"
                             >
                                 Explore {selectedCity?.name || 'City'} <ArrowRight size={14} />

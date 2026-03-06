@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
+import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
@@ -27,6 +27,8 @@ export default function SpotDetailPage() {
   const updateSpotMutation = useUpdateSpot();
   const { data: categories } = useCategories();
   const { data: cities } = useCities();
+  const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: id });
+  const createVibeMutation = useCreateLiveVibe();
   
   const missionsList = missionsData?.pages.flatMap(page => page.data || []) || [];
   const isInMissions = missionsList.some((m: any) => m.spot?.id === id);
@@ -39,7 +41,10 @@ export default function SpotDetailPage() {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showTipModal, setShowTipModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips'>('tips');
+  const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
+  const [vibeCrowdLevel, setVibeCrowdLevel] = useState(3);
+  const [vibeWaitTime, setVibeWaitTime] = useState('');
+  const [vibeSubmitting, setVibeSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -446,7 +451,7 @@ export default function SpotDetailPage() {
               activeTab === 'gallery' ? "bg-white text-amber-400 shadow-sm" : "text-white/50"
             )}
           >
-            Vibes
+            Gallery
           </button>
           <button 
             onClick={() => setActiveTab('prices')}
@@ -465,6 +470,15 @@ export default function SpotDetailPage() {
             )}
           >
             Tips
+          </button>
+          <button 
+            onClick={() => setActiveTab('vibes')}
+            className={cn(
+              "flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all",
+              activeTab === 'vibes' ? "bg-white text-amber-400 shadow-sm" : "text-white/50"
+            )}
+          >
+            Vibes
           </button>
         </div>
       </div>
@@ -780,6 +794,115 @@ export default function SpotDetailPage() {
               </ScrollArea>
             )}
           </div>
+        </section>
+
+        {/* Live Vibes Section */}
+        <section className={cn("space-y-8 md:block", activeTab === 'vibes' ? "block" : "hidden")}>
+          <header className="flex items-center justify-between px-2">
+            <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+              <Zap size={20} className="text-amber-400" />
+              Live Vibes
+            </h3>
+          </header>
+
+          {/* Check-in Form */}
+          {authUser && (
+            <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
+              <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">Check In Your Vibe</p>
+              <div className="space-y-3">
+                <div>
+                  <label className="text-[10px] font-semibold text-white/50 uppercase tracking-widest block mb-2">
+                    Crowd Level: {vibeCrowdLevel}/5
+                  </label>
+                  <input
+                    type="range" min={1} max={5} step={1}
+                    value={vibeCrowdLevel}
+                    onChange={e => setVibeCrowdLevel(Number(e.target.value))}
+                    className="w-full accent-amber-400"
+                  />
+                  <div className="flex justify-between text-[10px] text-white/30 mt-1">
+                    <span>Empty</span><span>Moderate</span><span>Packed</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-[10px] font-semibold text-white/50 uppercase tracking-widest block mb-2">
+                    Wait Time (minutes, optional)
+                  </label>
+                  <input
+                    type="number" min={0} placeholder="0"
+                    value={vibeWaitTime}
+                    onChange={e => setVibeWaitTime(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-amber-400/50"
+                  />
+                </div>
+                <button
+                  disabled={vibeSubmitting}
+                  onClick={async () => {
+                    if (!spot?.id) return;
+                    setVibeSubmitting(true);
+                    try {
+                      await createVibeMutation.mutateAsync({
+                        spotId: spot.id,
+                        crowdLevel: vibeCrowdLevel,
+                        waitTimeMinutes: vibeWaitTime ? Number(vibeWaitTime) : undefined,
+                      });
+                      setVibeWaitTime('');
+                      setVibeCrowdLevel(3);
+                    } finally {
+                      setVibeSubmitting(false);
+                    }
+                  }}
+                  className="w-full bg-amber-500 text-black py-3 rounded-xl text-xs font-semibold tracking-wide hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {vibeSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Zap size={14} fill="currentColor" />}
+                  Submit Vibe
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Vibe List */}
+          {vibesLoading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map(i => <div key={i} className="h-20 bg-white/5 rounded-2xl animate-pulse" />)}
+            </div>
+          ) : Array.isArray(spotVibes) && spotVibes.length > 0 ? (
+            <div className="space-y-3">
+              {spotVibes.map((vibe: any) => (
+                <div key={vibe.id} className="bg-white/5 rounded-2xl p-5 border border-white/8 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className={cn(
+                            "w-2 h-6 rounded-full transition-colors",
+                            i < vibe.crowdLevel ? "bg-amber-400" : "bg-white/10"
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">
+                        Crowd: {vibe.crowdLevel}/5
+                      </p>
+                      {vibe.waitTimeMinutes != null && (
+                        <p className="text-xs text-white/50">{vibe.waitTimeMinutes} min wait</p>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-white/30 whitespace-nowrap">
+                    {new Date(vibe.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+              <Zap size={32} className="text-white/10 mx-auto mb-3" />
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">No vibes yet. Be the first to check in!</p>
+            </div>
+          )}
         </section>
       </div>
     </div>

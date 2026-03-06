@@ -12,7 +12,7 @@ export default function Sidebar() {
     const pathname = usePathname();
     const { selectedCity } = useCity();
     const { data: categories } = useCategories();
-    const isDiscovery = pathname?.includes('/discovery');
+    const isDiscovery = pathname?.includes('/spots');
     const isSpotDetail = pathname?.startsWith('/spots/');
     const isMap = pathname === '/map';
 

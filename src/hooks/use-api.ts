@@ -441,11 +441,15 @@ export function useInfiniteScamAlerts(params?: {
     });
 }
 
-export function useLiveVibes() {
+export function useLiveVibes(params?: { spotId?: string; cityId?: string }) {
+    const query = new URLSearchParams();
+    if (params?.spotId) query.set('spotId', params.spotId);
+    if (params?.cityId) query.set('cityId', params.cityId);
+    const qs = query.toString();
     return useQuery({
-        queryKey: ['live-vibes'],
+        queryKey: ['live-vibes', params],
         queryFn: async () => {
-            const { data } = await api.get<any>('/live-vibes');
+            const { data } = await api.get<any>(`/live-vibes${qs ? `?${qs}` : ''}`);
             return data?.data || (Array.isArray(data) ? data : []);
         },
     });
@@ -644,7 +648,7 @@ export function useCreateLiveVibe() {
         mutationFn: async (payload: {
             spotId: string;
             crowdLevel: number;
-            waitTimeMinutes: number;
+            waitTimeMinutes?: number;
         }) => {
             const { data } = await api.post('/live-vibes', payload);
             return data;

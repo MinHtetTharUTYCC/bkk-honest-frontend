@@ -16,15 +16,18 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
 import { LeaderboardList } from '@/components/leaderboard-list';
+import ScamDetailsModal from '@/components/scams/scam-details-modal';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const { latitude, longitude, error: geoError } = useGeolocation();
+    const [selectedAlert, setSelectedAlert] = useState<any>(null);
 
     const { data: nearbySpots, isLoading: nearbyLoading } = useNearbySpots({
         latitude: latitude || 0,
@@ -230,7 +233,10 @@ export default function HomeFeed() {
                                                 {alert._count?.votes || 0}
                                             </button>
                                         </div>
-                                        <button className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/30 hover:text-amber-400 transition-colors">
+                                        <button
+                                            onClick={() => setSelectedAlert(alert)}
+                                            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/30 hover:text-amber-400 transition-colors"
+                                        >
                                             <MessageCircle size={14} />
                                             {alert._count?.comments || 0} Comments
                                         </button>
@@ -351,6 +357,13 @@ export default function HomeFeed() {
                     </section>
                 </div>
             </div>
+
+            {selectedAlert && (
+                <ScamDetailsModal
+                    alert={selectedAlert}
+                    onClose={() => setSelectedAlert(null)}
+                />
+            )}
         </div>
     );
 }

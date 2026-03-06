@@ -10,7 +10,7 @@ export default function NavDock() {
 
   const navItems = [
     { icon: Home, label: 'Home', href: '/' },
-    { icon: Search, label: 'Discovery', href: '/discovery' },
+    { icon: Search, label: 'Spots', href: '/spots' },
     { icon: AlertTriangle, label: 'Scams', href: '/scam-alerts' },
     { icon: Target, label: 'Missions', href: '/missions' },
     { icon: MapIcon, label: 'Map', href: '/map' },
