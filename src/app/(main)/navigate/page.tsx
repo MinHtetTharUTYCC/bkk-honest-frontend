@@ -6,9 +6,12 @@ import Map, { Marker, Source, Layer } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, ArrowLeft, Loader2, X, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ManualLocationModal from './ManualLocationModal';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 const DEFAULT_CENTER = { lat: 13.7563, lng: 100.5018 };
+
+type PermissionErrorType = 'permission_denied' | 'timeout' | 'position_unavailable' | 'unknown';
 
 interface RouteStep {
   distance: number;
@@ -24,6 +27,7 @@ interface Route {
   duration: number;
   steps?: RouteStep[];
   geometry: {
+    type: 'LineString';
     coordinates: [number, number][];
   };
 }
@@ -49,38 +53,84 @@ export default function NavigatePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showDirections, setShowDirections] = useState(false);
+  const [showManualLocation, setShowManualLocation] = useState(false);
+  const [permissionError, setPermissionError] = useState<PermissionErrorType | null>(null);
   const mapRef = useRef<any>(null);
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setUserLocation({ lat: latitude, lng: longitude });
-          setViewState((prev) => ({
-            ...prev,
-            latitude,
-            longitude,
-          }));
-          fetchRoute(latitude, longitude, destLat, destLng);
-        },
-        (err) => {
-          console.error('Geolocation error:', err);
-          setError('Unable to get your location. Using default location.');
-          setViewState((prev) => ({
-            ...prev,
-            latitude: DEFAULT_CENTER.lat,
-            longitude: DEFAULT_CENTER.lng,
-          }));
-          fetchRoute(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng, destLat, destLng);
-        }
-      );
-    }
+    checkGeolocationPermission();
   }, [destLat, destLng]);
+
+  const checkGeolocationPermission = async () => {
+    if (!navigator.geolocation) {
+      setError('Geolocation not supported');
+      setIsLoading(false);
+      return;
+    }
+
+    if (!navigator.permissions) {
+      // Fallback: just try geolocation if permissions API not available
+      attemptGeolocation();
+      return;
+    }
+
+    try {
+      const permissionStatus = await navigator.permissions.query({
+        name: 'geolocation' as PermissionName,
+      });
+
+      if (permissionStatus.state === 'denied') {
+        setShowManualLocation(true);
+        setPermissionError('permission_denied');
+        setIsLoading(false);
+      } else {
+        attemptGeolocation();
+      }
+    } catch (err) {
+      // Fallback if permissions API fails
+      attemptGeolocation();
+    }
+  };
+
+  const attemptGeolocation = () => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ lat: latitude, lng: longitude });
+        setViewState((prev) => ({
+          ...prev,
+          latitude,
+          longitude,
+        }));
+        fetchRoute(latitude, longitude, destLat, destLng);
+      },
+      (err) => {
+        console.error('Geolocation error:', err);
+        let errorType: PermissionErrorType = 'unknown';
+        
+        if (err.code === 1) {
+          errorType = 'permission_denied';
+        } else if (err.code === 3) {
+          errorType = 'timeout';
+        } else if (err.code === 2) {
+          errorType = 'position_unavailable';
+        }
+
+        setPermissionError(errorType);
+        setShowManualLocation(true);
+        setIsLoading(false);
+      },
+      {
+        timeout: 10000,
+        enableHighAccuracy: false,
+      }
+    );
+  };
 
   const fetchRoute = async (fromLat: number, fromLng: number, toLat: number, toLng: number) => {
     try {
       setIsLoading(true);
+      setError(null);
       const response = await fetch(
         `https://api.mapbox.com/directions/v5/mapbox/driving/${fromLng},${fromLat};${toLng},${toLat}?alternatives=false&steps=true&geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`
       );
@@ -99,6 +149,18 @@ export default function NavigatePage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleManualLocationSelected = (lat: number, lng: number) => {
+    setUserLocation({ lat, lng });
+    setViewState((prev) => ({
+      ...prev,
+      latitude: lat,
+      longitude: lng,
+    }));
+    setShowManualLocation(false);
+    setPermissionError(null);
+    fetchRoute(lat, lng, destLat, destLng);
   };
 
   const calculateETA = () => {
@@ -258,6 +320,18 @@ export default function NavigatePage() {
           View Turn-by-Turn Directions
         </motion.button>
       )}
+
+      <AnimatePresence>
+        {showManualLocation && permissionError && (
+          <ManualLocationModal
+            destLat={destLat}
+            destLng={destLng}
+            destName={destName}
+            onLocationSelected={handleManualLocationSelected}
+            errorType={permissionError}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
