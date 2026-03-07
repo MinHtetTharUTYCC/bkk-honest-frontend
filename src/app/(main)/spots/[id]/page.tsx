@@ -574,12 +574,12 @@ export default function SpotDetailPage() {
             <button 
               onClick={() => fileInputRef.current?.click()}
               disabled={uploadMutation.isPending}
-              className="group bg-amber-500 text-black px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
+              className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
             >
               {uploadMutation.isPending ? (
-                <Loader2 size={14} className="animate-spin text-white group-hover:text-black" />
+                <Loader2 size={14} className="animate-spin text-black group-hover:text-white" />
               ) : (
-                <Upload size={14} className="text-white group-hover:text-black transition-colors" />
+                <Upload size={14} className="text-black group-hover:text-white transition-colors" />
               )}
               <span className="hidden md:inline">{uploadMutation.isPending ? 'Uploading...' : 'Upload Vibe'}</span>
               <span className="md:hidden">{uploadMutation.isPending ? '...' : 'Upload'}</span>
@@ -593,7 +593,7 @@ export default function SpotDetailPage() {
             />
             <button 
               onClick={() => setShowGalleryModal(true)}
-              className="text-[10px] font-medium text-white/50 uppercase tracking-widest hover:text-cyan-400 transition-colors flex items-center gap-2"
+              className="text-[10px] font-medium text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors flex items-center gap-2"
             >
               <span className="hidden md:inline">View All {(galleryResponse as any)?.pagination?.total || galleryList.length} Photos</span>
               <span className="md:hidden">All ({(galleryResponse as any)?.pagination?.total || galleryList.length})</span>
@@ -620,19 +620,19 @@ export default function SpotDetailPage() {
                       (e.target as HTMLImageElement).src = img.url;
                     }}
                   />
-                  <div className="absolute top-3 right-3 flex bg-black/40 backdrop-blur-md p-0.5 rounded-full border border-white/10">
+                  <div className="absolute top-3 right-3 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
                     <button 
                       onClick={() => toggleImageVote(img)}
                       disabled={imageVotePending}
                       className={cn(
-                        "flex items-center gap-1 px-2 py-1 rounded-full text-[8px] font-semibold transition-all",
+                        "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
                         img.hasVoted
-                          ? "bg-red-500 text-white" 
-                          : "text-white/60 hover:text-white"
+                          ? "bg-amber-400/90 border-amber-300/30 text-black" 
+                          : "text-white/60 hover:text-amber-400 hover:bg-amber-500/10"
                       )}
                     >
-                      <Heart size={8} fill={img.hasVoted ? "currentColor" : "none"} />
-                      {img._count?.votes || 0}
+                      <Heart size={14} fill={img.hasVoted ? "currentColor" : "none"} />
+                      <span>{img._count?.votes || 0}</span>
                     </button>
                   </div>
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center pointer-events-none">
@@ -722,9 +722,9 @@ export default function SpotDetailPage() {
               <h3 className="text-2xl font-display font-bold text-white">Tips</h3>
               <button 
                 onClick={() => setShowTipModal(true)}
-                className="group bg-amber-500 text-black px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
+                className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
               >
-                <Zap size={14} fill="currentColor" className="text-white group-hover:text-black transition-colors" />
+                <Zap size={14} fill="currentColor" className="text-black group-hover:text-white transition-colors" />
                 <span className="hidden sm:inline">Share a New Tip</span>
                 <span className="sm:hidden">New Tip</span>
               </button>
@@ -838,8 +838,8 @@ export default function SpotDetailPage() {
                                 className={cn(
                                   "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
                                   tip.hasVoted
-                                    ? "bg-rose-500/20 text-rose-400 border-rose-400/30" 
-                                    : "text-white/60 hover:text-rose-400 hover:bg-rose-500/10"
+                                    ? "bg-amber-400/90 border-amber-300/30 text-black" 
+                                    : "text-white/60 hover:text-amber-400 hover:bg-amber-500/10"
                                 )}
                               >
                                 <Heart size={14} fill={tip.hasVoted ? "currentColor" : "none"} />
