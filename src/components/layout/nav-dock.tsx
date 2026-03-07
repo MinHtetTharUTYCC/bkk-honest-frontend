@@ -17,20 +17,14 @@ export default function NavDock() {
   ];
 
   const isActiveRoute = (href: string) => {
-    // Remove query params and trailing slashes for comparison
-    const cleanPathname = pathname?.split('?')[0];
+    if (!pathname) return false;
+    const cleanPathname = pathname.split('?')[0];
     
     if (href === '/') {
       return cleanPathname === '/';
     }
     
-    // For spots, match both /spots and /spots/:id
-    if (href === '/spots') {
-      return cleanPathname === '/spots' || cleanPathname?.startsWith('/spots/');
-    }
-    
-    // For other routes, exact match (after removing query params)
-    return cleanPathname === href;
+    return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
   };
 
   return (

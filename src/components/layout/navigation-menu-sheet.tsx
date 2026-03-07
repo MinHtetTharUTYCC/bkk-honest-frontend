@@ -22,7 +22,11 @@ export default function NavigationMenuSheet() {
     { icon: <User size={20} />, label: 'Profile', href: '/profile' },
   ];
 
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => {
+    if (!pathname) return false;
+    const cleanPathname = pathname.split('?')[0];
+    return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
