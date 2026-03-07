@@ -47,7 +47,7 @@ export default function NavDock() {
               className={cn(
                 'flex flex-col items-center gap-1 transition-all',
                 isActive
-                  ? 'text-amber-400 shadow-lg shadow-amber-400/40 md:shadow-none'
+                  ? 'text-amber-400'
                   : 'text-white/30 hover:text-white/70',
               )}
             >

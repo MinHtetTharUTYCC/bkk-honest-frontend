@@ -64,7 +64,7 @@ export default function NavigationMenuSheet() {
                   className={cn(
                     'flex items-center gap-3 px-4 py-3 rounded-xl transition-all',
                     active
-                      ? 'bg-amber-400/10 text-amber-400 shadow-lg shadow-amber-400/20 border border-amber-400/20'
+                      ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20'
                       : 'text-white/50 hover:text-white/70 hover:bg-white/5',
                   )}
                 >
