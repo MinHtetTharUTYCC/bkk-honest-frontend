@@ -134,29 +134,24 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                 alt="Spot vibe"
                                                 loading="lazy"
                                             />
-                                            <div className="absolute top-4 right-4 flex bg-gray-900/80 backdrop-blur-md p-1 rounded-full border border-white/10">
+                                            <div className="absolute top-4 right-4 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
                                                 <button
                                                     onClick={() => toggleVote(img)}
                                                     disabled={votePending}
                                                     className={cn(
-                                                        'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black transition-all',
+                                                        'flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all',
                                                         img.hasVoted
-                                                            ? 'bg-red-500 text-white'
-                                                            : 'text-white/60 hover:text-white',
+                                                            ? 'bg-amber-400/90 border-amber-300/30 text-black'
+                                                            : 'text-white/60 hover:text-amber-400 hover:bg-amber-500/10',
                                                     )}
                                                 >
                                                     <Heart
-                                                        size={10}
+                                                        size={14}
                                                         fill={
                                                             img.hasVoted ? 'currentColor' : 'none'
                                                         }
-                                                        className={cn(
-                                                            img.hasVoted
-                                                                ? 'text-white'
-                                                                : 'text-red-400',
-                                                        )}
                                                     />
-                                                    {img._count?.votes || 0}
+                                                    <span>{img._count?.votes || 0}</span>
                                                 </button>
                                             </div>
                                         </div>
