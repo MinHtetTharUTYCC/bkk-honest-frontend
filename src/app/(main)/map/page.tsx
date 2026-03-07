@@ -421,7 +421,7 @@ export default function MapPage() {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="absolute bottom-0 left-0 right-0 z-50 p-4 md:p-6 pb-safe"
+            className="absolute bottom-16 md:bottom-0 left-0 right-0 z-50 p-4 md:p-6 pb-safe"
           >
             <div className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 p-5 rounded-3xl shadow-2xl max-w-md mx-auto">
               {/* Spot Image */}
