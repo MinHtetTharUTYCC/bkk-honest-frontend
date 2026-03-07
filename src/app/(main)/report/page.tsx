@@ -8,12 +8,13 @@ import {
     useCreateScamAlert,
     useCreateSpot,
     useCities,
+    useUploadSpotImage,
 } from '@/hooks/use-api';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import LocationPicker from '@/components/spots/location-picker';
 import { Dropdown } from '@/components/ui/dropdown';
-import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
+import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin, Upload, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useCity } from '@/components/providers/city-provider';
@@ -26,6 +27,8 @@ export default function ReportPage() {
     const [spotCity, setSpotCity] = useState('');
     const [spotCategory, setSpotCategory] = useState('');
     const [spotLocation, setSpotLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [spotImageFile, setSpotImageFile] = useState<File | null>(null);
+    const [spotImagePreview, setSpotImagePreview] = useState<string>('');
     const router = useRouter();
     const { selectedCityId, selectedCity } = useCity();
 
@@ -45,6 +48,7 @@ export default function ReportPage() {
     const createPrice = useCreatePriceReport();
     const createScam = useCreateScamAlert();
     const createSpot = useCreateSpot();
+    const uploadImage = useUploadSpotImage();
 
     const handlePriceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -101,21 +105,57 @@ export default function ReportPage() {
         }
     };
 
+    const handleSpotImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                return;
+            }
+            setSpotImageFile(file);
+            const preview = URL.createObjectURL(file);
+            setSpotImagePreview(preview);
+        }
+    };
+
+    const handleRemoveSpotImage = () => {
+        setSpotImageFile(null);
+        if (spotImagePreview && spotImagePreview.startsWith('blob:')) {
+            URL.revokeObjectURL(spotImagePreview);
+        }
+        setSpotImagePreview('');
+    };
+
     const handleSpotSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!spotLocation) {
             alert('Please select a location on the map');
             return;
         }
-        await createSpot.mutateAsync({
-            name: spotName,
-            address: spotAddress,
-            categoryId: spotCategory,
-            cityId: spotCity,
-            latitude: spotLocation.latitude,
-            longitude: spotLocation.longitude,
-        });
-        setSubmitted(true);
+        
+        try {
+            // Create spot first
+            const response = await createSpot.mutateAsync({
+                name: spotName,
+                address: spotAddress,
+                categoryId: spotCategory,
+                cityId: spotCity,
+                latitude: spotLocation.latitude,
+                longitude: spotLocation.longitude,
+            });
+
+            // Upload image if provided (response should contain the spot ID)
+            if (spotImageFile && response?.id) {
+                await uploadImage.mutateAsync({
+                    spotId: response.id,
+                    file: spotImageFile,
+                });
+            }
+
+            setSubmitted(true);
+        } catch (error) {
+            console.error('Failed to create spot:', error);
+        }
     };
 
     if (submitted) {
@@ -373,6 +413,55 @@ export default function ReportPage() {
                                 onChange={setSpotCategory}
                                 placeholder="Select category..."
                             />
+                        </div>
+
+                        <div className="space-y-4">
+                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                                Image <span className="text-white/50">(Optional)</span>
+                            </label>
+
+                            {spotImagePreview ? (
+                                <div className="relative rounded-xl overflow-hidden border border-white/10 bg-white/5">
+                                    <img
+                                        src={spotImagePreview}
+                                        alt="Spot preview"
+                                        className="w-full h-64 object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveSpotImage}
+                                        disabled={createSpot.isPending}
+                                        className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-lg transition-colors disabled:opacity-50"
+                                        aria-label="Remove image"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <label className="block cursor-pointer group">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleSpotImageChange}
+                                        disabled={createSpot.isPending}
+                                        className="hidden"
+                                        aria-label="Upload spot image"
+                                    />
+                                    <div className={cn(
+                                        "border-2 border-dashed rounded-xl p-8 text-center transition-all",
+                                        "hover:bg-white/5 hover:border-amber-400/50",
+                                        createSpot.isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                    )}>
+                                        <Upload size={24} className="text-white/50 group-hover:text-amber-400 mx-auto mb-2 transition-colors" />
+                                        <p className="text-sm text-white/70">
+                                            Click to upload or drag and drop
+                                        </p>
+                                        <p className="text-xs text-white/50 mt-1">
+                                            PNG, JPG, GIF up to 5MB
+                                        </p>
+                                    </div>
+                                </label>
+                            )}
                         </div>
 
                         <button

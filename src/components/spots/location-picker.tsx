@@ -240,21 +240,6 @@ export default function LocationPicker({
             animate={{ opacity: 1, y: 0 }}
             className="space-y-4"
           >
-            {/* Coordinates Display */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between">
-              <div>
-                <p className="text-white/30 text-[10px] uppercase font-bold tracking-widest mb-2">
-                  Selected Coordinates
-                </p>
-                <p className="text-white text-sm font-mono font-medium tracking-tight">
-                  {selectedLocation.latitude.toFixed(6)}, {selectedLocation.longitude.toFixed(6)}
-                </p>
-              </div>
-              <div className="w-8 h-8 bg-amber-400/10 rounded-xl flex items-center justify-center text-amber-400">
-                <MapPin size={16} />
-              </div>
-            </div>
-
             {/* Confirm Button */}
             <button
               onClick={handleConfirm}
