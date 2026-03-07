@@ -29,6 +29,8 @@ export default function ReportPage() {
     const [spotLocation, setSpotLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [spotImageFile, setSpotImageFile] = useState<File | null>(null);
     const [spotImagePreview, setSpotImagePreview] = useState<string>('');
+    const [scamImageFile, setScamImageFile] = useState<File | null>(null);
+    const [scamImagePreview, setScamImagePreview] = useState<string>('');
     const router = useRouter();
     const { selectedCityId, selectedCity } = useCity();
 
@@ -72,8 +74,30 @@ export default function ReportPage() {
             preventionTip: formData.get('preventionTip') as string,
             cityId: selectedCityId,
             categoryId: formData.get('categoryId') as string,
+            image: scamImageFile || undefined,
         });
         setSubmitted(true);
+    };
+
+    const handleScamImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                return;
+            }
+            setScamImageFile(file);
+            const preview = URL.createObjectURL(file);
+            setScamImagePreview(preview);
+        }
+    };
+
+    const handleRemoveScamImage = () => {
+        setScamImageFile(null);
+        if (scamImagePreview && scamImagePreview.startsWith('blob:')) {
+            URL.revokeObjectURL(scamImagePreview);
+        }
+        setScamImagePreview('');
     };
 
     const fetchAddressFromLocation = async (latitude: number, longitude: number) => {
@@ -325,6 +349,55 @@ export default function ReportPage() {
                                 placeholder="How can others avoid this?"
                                 className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
                             />
+                        </div>
+
+                        <div className="space-y-4">
+                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                                Image <span className="text-white/50">(Optional)</span>
+                            </label>
+
+                            {scamImagePreview ? (
+                                <div className="relative rounded-xl overflow-hidden border border-white/10 bg-white/5">
+                                    <img
+                                        src={scamImagePreview}
+                                        alt="Scam preview"
+                                        className="w-full h-64 object-cover"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveScamImage}
+                                        disabled={createScam.isPending}
+                                        className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-lg transition-colors disabled:opacity-50"
+                                        aria-label="Remove image"
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <label className="block cursor-pointer group">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleScamImageChange}
+                                        disabled={createScam.isPending}
+                                        className="hidden"
+                                        aria-label="Upload scam image"
+                                    />
+                                    <div className={cn(
+                                        "border-2 border-dashed rounded-xl p-8 text-center transition-all",
+                                        "hover:bg-white/5 hover:border-red-400/50",
+                                        createScam.isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                                    )}>
+                                        <Upload size={24} className="text-white/50 group-hover:text-red-400 mx-auto mb-2 transition-colors" />
+                                        <p className="text-sm text-white/70">
+                                            Click to upload or drag and drop
+                                        </p>
+                                        <p className="text-xs text-white/50 mt-1">
+                                            PNG, JPG, GIF up to 5MB
+                                        </p>
+                                    </div>
+                                </label>
+                            )}
                         </div>
 
                         <button

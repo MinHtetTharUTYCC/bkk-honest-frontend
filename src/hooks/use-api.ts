@@ -669,8 +669,22 @@ export function useCreateScamAlert() {
             preventionTip: string;
             cityId: string;
             categoryId: string;
+            image?: File;
         }) => {
-            const { data } = await api.post('/scam-alerts', payload);
+            const formData = new FormData();
+            formData.append('scamName', payload.scamName);
+            formData.append('description', payload.description);
+            formData.append('preventionTip', payload.preventionTip);
+            formData.append('cityId', payload.cityId);
+            formData.append('categoryId', payload.categoryId);
+            
+            if (payload.image) {
+                formData.append('image', payload.image);
+            }
+
+            const { data } = await api.post('/scam-alerts', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
             return data;
         },
         onSuccess: () => {
