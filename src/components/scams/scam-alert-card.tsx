@@ -36,7 +36,7 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
     const { data: categories } = useCategories();
     const { data: cities } = useCities();
 
-    const isOwner = user?.id === alert.userId;
+    const isOwner = user?.id === alert.userId || user?.id === alert.user?.id;
 
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(alert.scamName);
@@ -249,16 +249,16 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
 
                     <div className="flex items-center gap-4">
                         {isOwner && (
-                            <div className="flex items-center gap-2 mr-2">
+                            <div className="flex items-center gap-1 mr-1">
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         setIsEditing(true);
                                     }}
-                                    className="p-1.5 text-white/30 hover:text-amber-400 transition-colors"
+                                    className="p-2 text-white/50 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-all"
                                     title="Edit"
                                 >
-                                    <Edit2 size={12} />
+                                    <Edit2 size={14} />
                                 </button>
                                 <button
                                     onClick={(e) => {
@@ -266,13 +266,13 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                                         handleDelete();
                                     }}
                                     disabled={deleteScamMutation.isPending}
-                                    className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                                    className="p-2 text-white/50 hover:text-red-500 hover:bg-white/5 rounded-lg transition-all"
                                     title="Delete"
                                 >
                                     {deleteScamMutation.isPending ? (
-                                        <Loader2 size={12} className="animate-spin" />
+                                        <Loader2 size={14} className="animate-spin" />
                                     ) : (
-                                        <Trash2 size={12} />
+                                        <Trash2 size={14} />
                                     )}
                                 </button>
                             </div>
