@@ -398,6 +398,23 @@ export default function ReportPage() {
                             />
                         </div>
 
+                        <div className="grid grid-cols-2 gap-4">
+                            <Dropdown
+                                label="City"
+                                options={cities || []}
+                                value={spotCity}
+                                onChange={setSpotCity}
+                                placeholder="Select city..."
+                            />
+                            <Dropdown
+                                label="Category"
+                                options={categories || []}
+                                value={spotCategory}
+                                onChange={setSpotCategory}
+                                placeholder="Select category..."
+                            />
+                        </div>
+
                         <div className="space-y-4">
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Image <span className="text-white/50">(Optional)</span>
