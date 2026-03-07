@@ -59,18 +59,44 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     return old;
   };
 
+  const findItemInCache = (data: any, itemId: string): any => {
+    if (!data) return null;
+    if (Array.isArray(data)) return data.find((t: any) => t.id === itemId);
+    if (data.pages) {
+      for (const page of data.pages) {
+        const items = page.data || page;
+        if (Array.isArray(items)) {
+          const found = items.find((t: any) => t.id === itemId);
+          if (found) return found;
+        }
+      }
+    }
+    if (data.data) return data.data.find((t: any) => t.id === itemId);
+    return null;
+  };
+
   const toggleVote = async (item: VoteableItem): Promise<{ voteId: string | null }> => {
     const predicate = getQueryPredicate();
 
     // Snapshot all matching queries
     const snapshots = queryClient.getQueriesData<any>({ predicate });
 
+    // Get current voteId from cache (in case item passed in is stale)
+    let currentVoteId = item.voteId;
+    for (const [, data] of snapshots) {
+      const found = findItemInCache(data, item.id);
+      if (found?.voteId && found.voteId !== 'temp-id') {
+        currentVoteId = found.voteId;
+        break;
+      }
+    }
+
     // Optimistically update all matching queries
     queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, item));
 
     try {
-      if (item.hasVoted && item.voteId) {
-        await deleteVote.mutateAsync({ voteId: item.voteId, type: type === 'spot' ? 'image' : (type as any) });
+      if (item.hasVoted && currentVoteId && currentVoteId !== 'temp-id') {
+        await deleteVote.mutateAsync({ voteId: currentVoteId, type: type === 'spot' ? 'image' : (type as any) });
         // After successful delete, update state with real voteId (null)
         const updatedItem = { ...item, hasVoted: false, voteId: null };
         queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, updatedItem));
@@ -87,9 +113,6 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
       snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
       toast.error('Failed to update vote');
       return { voteId: item.voteId ?? null };
-    } finally {
-      // Refresh to get actual DB state
-      // queryClient.invalidateQueries({ predicate });
     }
   };
 
