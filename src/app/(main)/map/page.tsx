@@ -207,9 +207,9 @@ export default function MapPage() {
     }
   }, [hasRequestedLocation, popularArea]);
 
-  const handleNavigateToGoogleMaps = () => {
+  const handleNavigate = () => {
     if (!selectedSpot) return;
-    window.open(`https://www.google.com/maps/dir/?api=1&destination=${selectedSpot.latitude},${selectedSpot.longitude}`, '_blank');
+    router.push(`/navigate?lat=${selectedSpot.latitude}&lng=${selectedSpot.longitude}&name=${encodeURIComponent(selectedSpot.name)}`);
   };
 
   const handleNearMe = () => {
@@ -485,7 +485,7 @@ export default function MapPage() {
                   View Details
                 </button>
                 <button 
-                  onClick={handleNavigateToGoogleMaps}
+                  onClick={handleNavigate}
                   className="flex-1 bg-cyan-500 text-black font-bold py-3.5 rounded-xl text-sm hover:bg-cyan-400 transition-colors shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2"
                 >
                   <Navigation size={16} className="fill-black" />
