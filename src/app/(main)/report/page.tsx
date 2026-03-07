@@ -134,23 +134,16 @@ export default function ReportPage() {
         }
         
         try {
-            // Create spot first
-            const response = await createSpot.mutateAsync({
+            // Create spot with image in one request
+            await createSpot.mutateAsync({
                 name: spotName,
                 address: spotAddress,
                 categoryId: spotCategory,
                 cityId: spotCity,
                 latitude: spotLocation.latitude,
                 longitude: spotLocation.longitude,
+                image: spotImageFile || undefined,
             });
-
-            // Upload image if provided (response should contain the spot ID)
-            if (spotImageFile && response?.id) {
-                await uploadImage.mutateAsync({
-                    spotId: response.id,
-                    file: spotImageFile,
-                });
-            }
 
             setSubmitted(true);
         } catch (error) {

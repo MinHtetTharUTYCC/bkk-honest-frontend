@@ -185,6 +185,42 @@ export function useSpots(params?: {
     });
 }
 
+export function useInfiniteSpots(params?: {
+    categoryId?: string;
+    cityId?: string;
+    search?: string;
+    sort?: 'newest' | 'popular';
+    take?: number;
+}) {
+    const cleanParams: any = {};
+    if (params) {
+        if (params.categoryId) cleanParams.categoryId = params.categoryId;
+        if (params.cityId) cleanParams.cityId = params.cityId;
+        if (params.search) cleanParams.search = params.search;
+        if (params.sort) cleanParams.sort = params.sort;
+    }
+
+    return useInfiniteQuery({
+        queryKey: ['spots-infinite', cleanParams],
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get<PaginatedSpots>('/spots', {
+                params: {
+                    ...cleanParams,
+                    skip: pageParam,
+                    take: params?.take || 10,
+                },
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            const nextSkip = skip + take;
+            return nextSkip < total ? nextSkip : undefined;
+        },
+    });
+}
+
 export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number; categoryId?: string; limit?: number }, enabled = true) {
     return useQuery({
         queryKey: ['spots-nearby', params],
@@ -359,9 +395,23 @@ export function useCreateSpot() {
             cityId: string;
             latitude: number;
             longitude: number;
-            imageUrl?: string;
+            image?: File;
         }) => {
-            const { data } = await api.post('/spots', payload);
+            const formData = new FormData();
+            formData.append('name', payload.name);
+            formData.append('address', payload.address);
+            formData.append('categoryId', payload.categoryId);
+            formData.append('cityId', payload.cityId);
+            formData.append('latitude', payload.latitude.toString());
+            formData.append('longitude', payload.longitude.toString());
+            
+            if (payload.image) {
+                formData.append('image', payload.image);
+            }
+
+            const { data } = await api.post('/spots', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
             return data;
         },
         onSuccess: () => {
