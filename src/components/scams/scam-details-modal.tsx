@@ -210,7 +210,7 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                 </div>
                                 <div className="flex items-center gap-1.5 text-amber-400/80 text-xs font-bold uppercase tracking-widest">
                                     <MapPin size={12} />
-                                    {alert.city?.name || 'Bangkok'}
+                                    {alert.city?.name}
                                 </div>
                             </div>
                         </div>
