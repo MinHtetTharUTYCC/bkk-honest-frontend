@@ -33,8 +33,8 @@ export default function NavigationMenuSheet() {
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        {/* Backdrop */}
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden" />
+        {/* Backdrop - only show when dialog is open */}
+        {isOpen && <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden" />}
 
         {/* Drawer content */}
         <Dialog.Content className="fixed bottom-20 left-0 right-0 z-50 bg-background border-t border-white/8 p-4 rounded-t-3xl shadow-xl md:hidden max-h-[70vh] overflow-y-auto">

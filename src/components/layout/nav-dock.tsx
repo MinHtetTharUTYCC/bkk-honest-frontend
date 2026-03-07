@@ -16,6 +16,23 @@ export default function NavDock() {
     { icon: MapIcon, label: 'Map', href: '/map' },
   ];
 
+  const isActiveRoute = (href: string) => {
+    // Remove query params and trailing slashes for comparison
+    const cleanPathname = pathname?.split('?')[0];
+    
+    if (href === '/') {
+      return cleanPathname === '/';
+    }
+    
+    // For spots, match both /spots and /spots/:id
+    if (href === '/spots') {
+      return cleanPathname === '/spots' || cleanPathname?.startsWith('/spots/');
+    }
+    
+    // For other routes, exact match (after removing query params)
+    return cleanPathname === href;
+  };
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:bottom-auto md:top-0 md:left-0 md:h-screen md:w-20 md:flex md:flex-col md:items-center md:justify-center md:border-r bg-background/90 backdrop-blur-xl border-t md:border-t-0 border-white/8 px-3 py-4 md:px-0 md:py-8">
       <div className="flex items-center justify-between w-full md:flex-col md:gap-12 max-w-md mx-auto md:mx-0">
@@ -27,7 +44,7 @@ export default function NavDock() {
         {/* Core navigation items */}
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href === '/spots' && pathname?.startsWith('/spots/'));
+          const isActive = isActiveRoute(item.href);
 
           return (
             <Link
