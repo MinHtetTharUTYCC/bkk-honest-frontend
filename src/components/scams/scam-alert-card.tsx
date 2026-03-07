@@ -234,21 +234,21 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                 </div>
 
                 {/* User Info Overlay — Bottom of Image */}
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-5 h-5 bg-white/10 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0">
+                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg">
                             {alert.user?.avatarUrl ? (
                                 <img src={alert.user.avatarUrl} className="w-full h-full object-cover" />
                             ) : (
-                                <User size={10} />
+                                <User size={16} />
                             )}
                         </div>
                         <div className="flex flex-col min-w-0">
-                            <span className="text-[8px] font-black text-white uppercase tracking-tight truncate leading-none mb-0.5">
+                            <span className="text-[10px] font-black text-white uppercase tracking-tight truncate leading-none mb-1">
                                 {alert.user?.name || 'Local'}
                             </span>
                             {alert.user?.level && (
-                                <span className="text-[6px] font-bold text-amber-400 uppercase tracking-tighter leading-none">
+                                <span className="text-[8px] font-bold text-amber-400 uppercase tracking-tighter leading-none">
                                     {alert.user.level.replace('_', ' ')}
                                 </span>
                             )}
@@ -259,11 +259,16 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
 
             {/* Content — right */}
             <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
-                {/* Meta row - User at top left, Date at top right */}
-                <div className="flex items-center justify-end">
-                    <div className="flex items-center gap-4">
+                {/* Meta row - Date first, then Actions */}
+                <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
+                        <Calendar size={10} />
+                        {new Date(alert.createdAt).toLocaleDateString()}
+                    </span>
+
+                    <div className="flex items-center gap-1">
                         {isOwner && (
-                            <div className="flex items-center gap-1 mr-1">
+                            <>
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -289,12 +294,8 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                                         <Trash2 size={14} />
                                     )}
                                 </button>
-                            </div>
+                            </>
                         )}
-                        <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
-                            <Calendar size={10} />
-                            {new Date(alert.createdAt).toLocaleDateString()}
-                        </span>
                     </div>
                 </div>
 
