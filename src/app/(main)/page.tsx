@@ -2,12 +2,9 @@
 
 import {
     Zap,
-    AlertCircle,
-    MessageCircle,
     ArrowRight,
     MapPin,
     Navigation,
-    Heart,
     Hash,
     Trophy,
 } from 'lucide-react';
@@ -17,6 +14,7 @@ import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
 import { LeaderboardList } from '@/components/leaderboard-list';
 import ScamDetailsModal from '@/components/scams/scam-details-modal';
+import ScamAlertCard from '@/components/scams/scam-alert-card';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
@@ -25,7 +23,6 @@ import { useState } from 'react';
 
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
-    const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const { latitude, longitude, error: geoError } = useGeolocation();
     const [selectedAlert, setSelectedAlert] = useState<any>(null);
 
@@ -178,70 +175,21 @@ export default function HomeFeed() {
                         </Link>
                     </header>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         {scamAlertsLoading ? (
                             Array.from({ length: 2 }).map((_, i) => (
                                 <div
                                     key={i}
-                                    className="h-64 bg-white/5 rounded-2xl animate-pulse"
+                                    className="h-44 bg-white/5 rounded-2xl animate-pulse"
                                 />
                             ))
                         ) : Array.isArray(scamAlerts) && scamAlerts.length > 0 ? (
                             scamAlerts.map((alert: any) => (
-                                <div
+                                <ScamAlertCard
                                     key={alert.id}
-                                    className="bg-card rounded-2xl p-7 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.01] transition-transform"
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-widest">
-                                            <AlertCircle size={16} strokeWidth={3} />
-                                            Scam Alert
-                                        </div>
-                                        <span
-                                            className="text-white/20 font-bold text-[10px] uppercase tracking-tighter"
-                                            suppressHydrationWarning
-                                        >
-                                            {new Date(alert.createdAt).toLocaleTimeString([], {
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                            })}{' '}
-                                            • {alert.city?.name}
-                                        </span>
-                                    </div>
-                                    <h3 className="font-display text-xl font-bold text-foreground mb-2 leading-tight">
-                                        {alert.scamName}
-                                    </h3>
-                                    <p className="text-white/60 font-medium leading-relaxed mb-6 line-clamp-3">
-                                        {alert.description}
-                                    </p>
-                                    <div className="flex items-center gap-4 border-t border-white/8 pt-6">
-                                        <div className="flex bg-white/8 p-1 rounded-xl border border-white/8">
-                                            <button
-                                                onClick={() => toggleVote(alert)}
-                                                disabled={votePending}
-                                                className={cn(
-                                                    'flex items-center gap-1 px-3 py-1.5 rounded-lg text-[9px] font-bold transition-all',
-                                                    alert.hasVoted
-                                                        ? 'bg-amber-400/10 text-amber-400 shadow-sm'
-                                                        : 'text-white/30 hover:text-amber-400',
-                                                )}
-                                            >
-                                                <Heart
-                                                    size={12}
-                                                    fill={alert.hasVoted ? 'currentColor' : 'none'}
-                                                />
-                                                {alert._count?.votes || 0}
-                                            </button>
-                                        </div>
-                                        <button
-                                            onClick={() => setSelectedAlert(alert)}
-                                            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/30 hover:text-amber-400 transition-colors"
-                                        >
-                                            <MessageCircle size={14} />
-                                            {alert._count?.comments || 0} Comments
-                                        </button>
-                                    </div>
-                                </div>
+                                    alert={alert}
+                                    onClick={() => setSelectedAlert(alert)}
+                                />
                             ))
                         ) : (
                             <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
