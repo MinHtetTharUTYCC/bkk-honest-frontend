@@ -186,12 +186,23 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
 
                             <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-white/8 pb-6">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-6 h-6 bg-white/8 rounded-lg flex items-center justify-center text-white/40">
-                                        <User size={12} />
+                                    <div className="w-6 h-6 bg-white/8 rounded-lg flex items-center justify-center text-white/40 overflow-hidden shrink-0 border border-white/5">
+                                        {alert.user?.avatarUrl ? (
+                                            <img src={alert.user.avatarUrl} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <User size={12} />
+                                        )}
                                     </div>
-                                    <span className="text-xs font-bold text-white/50 uppercase tracking-tight">
-                                        {alert.user?.name || 'Local Expert'}
-                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-bold text-white/50 uppercase tracking-tight">
+                                            {alert.user?.name || 'Local Expert'}
+                                        </span>
+                                        {alert.user?.level && (
+                                            <span className="text-[8px] font-bold text-amber-400 border border-amber-400/20 bg-amber-400/5 px-1.5 py-0.5 rounded uppercase tracking-tighter">
+                                                {alert.user.level.replace('_', ' ')}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-1.5 text-white/30 text-xs font-medium uppercase tracking-widest">
                                     <Calendar size={12} />
@@ -261,19 +272,24 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                             {/* Comment Input */}
                             {user ? (
                                 <form onSubmit={handleSendComment} className="relative group">
-                                    <input
-                                        type="text"
+                                    <textarea
                                         value={newComment}
                                         onChange={(e) => setNewComment(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' && !e.shiftKey) {
+                                                e.preventDefault();
+                                                handleSendComment(e);
+                                            }
+                                        }}
                                         placeholder="Add a comment or share your experience..."
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 pr-16 text-sm font-medium focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 shadow-sm"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 pr-16 text-sm font-medium focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 shadow-sm min-h-[100px] resize-none"
                                     />
                                     <button
                                         type="submit"
                                         disabled={
                                             createCommentMutation.isPending || !newComment.trim()
                                         }
-                                        className="absolute right-2 top-2 bottom-2 aspect-square flex items-center justify-center bg-white/8 text-white/60 rounded-xl hover:bg-amber-400 hover:text-black transition-all active:scale-95 disabled:opacity-50 disabled:bg-white/5"
+                                        className="absolute right-3 bottom-3 w-10 h-10 flex items-center justify-center bg-white/8 text-white/60 rounded-xl hover:bg-amber-400 hover:text-black transition-all active:scale-95 disabled:opacity-50 disabled:bg-white/5"
                                     >
                                         {createCommentMutation.isPending ? (
                                             <Loader2 size={16} className="animate-spin" />
@@ -306,8 +322,12 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                 key={comment.id}
                                                 className="flex gap-4 items-start animate-in fade-in slide-in-from-bottom-2 duration-300"
                                             >
-                                                <div className="w-10 h-10 rounded-xl bg-white/8 flex items-center justify-center text-white/40 shrink-0 border border-white/5">
-                                                    <User size={16} />
+                                                <div className="w-10 h-10 rounded-xl bg-white/8 flex items-center justify-center text-white/40 shrink-0 border border-white/5 overflow-hidden">
+                                                    {comment.user?.avatarUrl ? (
+                                                        <img src={comment.user.avatarUrl} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <User size={16} />
+                                                    )}
                                                 </div>
                                                 <div className="flex-1 space-y-1.5">
                                                     <div className="flex items-center justify-between">
@@ -315,6 +335,11 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                             <span className="text-[11px] font-bold text-foreground uppercase tracking-tight">
                                                                 {comment.user?.name || 'Local'}
                                                             </span>
+                                                            {comment.user?.level && (
+                                                                <span className="text-[7px] font-bold text-amber-400/60 border border-amber-400/10 px-1 py-0.5 rounded uppercase tracking-tighter">
+                                                                    {comment.user.level.replace('_', ' ')}
+                                                                </span>
+                                                            )}
                                                             <span className="text-[9px] font-medium text-white/30 uppercase tracking-widest">
                                                                 {new Date(
                                                                     comment.createdAt,
@@ -358,7 +383,7 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <p className="text-sm text-white/70 font-medium leading-relaxed">
+                                                        <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">
                                                             {comment.text}
                                                         </p>
                                                     )}
