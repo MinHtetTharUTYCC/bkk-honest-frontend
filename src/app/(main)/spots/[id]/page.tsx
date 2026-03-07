@@ -129,6 +129,30 @@ export default function SpotDetailPage() {
   const uploadMutation = useUploadSpotImage();
   const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle('tip', id);
   const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle('image', id);
+  const { toggleVote: toggleSpotVote } = useVoteToggle('spot');
+
+  const [localHasVoted, setLocalHasVoted] = useState(false);
+  const [localVoteCount, setLocalVoteCount] = useState(0);
+  const [localVoteId, setLocalVoteId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (spot) {
+      setLocalHasVoted(spot.hasVoted ?? false);
+      setLocalVoteCount(spot._count?.votes ?? 0);
+      setLocalVoteId(spot.voteId ?? null);
+    }
+  }, [spot?.id, spot?.hasVoted, spot?._count?.votes, spot?.voteId]);
+
+  const handleSpotVote = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!authUser) return;
+    const isRemoving = localHasVoted;
+    setLocalHasVoted(!isRemoving);
+    setLocalVoteCount(prev => isRemoving ? prev - 1 : prev + 1);
+    const result = await toggleSpotVote({ id, hasVoted: localHasVoted, voteId: localVoteId });
+    setLocalVoteId(result.voteId);
+  };
   
   const queryClient = useQueryClient();
   const deleteSpotMutation = useMutation({
@@ -324,8 +348,8 @@ export default function SpotDetailPage() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
           
-          {/* Admin Actions - Mobile Only (Top Right) */}
-          <div className="absolute top-4 right-4 flex md:hidden gap-2 z-10">
+          {/* Admin Actions - Mobile Only (Top Left) */}
+          <div className="absolute top-4 left-4 flex md:hidden gap-2 z-10">
             {isOwner && (
               <button 
                 onClick={() => setIsEditing(true)}
@@ -335,15 +359,34 @@ export default function SpotDetailPage() {
                 <Edit2 size={18} />
               </button>
             )}
-            <button 
-              onClick={() => deleteSpotMutation.mutate()}
-              disabled={deleteSpotMutation.isPending}
-              className="bg-black/40 backdrop-blur-md text-white p-3 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform"
-              title="Delete Spot"
-            >
-              {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-            </button>
+            {isOwner && (
+              <button 
+                onClick={() => deleteSpotMutation.mutate()}
+                disabled={deleteSpotMutation.isPending}
+                className="bg-black/40 backdrop-blur-md text-white p-3 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform"
+                title="Delete Spot"
+              >
+                {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+              </button>
+            )}
           </div>
+
+          {/* Like Button - Mobile Only (Top Right) */}
+          {authUser && (
+            <button
+              onClick={handleSpotVote}
+              className={cn(
+                'absolute top-4 right-4 flex md:hidden items-center gap-1.5 px-3 py-2.5 rounded-xl backdrop-blur-md border text-[10px] font-black uppercase tracking-widest transition-all shadow-lg z-10',
+                localHasVoted
+                  ? 'bg-amber-400/90 border-amber-300/30 text-black'
+                  : 'bg-black/40 border-white/20 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
+              )}
+              title={localHasVoted ? 'Remove like' : 'Like this spot'}
+            >
+              <Heart size={16} fill={localHasVoted ? 'currentColor' : 'none'} />
+              {localVoteCount > 0 && <span>{localVoteCount}</span>}
+            </button>
+          )}
           
           <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2">
@@ -410,14 +453,32 @@ export default function SpotDetailPage() {
                 </button>
               )}
 
-              <button 
-                onClick={() => deleteSpotMutation.mutate()}
-                disabled={deleteSpotMutation.isPending}
-                className="hidden md:flex bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-red-500 transition-all active:scale-95 border border-white/20 shadow-xl"
-                title="Delete Spot"
-              >
-                {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-              </button>
+              {isOwner && (
+                <button 
+                  onClick={() => deleteSpotMutation.mutate()}
+                  disabled={deleteSpotMutation.isPending}
+                  className="hidden md:flex bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-red-500 transition-all active:scale-95 border border-white/20 shadow-xl"
+                  title="Delete Spot"
+                >
+                  {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
+                </button>
+              )}
+
+              {authUser && (
+                <button
+                  onClick={handleSpotVote}
+                  className={cn(
+                    'hidden md:flex items-center gap-2 px-4 py-4 rounded-2xl backdrop-blur-md border transition-all active:scale-95 shadow-xl text-[10px] font-semibold tracking-wide',
+                    localHasVoted
+                      ? 'bg-amber-400/90 border-amber-300/30 text-black'
+                      : 'bg-white/10 border-white/20 text-white hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
+                  )}
+                  title={localHasVoted ? 'Remove like' : 'Like this spot'}
+                >
+                  <Heart size={18} fill={localHasVoted ? 'currentColor' : 'none'} />
+                  {localVoteCount > 0 && <span>{localVoteCount}</span>}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -764,10 +825,10 @@ export default function SpotDetailPage() {
                             <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
                               <button 
                                 onClick={() => setSelectedTip(tip)}
-                                className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-all text-white/50 hover:text-cyan-400 hover:bg-cyan-500/10"
+                                className="flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all text-white/60 hover:text-cyan-400 hover:bg-cyan-500/10"
                               >
                                 <MessageSquare size={14} />
-                                {tip._count?.comments || 0}
+                                <span>{tip._count?.comments || 0}</span>
                               </button>
                             </div>
                             <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
@@ -775,14 +836,14 @@ export default function SpotDetailPage() {
                                 onClick={() => toggleTipVote(tip)}
                                 disabled={tipVotePending}
                                 className={cn(
-                                  "flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold transition-all",
+                                  "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
                                   tip.hasVoted
-                                    ? "bg-red-500/20 text-red-400" 
-                                    : "text-white/50 hover:text-red-400 hover:bg-red-500/10"
+                                    ? "bg-rose-500/20 text-rose-400 border-rose-400/30" 
+                                    : "text-white/60 hover:text-rose-400 hover:bg-rose-500/10"
                                 )}
                               >
                                 <Heart size={14} fill={tip.hasVoted ? "currentColor" : "none"} />
-                                {tip._count?.votes || 0}
+                                <span>{tip._count?.votes || 0}</span>
                               </button>
                             </div>
                           </div>

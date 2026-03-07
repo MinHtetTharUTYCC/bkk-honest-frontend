@@ -12,6 +12,7 @@ import {
     X,
     Camera,
     MapPin,
+    MessageCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
@@ -27,6 +28,8 @@ interface ScamAlertCardProps {
 export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAlertCardProps) {
     const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);
+    const [localHasVoted, setLocalHasVoted] = useState(initialAlert.hasVoted);
+    const [localVoteCount, setLocalVoteCount] = useState(initialAlert._count?.votes || 0);
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const updateScamMutation = useUpdateScamAlert();
     const deleteScamMutation = useDeleteScamAlert();
@@ -204,25 +207,32 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
     return (
         <div
             onClick={onClick}
-            className="bg-card rounded-2xl border border-white/8 shadow-sm overflow-hidden group hover:shadow-black/30 hover:shadow-md transition-all duration-300 flex flex-row relative cursor-pointer active:scale-[0.99]"
+            className="bg-card rounded-2xl border border-white/8 shadow-sm overflow-hidden group hover:shadow-black/30 hover:shadow-md transition-all duration-300 flex flex-row relative cursor-pointer active:scale-[0.99] items-stretch"
         >
             {/* Photo — left */}
-            {alert.imageUrl && (
-                <div className="relative w-36 shrink-0 overflow-hidden">
+            <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8">
+                {alert.imageUrl ? (
                     <img
                         src={alert.imageUrl}
                         alt={alert.scamName}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
-                    {/* Category pill moved into image */}
-                    <div className="absolute top-3 left-3">
-                        <span className="bg-red-500/80 backdrop-blur-md text-white px-2.5 py-0.5 rounded-full text-[8px] font-bold tracking-widest uppercase flex items-center gap-1 shadow-lg border border-red-400/20">
-                            <AlertTriangle size={8} />
-                            {alert.category?.name || 'Scam'}
+                ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
+                        <Camera size={24} strokeWidth={1.5} />
+                        <span className="text-[8px] font-black uppercase tracking-widest">
+                            No Photo
                         </span>
                     </div>
+                )}
+                {/* Category pill moved into image */}
+                <div className="absolute top-3 left-3">
+                    <span className="bg-red-500/80 backdrop-blur-md text-white px-2.5 py-0.5 rounded-full text-[8px] font-bold tracking-widest uppercase flex items-center gap-1 shadow-lg border border-red-400/20">
+                        <AlertTriangle size={8} />
+                        {alert.category?.name || 'Scam'}
+                    </span>
                 </div>
-            )}
+            </div>
 
             {/* Content — right */}
             <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
@@ -293,22 +303,31 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                 )}
 
                 {/* Footer */}
-                <div className="mt-auto flex items-center justify-end pt-2 border-t border-white/8">
+                <div className="mt-auto flex items-center justify-end gap-2 pt-2 border-t border-white/8">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border border-white/10 text-white/30">
+                        <MessageCircle size={12} />
+                        {alert._count?.comments || 0}
+                    </div>
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
+                            // Optimistically update UI
+                            const isRemoving = localHasVoted;
+                            setLocalHasVoted(!isRemoving);
+                            setLocalVoteCount((prev: number) => isRemoving ? prev - 1 : prev + 1);
+                            // Call API and rollback on error is handled by hook
                             toggleVote(alert);
                         }}
                         disabled={votePending}
                         className={cn(
                             'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border',
-                            alert.hasVoted
+                            localHasVoted
                                 ? 'bg-red-400/10 border-red-400/20 text-red-400'
                                 : 'border-white/10 text-white/30 hover:text-red-400 hover:border-red-400/20',
                         )}
                     >
-                        <Heart size={12} fill={alert.hasVoted ? 'currentColor' : 'none'} />
-                        {alert._count?.votes || 0}
+                        <Heart size={12} fill={localHasVoted ? 'currentColor' : 'none'} />
+                        {localVoteCount}
                     </button>
                 </div>
             </div>

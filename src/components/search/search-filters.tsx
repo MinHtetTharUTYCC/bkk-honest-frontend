@@ -42,21 +42,25 @@ export function SearchFilters({
   ];
 
   return (
-    <div className={cn('space-y-4', className)}>
-      <Dropdown
-        label="Category"
-        options={categoryOptions}
-        value={categoryId || ''}
-        onChange={(value) => onCategoryChange(value || undefined)}
-        placeholder="All Categories"
-      />
+    <div className={cn('flex flex-row justify-between gap-3 md:gap-4 lg:flex-col lg:gap-0 lg:space-y-4', className)}>
+      <div className="flex-1 min-w-0">
+        <Dropdown
+          label="Category"
+          options={categoryOptions}
+          value={categoryId || ''}
+          onChange={(value) => onCategoryChange(value || undefined)}
+          placeholder="All Categories"
+        />
+      </div>
 
-      <Dropdown
-        label="Sort By"
-        options={sortOptions}
-        value={sort}
-        onChange={(value: any) => onSortChange(value)}
-      />
+      <div className="flex-1 min-w-0">
+        <Dropdown
+          label="Sort By"
+          options={sortOptions}
+          value={sort}
+          onChange={(value: any) => onSortChange(value)}
+        />
+      </div>
     </div>
   );
 }

@@ -13,16 +13,20 @@ interface VoteableItem {
   };
 }
 
-export function useVoteToggle(type: 'tip' | 'alert' | 'image', spotId?: string) {
+export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?: string) {
   const createVote = useCreateVote();
   const deleteVote = useDeleteVote();
   const queryClient = useQueryClient();
 
-  const getQueryKeyPrefix = () => {
-    if (type === 'image' && spotId) return ['gallery-infinite', spotId];
-    if (type === 'tip' && spotId) return ['tips-infinite', spotId];
-    if (type === 'alert') return ['scam-alerts'];
-    return null;
+  const getQueryPredicate = () => {
+    if (type === 'image') return (query: any) => (query.queryKey[0] === 'gallery' || query.queryKey[0] === 'gallery-infinite') && (!spotId || query.queryKey[1] === spotId);
+    if (type === 'tip') return (query: any) => (query.queryKey[0] === 'tips' || query.queryKey[0] === 'tips-infinite') && (!spotId || query.queryKey[1] === spotId);
+    if (type === 'alert') return (query: any) => query.queryKey[0] === 'scam-alerts' || query.queryKey[0] === 'scam-alerts-infinite';
+    if (type === 'spot') return (query: any) => {
+      const key = query.queryKey[0]?.toString();
+      return key === 'spots' || key === 'spots-infinite';
+    };
+    return () => false;
   };
 
   const updateItem = (target: any, item: VoteableItem) => {
@@ -55,31 +59,37 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image', spotId?: string) 
     return old;
   };
 
-  const toggleVote = async (item: VoteableItem) => {
-    const keyPrefix = getQueryKeyPrefix();
-    if (!keyPrefix) return;
+  const toggleVote = async (item: VoteableItem): Promise<{ voteId: string | null }> => {
+    const predicate = getQueryPredicate();
 
-    // Snapshot all matching queries (handles parameterized keys like ['scam-alerts', {cityId}])
-    const snapshots = queryClient.getQueriesData<any>({ queryKey: keyPrefix });
+    // Snapshot all matching queries
+    const snapshots = queryClient.getQueriesData<any>({ predicate });
 
     // Optimistically update all matching queries
-    queryClient.setQueriesData<any>({ queryKey: keyPrefix }, (old: any) => applyUpdate(old, item));
+    queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, item));
 
     try {
       if (item.hasVoted && item.voteId) {
-        await deleteVote.mutateAsync({ voteId: item.voteId, type });
+        await deleteVote.mutateAsync({ voteId: item.voteId, type: type === 'spot' ? 'image' : (type as any) });
+        // After successful delete, update state with real voteId (null)
+        const updatedItem = { ...item, hasVoted: false, voteId: null };
+        queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, updatedItem));
+        return { voteId: null };
       } else {
-        await createVote.mutateAsync({ targetId: item.id, type });
+        const response = await createVote.mutateAsync({ targetId: item.id, type });
+        // After successful create, update state with real voteId from response
+        const updatedItem = { ...item, hasVoted: true, voteId: response.voteId };
+        queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, updatedItem));
+        return { voteId: response.voteId };
       }
     } catch (error) {
       // Rollback all snapshots on error
       snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
       toast.error('Failed to update vote');
+      return { voteId: item.voteId ?? null };
     } finally {
-      // Refresh to get actual DB state (real voteId, counts)
-      queryClient.invalidateQueries({ queryKey: keyPrefix });
-      if (type === 'image' && spotId) queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
-      if (type === 'tip' && spotId) queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
+      // Refresh to get actual DB state
+      // queryClient.invalidateQueries({ predicate });
     }
   };
 

@@ -533,17 +533,25 @@ export function useTipComments(tipId: string) {
     });
 }
 
+
+ 
 export function useScamComments(scamAlertId: string) {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ['scam-comments', scamAlertId],
-        queryFn: async () => {
-            const { data } = await api.get(`/comments/alert/${scamAlertId}`);
-            return data?.data || (Array.isArray(data) ? data : []);
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get(`/comments/alert/${scamAlertId}?skip=${pageParam}&take=10`);
+            return data;
         },
+        getNextPageParam: (lastPage) => {
+            if (lastPage?.pagination?.hasMore) {
+                return lastPage.pagination.skip + lastPage.pagination.take;
+            }
+            return undefined;
+        },
+        initialPageParam: 0,
         enabled: !!scamAlertId,
     });
 }
-
 export function useCreateComment() {
     const queryClient = useQueryClient();
     return useMutation({
@@ -734,7 +742,7 @@ export function useCreateVote() {
             type,
         }: {
             targetId: string;
-            type: 'tip' | 'alert' | 'image';
+            type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             let endpoint = '';
             let payload: any = {};
@@ -748,6 +756,9 @@ export function useCreateVote() {
             } else if (type === 'image') {
                 endpoint = '/votes/image';
                 payload.galleryImageId = targetId;
+            } else if (type === 'spot') {
+                endpoint = '/votes/spot';
+                payload.spotId = targetId;
             }
 
             const { data } = await api.post(endpoint, payload);
@@ -763,7 +774,7 @@ export function useDeleteVote() {
             type,
         }: {
             voteId: string;
-            type: 'tip' | 'alert' | 'image';
+            type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             const { data } = await api.delete(`/votes/${type}/${voteId}`);
             return data;

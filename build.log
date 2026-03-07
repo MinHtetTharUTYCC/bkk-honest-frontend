@@ -1,0 +1,35 @@
+
+> bkk-honest-frontend@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 25.2s
+  Running TypeScript ...
+  Collecting page data using 1 worker ...
+  Generating static pages using 1 worker (0/13) ...
+  Generating static pages using 1 worker (3/13) 
+  Generating static pages using 1 worker (6/13) 
+  Generating static pages using 1 worker (9/13) 
+✓ Generating static pages using 1 worker (13/13) in 305.8ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /dev-login
+├ ƒ /map
+├ ƒ /missions
+├ ƒ /navigate
+├ ƒ /profile
+├ ƒ /report
+├ ƒ /scam-alerts
+├ ƒ /search
+├ ƒ /spots
+└ ƒ /spots/[id]
+
+
+ƒ  (Dynamic)  server-rendered on demand
+
