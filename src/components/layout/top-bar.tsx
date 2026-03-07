@@ -15,7 +15,7 @@ export default function TopBar() {
     const [searchInput, setSearchInput] = useState('');
     const displayUserId = user?.id || '08ec1994-a7e5-42d3-b533-e52982fc2e2d';
     const { data: profile } = useProfile(displayUserId);
-    const isSearchPage = pathname === '/search' || pathname?.startsWith('/search?');
+    const isSearchPage = pathname?.endsWith('/search') || pathname?.endsWith('/search/');
 
     const handleSearchFocus = () => {
         // Navigate to search page with current input if any

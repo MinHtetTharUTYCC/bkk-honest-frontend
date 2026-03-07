@@ -29,11 +29,11 @@ export default function CitySwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-2 md:px-3 py-1.5 md:py-2 rounded-2xl bg-white/5 hover:bg-white/8 border border-white/10 transition-all hover:shadow-sm group active:scale-95"
       >
-        <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-cyan-400/10 flex items-center justify-center text-cyan-400 transition-transform group-hover:scale-110">
-          <MapPin size={14} fill="currentColor" className="text-cyan-400" />
+        <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 transition-transform group-hover:scale-110">
+          <MapPin size={14} fill="currentColor" className="text-amber-400" />
         </div>
         <div className="flex flex-col items-start leading-none pr-1">
-          <span className="text-[7px] md:text-[8px] font-black text-white/40 uppercase tracking-widest">In Town</span>
+          <span className="hidden md:inline-block text-[7px] md:text-[8px] font-black text-amber-400/60 uppercase tracking-widest">In Town</span>
           <div className="flex items-center gap-1">
             <span className="text-[10px] md:text-xs font-black text-foreground uppercase italic tracking-tighter truncate max-w-[80px] md:max-w-none">
               {selectedCity?.name || 'Loading...'}
@@ -59,7 +59,7 @@ export default function CitySwitcher() {
                 className={cn(
                   "w-full text-left px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
                   selectedCityId === city.id 
-                    ? "bg-cyan-400 text-black shadow-lg shadow-cyan-400/20" 
+                    ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
                     : "text-white/40 hover:bg-white/5 hover:text-foreground"
                 )}
               >
