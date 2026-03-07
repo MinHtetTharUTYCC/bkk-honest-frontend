@@ -232,21 +232,35 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                         {alert.category?.name || 'Scam'}
                     </span>
                 </div>
+
+                {/* User Info Overlay — Bottom of Image */}
+                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+                    <div className="flex items-center gap-1.5">
+                        <div className="w-5 h-5 bg-white/10 backdrop-blur-md border border-white/10 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0">
+                            {alert.user?.avatarUrl ? (
+                                <img src={alert.user.avatarUrl} className="w-full h-full object-cover" />
+                            ) : (
+                                <User size={10} />
+                            )}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                            <span className="text-[8px] font-black text-white uppercase tracking-tight truncate leading-none mb-0.5">
+                                {alert.user?.name || 'Local'}
+                            </span>
+                            {alert.user?.level && (
+                                <span className="text-[6px] font-bold text-amber-400 uppercase tracking-tighter leading-none">
+                                    {alert.user.level.replace('_', ' ')}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Content — right */}
             <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
                 {/* Meta row - User at top left, Date at top right */}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-5 h-5 bg-white/8 rounded-lg flex items-center justify-center text-white/40">
-                            <User size={10} />
-                        </div>
-                        <span className="text-[10px] font-bold text-white/50 uppercase tracking-tight">
-                            {alert.user?.name || 'Local Expert'}
-                        </span>
-                    </div>
-
+                <div className="flex items-center justify-end">
                     <div className="flex items-center gap-4">
                         {isOwner && (
                             <div className="flex items-center gap-1 mr-1">
