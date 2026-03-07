@@ -75,6 +75,23 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     return null;
   };
 
+  const setItemState = (oldData: any, itemId: string, newState: any): any => {
+    if (!oldData) return oldData;
+    const updateTarget = (target: any) => target.id === itemId ? { ...target, ...newState } : target;
+    if (Array.isArray(oldData)) return oldData.map(updateTarget);
+    if (oldData.pages) {
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page: any) => ({
+          ...page,
+          data: page.data?.map(updateTarget) ?? page.map?.(updateTarget),
+        })),
+      };
+    }
+    if (oldData.data) return { ...oldData, data: oldData.data.map(updateTarget) };
+    return oldData;
+  };
+
   const toggleVote = async (item: VoteableItem): Promise<{ voteId: string | null }> => {
     const predicate = getQueryPredicate();
 
@@ -97,15 +114,17 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     try {
       if (item.hasVoted && currentVoteId && currentVoteId !== 'temp-id') {
         await deleteVote.mutateAsync({ voteId: currentVoteId, type: type === 'spot' ? 'image' : (type as any) });
-        // After successful delete, update state with real voteId (null)
-        const updatedItem = { ...item, hasVoted: false, voteId: null };
-        queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, updatedItem));
+        // After successful delete, set state directly (not toggle)
+        queryClient.setQueriesData<any>({ predicate }, (old: any) => 
+          setItemState(old, item.id, { hasVoted: false, voteId: null })
+        );
         return { voteId: null };
       } else {
         const response = await createVote.mutateAsync({ targetId: item.id, type });
-        // After successful create, update state with real voteId from response
-        const updatedItem = { ...item, hasVoted: true, voteId: response.voteId };
-        queryClient.setQueriesData<any>({ predicate }, (old: any) => applyUpdate(old, updatedItem));
+        // After successful create, set state directly (not toggle)
+        queryClient.setQueriesData<any>({ predicate }, (old: any) =>
+          setItemState(old, item.id, { hasVoted: true, voteId: response.voteId })
+        );
         return { voteId: response.voteId };
       }
     } catch (error) {
