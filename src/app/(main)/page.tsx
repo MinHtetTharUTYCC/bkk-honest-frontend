@@ -193,7 +193,7 @@ export default function HomeFeed() {
                                     className="bg-card rounded-2xl p-7 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.01] transition-transform"
                                 >
                                     <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-2 text-red-400 font-bold text-xs uppercase tracking-widest">
+                                        <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-widest">
                                             <AlertCircle size={16} strokeWidth={3} />
                                             Scam Alert
                                         </div>
@@ -222,8 +222,8 @@ export default function HomeFeed() {
                                                 className={cn(
                                                     'flex items-center gap-1 px-3 py-1.5 rounded-lg text-[9px] font-bold transition-all',
                                                     alert.hasVoted
-                                                        ? 'bg-red-400/10 text-red-400 shadow-sm'
-                                                        : 'text-white/30 hover:text-red-400',
+                                                        ? 'bg-amber-400/10 text-amber-400 shadow-sm'
+                                                        : 'text-white/30 hover:text-amber-400',
                                                 )}
                                             >
                                                 <Heart
