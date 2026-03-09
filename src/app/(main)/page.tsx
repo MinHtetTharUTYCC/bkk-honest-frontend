@@ -9,7 +9,6 @@ import {
     Trophy,
 } from 'lucide-react';
 import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories } from '@/hooks/use-api';
-import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
 import { LeaderboardList } from '@/components/leaderboard-list';
@@ -23,7 +22,7 @@ import { useState } from 'react';
 
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
-    const { latitude, longitude, error: geoError } = useGeolocation();
+    const { latitude, longitude } = useGeolocation();
     const [selectedAlert, setSelectedAlert] = useState<any>(null);
 
     const { data: nearbySpots, isLoading: nearbyLoading } = useNearbySpots({
@@ -281,48 +280,47 @@ export default function HomeFeed() {
                 </div>
             </div>
 
-                {/* 3. Mobile Trending & Contributors (Only on small screens) */}
-                <div className="lg:hidden space-y-12 pb-12">
-                    {/* Categories Carousel */}
-                    <section className="space-y-6">
-                        <header className="px-2">
-                            <h4 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
-                                <Hash size={20} className="text-amber-400" />
-                                Browse by Category
-                            </h4>
-                        </header>
-                        <ScrollArea className="w-full whitespace-nowrap -mx-8">
-                            <div className="flex gap-4 pb-4 px-8">
-                                {Array.isArray(categories) && categories.map((cat: any) => (
-                                    <Link
-                                        key={cat.id}
-                                        href={`/spots?categoryId=${cat.id}`}
-                                        className="flex-shrink-0 bg-card px-6 py-4 rounded-2xl border border-white/8 shadow-xl shadow-black/30 flex flex-col gap-1 active:scale-95 transition-transform"
-                                    >
-                                        <span className="text-sm font-bold text-foreground">
-                                            {cat.name}
-                                        </span>
-                                        <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
-                                            Explore
-                                        </span>
-                                    </Link>
-                                ))}
-                            </div>
-                            <ScrollBar orientation="horizontal" className="hidden" />
-                        </ScrollArea>
-                    </section>
+            {/* 3. Mobile Trending & Contributors (Only on small screens) */}
+            <div className="lg:hidden space-y-12 pb-12">
+                {/* Categories Carousel */}
+                <section className="space-y-6">
+                    <header className="px-2">
+                        <h4 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+                            <Hash size={20} className="text-amber-400" />
+                            Browse by Category
+                        </h4>
+                    </header>
+                    <ScrollArea className="w-full whitespace-nowrap -mx-8">
+                        <div className="flex gap-4 pb-4 px-8">
+                            {Array.isArray(categories) && categories.map((cat: any) => (
+                                <Link
+                                    key={cat.id}
+                                    href={`/spots?categoryId=${cat.id}`}
+                                    className="flex-shrink-0 bg-card px-6 py-4 rounded-2xl border border-white/8 shadow-xl shadow-black/30 flex flex-col gap-1 active:scale-95 transition-transform"
+                                >
+                                    <span className="text-sm font-bold text-foreground">
+                                        {cat.name}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
+                                        Explore
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" className="hidden" />
+                    </ScrollArea>
+                </section>
 
-                    {/* Top Contributors Carousel */}
-                    <section className="space-y-6">
-                        <header className="px-2">
-                            <h4 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
-                                <Trophy size={20} className="text-amber-400" />
-                                Local Gurus
-                            </h4>
-                        </header>
-                        <LeaderboardList />
-                    </section>
-                </div>
+                {/* Top Contributors Carousel */}
+                <section className="space-y-6">
+                    <header className="px-2">
+                        <h4 className="font-display text-xl font-bold text-foreground tracking-tight flex items-center gap-2">
+                            <Trophy size={20} className="text-amber-400" />
+                            Local Gurus
+                        </h4>
+                    </header>
+                    <LeaderboardList />
+                </section>
             </div>
 
             {selectedAlert && (
