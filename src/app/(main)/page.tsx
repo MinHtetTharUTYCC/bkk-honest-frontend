@@ -8,7 +8,7 @@ import {
     Hash,
     Trophy,
 } from 'lucide-react';
-import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories } from '@/hooks/use-api';
+import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories, useInfiniteLiveVibes } from '@/hooks/use-api';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
 import { LeaderboardList } from '@/components/leaderboard-list';
@@ -18,7 +18,8 @@ import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2 } from 'lucide-react';
 
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
@@ -42,7 +43,32 @@ export default function HomeFeed() {
         cityId: selectedCityId,
     });
 
-    const { data: vibes, isLoading: vibesLoading } = useLiveVibes();
+    const { 
+        data: vibesData, 
+        isLoading: vibesLoading,
+        fetchNextPage: fetchNextVibes,
+        hasNextPage: hasNextVibes,
+        isFetchingNextPage: isFetchingNextVibes
+    } = useInfiniteLiveVibes({ cityId: selectedCityId });
+
+    const vibes = vibesData?.pages.flatMap(page => page.data || []) || [];
+
+    // Infinite scroll for Vibes
+    const vibesObserverTarget = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && hasNextVibes && !isFetchingNextVibes) {
+                    fetchNextVibes();
+                }
+            },
+            { threshold: 0.1 }
+        );
+        if (vibesObserverTarget.current) {
+            observer.observe(vibesObserverTarget.current);
+        }
+        return () => observer.disconnect();
+    }, [hasNextVibes, isFetchingNextVibes, fetchNextVibes]);
 
     return (
         <div className="space-y-16">
@@ -274,6 +300,13 @@ export default function HomeFeed() {
                                         </p>
                                     </div>
                                 )}
+
+                                {/* Loading sentinel */}
+                                <div ref={vibesObserverTarget} className="flex justify-center py-4">
+                                    {isFetchingNextVibes && (
+                                        <Loader2 size={20} className="animate-spin text-amber-400" />
+                                    )}
+                                </div>
                             </div>
                         </ScrollArea>
                     </div>

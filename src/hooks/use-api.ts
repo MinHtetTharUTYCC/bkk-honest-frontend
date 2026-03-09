@@ -520,6 +520,28 @@ export function useLiveVibes(params?: { spotId?: string; cityId?: string }) {
     });
 }
 
+export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string; take?: number }) {
+    return useInfiniteQuery({
+        queryKey: ['live-vibes-infinite', params],
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get<any>('/live-vibes', {
+                params: {
+                    ...params,
+                    skip: pageParam,
+                    take: params?.take || 10,
+                },
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            const nextSkip = skip + take;
+            return nextSkip < total ? nextSkip : undefined;
+        },
+    });
+}
+
 // --- Comments ---
 
 export function useTipComments(tipId: string) {
