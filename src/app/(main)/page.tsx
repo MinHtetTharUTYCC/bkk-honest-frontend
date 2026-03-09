@@ -158,110 +158,128 @@ export default function HomeFeed() {
             </section>
 
             {/* 2. The Pulse (Scam Alerts & Vibes) */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-                <section className="lg:col-span-2 space-y-8">
-                    <header className="flex items-end justify-between px-2">
-                        <div className="flex flex-col gap-1">
-                            <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">
-                                The Pulse
-                            </h2>
-                            <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
-                                What is happening in {selectedCity?.name || 'this city'} right now
-                            </p>
-                        </div>
-                        <Link href="/scam-alerts" className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors group">
-                            View All
-                            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                    </header>
-
-                    <div className="space-y-4">
-                        {scamAlertsLoading ? (
-                            Array.from({ length: 2 }).map((_, i) => (
-                                <div
-                                    key={i}
-                                    className="h-44 bg-white/5 rounded-2xl animate-pulse"
-                                />
-                            ))
-                        ) : Array.isArray(scamAlerts) && scamAlerts.length > 0 ? (
-                            scamAlerts.map((alert: any) => (
-                                <ScamAlertCard
-                                    key={alert.id}
-                                    alert={alert}
-                                    onClick={() => setSelectedAlert(alert)}
-                                />
-                            ))
-                        ) : (
-                            <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
-                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                                    All clear in {selectedCity?.name || 'the city'}. No active scams
-                                    reported.
-                                </p>
-                            </div>
-                        )}
-
-                        {vibesLoading ? (
-                            <div className="h-40 bg-white/5 rounded-2xl animate-pulse" />
-                        ) : Array.isArray(vibes) && vibes.length > 0 ? (
-                            vibes.slice(0, 3).map((vibe: any) => (
-                                <Link
-                                    key={vibe.id}
-                                    href={`/spots/${vibe.spotId || vibe.spot?.id}`}
-                                    className="block bg-card rounded-2xl p-7 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.01] transition-transform"
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-2 text-amber-400 font-bold text-xs uppercase tracking-widest">
-                                            <Zap size={16} fill="currentColor" />
-                                            Live Vibe
-                                        </div>
-                                        <span
-                                            className="text-white/40 font-bold text-[10px] uppercase tracking-tighter"
-                                            suppressHydrationWarning
-                                        >
-                                            {new Date(vibe.timestamp).toLocaleTimeString([], {
-                                                hour: '2-digit',
-                                                minute: '2-digit',
-                                            })}{' '}
-                                            • {vibe.spot?.name}
-                                        </span>
-                                    </div>
-                                    <h3 className="font-display text-xl font-bold text-foreground mb-2 leading-tight">
-                                        {vibe.crowdLevel >= 4
-                                            ? 'Very Crowded'
-                                            : vibe.crowdLevel >= 3
-                                              ? 'Medium Crowd'
-                                              : 'Quiet & Chill'}
-                                    </h3>
-                                    <p className="text-white/60 font-medium leading-relaxed mb-6">
-                                        Crowd level: {vibe.crowdLevel}/5. Wait time:{' '}
-                                        {vibe.waitTimeMinutes} mins.
-                                    </p>
-                                    <div className="flex items-center gap-3">
-                                        <div
-                                            className={cn(
-                                                'px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase',
-                                                vibe.crowdLevel >= 4
-                                                    ? 'bg-orange-400/10 text-orange-400'
-                                                    : 'bg-amber-400/10 text-amber-400',
-                                            )}
-                                        >
-                                            {vibe.crowdLevel >= 4 ? 'Busy' : 'Available'}
-                                        </div>
-                                        <div className="bg-white/10 text-white/60 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase border border-white/5">
-                                            {vibe.waitTimeMinutes}m Wait
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))
-                        ) : !vibesLoading ? (
-                            <div className="py-12 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
-                                <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                                    No vibes checked in recently
-                                </p>
-                            </div>
-                        ) : null}
+            <div className="space-y-8">
+                <header className="flex items-end justify-between px-2">
+                    <div className="flex flex-col gap-1">
+                        <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">
+                            The Pulse
+                        </h2>
+                        <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
+                            What is happening in {selectedCity?.name || 'this city'} right now
+                        </p>
                     </div>
-                </section>
+                </header>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    {/* Scam Alerts Column */}
+                    <div className="lg:col-span-8 space-y-8">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-white/30">Active Alerts</h3>
+                            <Link href="/scam-alerts" className="text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors">
+                                View All Scams
+                            </Link>
+                        </div>
+                        <div className="space-y-4">
+                            {scamAlertsLoading ? (
+                                Array.from({ length: 2 }).map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className="h-44 bg-white/5 rounded-2xl animate-pulse"
+                                    />
+                                ))
+                            ) : Array.isArray(scamAlerts) && scamAlerts.length > 0 ? (
+                                scamAlerts.map((alert: any) => (
+                                    <ScamAlertCard
+                                        key={alert.id}
+                                        alert={alert}
+                                        onClick={() => setSelectedAlert(alert)}
+                                    />
+                                ))
+                            ) : (
+                                <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                                        All clear in {selectedCity?.name || 'the city'}. No active scams
+                                        reported.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Live Vibes Column */}
+                    <div className="lg:col-span-4 space-y-8">
+                        <div className="flex items-center justify-between px-2">
+                            <h3 className="text-sm font-black uppercase tracking-widest text-white/30">Live Vibes</h3>
+                        </div>
+                        
+                        <ScrollArea className="h-[600px] lg:h-[800px] -mr-4 pr-4">
+                            <div className="space-y-4 pb-12">
+                                {vibesLoading ? (
+                                    Array.from({ length: 4 }).map((_, i) => (
+                                        <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse" />
+                                    ))
+                                ) : Array.isArray(vibes) && vibes.length > 0 ? (
+                                    vibes.map((vibe: any) => (
+                                        <Link
+                                            key={vibe.id}
+                                            href={`/spots/${vibe.spotId || vibe.spot?.id}`}
+                                            className="block bg-card rounded-2xl p-6 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.02] transition-all duration-300"
+                                        >
+                                            <div className="flex items-start justify-between mb-3">
+                                                <div className="flex items-center gap-2 text-amber-400 font-bold text-[10px] uppercase tracking-widest">
+                                                    <Zap size={14} fill="currentColor" />
+                                                    Vibe
+                                                </div>
+                                                <span
+                                                    className="text-white/40 font-bold text-[9px] uppercase tracking-tighter"
+                                                    suppressHydrationWarning
+                                                >
+                                                    {new Date(vibe.timestamp).toLocaleTimeString([], {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                    })}
+                                                </span>
+                                            </div>
+                                            
+                                            <h4 className="font-display text-base font-bold text-foreground mb-1 leading-tight group-hover:text-amber-400 transition-colors">
+                                                {vibe.spot?.name}
+                                            </h4>
+                                            
+                                            <p className="text-white/50 text-[11px] font-medium leading-relaxed mb-4 line-clamp-2">
+                                                {vibe.crowdLevel >= 4
+                                                    ? 'Very Crowded'
+                                                    : vibe.crowdLevel >= 3
+                                                      ? 'Medium Crowd'
+                                                      : 'Quiet & Chill'}
+                                            </p>
+
+                                            <div className="flex items-center gap-2">
+                                                <div className={cn(
+                                                    'px-2 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase',
+                                                    vibe.crowdLevel >= 4
+                                                        ? 'bg-orange-400/10 text-orange-400'
+                                                        : 'bg-amber-400/10 text-amber-400',
+                                                )}>
+                                                    Level {vibe.crowdLevel}/5
+                                                </div>
+                                                <div className="bg-white/10 text-white/60 px-2 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase border border-white/5">
+                                                    {vibe.waitTimeMinutes}m Wait
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <div className="py-12 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                                            No vibes recently
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </ScrollArea>
+                    </div>
+                </div>
+            </div>
 
                 {/* 3. Mobile Trending & Contributors (Only on small screens) */}
                 <div className="lg:hidden space-y-12 pb-12">
