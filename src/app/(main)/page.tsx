@@ -215,7 +215,7 @@ export default function HomeFeed() {
                                             Live Vibe
                                         </div>
                                         <span
-                                            className="text-white/20 font-bold text-[10px] uppercase tracking-tighter"
+                                            className="text-white/40 font-bold text-[10px] uppercase tracking-tighter"
                                             suppressHydrationWarning
                                         >
                                             {new Date(vibe.timestamp).toLocaleTimeString([], {
@@ -247,7 +247,7 @@ export default function HomeFeed() {
                                         >
                                             {vibe.crowdLevel >= 4 ? 'Busy' : 'Available'}
                                         </div>
-                                        <div className="bg-white/5 text-white/40 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase">
+                                        <div className="bg-white/10 text-white/60 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-widest uppercase border border-white/5">
                                             {vibe.waitTimeMinutes}m Wait
                                         </div>
                                     </div>

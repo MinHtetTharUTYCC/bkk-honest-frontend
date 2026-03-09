@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Search, Map as MapIcon, Plus, AlertTriangle } from 'lucide-react';
+import { Home, Compass, Map as MapIcon, Plus, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -11,7 +11,7 @@ export default function NavDock() {
 
   const navItems = [
     { icon: Home, label: 'Home', href: '/' },
-    { icon: Search, label: 'Spots', href: '/spots' },
+    { icon: Compass, label: 'Spots', href: '/spots' },
     { icon: AlertTriangle, label: 'Scams', href: '/scam-alerts' },
     { icon: MapIcon, label: 'Map', href: '/map' },
   ];

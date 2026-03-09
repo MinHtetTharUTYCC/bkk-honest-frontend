@@ -396,11 +396,11 @@ export default function SpotDetailPage() {
                 </span>
                 <div className="flex items-center gap-1 text-white font-semibold text-xs">
                   <Zap size={12} fill="currentColor" className="text-amber-400" />
-                  {spot.vibeStats ? `${((spot.vibeStats as any).avgCrowdLevel / 5 * 100).toFixed(0)}% Trust` : 'New Spot'}
+                  {(spot.vibeStats as any)?.avgCrowdLevel ? `Busy: ${((spot.vibeStats as any).avgCrowdLevel).toFixed(1)}/5` : 'New Spot'}
                 </div>
               </div>
               <h1 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight drop-shadow-sm">{spot.name}</h1>
-              <p className="text-white/40 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+              <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
                 <MapPin size={14} strokeWidth={3} className="text-amber-400" />
                 {spot.address}
               </p>

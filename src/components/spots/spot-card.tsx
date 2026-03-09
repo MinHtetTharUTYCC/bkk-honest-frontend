@@ -61,7 +61,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                     <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[9px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
                         <Zap size={10} fill="currentColor" />
                         {(vibeStats as any)?.avgCrowdLevel
-                            ? `${(((vibeStats as any).avgCrowdLevel / 5) * 100).toFixed(0)}% Trust`
+                            ? `Busy: ${((vibeStats as any).avgCrowdLevel).toFixed(1)}/5`
                             : 'New'}
                     </div>
                 </div>
@@ -90,7 +90,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                     <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
                         {name}
                     </h3>
-                    <p className="text-white/40 font-medium text-[9px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
+                    <p className="text-white/60 font-medium text-[9px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
                         <MapPin size={11} className="text-amber-400" />
                         {address?.split(',')[0]}
                     </p>
