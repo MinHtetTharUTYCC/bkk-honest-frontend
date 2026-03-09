@@ -449,6 +449,7 @@ export function useScamAlerts(params?: {
     categoryId?: string;
     sort?: 'newest' | 'popular';
     search?: string;
+    take?: number;
 }) {
     // Clean up undefined parameters
     const cleanParams: any = {};
@@ -457,6 +458,7 @@ export function useScamAlerts(params?: {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.sort) cleanParams.sort = params.sort;
         if (params.search) cleanParams.search = params.search;
+        if (params.take) cleanParams.take = params.take;
     }
 
     return useQuery({
@@ -506,10 +508,11 @@ export function useInfiniteScamAlerts(params?: {
     });
 }
 
-export function useLiveVibes(params?: { spotId?: string; cityId?: string }) {
+export function useLiveVibes(params?: { spotId?: string; cityId?: string; take?: number }) {
     const query = new URLSearchParams();
     if (params?.spotId) query.set('spotId', params.spotId);
     if (params?.cityId) query.set('cityId', params.cityId);
+    if (params?.take) query.set('take', params.take.toString());
     const qs = query.toString();
     return useQuery({
         queryKey: ['live-vibes', params],
@@ -520,7 +523,7 @@ export function useLiveVibes(params?: { spotId?: string; cityId?: string }) {
     });
 }
 
-export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string; take?: number }) {
+export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string; categoryId?: string; take?: number }) {
     return useInfiniteQuery({
         queryKey: ['live-vibes-infinite', params],
         queryFn: async ({ pageParam = 0 }) => {

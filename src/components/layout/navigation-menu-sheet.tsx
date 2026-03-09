@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Target, User } from 'lucide-react';
+import { Menu, X, Target, User, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -18,6 +18,7 @@ export default function NavigationMenuSheet() {
   const pathname = usePathname();
 
   const menuItems: MenuItem[] = [
+    { icon: <Zap size={20} />, label: 'Vibes', href: '/vibes' },
     { icon: <Target size={20} />, label: 'Missions', href: '/missions' },
     { icon: <User size={20} />, label: 'Profile', href: '/profile' },
   ];

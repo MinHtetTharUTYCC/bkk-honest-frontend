@@ -8,7 +8,7 @@ import {
     Hash,
     Trophy,
 } from 'lucide-react';
-import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories, useInfiniteLiveVibes } from '@/hooks/use-api';
+import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories } from '@/hooks/use-api';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
 import { LeaderboardList } from '@/components/leaderboard-list';
@@ -18,8 +18,7 @@ import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
@@ -41,34 +40,13 @@ export default function HomeFeed() {
 
     const { data: scamAlerts, isLoading: scamAlertsLoading } = useScamAlerts({
         cityId: selectedCityId,
+        take: 5
     });
 
-    const { 
-        data: vibesData, 
-        isLoading: vibesLoading,
-        fetchNextPage: fetchNextVibes,
-        hasNextPage: hasNextVibes,
-        isFetchingNextPage: isFetchingNextVibes
-    } = useInfiniteLiveVibes({ cityId: selectedCityId });
-
-    const vibes = vibesData?.pages.flatMap(page => page.data || []) || [];
-
-    // Infinite scroll for Vibes
-    const vibesObserverTarget = useRef(null);
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            entries => {
-                if (entries[0].isIntersecting && hasNextVibes && !isFetchingNextVibes) {
-                    fetchNextVibes();
-                }
-            },
-            { threshold: 0.1 }
-        );
-        if (vibesObserverTarget.current) {
-            observer.observe(vibesObserverTarget.current);
-        }
-        return () => observer.disconnect();
-    }, [hasNextVibes, isFetchingNextVibes, fetchNextVibes]);
+    const { data: vibes, isLoading: vibesLoading } = useLiveVibes({ 
+        cityId: selectedCityId,
+        take: 5 
+    });
 
     return (
         <div className="space-y-16">
@@ -235,80 +213,74 @@ export default function HomeFeed() {
                     <div className="lg:col-span-4 space-y-8">
                         <div className="flex items-center justify-between px-2">
                             <h3 className="text-sm font-black uppercase tracking-widest text-white/30">Live Vibes</h3>
+                            <Link href="/vibes" className="text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors">
+                                View All Vibes
+                            </Link>
                         </div>
                         
-                        <ScrollArea className="h-[600px] lg:h-[800px] -mr-4 pr-4">
-                            <div className="space-y-4 pb-12">
-                                {vibesLoading ? (
-                                    Array.from({ length: 4 }).map((_, i) => (
-                                        <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse" />
-                                    ))
-                                ) : Array.isArray(vibes) && vibes.length > 0 ? (
-                                    vibes.map((vibe: any) => (
-                                        <Link
-                                            key={vibe.id}
-                                            href={`/spots/${vibe.spotId || vibe.spot?.id}`}
-                                            className="block bg-card rounded-2xl p-6 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.02] transition-all duration-300"
-                                        >
-                                            <div className="flex items-start justify-between mb-3">
-                                                <div className="flex items-center gap-2 text-amber-400 font-bold text-[10px] uppercase tracking-widest">
-                                                    <Zap size={14} fill="currentColor" />
-                                                    Vibe
-                                                </div>
-                                                <span
-                                                    className="text-white/40 font-bold text-[9px] uppercase tracking-tighter"
-                                                    suppressHydrationWarning
-                                                >
-                                                    {new Date(vibe.timestamp).toLocaleTimeString([], {
-                                                        hour: '2-digit',
-                                                        minute: '2-digit',
-                                                    })}
-                                                </span>
+                        <div className="space-y-4">
+                            {vibesLoading ? (
+                                Array.from({ length: 4 }).map((_, i) => (
+                                    <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse" />
+                                ))
+                            ) : Array.isArray(vibes) && vibes.length > 0 ? (
+                                vibes.map((vibe: any) => (
+                                    <Link
+                                        key={vibe.id}
+                                        href={`/spots/${vibe.spotId || vibe.spot?.id}`}
+                                        className="block bg-card rounded-2xl p-6 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.02] transition-all duration-300"
+                                    >
+                                        <div className="flex items-start justify-between mb-3">
+                                            <div className="flex items-center gap-2 text-amber-400 font-bold text-[10px] uppercase tracking-widest">
+                                                <Zap size={14} fill="currentColor" />
+                                                Vibe
                                             </div>
-                                            
-                                            <h4 className="font-display text-base font-bold text-foreground mb-1 leading-tight group-hover:text-amber-400 transition-colors">
-                                                {vibe.spot?.name}
-                                            </h4>
-                                            
-                                            <p className="text-white/50 text-[11px] font-medium leading-relaxed mb-4 line-clamp-2">
-                                                {vibe.crowdLevel >= 4
-                                                    ? 'Very Crowded'
-                                                    : vibe.crowdLevel >= 3
-                                                      ? 'Medium Crowd'
-                                                      : 'Quiet & Chill'}
-                                            </p>
-
-                                            <div className="flex items-center gap-2">
-                                                <div className={cn(
-                                                    'px-2 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase',
-                                                    vibe.crowdLevel >= 4
-                                                        ? 'bg-orange-400/10 text-orange-400'
-                                                        : 'bg-amber-400/10 text-amber-400',
-                                                )}>
-                                                    Level {vibe.crowdLevel}/5
-                                                </div>
-                                                <div className="bg-white/10 text-white/60 px-2 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase border border-white/5">
-                                                    {vibe.waitTimeMinutes}m Wait
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ))
-                                ) : (
-                                    <div className="py-12 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
-                                        <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                                            No vibes recently
+                                            <span
+                                                className="text-white/40 font-bold text-[9px] uppercase tracking-tighter"
+                                                suppressHydrationWarning
+                                            >
+                                                {new Date(vibe.timestamp).toLocaleTimeString([], {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                })}
+                                            </span>
+                                        </div>
+                                        
+                                        <h4 className="font-display text-base font-bold text-foreground mb-1 leading-tight group-hover:text-amber-400 transition-colors">
+                                            {vibe.spot?.name}
+                                        </h4>
+                                        
+                                        <p className="text-white/50 text-[11px] font-medium leading-relaxed mb-4 line-clamp-2">
+                                            {vibe.crowdLevel >= 4
+                                                ? 'Very Crowded'
+                                                : vibe.crowdLevel >= 3
+                                                  ? 'Medium Crowd'
+                                                  : 'Quiet & Chill'}
                                         </p>
-                                    </div>
-                                )}
 
-                                {/* Loading sentinel */}
-                                <div ref={vibesObserverTarget} className="flex justify-center py-4">
-                                    {isFetchingNextVibes && (
-                                        <Loader2 size={20} className="animate-spin text-amber-400" />
-                                    )}
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn(
+                                                'px-2 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase',
+                                                vibe.crowdLevel >= 4
+                                                    ? 'bg-orange-400/10 text-orange-400'
+                                                    : 'bg-amber-400/10 text-amber-400',
+                                            )}>
+                                                Level {vibe.crowdLevel}/5
+                                            </div>
+                                            <div className="bg-white/10 text-white/60 px-2 py-1 rounded-lg text-[9px] font-bold tracking-widest uppercase border border-white/5">
+                                                {vibe.waitTimeMinutes}m Wait
+                                            </div>
+                                        </div>
+                                    </Link>
+                                ))
+                            ) : (
+                                <div className="py-12 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                    <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                                        No vibes recently
+                                    </p>
                                 </div>
-                            </div>
-                        </ScrollArea>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
