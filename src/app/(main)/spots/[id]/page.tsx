@@ -11,6 +11,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import TipCommentsModal from '@/components/tips/tip-comments-modal';
+import ReportButton from '@/components/report/report-button';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import { Dropdown } from '@/components/ui/dropdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -846,6 +847,7 @@ export default function SpotDetailPage() {
                                 <span>{tip._count?.votes || 0}</span>
                               </button>
                             </div>
+                            <ReportButton targetId={tip.id} reportType="COMMUNITY_TIP" size="sm" />
                           </div>
                         </div>
 

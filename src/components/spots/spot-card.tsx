@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
+import ReportButton from '@/components/report/report-button';
 
 export default function SpotCard({ spot }: { spot: any }) {
     const { name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
@@ -66,23 +67,31 @@ export default function SpotCard({ spot }: { spot: any }) {
                     </div>
                 </div>
 
-                {/* Heart vote button — bottom-right of image, only for logged-in users */}
-                {user && (
-                    <button
-                        onClick={handleVote}
-                        disabled={votePending}
-                        className={cn(
-                            'absolute bottom-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border text-[9px] font-black uppercase tracking-widest transition-all shadow-lg',
-                            localHasVoted
-                                ? 'bg-amber-400/90 border-amber-300/30 text-black'
-                                : 'bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
-                        )}
-                        title={localHasVoted ? 'Remove like' : 'Like this spot'}
-                    >
-                        <Heart size={10} fill={localHasVoted ? 'currentColor' : 'none'} />
-                        {localVoteCount > 0 && <span>{localVoteCount}</span>}
-                    </button>
-                )}
+                {/* Action buttons — bottom-right of image */}
+                <div className="absolute bottom-3 right-3 flex items-center gap-2">
+                    {/* Report button — always visible */}
+                    <div className="pointer-events-auto">
+                        <ReportButton targetId={spot.id} reportType="SPOT" size="sm" />
+                    </div>
+                    
+                    {/* Heart vote button — only for logged-in users */}
+                    {user && (
+                        <button
+                            onClick={handleVote}
+                            disabled={votePending}
+                            className={cn(
+                                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border text-[9px] font-black uppercase tracking-widest transition-all shadow-lg',
+                                localHasVoted
+                                    ? 'bg-amber-400/90 border-amber-300/30 text-black'
+                                    : 'bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
+                            )}
+                            title={localHasVoted ? 'Remove like' : 'Like this spot'}
+                        >
+                            <Heart size={10} fill={localHasVoted ? 'currentColor' : 'none'} />
+                            {localVoteCount > 0 && <span>{localVoteCount}</span>}
+                        </button>
+                    )}
+                </div>
             </div>
 
             <Link href={`/spots/${spot.id}`} className="block">

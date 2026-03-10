@@ -906,3 +906,68 @@ export function useReverseGeocode() {
         },
     });
 }
+
+// --- Reports ---
+
+export function useCreateReport() {
+    return useMutation({
+        mutationFn: async ({
+            reportType,
+            targetId,
+            reason,
+            description,
+        }: {
+            reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT';
+            targetId: string;
+            reason: string;
+            description?: string;
+        }) => {
+            const { data } = await api.post('/reports', {
+                reportType,
+                targetId,
+                reason,
+                description,
+            });
+            return data;
+        },
+    });
+}
+
+export function useGetReports(status?: string) {
+    return useQuery({
+        queryKey: ['reports', status],
+        queryFn: async () => {
+            const params = status ? { status } : {};
+            const { data } = await api.get('/reports', { params });
+            return data?.data || [];
+        },
+    });
+}
+
+// --- Comment Reactions ---
+
+export function useToggleCommentReaction() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (commentId: string) => {
+            const { data } = await api.post(`/comments/${commentId}/reactions`);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['comments'] });
+            queryClient.invalidateQueries({ queryKey: ['tip-comments'] });
+            queryClient.invalidateQueries({ queryKey: ['alert-comments'] });
+        },
+    });
+}
+
+export function useGetCommentReaction(commentId: string) {
+    return useQuery({
+        queryKey: ['comment-reaction', commentId],
+        queryFn: async () => {
+            const { data } = await api.get(`/comments/${commentId}/reactions`);
+            return data?.data || { reactionCount: 0, userHasReacted: false };
+        },
+        enabled: !!commentId,
+    });
+}

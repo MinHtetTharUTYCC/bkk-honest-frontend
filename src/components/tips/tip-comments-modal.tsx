@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import ReportButton from '@/components/report/report-button';
+import ReactionButton from '@/components/reactions/reaction-button';
 
 interface TipCommentsModalProps {
   tip: any;
@@ -183,10 +185,24 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                              </div>
                            </div>
                         ) : (
-                          <div className="bg-white/5 border border-border rounded-xl rounded-tl-none p-3">
-                            <p className="text-xs text-white/80 leading-relaxed">
-                              {comment.text}
-                            </p>
+                          <div className="space-y-2">
+                            <div className="bg-white/5 border border-border rounded-xl rounded-tl-none p-3">
+                              <p className="text-xs text-white/80 leading-relaxed">
+                                {comment.text}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 px-3">
+                              <ReactionButton 
+                                commentId={comment.id}
+                                initialCount={comment.reactionCount || 0}
+                                initialUserReacted={comment.userHasReacted || false}
+                              />
+                              <ReportButton 
+                                targetId={comment.id}
+                                reportType="COMMENT"
+                                size="sm"
+                              />
+                            </div>
                           </div>
                         )}
                       </div>

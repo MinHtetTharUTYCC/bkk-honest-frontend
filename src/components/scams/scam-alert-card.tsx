@@ -19,6 +19,7 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useState, useRef } from 'react';
 import { useUpdateScamAlert, useDeleteScamAlert, useCategories, useCities } from '@/hooks/use-api';
+import ReportButton from '@/components/report/report-button';
 
 interface ScamAlertCardProps {
     alert: any;
@@ -344,6 +345,9 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                         <Heart size={12} fill={localHasVoted ? 'currentColor' : 'none'} />
                         {localVoteCount}
                     </button>
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <ReportButton targetId={alert.id} reportType="SCAM_ALERT" size="sm" />
+                    </div>
                 </div>
             </div>
         </div>
