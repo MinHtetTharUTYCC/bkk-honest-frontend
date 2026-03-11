@@ -171,6 +171,17 @@ export function useSpotBySlug(citySlug: string, spotSlug: string) {
     });
 }
 
+export function useScamAlertBySlug(citySlug: string, alertSlug: string) {
+    return useQuery({
+        queryKey: ['scam-alert', citySlug, alertSlug],
+        queryFn: async () => {
+            const { data } = await api.get<any>(`/scam-alerts/by-slug/${citySlug}/${alertSlug}`);
+            return data?.data || data;
+        },
+        enabled: !!citySlug && !!alertSlug,
+    });
+}
+
 export function useSpots(params?: {
     categoryId?: string;
     cityId?: string;
