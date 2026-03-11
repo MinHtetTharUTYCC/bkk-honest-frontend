@@ -8,6 +8,7 @@ import { useNearbySpots, usePopularArea, useCategories } from '@/hooks/use-api';
 import { Loader2, Navigation, Heart, Zap, Info, MapPin, X, Utensils, Music, ShoppingBag, Bed, Coffee, Ticket } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getSpotUrl } from '@/lib/slug';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -479,7 +480,7 @@ export default function MapPage() {
 
               <div className="flex gap-3">
                 <button 
-                  onClick={() => router.push(`/spots/${selectedSpot.id}`)}
+                  onClick={() => router.push(getSpotUrl(selectedSpot?.city?.name || 'Bangkok', selectedSpot?.name || ''))}
                   className="flex-1 bg-white/10 text-white font-bold py-3.5 rounded-xl text-sm hover:bg-white/15 transition-colors border border-white/10 text-center"
                 >
                   View Details

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useCity } from '@/components/providers/city-provider';
+import { getSpotUrl } from '@/lib/slug';
 
 export default function MissionsPage() {
     const [isClient, setIsClient] = useState(false);
@@ -215,7 +216,7 @@ export default function MissionsPage() {
                                         </p>
                                         <div className="pt-2 flex gap-2">
                                             <Link 
-                                                href={`/spots/${mission.spot?.id}`}
+                                                href={getSpotUrl(mission.spot?.city?.name || 'Bangkok', mission.spot?.name || '')}
                                                 className="text-[9px] font-bold text-amber-400 uppercase tracking-widest hover:underline flex items-center gap-1"
                                             >
                                                 View Spot <ArrowRight size={10} />

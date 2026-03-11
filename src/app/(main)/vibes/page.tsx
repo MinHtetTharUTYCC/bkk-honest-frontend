@@ -7,6 +7,7 @@ import { useInfiniteLiveVibes, useCategories } from '@/hooks/use-api';
 import { useCity } from '@/components/providers/city-provider';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getSpotUrl } from '@/lib/slug';
 
 export default function VibesPage() {
     const { selectedCityId, selectedCity } = useCity();
@@ -103,7 +104,7 @@ export default function VibesPage() {
                     vibes.map((vibe: any) => (
                         <Link
                             key={vibe.id}
-                            href={`/spots/${vibe.spotId || vibe.spot?.id}`}
+                            href={getSpotUrl(vibe.spot?.city?.name || 'Bangkok', vibe.spot?.name || '')}
                             className="group relative bg-card rounded-3xl p-8 border border-white/8 shadow-2xl shadow-black/40 hover:scale-[1.02] transition-all duration-500 overflow-hidden"
                         >
                             {/* Accent Glow */}

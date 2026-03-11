@@ -30,6 +30,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import api from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
+import { getSpotUrl, getScamAlertUrl } from "@/lib/slug";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -574,7 +575,7 @@ export default function ProfilePage() {
                         {scam.description}
                       </p>
                       <Link
-                        href={`/scam-alerts/${scam.id}`}
+                        href={getScamAlertUrl(scam?.city?.name || 'Bangkok', scam?.scamName || '')}
                         className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
                       >
                         View Details
@@ -633,7 +634,7 @@ export default function ProfilePage() {
                         <MapPin size={10} /> {tip.spot?.name}
                       </span>
                       <Link
-                        href={`/spots/${tip.spot?.id}`}
+                        href={getSpotUrl(tip.spot?.city?.name || 'Bangkok', tip.spot?.name || '')}
                         className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
                       >
                         View Spot
@@ -749,7 +750,7 @@ export default function ProfilePage() {
                         {spot.address}
                       </p>
                       <Link
-                        href={`/spots/${spot.id}`}
+                        href={getSpotUrl(spot?.city?.name || 'Bangkok', spot?.name || '')}
                         className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
                       >
                         View Spot Details

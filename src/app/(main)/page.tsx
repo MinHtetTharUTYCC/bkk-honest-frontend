@@ -19,6 +19,7 @@ import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useState } from 'react';
+import { getSpotUrl } from '@/lib/slug';
 
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
@@ -227,7 +228,7 @@ export default function HomeFeed() {
                                 vibes.map((vibe: any) => (
                                     <Link
                                         key={vibe.id}
-                                        href={`/spots/${vibe.spotId || vibe.spot?.id}`}
+                                        href={getSpotUrl(vibe.spot?.city?.name || 'Bangkok', vibe.spot?.name || '')}
                                         className="block bg-card rounded-2xl p-6 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.02] transition-all duration-300"
                                     >
                                         <div className="flex items-start justify-between mb-3">

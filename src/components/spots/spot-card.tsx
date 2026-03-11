@@ -8,6 +8,7 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
 import ReportButton from '@/components/report/report-button';
+import { getSpotUrl } from '@/lib/slug';
 
 export default function SpotCard({ spot }: { spot: any }) {
     const { name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
@@ -94,7 +95,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                 </div>
             </div>
 
-            <Link href={`/spots/${spot.id}`} className="block">
+            <Link href={getSpotUrl(spot.city?.name || 'Bangkok', name)} className="block">
                 <div className="space-y-1 mb-5">
                     <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
                         {name}
