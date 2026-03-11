@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe } from '@/hooks/use-api';
+import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe, useUpdateCommunityTip, useDeleteCommunityTip } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare, Navigation } from 'lucide-react';
 import Link from 'next/link';
@@ -11,6 +11,8 @@ import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import TipCommentsModal from '@/components/tips/tip-comments-modal';
+import EditTipModal from '@/components/tips/edit-tip-modal';
+import { TipCard } from '@/components/tips/tip-card';
 import ReportButton from '@/components/report/report-button';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import { Dropdown } from '@/components/ui/dropdown';
@@ -43,6 +45,9 @@ export default function SpotDetailPage() {
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showTipModal, setShowTipModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<any>(null);
+  const [editingTip, setEditingTip] = useState<any>(null);
+  const [editingTipTitle, setEditingTipTitle] = useState('');
+  const [editingTipDescription, setEditingTipDescription] = useState('');
   const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const editFileInputRef = useRef<HTMLInputElement>(null);
@@ -131,6 +136,8 @@ export default function SpotDetailPage() {
   const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle('tip', id);
   const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle('image', id);
   const { toggleVote: toggleSpotVote } = useVoteToggle('spot');
+  const updateTipMutation = useUpdateCommunityTip();
+  const deleteTipMutation = useDeleteCommunityTip();
 
   const [localHasVoted, setLocalHasVoted] = useState(false);
   const [localVoteCount, setLocalVoteCount] = useState(0);
@@ -193,6 +200,40 @@ export default function SpotDetailPage() {
 
   const galleryList = Array.isArray(gallery) ? gallery : [];
 
+  const handleEditTip = (tip: any) => {
+    setEditingTip(tip);
+    setEditingTipTitle(tip.title);
+    setEditingTipDescription(tip.description);
+  };
+
+  const handleSaveEditedTip = async () => {
+    if (!editingTip || !editingTipTitle.trim() || !editingTipDescription.trim()) return;
+    
+    try {
+      await updateTipMutation.mutateAsync({
+        id: editingTip.id,
+        spotId: id,
+        title: editingTipTitle,
+        description: editingTipDescription,
+      });
+      setEditingTip(null);
+      setEditingTipTitle('');
+      setEditingTipDescription('');
+    } catch (error) {
+      console.error('Failed to update tip:', error);
+      alert('Failed to update tip');
+    }
+  };
+
+  const handleDeleteTip = async (tipId: string) => {
+    try {
+      await deleteTipMutation.mutateAsync({ id: tipId, spotId: id });
+    } catch (error) {
+      console.error('Failed to delete tip:', error);
+      alert('Failed to delete tip');
+    }
+  };
+
   return (
     <div className="space-y-12 pb-24">
       {showGalleryModal && (
@@ -206,6 +247,22 @@ export default function SpotDetailPage() {
         <CreateTipModal 
           spotId={id} 
           onClose={() => setShowTipModal(false)} 
+        />
+      )}
+      {editingTip && (
+        <EditTipModal
+          tip={editingTip}
+          title={editingTipTitle}
+          description={editingTipDescription}
+          onTitleChange={setEditingTipTitle}
+          onDescriptionChange={setEditingTipDescription}
+          onSave={handleSaveEditedTip}
+          onClose={() => {
+            setEditingTip(null);
+            setEditingTipTitle('');
+            setEditingTipDescription('');
+          }}
+          isSaving={updateTipMutation.isPending}
         />
       )}
       {selectedTip && (
@@ -787,76 +844,17 @@ export default function SpotDetailPage() {
             ) : (
               <ScrollArea className="h-[600px] pr-4">
                 <div className="space-y-2.5 pb-8">
-                  {tips?.map((tip: any) => (
-                    <div key={tip.id} className={cn(
-                      "p-4 rounded-2xl border border-border shadow-lg shadow-black/10",
-                      tip.type === 'AVOID' ? "bg-red-500/10" : "bg-emerald-500/10"
-                    )}>
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <div className="w-9 h-9 rounded-lg bg-white/10 border border-border flex items-center justify-center text-white/50 overflow-hidden shadow-sm">
-                              {tip.user?.avatarUrl ? (
-                                <img src={tip.user.avatarUrl} className="w-full h-full object-cover" />
-                              ) : (
-                                <User size={16} />
-                              )}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2">
-                                <p className="text-sm font-semibold text-white leading-none">
-                                  {tip.user?.name || 'local'}
-                                </p>
-                                {tip.user?.level && (
-                                  <span className={cn(
-                                    "px-1.5 py-0.5 rounded text-xs font-semibold",
-                                    tip.type === 'AVOID' ? "bg-red-500/20 text-red-400" : "bg-emerald-500/20 text-emerald-400"
-                                  )}>
-                                    Lvl {tip.user.level === 'LOCAL_GURU' ? '3' : tip.user.level === 'EXPLORER' ? '2' : '1'}
-                                  </span>
-                                )}
-                              </div>
-                              <span className="text-xs font-medium text-white/40 block mt-1">
-                                {new Date(tip.createdAt).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                              <button 
-                                onClick={() => setSelectedTip(tip)}
-                                className="flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all text-white/60 hover:text-cyan-400 hover:bg-cyan-500/10"
-                              >
-                                <MessageSquare size={14} />
-                                <span>{tip._count?.comments || 0}</span>
-                              </button>
-                            </div>
-                            <div className="flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                              <button 
-                                onClick={() => toggleTipVote(tip)}
-                                disabled={tipVotePending}
-                                className={cn(
-                                  "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
-                                  tip.hasVoted
-                                    ? "bg-amber-400/90 border-amber-300/30 text-black" 
-                                    : "text-white/60 hover:text-amber-400 hover:bg-amber-500/10"
-                                )}
-                              >
-                                <Heart size={14} fill={tip.hasVoted ? "currentColor" : "none"} />
-                                <span>{tip._count?.votes || 0}</span>
-                              </button>
-                            </div>
-                            <ReportButton targetId={tip.id} reportType="COMMUNITY_TIP" size="sm" />
-                          </div>
-                        </div>
-
-                        <div className="pl-10 pt-2">
-                          <h4 className="text-base font-bold text-white leading-tight mb-2">{tip.title}</h4>
-                          <p className="text-sm font-normal text-white/70 leading-relaxed">{tip.description}</p>
-                        </div>
-                      </div>
-                    </div>
+                                  {tips?.map((tip: any) => (
+                    <TipCard
+                      key={tip.id}
+                      tip={tip}
+                      authUser={authUser}
+                      onCommentClick={() => setSelectedTip(tip)}
+                      onVoteClick={async () => toggleTipVote(tip)}
+                      onEditClick={() => handleEditTip(tip)}
+                      onDeleteClick={() => handleDeleteTip(tip.id)}
+                      isVotePending={tipVotePending}
+                    />
                   ))}
                   
                   {/* Infinite scroll target */}

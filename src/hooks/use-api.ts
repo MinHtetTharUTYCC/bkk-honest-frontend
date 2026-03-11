@@ -670,6 +670,41 @@ export function useCreateCommunityTip() {
     });
 }
 
+export function useUpdateCommunityTip() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (payload: {
+            id: string;
+            spotId: string;
+            type?: 'TRY' | 'AVOID';
+            title?: string;
+            description?: string;
+        }) => {
+            const { id, spotId, ...updateData } = payload;
+            const { data } = await api.patch(`/community-tips/${id}`, updateData);
+            return data;
+        },
+        onSuccess: (_, { spotId }) => {
+            queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
+        },
+    });
+}
+
+export function useDeleteCommunityTip() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id, spotId }: { id: string; spotId: string }) => {
+            const { data } = await api.delete(`/community-tips/${id}`);
+            return data;
+        },
+        onSuccess: (_, { spotId }) => {
+            queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
+        },
+    });
+}
+
 // --- Mutations ---
 
 export function useCreatePriceReport() {
