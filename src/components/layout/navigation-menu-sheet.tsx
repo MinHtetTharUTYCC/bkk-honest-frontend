@@ -7,6 +7,9 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import * as Dialog from '@radix-ui/react-dialog';
 
+import { useAuth } from '@/components/providers/auth-provider';
+import { LogIn } from 'lucide-react';
+
 interface MenuItem {
   icon: React.ReactNode;
   label: string;
@@ -14,6 +17,7 @@ interface MenuItem {
 }
 
 export default function NavigationMenuSheet() {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
@@ -46,9 +50,9 @@ export default function NavigationMenuSheet() {
           aria-describedby={undefined}
           className="fixed bottom-20 left-0 right-0 z-50 bg-background border-t border-white/8 p-4 rounded-t-3xl shadow-xl md:hidden max-h-[70vh] overflow-y-auto"
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-6 px-2">
             <Dialog.Title className="text-sm font-bold uppercase tracking-widest text-foreground">
-              More Options
+              {user ? 'More Options' : 'Welcome'}
             </Dialog.Title>
             <Dialog.Close asChild>
               <button className="p-1 hover:bg-white/8 rounded-lg transition-colors text-white/40 hover:text-white/70">
@@ -58,6 +62,21 @@ export default function NavigationMenuSheet() {
           </div>
 
           <div className="space-y-2">
+            {!user && (
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-4 py-4 mb-4 rounded-xl bg-amber-400 text-black shadow-lg shadow-amber-400/10 transition-all active:scale-95"
+              >
+                <div className="flex items-center justify-center">
+                  <LogIn size={20} />
+                </div>
+                <span className="text-sm font-black uppercase tracking-wide">
+                  Sign In to Honest
+                </span>
+              </Link>
+            )}
+
             {menuItems.map((item) => {
               const active = isActive(item.href);
               return (

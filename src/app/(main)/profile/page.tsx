@@ -31,6 +31,7 @@ import api from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { getSpotUrl, getScamAlertUrl } from "@/lib/slug";
+import LoginRequired from "@/components/auth/login-required";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -46,13 +47,6 @@ export default function ProfilePage() {
     params.set("tab", tab);
     router.replace(`/profile?${params.toString()}`, { scroll: false });
   };
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/dev-login");
-    }
-  }, [user, authLoading, router]);
 
   // Use 'me' for authenticated user data to leverage backend's current user context
   const { data: profileResponse, isLoading: profileLoading } = useProfile(
@@ -208,10 +202,23 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push("/dev-login");
+    router.push("/login");
   };
 
-  if (authLoading || profileLoading) {
+  if (authLoading) {
+    return (
+      <div className="space-y-12 animate-pulse">
+        <div className="h-64 bg-white/5 rounded-2xl" />
+        <div className="h-96 bg-white/5 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginRequired />;
+  }
+
+  if (profileLoading) {
     return (
       <div className="space-y-12 animate-pulse">
         <div className="h-64 bg-white/5 rounded-2xl" />

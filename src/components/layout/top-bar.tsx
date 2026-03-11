@@ -7,14 +7,14 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import CitySwitcher from './city-switcher';
+import { LogIn } from 'lucide-react';
 
 export default function TopBar() {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [searchInput, setSearchInput] = useState('');
-    const displayUserId = user?.id || '08ec1994-a7e5-42d3-b533-e52982fc2e2d';
-    const { data: profile } = useProfile(displayUserId);
+    const { data: profile } = useProfile(user ? 'me' : '');
     const isSearchPage = pathname?.endsWith('/search') || pathname?.endsWith('/search/');
 
     const handleSearchFocus = () => {
@@ -65,13 +65,23 @@ export default function TopBar() {
                 </div>
             )}
 
-            <div className="hidden md:flex items-center gap-3 md:gap-6">
-                <div className="flex items-center gap-1.5 bg-amber-400/10 text-amber-400 px-3 py-1.5 rounded-full border border-amber-400/20 shadow-sm transition-transform hover:scale-105 cursor-default">
-                    <Zap className="w-4 h-4 fill-amber-400 text-amber-400" />
-                    <span className="text-xs font-black tracking-widest">
-                        {profile?.reputation || 0}
-                    </span>
-                </div>
+            <div className="flex items-center gap-3 md:gap-6">
+                {user ? (
+                    <div className="hidden md:flex items-center gap-1.5 bg-amber-400/10 text-amber-400 px-3 py-1.5 rounded-full border border-amber-400/20 shadow-sm transition-transform hover:scale-105 cursor-default">
+                        <Zap className="w-4 h-4 fill-amber-400 text-amber-400" />
+                        <span className="text-xs font-black tracking-widest">
+                            {profile?.reputation || 0}
+                        </span>
+                    </div>
+                ) : !loading && (
+                    <Link 
+                        href="/login"
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10"
+                    >
+                        <LogIn size={14} />
+                        Join us
+                    </Link>
+                )}
             </div>
         </header>
     );
