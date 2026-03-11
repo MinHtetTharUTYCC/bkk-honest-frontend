@@ -68,21 +68,39 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
 
   // Prevent background scroll
   useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    const originalPosition = document.body.style.position;
+    const originalWidth = document.body.style.width;
+    const originalHeight = document.body.style.height;
+
+    // Nuclear scroll lock (works on iOS)
     document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
+    document.body.style.height = '100%';
+    
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = originalOverflow;
+      document.body.style.position = originalPosition;
+      document.body.style.width = originalWidth;
+      document.body.style.height = originalHeight;
     };
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4">
+    <div 
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4 touch-none"
+    >
       <div className="absolute inset-0" onClick={onClose} />
 
-      <div className={cn(
-        "relative bg-background w-full shadow-2xl border border-border overflow-hidden flex flex-col transition-all duration-300 animate-in",
-        "h-[80vh] md:h-auto md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
-        "rounded-t-[24px] md:rounded-b-[24px]"
-      )}>
+      <div 
+        className={cn(
+          "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain touch-auto",
+          "h-[80vh] md:h-auto md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
+          "rounded-t-[24px] md:rounded-b-[24px]"
+        )}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="md:hidden flex justify-center py-4">
           <div className="w-12 h-1.5 bg-white/10 rounded-full" />
         </div>

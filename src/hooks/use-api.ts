@@ -989,9 +989,8 @@ export function useToggleCommentReaction() {
             return data;
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['comments'] });
             queryClient.invalidateQueries({ queryKey: ['tip-comments'] });
-            queryClient.invalidateQueries({ queryKey: ['alert-comments'] });
+            queryClient.invalidateQueries({ queryKey: ['scam-comments'] });
         },
     });
 }

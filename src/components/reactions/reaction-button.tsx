@@ -19,6 +19,12 @@ export default function ReactionButton({
   const [userReacted, setUserReacted] = useState(initialUserReacted);
   const toggleMutation = useCommentReaction();
 
+  // Sync with props when they change (e.g. after refetch)
+  useEffect(() => {
+    setCount(initialCount);
+    setUserReacted(initialUserReacted);
+  }, [initialCount, initialUserReacted]);
+
   const handleClick = async () => {
     try {
       setUserReacted(!userReacted);

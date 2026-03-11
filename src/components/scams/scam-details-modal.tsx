@@ -18,6 +18,8 @@ import { cn } from '@/lib/utils';
 import { useScamComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
+import ReactionButton from '@/components/reactions/reaction-button';
+import ReportButton from '@/components/report/report-button';
 
 
 interface ScamDetailsModalProps {
@@ -383,9 +385,23 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
                                                             </div>
                                                         </div>
                                                     ) : (
-                                                        <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">
-                                                            {comment.text}
-                                                        </p>
+                                                        <div className="space-y-2">
+                                                            <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">
+                                                                {comment.text}
+                                                            </p>
+                                                            <div className="flex items-center gap-2">
+                                                                <ReactionButton 
+                                                                    commentId={comment.id}
+                                                                    initialCount={comment.reactionCount || 0}
+                                                                    initialUserReacted={comment.userHasReacted || false}
+                                                                />
+                                                                <ReportButton 
+                                                                    targetId={comment.id}
+                                                                    reportType="COMMENT"
+                                                                    size="sm"
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
