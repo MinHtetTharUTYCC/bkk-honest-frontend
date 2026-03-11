@@ -1,13 +1,12 @@
 'use client';
 
-import { Search, Bell, Zap } from 'lucide-react';
+import { Search, Bell, Zap, LogIn } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useProfile } from '@/hooks/use-api';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import CitySwitcher from './city-switcher';
-import { LogIn } from 'lucide-react';
 
 export default function TopBar() {
     const { user, loading } = useAuth();
@@ -78,8 +77,8 @@ export default function TopBar() {
                         href="/login"
                         className="flex items-center gap-2 px-4 py-2 bg-amber-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10"
                     >
-                        <LogIn size={14} />
-                        Join us
+                        <img src="https://www.google.com/favicon.ico" alt="G" className="w-3 h-3 grayscale invert brightness-0" />
+                        Join with Google
                     </Link>
                 )}
             </div>

@@ -38,6 +38,8 @@ export default function ProfilePage() {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Tab State maintained via URL
   const activeTab = (searchParams.get("tab") as "scams" | "reports" | "tips" | "spots") || "scams";
@@ -49,13 +51,33 @@ export default function ProfilePage() {
   };
 
   // Use 'me' for authenticated user data to leverage backend's current user context
-  const { data: profileResponse, isLoading: profileLoading } = useProfile(
+  const { data: profileResponse, isLoading: profileLoading, error: profileError } = useProfile(
     user ? "me" : "",
   );
   const profile = profileResponse?.data || profileResponse;
   const { data: missionStats } = useMissionStats();
 
+  const isProfileNotFound = (profileError as any)?.response?.status === 404;
+
+  useEffect(() => {
+    if (isProfileNotFound && user) {
+      const createProfile = async () => {
+        try {
+          await api.post("/profiles", {
+            name: user.user_metadata?.full_name || user.email?.split("@")[0] || "Pulse Scout",
+            avatarUrl: user.user_metadata?.avatar_url || "",
+          });
+          queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
+        } catch (err) {
+          console.error("Failed to auto-create profile:", err);
+        }
+      };
+      createProfile();
+    }
+  }, [isProfileNotFound, user, queryClient]);
+
   const userId = user ? "me" : "";
+  const { ref, inView } = useInView();
 
   const {
     data: reportsData,
@@ -84,10 +106,6 @@ export default function ProfilePage() {
     hasNextPage: hasNextSpots,
     isFetchingNextPage: isFetchingSpots,
   } = useInfiniteUserSpots(userId);
-
-  const { ref, inView } = useInView();
-  const queryClient = useQueryClient();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false);
@@ -218,7 +236,7 @@ export default function ProfilePage() {
     return <LoginRequired />;
   }
 
-  if (profileLoading) {
+  if (profileLoading || (isProfileNotFound && user)) {
     return (
       <div className="space-y-12 animate-pulse">
         <div className="h-64 bg-white/5 rounded-2xl" />
