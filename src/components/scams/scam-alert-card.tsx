@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useState, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { useUpdateScamAlert, useDeleteScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import ReportButton from '@/components/report/report-button';
 
@@ -27,6 +28,7 @@ interface ScamAlertCardProps {
 }
 
 export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAlertCardProps) {
+    const router = useRouter();
     const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);
     const [localHasVoted, setLocalHasVoted] = useState(initialAlert.hasVoted);
@@ -207,7 +209,11 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
 
     return (
         <div
-            onClick={onClick}
+            onClick={() => {
+                const citySlug = alert.city?.slug || alert.city?.name?.toLowerCase().replace(/\s+/g, '-') || 'bangkok';
+                const alertSlug = alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-');
+                router.push(`/scam-alerts/${citySlug}/${alertSlug}`);
+            }}
             className="bg-card rounded-2xl border border-white/8 shadow-sm overflow-hidden group hover:shadow-black/30 hover:shadow-md transition-all duration-300 flex flex-row relative cursor-pointer active:scale-[0.99] items-stretch"
         >
             {/* Photo — left */}
@@ -260,44 +266,12 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
 
             {/* Content — right */}
             <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
-                {/* Meta row - Date first, then Actions */}
+                {/* Meta row - Date first */}
                 <div className="flex items-center justify-between">
                     <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
                         <Calendar size={10} />
                         {new Date(alert.createdAt).toLocaleDateString()}
                     </span>
-
-                    <div className="flex items-center gap-1">
-                        {isOwner && (
-                            <>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setIsEditing(true);
-                                    }}
-                                    className="p-2 text-white/50 hover:text-amber-400 hover:bg-white/5 rounded-lg transition-all"
-                                    title="Edit"
-                                >
-                                    <Edit2 size={14} />
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleDelete();
-                                    }}
-                                    disabled={deleteScamMutation.isPending}
-                                    className="p-2 text-white/50 hover:text-red-500 hover:bg-white/5 rounded-lg transition-all"
-                                    title="Delete"
-                                >
-                                    {deleteScamMutation.isPending ? (
-                                        <Loader2 size={14} className="animate-spin" />
-                                    ) : (
-                                        <Trash2 size={14} />
-                                    )}
-                                </button>
-                            </>
-                        )}
-                    </div>
                 </div>
 
                 {/* Title */}
@@ -345,9 +319,6 @@ export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAler
                         <Heart size={12} fill={localHasVoted ? 'currentColor' : 'none'} />
                         {localVoteCount}
                     </button>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <ReportButton targetId={alert.id} reportType="SCAM_ALERT" size="sm" />
-                    </div>
                 </div>
             </div>
         </div>

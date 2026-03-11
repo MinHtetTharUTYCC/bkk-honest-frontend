@@ -30,7 +30,7 @@ export default function ScamAlertDetailPage() {
     const { citySlug, alertSlug } = useParams() as { citySlug: string; alertSlug: string };
     const { user } = useAuth();
     const router = useRouter();
-    const { data: alert, isLoading: alertLoading } = useScamAlertBySlug(citySlug, alertSlug);
+    const { data: alert, isLoading: alertLoading } = useScamAlertBySlug(citySlug === 'thailand' ? '' : citySlug, alertSlug);
     const [localAlert, setLocalAlert] = useState<any>(alert);
 
     useEffect(() => {
@@ -122,25 +122,10 @@ export default function ScamAlertDetailPage() {
         }
     };
 
-    if (alertLoading) {
+    if (alertLoading || !localAlert) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <Loader2 className="animate-spin" size={32} />
-            </div>
-        );
-    }
-
-    if (!alert) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-                <AlertTriangle size={48} className="text-destructive" />
-                <h1 className="text-2xl font-bold">Scam Alert Not Found</h1>
-                <button
-                    onClick={() => router.back()}
-                    className="flex items-center gap-2 text-blue-500 hover:underline"
-                >
-                    <ArrowLeft size={20} /> Go Back
-                </button>
+                <Loader2 className="animate-spin text-amber-400" size={32} />
             </div>
         );
     }
@@ -156,7 +141,7 @@ export default function ScamAlertDetailPage() {
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h1 className="text-lg font-bold flex-1 text-center px-4 line-clamp-1">
+                    <h1 className="text-[10px] font-black uppercase tracking-widest flex-1 text-center px-4 line-clamp-1 text-white/40">
                         {localAlert.scamName}
                     </h1>
                     <div className="w-10" />
@@ -167,21 +152,25 @@ export default function ScamAlertDetailPage() {
             <ScrollArea className="h-[calc(100vh-80px)]">
                 <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
                     {/* Alert Header */}
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         <div className="flex items-start justify-between">
-                            <div className="flex items-start gap-3">
-                                <div className="mt-1 p-2 bg-destructive/10 rounded-lg">
-                                    <AlertTriangle size={24} className="text-destructive" />
+                            <div className="flex items-start gap-4">
+                                <div className="mt-1 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl">
+                                    <AlertTriangle size={24} className="text-red-500" />
                                 </div>
-                                <div>
-                                    <h1 className="text-2xl font-bold">{localAlert.scamName}</h1>
-                                    <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                                <div className="space-y-1">
+                                    <h1 className="text-3xl font-display font-bold text-foreground tracking-tight leading-tight">{localAlert.scamName}</h1>
+                                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">
                                         {localAlert.city?.name && (
-                                            <>
-                                                <MapPin size={16} />
+                                            <div className="flex items-center gap-1.5 text-amber-400">
+                                                <MapPin size={14} />
                                                 <span>{localAlert.city.name}</span>
-                                            </>
+                                            </div>
                                         )}
+                                        <div className="flex items-center gap-1.5 text-white/20 ml-2">
+                                            <Calendar size={14} />
+                                            <span>{new Date(localAlert.createdAt).toLocaleDateString()}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -190,123 +179,160 @@ export default function ScamAlertDetailPage() {
                             </div>
                         </div>
 
-                        {/* Description */}
+                        {/* Description Box */}
                         {localAlert.description && (
-                            <div className="p-4 bg-muted/50 rounded-lg">
-                                <p className="text-sm text-foreground">{localAlert.description}</p>
+                            <div className="p-6 bg-white/5 border border-white/8 rounded-[24px]">
+                                <p className="text-base text-white/70 leading-relaxed font-medium">{localAlert.description}</p>
                             </div>
                         )}
 
-                        {/* Meta Info */}
-                        <div className="grid grid-cols-2 gap-3 text-sm">
-                            {localAlert.category && (
-                                <div className="p-3 bg-muted/50 rounded-lg">
-                                    <span className="text-muted-foreground">Category</span>
-                                    <p className="font-medium">{localAlert.category.name}</p>
+                        {/* Prevention Tip Box */}
+                        {localAlert.preventionTip && (
+                            <div className="p-6 bg-emerald-400/5 border border-emerald-400/20 rounded-[24px] flex gap-4">
+                                <div className="w-10 h-10 shrink-0 rounded-xl bg-emerald-400/10 flex items-center justify-center text-emerald-400">
+                                    <ShieldCheck size={20} />
                                 </div>
-                            )}
-                            {localAlert.createdAt && (
-                                <div className="p-3 bg-muted/50 rounded-lg">
-                                    <span className="text-muted-foreground">Reported</span>
-                                    <p className="font-medium">
-                                        {new Date(localAlert.createdAt).toLocaleDateString()}
+                                <div className="space-y-1">
+                                    <h4 className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+                                        How to avoid this
+                                    </h4>
+                                    <p className="text-sm font-medium text-emerald-100/70 leading-relaxed">
+                                        {localAlert.preventionTip}
                                     </p>
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
 
-                        {/* Vote & Reaction */}
-                        {user && (
-                            <div className="flex items-center gap-2">
+                        {/* Vote & Meta */}
+                        <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/8">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10">
+                                    {localAlert.user?.avatarUrl ? (
+                                        <img src={localAlert.user.avatarUrl} className="w-full h-full object-cover" />
+                                    ) : (
+                                        <User size={18} />
+                                    )}
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-xs font-bold text-white uppercase tracking-tight">
+                                        {localAlert.user?.name || 'Local Expert'}
+                                    </span>
+                                    {localAlert.user?.level && (
+                                        <span className="text-[8px] font-bold text-amber-400 uppercase tracking-tighter">
+                                            {localAlert.user.level.replace('_', ' ')}
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            {user && (
                                 <button
                                     onClick={handleVoteToggle}
                                     disabled={votePending}
                                     className={cn(
-                                        'flex items-center gap-2 px-3 py-2 rounded-lg transition-colors',
+                                        'flex items-center gap-2 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all border shadow-sm active:scale-95 min-w-[120px] justify-center',
                                         localHasVoted
-                                            ? 'bg-destructive text-destructive-foreground'
-                                            : 'bg-muted hover:bg-muted/80 text-muted-foreground'
+                                            ? 'bg-amber-400/10 border-amber-400/20 text-amber-400'
+                                            : 'bg-white/5 border-white/10 text-white/40 hover:text-amber-400 hover:border-amber-400/20'
                                     )}
                                 >
-                                    <Heart size={18} fill={localHasVoted ? 'currentColor' : 'none'} />
+                                    <Heart size={14} fill={localHasVoted ? 'currentColor' : 'none'} />
                                     <span>{localVoteCount}</span>
+                                    <span className="ml-1">{localHasVoted ? 'Upvoted' : 'Upvote'}</span>
                                 </button>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
 
                     <div className="border-t" />
 
-                    {/* Comments Section */}
-                    <div className="space-y-4">
-                        <h2 className="text-lg font-semibold flex items-center gap-2">
-                            <MessageSquare size={20} />
-                            Comments ({comments.length})
-                        </h2>
+                    <div className="space-y-6">
+                        <div className="flex items-center justify-between gap-4">
+                            <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                                <MessageSquare size={20} className="text-amber-400" />
+                                Community Talk ({comments.length})
+                            </h2>
+                        </div>
 
                         {/* Comment Input */}
                         {user ? (
-                            <form onSubmit={handleSendComment} className="flex gap-2">
-                                <div className="flex-1 flex gap-2">
-                                    <input
-                                        type="text"
-                                        placeholder="Add a comment..."
-                                        value={newComment}
-                                        onChange={(e) => setNewComment(e.target.value)}
-                                        className="flex-1 px-3 py-2 bg-muted rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={!newComment.trim() || createCommentMutation.isPending}
-                                        className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
-                                    >
+                            <form onSubmit={handleSendComment} className="relative group">
+                                <textarea
+                                    placeholder="Share your experience or ask a question..."
+                                    value={newComment}
+                                    onChange={(e) => setNewComment(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 pr-16 text-sm font-medium focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 shadow-sm min-h-[100px] resize-none"
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!newComment.trim() || createCommentMutation.isPending}
+                                    className="absolute right-3 bottom-3 w-10 h-10 flex items-center justify-center bg-white/8 text-white/60 rounded-xl hover:bg-amber-400 hover:text-black transition-all active:scale-95 disabled:opacity-50 disabled:bg-white/5"
+                                >
+                                    {createCommentMutation.isPending ? (
+                                        <Loader2 size={18} className="animate-spin" />
+                                    ) : (
                                         <Send size={18} />
-                                    </button>
-                                </div>
+                                    )}
+                                </button>
                             </form>
                         ) : (
-                            <div className="p-4 bg-muted/50 rounded-lg text-center text-sm text-muted-foreground">
-                                <p>Sign in to comment</p>
+                            <div className="p-6 bg-white/5 rounded-2xl text-center border border-dashed border-white/10">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Sign in to join the conversation</p>
                             </div>
                         )}
 
                         {/* Comments List */}
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                             {commentsLoading && comments.length === 0 ? (
-                                <div className="flex justify-center py-8">
-                                    <Loader2 className="animate-spin" size={24} />
+                                <div className="flex justify-center py-12">
+                                    <Loader2 className="animate-spin text-amber-400" size={32} />
                                 </div>
                             ) : comments.length === 0 ? (
-                                <div className="text-center py-8 text-muted-foreground text-sm">
-                                    No comments yet. Be the first!
+                                <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10 text-[10px] font-black uppercase tracking-widest text-white/30">
+                                    No one's talking yet.
                                 </div>
                             ) : (
                                 comments.map((comment: any) => (
-                                    <div key={comment.id} className="p-4 bg-muted/50 rounded-lg space-y-2">
+                                    <div key={comment.id} className="p-5 bg-white/5 border border-white/8 rounded-2xl space-y-3">
                                         <div className="flex items-start justify-between">
-                                            <div className="flex items-center gap-2">
-                                                <User size={16} className="text-muted-foreground" />
-                                                <span className="font-medium text-sm">
-                                                    {comment.user?.name || 'Anonymous'}
-                                                </span>
-                                                {comment.user?.id === localAlert.userId && (
-                                                    <ShieldCheck size={14} className="text-blue-500" />
-                                                )}
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5">
+                                                    {comment.user?.avatarUrl ? (
+                                                        <img src={comment.user.avatarUrl} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <User size={14} />
+                                                    )}
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-xs font-bold text-white uppercase tracking-tight">
+                                                            {comment.user?.name || 'Local'}
+                                                        </span>
+                                                        {comment.user?.level && (
+                                                            <span className="text-[7px] font-bold text-amber-400/60 border border-amber-400/10 px-1 py-0.5 rounded uppercase tracking-tighter">
+                                                                {comment.user.level.replace('_', ' ')}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <span className="text-[9px] font-medium text-white/20 uppercase tracking-widest">
+                                                        {new Date(comment.createdAt).toLocaleDateString()}
+                                                    </span>
+                                                </div>
                                             </div>
                                             {user?.id === comment.userId && (
-                                                <div className="flex gap-1">
+                                                <div className="flex gap-1 opacity-40 hover:opacity-100 transition-opacity">
                                                     <button
                                                         onClick={() => {
                                                             setEditingCommentId(comment.id);
                                                             setEditContent(comment.content);
                                                         }}
-                                                        className="p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground"
+                                                        className="p-1.5 hover:bg-white/10 rounded-lg text-white/50 hover:text-amber-400"
                                                     >
                                                         <Edit2 size={14} />
                                                     </button>
                                                     <button
                                                         onClick={() => handleDeleteComment(comment.id)}
-                                                        className="p-1 hover:bg-destructive/10 rounded text-muted-foreground hover:text-destructive"
+                                                        className="p-1.5 hover:bg-red-500/10 rounded-lg text-white/50 hover:text-red-400"
                                                     >
                                                         <Trash2 size={14} />
                                                     </button>
@@ -315,41 +341,58 @@ export default function ScamAlertDetailPage() {
                                         </div>
 
                                         {editingCommentId === comment.id ? (
-                                            <div className="flex gap-2">
-                                                <input
-                                                    type="text"
+                                            <div className="space-y-3">
+                                                <textarea
                                                     value={editContent}
                                                     onChange={(e) => setEditContent(e.target.value)}
-                                                    className="flex-1 px-2 py-1 bg-background border border-muted rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 min-h-[80px] resize-none"
                                                 />
-                                                <button
-                                                    onClick={() => handleEditSubmit(comment.id)}
-                                                    disabled={updateCommentMutation.isPending}
-                                                    className="px-2 py-1 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90 disabled:opacity-50"
-                                                >
-                                                    Save
-                                                </button>
-                                                <button
-                                                    onClick={() => setEditingCommentId(null)}
-                                                    className="px-2 py-1 bg-muted rounded text-sm hover:bg-muted/80"
-                                                >
-                                                    Cancel
-                                                </button>
+                                                <div className="flex gap-2 justify-end">
+                                                    <button
+                                                        onClick={() => setEditingCommentId(null)}
+                                                        className="px-4 py-2 bg-white/5 text-white/50 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-white/10"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleEditSubmit(comment.id)}
+                                                        disabled={updateCommentMutation.isPending}
+                                                        className="px-4 py-2 bg-amber-400 text-black rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-amber-300 disabled:opacity-50"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                </div>
                                             </div>
                                         ) : (
-                                            <p className="text-sm text-foreground">{comment.content}</p>
+                                            <div className="space-y-3">
+                                                <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">{comment.content}</p>
+                                                <div className="flex items-center gap-2 pt-1">
+                                                    <ReactionButton 
+                                                        commentId={comment.id}
+                                                        initialCount={comment.reactionCount || 0}
+                                                        initialUserReacted={comment.userHasReacted || false}
+                                                    />
+                                                    <ReportButton 
+                                                        targetId={comment.id}
+                                                        reportType="COMMENT"
+                                                        size="sm"
+                                                    />
+                                                </div>
+                                            </div>
                                         )}
-
-                                        <div className="text-xs text-muted-foreground">
-                                            {new Date(comment.createdAt).toLocaleDateString()}
-                                        </div>
                                     </div>
                                 ))
                             )}
 
                             {/* Load more trigger */}
-                            <div ref={ref} className="flex justify-center py-4">
-                                {isFetchingNextPage && <Loader2 className="animate-spin" size={20} />}
+                            <div ref={ref} className="flex justify-center py-6">
+                                {isFetchingNextPage ? (
+                                    <Loader2 className="animate-spin text-amber-400" size={24} />
+                                ) : hasNextPage ? (
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Scroll for more</span>
+                                ) : comments.length > 0 ? (
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-white/10">End of conversation</span>
+                                ) : null}
                             </div>
                         </div>
                     </div>

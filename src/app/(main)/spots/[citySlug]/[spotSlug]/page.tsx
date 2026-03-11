@@ -14,11 +14,14 @@ import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
 import { TipCard } from '@/components/tips/tip-card';
 import ReportButton from '@/components/report/report-button';
+import ReportModal from '@/components/report/report-modal';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import { Dropdown } from '@/components/ui/dropdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
+import { MoreVertical, Flag } from 'lucide-react';
 
 export default function SpotDetailPage() {
   const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
@@ -44,6 +47,7 @@ export default function SpotDetailPage() {
   const [isClient, setIsClient] = useState(false);
   const [showGalleryModal, setShowGalleryModal] = useState(false);
   const [showTipModal, setShowTipModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<any>(null);
   const [editingTip, setEditingTip] = useState<any>(null);
   const [editingTipTitle, setEditingTipTitle] = useState('');
@@ -249,6 +253,13 @@ export default function SpotDetailPage() {
           onClose={() => setShowTipModal(false)} 
         />
       )}
+      {showReportModal && (
+        <ReportModal
+          targetId={spot?.id || ""}
+          reportType="SPOT"
+          onClose={() => setShowReportModal(false)}
+        />
+      )}
       {editingTip && (
         <EditTipModal
           tip={editingTip}
@@ -407,56 +418,56 @@ export default function SpotDetailPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
           
           {/* Admin Actions - Mobile Only (Top Left) */}
-          <div className="absolute top-4 left-4 flex md:hidden gap-2 z-10">
-            {isOwner && (
-              <button 
-                onClick={() => setIsEditing(true)}
-                className="bg-black/40 backdrop-blur-md text-white p-3 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform"
-                title="Edit Spot"
-              >
-                <Edit2 size={18} />
-              </button>
-            )}
-            {isOwner && (
-              <button 
-                onClick={() => deleteSpotMutation.mutate()}
-                disabled={deleteSpotMutation.isPending}
-                className="bg-black/40 backdrop-blur-md text-white p-3 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform"
-                title="Delete Spot"
-              >
-                {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-              </button>
-            )}
-          </div>
+          {/* Removed as functionality moved to Dropdown Menu */}
 
           {/* Like Button - Mobile Only (Top Right) */}
-          {authUser && (
-            <button
-              onClick={handleSpotVote}
-              className={cn(
-                'absolute top-4 right-4 flex md:hidden items-center gap-1.5 px-3 py-2.5 rounded-xl backdrop-blur-md border text-[10px] font-black uppercase tracking-widest transition-all shadow-lg z-10',
-                localHasVoted
-                  ? 'bg-amber-400/90 border-amber-300/30 text-black'
-                  : 'bg-black/40 border-white/20 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
-              )}
-              title={localHasVoted ? 'Remove like' : 'Like this spot'}
-            >
-              <Heart size={16} fill={localHasVoted ? 'currentColor' : 'none'} />
-              {localVoteCount > 0 && <span>{localVoteCount}</span>}
-            </button>
-          )}
+          {/* Removed as functionality moved to Desktop/Mobile footer or Dropdown */}
           
+          {/* Badge Container - top row */}
+          <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
+            <div className="flex items-center gap-2 pointer-events-auto">
+              <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[9px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
+                {(spot.category as any)?.name}
+              </span>
+              <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[9px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
+                <Zap size={10} fill="currentColor" />
+                {(spot.vibeStats as any)?.avgCrowdLevel ? `Busy: ${((spot.vibeStats as any).avgCrowdLevel).toFixed(1)}/5` : 'New Spot'}
+              </div>
+            </div>
+
+            <div className="pointer-events-auto">
+              <DropdownMenu
+                trigger={
+                  <button className="bg-black/40 backdrop-blur-md text-white p-2.5 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform">
+                    <MoreVertical size={18} />
+                  </button>
+                }
+              >
+                {isOwner && (
+                  <>
+                    <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                      <Edit2 size={16} />
+                      <span>Edit Spot</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      onClick={() => deleteSpotMutation.mutate()}
+                      danger
+                    >
+                      {deleteSpotMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                      <span>Delete Spot</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
+                <DropdownMenuItem onClick={() => setShowReportModal(true)}>
+                  <Flag size={16} />
+                  <span>Report Spot</span>
+                </DropdownMenuItem>
+              </DropdownMenu>
+            </div>
+          </div>
+
           <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="bg-amber-400 text-black px-3 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase shadow-lg shadow-amber-400/20">
-                  {(spot.category as any)?.name}
-                </span>
-                <div className="flex items-center gap-1 text-white font-semibold text-xs">
-                  <Zap size={12} fill="currentColor" className="text-amber-400" />
-                  {(spot.vibeStats as any)?.avgCrowdLevel ? `Busy: ${((spot.vibeStats as any).avgCrowdLevel).toFixed(1)}/5` : 'New Spot'}
-                </div>
-              </div>
               <h1 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight drop-shadow-sm">{spot.name}</h1>
               <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
                 <MapPin size={14} strokeWidth={3} className="text-amber-400" />
@@ -501,32 +512,13 @@ export default function SpotDetailPage() {
                 Navigate
               </button>
               
-              {isOwner && (
-                <button 
-                  onClick={() => setIsEditing(true)}
-                  className="hidden md:flex bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl"
-                  title="Edit Spot"
-                >
-                  <Edit2 size={18} />
-                </button>
-              )}
-
-              {isOwner && (
-                <button 
-                  onClick={() => deleteSpotMutation.mutate()}
-                  disabled={deleteSpotMutation.isPending}
-                  className="hidden md:flex bg-white/10 backdrop-blur-md text-white p-4 rounded-2xl hover:bg-red-500 transition-all active:scale-95 border border-white/20 shadow-xl"
-                  title="Delete Spot"
-                >
-                  {deleteSpotMutation.isPending ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-                </button>
-              )}
+              {/* Removed as functionality moved to Dropdown Menu */}
 
               {authUser && (
                 <button
                   onClick={handleSpotVote}
                   className={cn(
-                    'hidden md:flex items-center gap-2 px-4 py-4 rounded-2xl backdrop-blur-md border transition-all active:scale-95 shadow-xl text-[10px] font-semibold tracking-wide',
+                    'flex items-center gap-2 px-4 py-4 rounded-2xl backdrop-blur-md border transition-all active:scale-95 shadow-xl text-[10px] font-semibold tracking-wide',
                     localHasVoted
                       ? 'bg-amber-400/90 border-amber-300/30 text-black'
                       : 'bg-white/10 border-white/20 text-white hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',

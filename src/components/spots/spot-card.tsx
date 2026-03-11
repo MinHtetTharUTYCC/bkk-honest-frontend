@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
-import ReportButton from '@/components/report/report-button';
 import { getSpotUrl } from '@/lib/slug';
 
 export default function SpotCard({ spot }: { spot: any }) {
@@ -70,11 +69,6 @@ export default function SpotCard({ spot }: { spot: any }) {
 
                 {/* Action buttons — bottom-right of image */}
                 <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                    {/* Report button — always visible */}
-                    <div className="pointer-events-auto">
-                        <ReportButton targetId={spot.id} reportType="SPOT" size="sm" />
-                    </div>
-                    
                     {/* Heart vote button — only for logged-in users */}
                     {user && (
                         <button

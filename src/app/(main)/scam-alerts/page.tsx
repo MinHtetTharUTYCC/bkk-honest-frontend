@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useInfiniteScamAlerts, useCategories } from '@/hooks/use-api';
 import { SearchInput } from '@/components/ui/search-input';
 import ScamAlertCard from '@/components/scams/scam-alert-card';
-import ScamDetailsModal from '@/components/scams/scam-details-modal';
 import { AlertTriangle, MapPin, TrendingUp, Clock, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
@@ -26,7 +25,6 @@ export default function ScamAlertsPage() {
     const debouncedSearch = useDebounce(search, 500);
     const [sort, setSort] = useState<'newest' | 'popular'>('newest');
     const { selectedCityId, selectedCity } = useCity();
-    const [selectedAlert, setSelectedAlert] = useState<any>(null);
 
     const [isClient, setIsClient] = useState(false);
     const { ref, inView } = useInView();
@@ -58,9 +56,6 @@ export default function ScamAlertsPage() {
 
     return (
         <div className="space-y-6 pb-24">
-            {selectedAlert && (
-                <ScamDetailsModal alert={selectedAlert} onClose={() => setSelectedAlert(null)} />
-            )}
             <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="space-y-0.5">
                     <h1 className="font-display text-2xl font-bold text-foreground tracking-tight">
@@ -178,7 +173,6 @@ export default function ScamAlertsPage() {
                             <ScamAlertCard
                                 key={alert.id}
                                 alert={alert}
-                                onClick={() => setSelectedAlert(alert)}
                             />
                         ))}
 
