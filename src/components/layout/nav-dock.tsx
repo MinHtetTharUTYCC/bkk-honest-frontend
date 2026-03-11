@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Compass, Map as MapIcon, Plus, AlertTriangle } from 'lucide-react';
+import { Home, Compass, Map as MapIcon, Plus, AlertTriangle, Target, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,8 @@ export default function NavDock() {
     { icon: Compass, label: 'Spots', href: '/spots' },
     { icon: AlertTriangle, label: 'Scams', href: '/scam-alerts' },
     { icon: MapIcon, label: 'Map', href: '/map' },
+    { icon: Target, label: 'Missions', href: '/missions', desktopOnly: true },
+    { icon: User, label: 'Profile', href: '/profile', desktopOnly: true },
   ];
 
   const isActiveRoute = (href: string) => {
@@ -49,6 +51,7 @@ export default function NavDock() {
                 isActive
                   ? 'text-amber-400'
                   : 'text-white/30 hover:text-white/70',
+                item.desktopOnly && 'hidden md:flex'
               )}
             >
               <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />

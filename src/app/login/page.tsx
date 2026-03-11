@@ -3,13 +3,11 @@
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Zap, ArrowRight, Loader2, Mail, Lock, ShieldAlert } from 'lucide-react';
-import Link from 'next/link';
+import { Zap, ArrowRight, Loader2, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const [googleLoading, setGoogleLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -17,22 +15,20 @@ export default function LoginPage() {
 
     const redirectTo = searchParams.get('redirectTo') || '/';
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
+    const handleGoogleLogin = async () => {
+        setGoogleLoading(true);
         setError(null);
 
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`,
+            },
         });
 
         if (error) {
             setError(error.message);
-            setLoading(false);
-        } else {
-            router.push(redirectTo);
-            router.refresh();
+            setGoogleLoading(false);
         }
     };
 
@@ -48,10 +44,10 @@ export default function LoginPage() {
                         <Zap size={32} fill="currentColor" />
                     </div>
                     <h1 className="text-3xl font-display font-bold text-white tracking-tighter uppercase italic">
-                        Welcome Back
+                        Welcome to Honest
                     </h1>
                     <p className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
-                        Join the Honest Community
+                        Join the Bangkok Community Talk
                     </p>
                 </header>
 
@@ -62,59 +58,30 @@ export default function LoginPage() {
                     </div>
                 )}
 
-                <form onSubmit={handleLogin} className="space-y-6 relative">
-                    <div className="space-y-2">
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">
-                            Email Address
-                        </label>
-                        <div className="relative group">
-                            <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-amber-400 transition-colors" size={18} />
-                            <input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="you@example.com"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 focus:bg-white/10 transition-all rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-white outline-none placeholder:text-white/10"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 ml-1">
-                            Password
-                        </label>
-                        <div className="relative group">
-                            <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-amber-400 transition-colors" size={18} />
-                            <input
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 focus:bg-white/10 transition-all rounded-2xl pl-14 pr-6 py-4 text-sm font-bold text-white outline-none placeholder:text-white/10"
-                                required
-                            />
-                        </div>
-                    </div>
-
+                <div className="space-y-4 relative">
                     <button
-                        disabled={loading}
-                        className="w-full bg-amber-400 text-black py-5 rounded-[24px] text-xs font-black uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/10 active:scale-[0.98] disabled:opacity-50"
+                        onClick={handleGoogleLogin}
+                        disabled={googleLoading}
+                        className="w-full bg-white text-black py-5 rounded-[24px] text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center justify-center gap-3 shadow-xl shadow-white/5 active:scale-[0.98] disabled:opacity-50"
                     >
-                        {loading ? (
+                        {googleLoading ? (
                             <Loader2 className="animate-spin" size={18} />
                         ) : (
                             <>
-                                Sign In
-                                <ArrowRight size={18} />
+                                <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+                                Continue with Google
                             </>
                         )}
                     </button>
-                </form>
+                    
+                    <p className="text-center text-[9px] text-white/20 font-bold uppercase tracking-widest px-4 leading-relaxed">
+                        By continuing, you agree to our Terms of Service and Privacy Policy.
+                    </p>
+                </div>
 
                 <footer className="text-center space-y-4 pt-4 border-t border-white/5 relative">
                     <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest">
-                        Don't have an account? <Link href="/signup" className="text-amber-400 hover:text-amber-300 transition-colors">Join us</Link>
+                        The pulse of Bangkok is waiting for you.
                     </p>
                 </footer>
             </div>
