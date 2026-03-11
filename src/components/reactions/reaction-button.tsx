@@ -25,24 +25,36 @@ export default function ReactionButton({
     setUserReacted(initialUserReacted);
   }, [initialCount, initialUserReacted]);
 
-  const handleClick = async () => {
-    try {
-      setUserReacted(!userReacted);
-      setCount((prev) => (userReacted ? prev - 1 : prev + 1));
+  const handleClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Prevent double-clicking while pending
+    if (toggleMutation.isPending) return;
 
+    // Capture current state before change
+    const wasReacted = userReacted;
+    const currentCount = count;
+
+    try {
+      // Step 1: Optimistic Update (Immediate UI change)
+      setUserReacted(!wasReacted);
+      setCount(prev => wasReacted ? prev - 1 : prev + 1);
+
+      // Step 2: Fire API call
       await toggleMutation.mutateAsync(commentId);
     } catch (error) {
-      // Revert on error
-      setUserReacted(initialUserReacted);
-      setCount(initialCount);
+      // Step 3: Rollback on failure
+      console.error('Reaction failed:', error);
+      setUserReacted(wasReacted);
+      setCount(currentCount);
     }
   };
 
   return (
     <button
       onClick={handleClick}
-      disabled={toggleMutation.isPending}
-      className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/8 hover:bg-white/12 disabled:bg-white/8 disabled:cursor-not-allowed transition-colors group"
+      className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors group"
       title={userReacted ? 'Unlike this comment' : 'Like this comment'}
     >
       <Heart
@@ -58,11 +70,8 @@ export default function ReactionButton({
           userReacted ? 'text-red-500' : 'text-white/60'
         }`}
       >
-        {count}
+        {userReacted ? count : count}
       </span>
-      {toggleMutation.isPending && (
-        <Loader2 size={14} className="animate-spin" />
-      )}
     </button>
   );
 }

@@ -30,7 +30,11 @@ export default function ReportButton({
   return (
     <>
       <button
-        onClick={() => setIsModalOpen(true)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsModalOpen(true);
+        }}
         className={`${sizeClasses[size]} rounded-full bg-white/8 hover:bg-white/12 flex items-center justify-center text-white/60 hover:text-red-500 transition-all duration-200`}
         title="Report this content"
       >

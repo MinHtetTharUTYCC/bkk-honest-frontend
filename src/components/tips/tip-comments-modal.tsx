@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { X, MessageSquare, Send, Loader2, User, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
@@ -16,7 +17,16 @@ interface TipCommentsModalProps {
 
 export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps) {
   const { user } = useAuth();
-  const { data: comments, isLoading: commentsLoading } = useTipComments(tip.id);
+  const { 
+    data: commentsResponse, 
+    isLoading: commentsLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useTipComments(tip.id);
+
+  const comments = commentsResponse?.pages?.flatMap(page => page.data || (Array.isArray(page) ? page : [])) || [];
+  
   const createCommentMutation = useCreateComment();
   const updateCommentMutation = useUpdateComment();
   const deleteCommentMutation = useDeleteComment();
@@ -24,6 +34,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
   
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
+
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleSendComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,34 +86,22 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
 
   // Prevent background scroll
   useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
-    const originalPosition = document.body.style.position;
-    const originalWidth = document.body.style.width;
-    const originalHeight = document.body.style.height;
-
-    // Nuclear scroll lock (works on iOS)
+    const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
-    document.body.style.height = '100%';
-    
     return () => {
-      document.body.style.overflow = originalOverflow;
-      document.body.style.position = originalPosition;
-      document.body.style.width = originalWidth;
-      document.body.style.height = originalHeight;
+      document.body.style.overflow = originalStyle;
     };
   }, []);
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4 touch-none"
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4"
     >
-      <div className="absolute inset-0" onClick={onClose} />
+      <div className="absolute inset-0" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }} />
 
       <div 
         className={cn(
-          "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain touch-auto",
+          "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain",
           "h-[80vh] md:h-auto md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
           "rounded-t-[24px] md:rounded-b-[24px]"
         )}
@@ -106,7 +112,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
         </div>
 
         <button 
-          onClick={onClose}
+          onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
           className="hidden md:flex absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors z-10"
         >
           <X size={20} className="text-white/50" />
@@ -122,7 +128,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
           </div>
         </div>
 
-        <ScrollArea className="flex-1">
+        <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
           <div className="p-6 md:p-8 space-y-8">
             <div className="space-y-6">
               {user ? (
@@ -231,14 +237,25 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     <p className="text-xs font-semibold text-white/40 tracking-wide">No comments yet. Start the conversation!</p>
                   </div>
                 )}
+
+                {/* Infinite Scroll Trigger */}
+                {hasNextPage && (
+                  <div ref={ref} className="py-4 flex justify-center">
+                    {isFetchingNextPage ? (
+                      <Loader2 size={24} className="animate-spin text-amber-400" />
+                    ) : (
+                      <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Scroll for more</span>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </ScrollArea>
+        </div>
 
         <div className="md:hidden p-4 border-t border-border bg-background/80 backdrop-blur-md">
           <button 
-            onClick={onClose}
+            onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
             className="w-full py-3 rounded-xl bg-white/10 text-white font-bold text-xs active:scale-95 transition-all"
           >
             Close Comments

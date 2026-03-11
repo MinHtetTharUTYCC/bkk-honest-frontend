@@ -130,7 +130,8 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
     return (
         <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4 animate-in fade-in duration-200">
             {/* Backdrop Click */}
-            <div className="absolute inset-0" onClick={onClose} />
+            <div className="absolute inset-0" onClick={(e) => { e.stopPropagation(); onClose(); }}
+                onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }} />
 
             {/* Main Content */}
             <div
@@ -147,7 +148,8 @@ export default function ScamDetailsModal({ alert: initialAlert, onClose }: ScamD
 
                 {/* Close Button */}
                 <button
-                    onClick={onClose}
+                    onClick={(e) => { e.stopPropagation(); onClose(); }}
+                    onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
                     className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full bg-black/20 backdrop-blur-md hover:bg-white/10 transition-colors z-20 border border-white/10"
                 >
                     <X size={20} className="text-white/60" />

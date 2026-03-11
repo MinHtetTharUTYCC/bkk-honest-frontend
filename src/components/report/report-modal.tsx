@@ -46,10 +46,14 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+    <div 
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      onClick={(e) => e.stopPropagation()}
+    >
       <div
         className="absolute inset-0 bg-black/75 backdrop-blur-xl"
-        onClick={onClose}
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
+        onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
       />
 
       <div className="relative w-full max-w-md bg-card rounded-2xl shadow-2xl overflow-hidden">
@@ -64,7 +68,8 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={(e) => { e.stopPropagation(); onClose(); }}
+            onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
             className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center hover:bg-white/12 transition-colors"
           >
             <X size={18} />

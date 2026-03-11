@@ -88,7 +88,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
 
                     <div className="flex items-center gap-4">
                         <button
-                            onClick={onClose}
+                            onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
                             className="p-3 bg-white/8 rounded-2xl text-white/40 hover:text-foreground transition-colors"
                         >
                             <X size={24} />

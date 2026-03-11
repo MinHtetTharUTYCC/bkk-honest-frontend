@@ -120,7 +120,7 @@ export function TipCard({
 
         <button
           onClick={() => onVoteClick(tip)}
-          disabled={isVotePending || isDeleting}
+          disabled={isDeleting}
           className={cn(
             'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
             tip.hasVoted
@@ -129,14 +129,10 @@ export function TipCard({
           )}
           title={tip.hasVoted ? 'Unlike this tip' : 'Like this tip'}
         >
-          {isVotePending ? (
-            <Loader2 size={16} className="animate-spin" />
-          ) : (
-            <Heart
-              size={16}
-              fill={tip.hasVoted ? 'currentColor' : 'none'}
-            />
-          )}
+          <Heart
+            size={16}
+            fill={tip.hasVoted ? 'currentColor' : 'none'}
+          />
           <span>{tip._count?.votes || 0}</span>
         </button>
       </div>
@@ -154,7 +150,7 @@ export function TipCard({
 
         <button
           onClick={() => onVoteClick(tip)}
-          disabled={isVotePending || isDeleting}
+          disabled={isDeleting}
           className={cn(
             'flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-xs font-medium transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
             tip.hasVoted
@@ -163,14 +159,10 @@ export function TipCard({
           )}
           title={tip.hasVoted ? 'Unlike this tip' : 'Like this tip'}
         >
-          {isVotePending ? (
-            <Loader2 size={14} className="animate-spin" />
-          ) : (
-            <Heart
-              size={14}
-              fill={tip.hasVoted ? 'currentColor' : 'none'}
-            />
-          )}
+          <Heart
+            size={14}
+            fill={tip.hasVoted ? 'currentColor' : 'none'}
+          />
           <span>{tip._count?.votes || 0}</span>
         </button>
       </div>
