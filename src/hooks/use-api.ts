@@ -160,6 +160,17 @@ export function useSpot(id: string) {
     });
 }
 
+export function useSpotBySlug(citySlug: string, spotSlug: string) {
+    return useQuery({
+        queryKey: ['spot', citySlug, spotSlug],
+        queryFn: async () => {
+            const { data } = await api.get<any>(`/spots/by-slug/${citySlug}/${spotSlug}`);
+            return data?.data || data;
+        },
+        enabled: !!citySlug && !!spotSlug,
+    });
+}
+
 export function useSpots(params?: {
     categoryId?: string;
     cityId?: string;
@@ -548,12 +559,19 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
 // --- Comments ---
 
 export function useTipComments(tipId: string) {
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ['tip-comments', tipId],
-        queryFn: async () => {
-            const { data } = await api.get(`/comments/tip/${tipId}`);
-            return data?.data || (Array.isArray(data) ? data : []);
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get(`/comments/tip/${tipId}?skip=${pageParam}&take=10`);
+            return data;
         },
+        getNextPageParam: (lastPage: any) => {
+            if (lastPage?.pagination?.hasMore) {
+                return lastPage.pagination.skip + lastPage.pagination.take;
+            }
+            return undefined;
+        },
+        initialPageParam: 0,
         enabled: !!tipId,
     });
 }
@@ -988,9 +1006,28 @@ export function useToggleCommentReaction() {
             const { data } = await api.post(`/comments/${commentId}/reactions`);
             return data;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['tip-comments'] });
-            queryClient.invalidateQueries({ queryKey: ['scam-comments'] });
+        onSuccess: (data, commentId) => {
+            // updateInfiniteQueryData is a helper or we can do it inline
+            const updatePage = (page: any) => ({
+                ...page,
+                data: page.data?.map((c: any) => c.id === commentId ? { ...c, ...data } : c)
+            });
+
+            queryClient.setQueriesData({ queryKey: ['tip-comments'] }, (old: any) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map(updatePage)
+                };
+            });
+
+            queryClient.setQueriesData({ queryKey: ['scam-comments'] }, (old: any) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    pages: old.pages.map(updatePage)
+                };
+            });
         },
     });
 }

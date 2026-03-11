@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useSpot, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe, useUpdateCommunityTip, useDeleteCommunityTip } from '@/hooks/use-api';
+import { useSpot, useSpotBySlug, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe, useUpdateCommunityTip, useDeleteCommunityTip } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare, Navigation } from 'lucide-react';
 import Link from 'next/link';
@@ -21,22 +21,22 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 
 export default function SpotDetailPage() {
-  const { id } = useParams() as { id: string };
+  const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
   const { user: authUser } = useAuth();
   const router = useRouter();
-  const { data: spot, isLoading: spotLoading } = useSpot(id);
-  const { data: reports } = useSpotPriceReports(id);
-  const { data: galleryResponse } = useSpotGallery(id, 6);
+  const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
+  const { data: reports } = useSpotPriceReports(spot?.id || '');
+  const { data: galleryResponse } = useSpotGallery(spot?.id || '', 6);
   const { data: missionsData } = useMissions();
   const addMission = useAddMission();
   const updateSpotMutation = useUpdateSpot();
   const { data: categories } = useCategories();
   const { data: cities } = useCities();
-  const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: id });
+  const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: spot?.id || '' });
   
   const missionsList = missionsData?.pages.flatMap(page => page.data || []) || [];
-  const isInMissions = missionsList.some((m: any) => m.spot?.id === id);
-  const currentMission = missionsList.find((m: any) => m.spot?.id === id);
+  const isInMissions = missionsList.some((m: any) => m.spot?.id === spot?.id);
+  const currentMission = missionsList.find((m: any) => m.spot?.id === spot?.id);
   const gallery = galleryResponse?.data || [];
   
   const isOwner = authUser?.id === spot?.userId;
@@ -72,7 +72,7 @@ export default function SpotDetailPage() {
   const handleUpdateSpot = async () => {
     try {
       await updateSpotMutation.mutateAsync({
-        id,
+        id: spot?.id || "",
         payload: {
           name: editName,
           address: editAddress,
@@ -107,7 +107,7 @@ export default function SpotDetailPage() {
     hasNextPage: hasNextTips, 
     isFetchingNextPage: isFetchingNextTips, 
     isLoading: tipsLoading 
-  } = useInfiniteSpotTips(id, tipType, tipSort);
+  } = useInfiniteSpotTips(spot?.id || "", tipType, tipSort);
 
   const tips = tipsData?.pages.flatMap(page => page.data) || [];
 
@@ -133,8 +133,8 @@ export default function SpotDetailPage() {
   }, [hasNextTips, isFetchingNextTips, fetchNextTips]);
   
   const uploadMutation = useUploadSpotImage();
-  const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle('tip', id);
-  const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle('image', id);
+  const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle('tip', spot?.id || '');
+  const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle('image', spot?.id || '');
   const { toggleVote: toggleSpotVote } = useVoteToggle('spot');
   const updateTipMutation = useUpdateCommunityTip();
   const deleteTipMutation = useDeleteCommunityTip();
@@ -149,7 +149,7 @@ export default function SpotDetailPage() {
       setLocalVoteCount(spot._count?.votes ?? 0);
       setLocalVoteId(spot.voteId ?? null);
     }
-  }, [spot?.id, spot?.hasVoted, spot?._count?.votes, spot?.voteId]);
+  }, [spot?.id || "", spot?.hasVoted, spot?._count?.votes, spot?.voteId]);
 
   const handleSpotVote = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -158,7 +158,7 @@ export default function SpotDetailPage() {
     const isRemoving = localHasVoted;
     setLocalHasVoted(!isRemoving);
     setLocalVoteCount(prev => isRemoving ? prev - 1 : prev + 1);
-    const result = await toggleSpotVote({ id, hasVoted: localHasVoted, voteId: localVoteId });
+    const result = await toggleSpotVote({ id: spot?.id || "", hasVoted: localHasVoted, voteId: localVoteId });
     setLocalVoteId(result.voteId);
   };
   
@@ -166,7 +166,7 @@ export default function SpotDetailPage() {
   const deleteSpotMutation = useMutation({
     mutationFn: async () => {
       if (!confirm('Are you sure you want to delete this spot? This action cannot be undone.')) return;
-      await api.delete(`/spots/${id}`);
+      await api.delete(`/spots/${spot?.id || ""}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['spots'] });
@@ -181,7 +181,7 @@ export default function SpotDetailPage() {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    await uploadMutation.mutateAsync({ spotId: id, file });
+    await uploadMutation.mutateAsync({ spotId: spot?.id || "", file });
   };
 
   if (!isClient || spotLoading) {
@@ -212,7 +212,7 @@ export default function SpotDetailPage() {
     try {
       await updateTipMutation.mutateAsync({
         id: editingTip.id,
-        spotId: id,
+        spotId: spot?.id || '',
         title: editingTipTitle,
         description: editingTipDescription,
       });
@@ -227,7 +227,7 @@ export default function SpotDetailPage() {
 
   const handleDeleteTip = async (tipId: string) => {
     try {
-      await deleteTipMutation.mutateAsync({ id: tipId, spotId: id });
+      await deleteTipMutation.mutateAsync({ id: tipId, spotId: spot?.id || "" });
     } catch (error) {
       console.error('Failed to delete tip:', error);
       alert('Failed to delete tip');
@@ -238,14 +238,14 @@ export default function SpotDetailPage() {
     <div className="space-y-12 pb-24">
       {showGalleryModal && (
         <GalleryModal 
-          spotId={id} 
+          spotId={spot?.id || ""} 
           spotName={spot.name} 
           onClose={() => setShowGalleryModal(false)} 
         />
       )}
       {showTipModal && (
         <CreateTipModal 
-          spotId={id} 
+          spotId={spot?.id || ""} 
           onClose={() => setShowTipModal(false)} 
         />
       )}
@@ -466,7 +466,7 @@ export default function SpotDetailPage() {
             
             <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-3 md:gap-4">
               <button 
-                onClick={() => !isInMissions && addMission.mutate(id)}
+                onClick={() => !isInMissions && addMission.mutate(spot?.id || '')}
                 disabled={addMission.isPending || isInMissions}
                 className={cn(
                   "flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide",
@@ -882,7 +882,7 @@ export default function SpotDetailPage() {
           </header>
 
           {/* Check-in Form */}
-          {authUser && <CreateVibeForm spotId={id} onSuccess={() => {}} />}
+          {authUser && <CreateVibeForm spotId={spot?.id || ""} onSuccess={() => {}} />}
 
           {/* Vibe List */}
           {vibesLoading ? (
