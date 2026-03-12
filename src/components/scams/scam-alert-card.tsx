@@ -4,7 +4,6 @@ import {
     AlertTriangle,
     Calendar,
     User,
-    Heart,
     Edit2,
     Trash2,
     Loader2,
@@ -21,6 +20,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUpdateScamAlert, useDeleteScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import ReportButton from '@/components/report/report-button';
+import { LikeButton } from '@/components/ui/like-button';
 
 interface ScamAlertCardProps {
     alert: any;
@@ -30,8 +30,6 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
     const router = useRouter();
     const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);
-    const [localHasVoted, setLocalHasVoted] = useState(initialAlert.hasVoted);
-    const [localVoteCount, setLocalVoteCount] = useState(initialAlert._count?.votes || 0);
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const updateScamMutation = useUpdateScamAlert();
     const deleteScamMutation = useDeleteScamAlert();
@@ -297,27 +295,19 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                         <MessageCircle size={12} />
                         {alert._count?.comments || 0}
                     </div>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            // Optimistically update UI
-                            const isRemoving = localHasVoted;
-                            setLocalHasVoted(!isRemoving);
-                            setLocalVoteCount((prev: number) => isRemoving ? prev - 1 : prev + 1);
-                            // Call API and rollback on error is handled by hook
-                            toggleVote(alert);
+                    <LikeButton
+                        count={alert._count?.votes || 0}
+                        isVoted={alert.hasVoted}
+                        onVote={async () => {
+                            await toggleVote(alert);
                         }}
+                        isPending={votePending}
                         disabled={votePending}
-                        className={cn(
-                            'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border',
-                            localHasVoted
-                                ? 'bg-amber-400/10 border-amber-400/20 text-amber-400'
-                                : 'border-white/10 text-white/30 hover:text-amber-400 hover:border-amber-400/20',
-                        )}
-                    >
-                        <Heart size={12} fill={localHasVoted ? 'currentColor' : 'none'} />
-                        {localVoteCount}
-                    </button>
+                        variant="default"
+                        size="sm"
+                        className="text-[9px] font-black uppercase tracking-widest gap-1.5 px-3 py-1.5 rounded-full border transition-all bg-white/0 hover:bg-white/0"
+                        title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
+                    />
                 </div>
             </div>
         </div>

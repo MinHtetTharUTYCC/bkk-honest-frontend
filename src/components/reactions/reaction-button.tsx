@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Heart, Loader2 } from 'lucide-react';
 import { useCommentReaction } from '@/hooks/use-comment-reactions';
+import { LikeButton } from '@/components/ui/like-button';
 
 interface ReactionButtonProps {
   commentId: string;
@@ -51,27 +51,38 @@ export default function ReactionButton({
     }
   };
 
+  const handleVote = async () => {
+    // Prevent double-clicking while pending
+    if (toggleMutation.isPending) return;
+
+    // Capture current state before change
+    const wasReacted = userReacted;
+    const currentCount = count;
+
+    try {
+      // Step 1: Optimistic Update (Immediate UI change)
+      setUserReacted(!wasReacted);
+      setCount(prev => wasReacted ? prev - 1 : prev + 1);
+
+      // Step 2: Fire API call
+      await toggleMutation.mutateAsync(commentId);
+    } catch (error) {
+      // Step 3: Rollback on failure
+      console.error('Reaction failed:', error);
+      setUserReacted(wasReacted);
+      setCount(currentCount);
+    }
+  };
+
   return (
-    <button
-      onClick={handleClick}
-      className="flex items-center gap-2 px-3 py-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors group"
+    <LikeButton
+      count={count}
+      isVoted={userReacted}
+      onVote={handleVote}
+      isPending={toggleMutation.isPending}
+      variant="compact"
+      size="md"
       title={userReacted ? 'Unlike this comment' : 'Like this comment'}
-    >
-      <Heart
-        size={16}
-        className={`transition-all duration-200 ${
-          userReacted
-            ? 'fill-red-500 text-red-500'
-            : 'text-white/60 group-hover:text-red-500'
-        }`}
-      />
-      <span
-        className={`text-sm font-medium ${
-          userReacted ? 'text-red-500' : 'text-white/60'
-        }`}
-      >
-        {userReacted ? count : count}
-      </span>
-    </button>
+    />
   );
 }

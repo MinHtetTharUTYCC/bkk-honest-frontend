@@ -1,6 +1,7 @@
 import NavDock from '@/components/layout/nav-dock';
 import TopBar from '@/components/layout/top-bar';
 import Sidebar from '@/components/layout/sidebar';
+import { ConditionalFooter } from '@/components/layout/conditional-footer';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -18,6 +19,7 @@ export default async function MainLayout({
                     <main className="flex-1 min-w-0 pb-32 md:pb-12">{children}</main>
                     <Sidebar />
                 </div>
+                <ConditionalFooter />
             </div>
         </div>
     );

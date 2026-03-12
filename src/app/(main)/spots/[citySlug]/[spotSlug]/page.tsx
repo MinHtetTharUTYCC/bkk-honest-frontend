@@ -1,14 +1,16 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, usePathname } from 'next/navigation';
 import { useSpot, useSpotBySlug, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe, useUpdateCommunityTip, useDeleteCommunityTip } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, Heart, User, Trash2, Target, Edit2, Save, X, MessageSquare, Navigation } from 'lucide-react';
+import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, User, Trash2, Target, Edit2, Save, X, MessageSquare, Navigation } from 'lucide-react';
+import { LikeButton } from '@/components/ui/like-button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
+import LocationPicker from '@/components/spots/location-picker';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
@@ -25,8 +27,9 @@ import { MoreVertical, Flag } from 'lucide-react';
 
 export default function SpotDetailPage() {
   const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
-  const { user: authUser } = useAuth();
+  const { user: authUser, loading: authLoading } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
   const { data: reports } = useSpotPriceReports(spot?.id || '');
   const { data: galleryResponse } = useSpotGallery(spot?.id || '', 6);
@@ -63,6 +66,7 @@ export default function SpotDetailPage() {
   const [editCity, setEditCity] = useState('');
   const [editFile, setEditFile] = useState<File | null>(null);
   const [editPreview, setEditPreview] = useState<string | null>(null);
+  const [editLocation, setEditLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
   useEffect(() => {
     if (spot) {
@@ -70,8 +74,28 @@ export default function SpotDetailPage() {
       setEditAddress(spot.address);
       setEditCategory(spot.categoryId || (spot.category as any)?.id);
       setEditCity(spot.cityId || (spot.city as any)?.id);
+      setEditLocation({ latitude: spot.latitude, longitude: spot.longitude });
     }
   }, [spot]);
+
+  const fetchAddressFromLocation = async (latitude: number, longitude: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/spots/reverse-geocode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude, longitude }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.address) {
+          setEditAddress(data.address);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch address:', error);
+    }
+  };
 
   const handleUpdateSpot = async () => {
     try {
@@ -82,6 +106,8 @@ export default function SpotDetailPage() {
           address: editAddress,
           categoryId: editCategory,
           cityId: editCity,
+          latitude: editLocation?.latitude,
+          longitude: editLocation?.longitude,
           image: editFile || undefined,
         }
       });
@@ -143,27 +169,14 @@ export default function SpotDetailPage() {
   const updateTipMutation = useUpdateCommunityTip();
   const deleteTipMutation = useDeleteCommunityTip();
 
-  const [localHasVoted, setLocalHasVoted] = useState(false);
-  const [localVoteCount, setLocalVoteCount] = useState(0);
-  const [localVoteId, setLocalVoteId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (spot) {
-      setLocalHasVoted(spot.hasVoted ?? false);
-      setLocalVoteCount(spot._count?.votes ?? 0);
-      setLocalVoteId(spot.voteId ?? null);
-    }
-  }, [spot?.id || "", spot?.hasVoted, spot?._count?.votes, spot?.voteId]);
-
   const handleSpotVote = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!authUser) return;
-    const isRemoving = localHasVoted;
-    setLocalHasVoted(!isRemoving);
-    setLocalVoteCount(prev => isRemoving ? prev - 1 : prev + 1);
-    const result = await toggleSpotVote({ id: spot?.id || "", hasVoted: localHasVoted, voteId: localVoteId });
-    setLocalVoteId(result.voteId);
+    await toggleSpotVote({ id: spot?.id || "", hasVoted: spot?.hasVoted, voteId: spot?.voteId });
+  };
+
+  const handleSpotVoteClick = async () => {
+    await toggleSpotVote({ id: spot?.id || "", hasVoted: spot?.hasVoted, voteId: spot?.voteId });
   };
   
   const queryClient = useQueryClient();
@@ -334,13 +347,28 @@ export default function SpotDetailPage() {
 
               <div className="space-y-2">
                 <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
+                  Pick Location on Map
+                </label>
+                <div className="rounded-2xl overflow-hidden h-96 border border-border shadow-inner">
+                  <LocationPicker
+                    onLocationSelected={(loc) => {
+                      setEditLocation(loc);
+                      fetchAddressFromLocation(loc.latitude, loc.longitude);
+                    }}
+                    initialLocation={editLocation || undefined}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
                   Spot Name
                 </label>
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-lg font-semibold text-white focus:outline-none focus:border-amber-400 transition-all"
+                  className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-lg font-semibold text-white focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
                   placeholder="Spot name"
                 />
               </div>
@@ -353,7 +381,7 @@ export default function SpotDetailPage() {
                   type="text"
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 transition-all"
+                  className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
                   placeholder="Address"
                 />
               </div>
@@ -514,21 +542,15 @@ export default function SpotDetailPage() {
               
               {/* Removed as functionality moved to Dropdown Menu */}
 
-              {authUser && (
-                <button
-                  onClick={handleSpotVote}
-                  className={cn(
-                    'flex items-center gap-2 px-4 py-4 rounded-2xl backdrop-blur-md border transition-all active:scale-95 shadow-xl text-[10px] font-semibold tracking-wide',
-                    localHasVoted
-                      ? 'bg-amber-400/90 border-amber-300/30 text-black'
-                      : 'bg-white/10 border-white/20 text-white hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
-                  )}
-                  title={localHasVoted ? 'Remove like' : 'Like this spot'}
-                >
-                  <Heart size={18} fill={localHasVoted ? 'currentColor' : 'none'} />
-                  {localVoteCount > 0 && <span>{localVoteCount}</span>}
-                </button>
-              )}
+              <LikeButton
+                count={spot._count?.votes || 0}
+                isVoted={spot.hasVoted}
+                onVote={handleSpotVoteClick}
+                variant="default"
+                size="lg"
+                className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
+                title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
+              />
             </div>
           </div>
         </div>
@@ -671,19 +693,17 @@ export default function SpotDetailPage() {
                     }}
                   />
                   <div className="absolute top-3 right-3 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                    <button 
-                      onClick={() => toggleImageVote(img)}
+                    <LikeButton
+                      count={img._count?.votes || 0}
+                      isVoted={img.hasVoted}
+                      onVote={async () => { await toggleImageVote(img); }}
+                      isPending={imageVotePending}
                       disabled={imageVotePending}
-                      className={cn(
-                        "flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all",
-                        img.hasVoted
-                          ? "bg-amber-400/90 border-amber-300/30 text-black" 
-                          : "text-white/60 hover:text-amber-400 hover:bg-amber-500/10"
-                      )}
-                    >
-                      <Heart size={14} fill={img.hasVoted ? "currentColor" : "none"} />
-                      <span>{img._count?.votes || 0}</span>
-                    </button>
+                      variant="overlay"
+                      size="sm"
+                      className="text-xs font-semibold gap-1.5 px-4 py-2 rounded-md bg-white/0 hover:bg-white/0"
+                      title={img.hasVoted ? 'Unlike this image' : 'Like this image'}
+                    />
                   </div>
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center pointer-events-none">
                     <span className="text-[8px] font-semibold text-white tracking-widest">by {img.user?.name || 'local'}</span>
@@ -771,7 +791,13 @@ export default function SpotDetailPage() {
             <div className="flex items-center justify-between gap-4">
               <h3 className="text-2xl font-display font-bold text-white">Tips</h3>
               <button 
-                onClick={() => setShowTipModal(true)}
+                onClick={() => {
+                  if (!authUser) {
+                    router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
+                    return;
+                  }
+                  setShowTipModal(true);
+                }}
                 className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
               >
                 <Zap size={14} fill="currentColor" className="text-black group-hover:text-white transition-colors" />
