@@ -123,7 +123,7 @@ export default function SearchPage() {
           </h1>
           <div className="flex items-center gap-2">
             <MapPin size={10} className="text-amber-400" />
-            <p className="text-white/40 font-medium uppercase tracking-widest text-[9px]">
+            <p className="text-white/60 font-bold uppercase tracking-widest text-[11px]">
               Exploring {selectedCity?.name || 'Thailand'}
             </p>
           </div>

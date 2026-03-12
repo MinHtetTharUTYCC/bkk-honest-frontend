@@ -87,7 +87,7 @@ export function DropdownMenuItem({ children, onClick, className, danger, asChild
         (children.props as any).onClick?.(e);
         handleClick(e);
       }
-    });
+    } as any);
   }
 
   return (
