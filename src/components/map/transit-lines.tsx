@@ -4,16 +4,17 @@ import { Source, Layer } from 'react-map-gl/mapbox';
 import type { LayerProps } from 'react-map-gl/mapbox';
 
 interface TransitLinesProps {
+  id: string;
   data: any; // GeoJSON data
 }
 
-export default function TransitLines({ data }: TransitLinesProps) {
+export default function TransitLines({ id, data }: TransitLinesProps) {
   if (!data || !data.features) {
     return null;
   }
 
-  // Create a unique source ID for this data
-  const sourceId = `transit-data-${Math.random().toString(36).substr(2, 9)}`;
+  // Use the provided stable ID
+  const sourceId = `transit-data-${id}`;
   
   // Create line layer style
   const lineLayerStyle: LayerProps = {

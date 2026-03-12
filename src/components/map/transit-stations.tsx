@@ -4,16 +4,17 @@ import { Source, Layer } from 'react-map-gl/mapbox';
 import type { LayerProps } from 'react-map-gl/mapbox';
 
 interface TransitStationsProps {
+  id: string;
   data: any; // GeoJSON data with station points
 }
 
-export default function TransitStations({ data }: TransitStationsProps) {
+export default function TransitStations({ id, data }: TransitStationsProps) {
   if (!data || !data.features) {
     return null;
   }
 
-  // Create a unique source ID for this data
-  const sourceId = `transit-stations-data-${Math.random().toString(36).substr(2, 9)}`;
+  // Use the provided stable ID
+  const sourceId = `transit-stations-data-${id}`;
 
   // Station icon symbols for different systems
   const stationIconStyle: LayerProps = {

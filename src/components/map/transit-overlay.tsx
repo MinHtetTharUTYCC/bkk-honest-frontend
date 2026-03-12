@@ -30,12 +30,13 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
       setError(null);
       
       try {
-        // Load all transit GeoJSON files from public directory
+        // Load all transit GeoJSON files from public directory (prefixing with basePath)
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/bkk-honest';
         const [btsResponse, mrtResponse, arlResponse, stationsResponse] = await Promise.all([
-          fetch('/data/transit/bts-lines.geojson'),
-          fetch('/data/transit/mrt-lines.geojson'),
-          fetch('/data/transit/arl-lines.geojson'),
-          fetch('/data/transit/stations.geojson')
+          fetch(`${basePath}/data/transit/bts-lines.geojson`),
+          fetch(`${basePath}/data/transit/mrt-lines.geojson`),
+          fetch(`${basePath}/data/transit/arl-lines.geojson`),
+          fetch(`${basePath}/data/transit/stations.geojson`)
         ]);
 
         if (!btsResponse.ok || !mrtResponse.ok || !arlResponse.ok || !stationsResponse.ok) {
@@ -117,15 +118,15 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
       {/* Transit Lines - visible at zoom 10+ */}
       {shouldShowLines && (
         <>
-          <TransitLines data={transitData.btsLines} />
-          <TransitLines data={transitData.mrtLines} />
-          <TransitLines data={transitData.arlLines} />
+          <TransitLines id="bts" data={transitData.btsLines} />
+          <TransitLines id="mrt" data={transitData.mrtLines} />
+          <TransitLines id="arl" data={transitData.arlLines} />
         </>
       )}
       
       {/* Transit Stations - visible at zoom 13+ */}
       {shouldShowStations && (
-        <TransitStations data={transitData.stations} />
+        <TransitStations id="stations" data={transitData.stations} />
       )}
     </>
   );
