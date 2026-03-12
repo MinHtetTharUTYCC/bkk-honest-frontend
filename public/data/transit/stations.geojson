@@ -3,497 +3,3572 @@
   "features": [
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.6466265295137,
+          13.932397450318375
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_N24",
+        "name": "Khu Khot",
+        "name_th": "คูคต",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N24",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.62586830330439,
+          13.925092069997158
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N23",
+        "name": "Yaek Kor Por Aor",
+        "name_th": "แยก คปอ.",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N23",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.62171466174678,
+          13.917986709270565
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N22",
+        "name": "Royal Thai Air Force Museum",
+        "name_th": "พิพิธภัณฑ์กองทัพอากาศ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N22",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.61741382663521,
+          13.910786857715667
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N21",
+        "name": "Bhumibol Adulyadej Hospital",
+        "name_th": "โรงพยาบาลภูมิพลอดุลยเดช",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N21",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60912470042065,
+          13.89678394818115
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N20",
+        "name": "Saphan Mai",
+        "name_th": "สะพานใหม่",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N20",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60426163451352,
+          13.888674556927198
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N19",
+        "name": "Sai Yud",
+        "name_th": "สายหยุด",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N19",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60076059774512,
+          13.882504964205804
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N18",
+        "name": "Phahon Yothin 59",
+        "name_th": "พหลโยธิน",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N18",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59682397052894,
+          13.875424932429858
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N17",
+        "name": "Wat Phra Sri Mahathat",
+        "name_th": "วัดพระศรีมหาธาตุ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N17",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59195347187463,
+          13.867550252971292
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N16",
+        "name": "11th Infantry Regiment",
+        "name_th": "กรมทหารราบที่ 11",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N16",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.58517477096574,
+          13.856047616017307
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N15",
+        "name": "Bang Bua",
+        "name_th": "บางบัว",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N15",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.58172021304946,
+          13.850366316777624
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N14",
+        "name": "Royal Forest Department",
+        "name_th": "กรมป่าไม้",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N14",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57712613072987,
+          13.84233544202994
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N13",
+        "name": "Kasetsart University",
+        "name_th": "มหาวิทยาลัยเกษตรศาสตร์",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N13",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57373097771134,
+          13.836490549667955
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N12",
+        "name": "Sena Nikhom",
+        "name_th": "เสนานิคม",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N12",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56962408513,
+          13.829901397660752
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N11",
+        "name": "Ratchayothin",
+        "name_th": "รัชโยธิน",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N1",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56640326715855,
+          13.824269034064303
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N10",
+        "name": "Phahon Yothin 24",
+        "name_th": "พหลโยธิน",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N10",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.561955588223,
+          13.816695675455493
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N9",
+        "name": "Ha Yaek Lat Phrao",
+        "name_th": "ห้าแยกลาดพร้าว",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N9",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.55377854591393,
+          13.802586263528996
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N8",
         "name": "Mo Chit",
         "name_th": "หมอชิต",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "N8",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.53445, 13.84465]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
-      "properties": {
-        "name": "Saphan Phut",
-        "name_th": "สะพานพุทธ",
-        "line": "BTS_Sukhumvit",
-        "system": "BTS",
-        "color": "#00A651",
-        "interchange": []
-      },
       "geometry": {
         "type": "Point",
-        "coordinates": [100.53975, 13.84031]
+        "coordinates": [
+          100.54970240949145,
+          13.793794910466573
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_N7",
+        "name": "Saphan Khwai",
+        "name_th": "สะพานควาย",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "N7",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
-      "properties": {
-        "name": "Senineramit",
-        "name_th": "เสนีรามิต",
-        "line": "BTS_Sukhumvit",
-        "system": "BTS",
-        "color": "#00A651",
-        "interchange": []
-      },
       "geometry": {
         "type": "Point",
-        "coordinates": [100.54510, 13.83596]
-      }
-    },
-    {
-      "type": "Feature",
+        "coordinates": [
+          100.54465208664872,
+          13.779761566197106
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_N5",
         "name": "Ari",
         "name_th": "อารีย์",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "N5",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.55045, 13.83162]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.54212320775473,
+          13.77269426954926
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_N4",
         "name": "Sanam Pao",
         "name_th": "สนามเป้า",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "N4",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.55579, 13.82727]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53706650440847,
+          13.762817075129922
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_N3",
         "name": "Victory Monument",
         "name_th": "อนุสาวรีย์ชัยสมรภูมิ",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "N3",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.56114, 13.82293]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53490583065052,
+          13.756731082468944
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_N2",
         "name": "Phaya Thai",
         "name_th": "พญาไท",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "N2",
         "color": "#00A651",
-        "interchange": ["ARL_Express"]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.56649, 13.81858]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53157975175775,
+          13.75211019473593
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_N1",
         "name": "Ratchathewi",
         "name_th": "ราชเทวี",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "N1",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.57184, 13.81424]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53412176760907,
+          13.745631206941237
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_CEN",
         "name": "Siam",
         "name_th": "สยาม",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "CEN",
         "color": "#00A651",
-        "interchange": ["BTS_Silom"]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.53445, 13.84465]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.54306943893606,
+          13.744128761896096
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E1",
         "name": "Chit Lom",
         "name_th": "ชิดลม",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E1",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.58253, 13.80555]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5489675373029,
+          13.743115562806835
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E2",
         "name": "Phloen Chit",
         "name_th": "เพลินจิต",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E2",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.58788, 13.80120]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.55541717960523,
+          13.740513522059683
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E3",
         "name": "Nana",
-        "name_th": "นานา",
-        "line": "BTS_Sukhumvit",
+        "name_th": " นานา",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E3",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.59323, 13.79686]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56034320202288,
+          13.737127774038411
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E4",
         "name": "Asok",
         "name_th": "อโศก",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E4",
         "color": "#00A651",
-        "interchange": ["MRT_Blue"]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.59857, 13.79251]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56970230260629,
+          13.73051479459086
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E5",
         "name": "Phrom Phong",
         "name_th": "พร้อมพงษ์",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E5",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.60392, 13.78817]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57841671238606,
+          13.724336997978883
+        ]
+      },
       "properties": {
-        "name": "Thong Lo",
+        "id": "bts_sukhumvit_E6",
+        "name": "Thong Lor",
         "name_th": "ทองหล่อ",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E6",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.60927, 13.78382]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.58510116538969,
+          13.719622168662951
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E7",
         "name": "Ekkamai",
         "name_th": "เอกมัย",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E7",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.61462, 13.77948]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59124721274499,
+          13.715144239110778
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E8",
         "name": "Phra Khanong",
         "name_th": "พระโขนง",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E8",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.61996, 13.77513]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60104381363843,
+          13.705774167216449
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E9",
         "name": "On Nut",
         "name_th": "อ่อนนุช",
-        "line": "BTS_Sukhumvit",
+        "line": "bts_sukhumvit",
         "system": "BTS",
+        "code": "E9",
         "color": "#00A651",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.62531, 13.77079]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60532658046428,
+          13.696793698279425
+        ]
+      },
       "properties": {
+        "id": "bts_sukhumvit_E10",
+        "name": "Bang Chak",
+        "name_th": "บางจาก",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E10",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60897026792699,
+          13.68933302791654
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E11",
+        "name": "Punnawithi",
+        "name_th": "ปุณณวิถี",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E11",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60948531061717,
+          13.68009443335647
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E12",
+        "name": "Udom Suk",
+        "name_th": "อุดมสุข ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E12",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60468368412347,
+          13.66814811046851
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E13",
+        "name": "Bang Na",
+        "name_th": "บางนา",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E13",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60181979377562,
+          13.661499363169666
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E14",
+        "name": "Bearing",
+        "name_th": "แบริ่ง",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E14",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59560310928057,
+          13.646367805595917
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E15",
+        "name": "Samrong",
+        "name_th": "สำโรง",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E15",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59201053996505,
+          13.637309275223448
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E16",
+        "name": "Pu Chao",
+        "name_th": "ปู่เจ้า",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E16",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59010876834142,
+          13.621489499007824
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E17",
+        "name": "Chang Erawan",
+        "name_th": "ช้างเอราวัณ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E17",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59480822611886,
+          13.608649965752601
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E18",
+        "name": "Royal Thai Naval Academy",
+        "name_th": "โรงเรียนนายเรือ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E18",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59711389630044,
+          13.602250579212273
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E19",
+        "name": "Pak Nam",
+        "name_th": "ปากน้ำ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E19",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60890284933926,
+          13.592133149787124
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E20",
+        "name": "Srinagarindra",
+        "name_th": "ศรีนครินทร์",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E20",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.6080270930437,
+          13.584389412740983
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E21",
+        "name": "Phraek Sa",
+        "name_th": "แพรกษา",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E21",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60544363714762,
+          13.578183881851531
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E22",
+        "name": "Sai Luat",
+        "name_th": "สายลวด ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E22",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60769964319726,
+          13.568190565513703
+        ]
+      },
+      "properties": {
+        "id": "bts_sukhumvit_E23",
+        "name": "Kheha ",
+        "name_th": "เคหะฯ",
+        "line": "bts_sukhumvit",
+        "system": "BTS",
+        "code": "E23",
+        "color": "#00A651",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52906734650057,
+          13.746550749511648
+        ]
+      },
+      "properties": {
+        "id": "bts_silom_W1",
         "name": "National Stadium",
         "name_th": "สนามกีฬาแห่งชาติ",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "W1",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.53110, 13.84100]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53328400151979,
+          13.745316113886009
+        ]
+      },
       "properties": {
+        "id": "bts_silom_CEN",
+        "name": "Siam",
+        "name_th": "สยาม ",
+        "line": "bts_silom",
+        "system": "BTS",
+        "code": "CEN",
+        "color": "#004B87",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5394067488864,
+          13.739434552621617
+        ]
+      },
+      "properties": {
+        "id": "bts_silom_S1",
         "name": "Ratchadamri",
         "name_th": "ราชดำริ",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S1",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.52775, 13.83735]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53415050526918,
+          13.728487073416662
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S2",
         "name": "Sala Daeng",
         "name_th": "ศาลาแดง",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S2",
         "color": "#004B87",
-        "interchange": ["MRT_Blue"]
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.52440, 13.83370]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.529449815678,
+          13.723771586019732
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S3",
         "name": "Chong Nonsi",
         "name_th": "ช่องนนทรี",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S3",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.52105, 13.83005]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5269293420826,
+          13.720905443474527
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S4",
+        "name": "Saint Louis",
+        "name_th": "เซนต์หลุยส์",
+        "line": "bts_silom",
+        "system": "BTS",
+        "code": "S4",
+        "color": "#004B87",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52151898908036,
+          13.719330013738784
+        ]
+      },
+      "properties": {
+        "id": "bts_silom_S5",
         "name": "Surasak",
         "name_th": "สุรศักดิ์",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S5",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.51770, 13.82640]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51410382779217,
+          13.71872771512957
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S6",
         "name": "Saphan Taksin",
         "name_th": "สะพานตากสิน",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S6",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.51435, 13.82275]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50274520119427,
+          13.720871505240355
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S7",
         "name": "Krung Thon Buri",
         "name_th": "กรุงธนบุรี",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S7",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.51100, 13.81910]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.49521761627929,
+          13.721042195645229
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S8",
         "name": "Wongwian Yai",
         "name_th": "วงเวียนใหญ่",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S8",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.50765, 13.81545]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.4857936140052,
+          13.719530853749854
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S9",
         "name": "Pho Nimit",
-        "name_th": "โพธิ์นิมิต",
-        "line": "BTS_Silom",
+        "name_th": "โพธิ์นิมิตร",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S9",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.50430, 13.81180]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.47686042485086,
+          13.714584771485669
+        ]
+      },
       "properties": {
-        "name": "Talad Phlu",
+        "id": "bts_silom_S10",
+        "name": "Talat Phlu",
         "name_th": "ตลาดพลู",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S10",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.50095, 13.80815]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.46881663510959,
+          13.713116069966814
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S11",
         "name": "Wutthakat",
         "name_th": "วุฒากาศ",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S11",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.49760, 13.80450]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.45795057658825,
+          13.720119080523132
+        ]
+      },
       "properties": {
+        "id": "bts_silom_S12",
         "name": "Bang Wa",
         "name_th": "บางหว้า",
-        "line": "BTS_Silom",
+        "line": "bts_silom",
         "system": "BTS",
+        "code": "S12",
         "color": "#004B87",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.49425, 13.80085]
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50300207202618,
+          13.72122268630492
+        ]
+      },
       "properties": {
-        "name": "Wat Mangkon",
-        "name_th": "วัดมังกร",
-        "line": "BTS_Gold",
+        "id": "bts_gold_G1",
+        "name": "Krung Thon Buri (Gold Line)",
+        "name_th": "กรุงธนบุรี",
+        "line": "bts_gold",
         "system": "BTS",
-        "color": "#FFD700",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.58450, 13.80420]
+        "code": "G1",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50900778962931,
+          13.726502481628835
+        ]
+      },
       "properties": {
-        "name": "Saphan Phut",
-        "name_th": "สะพานพุทธ",
-        "line": "BTS_Gold",
+        "id": "bts_gold_G2",
+        "name": "Charoen Nakhon ",
+        "name_th": "เจริญนคร",
+        "line": "bts_gold",
         "system": "BTS",
-        "color": "#FFD700",
-        "interchange": []
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [100.58647, 13.80285]
+        "code": "G2",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
       }
     },
     {
       "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50764196143528,
+          13.730399196697114
+        ]
+      },
       "properties": {
+        "id": "bts_gold_G3",
         "name": "Khlong San",
         "name_th": "คลองสาน",
-        "line": "BTS_Gold",
+        "line": "bts_gold",
         "system": "BTS",
-        "color": "#FFD700",
-        "interchange": []
-      },
+        "code": "G3",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [100.58844, 13.80150]
+        "coordinates": [
+          100.57501496188691,
+          13.806524129867443
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL01",
+        "name": "Lat Phrao",
+        "name_th": "ลาดพร้าว",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL01",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.58423632260455,
+          13.80021882507833
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL02",
+        "name": "Phawana",
+        "name_th": "ภาวนา ",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL02",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59440457672443,
+          13.794715649000223
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL03",
+        "name": "Chok Chai 4",
+        "name_th": "โชคชัย 4",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL03",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60712045934814,
+          13.787320418537327
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL04",
+        "name": "Lat Phrao 71",
+        "name_th": "ลาดพร้าว 71",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL04",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.61372626178456,
+          13.78374362856119
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL05",
+        "name": "Lat Phrao 83",
+        "name_th": "ลาดพร้าว 83",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL05",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.62367330082044,
+          13.77812795363681
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL06",
+        "name": "Mahat Thai",
+        "name_th": "มหาดไทย",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL06",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.63036508152594,
+          13.77434601083015
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL07",
+        "name": "Lat Phrao 101",
+        "name_th": "ลาดพร้าว 101",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL07",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.63981270083897,
+          13.769115885288995
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL08",
+        "name": "Bang Kapi",
+        "name_th": "บางกะปิ",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL08",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64556854039715,
+          13.76179126921457
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL09",
+        "name": "Yaek Lam Sali",
+        "name_th": "แยกลำสาลี",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL09",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64493856609896,
+          13.751069717342837
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL10",
+        "name": "Si Kritha",
+        "name_th": "ศรีกรีฑา",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL10",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64123792707505,
+          13.736478246018134
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL11",
+        "name": "Hua Mak",
+        "name_th": "หัวหมาก",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL11",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64174070912613,
+          13.725633210906127
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL12",
+        "name": "Kalantan",
+        "name_th": "กลันตัน",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL12",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64375203161536,
+          13.712829116829793
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL13",
+        "name": "Si Nut",
+        "name_th": "ศรีนุช ",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL13",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.6465676869668,
+          13.700647584335375
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL14",
+        "name": "Srinagarindra 38",
+        "name_th": "ศรีนครินทร์ 38",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL14",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64713451068162,
+          13.690960515292852
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL15",
+        "name": "Suan Luang Rama IX",
+        "name_th": "สวนหลวง ร.9",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL15",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64608855467252,
+          13.67785619187393
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL16",
+        "name": "Si Udom",
+        "name_th": "ศรีอุดม",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL16",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64436092883253,
+          13.66638717960935
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL17",
+        "name": "Si Lam",
+        "name_th": "ศรีเอี่ยม",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL17",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64235192304727,
+          13.656175436563844
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL18",
+        "name": "Si La Salle",
+        "name_th": "ศรีลาซาล",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL18",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.63689799760827,
+          13.644787457924865
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL19",
+        "name": "Si Bearing",
+        "name_th": "ศรีแบริ่ง",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL19",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.62944303661743,
+          13.631923852635504
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL20",
+        "name": "Si Dan",
+        "name_th": "ศรีด่าน",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL20",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.62644739390994,
+          13.627860303734858
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL21",
+        "name": "Si Thepha",
+        "name_th": "ศรีเทพา",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL21",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60869012609963,
+          13.637495436519727
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL22",
+        "name": "Thipphawan",
+        "name_th": "ทิพวัล",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL22",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5964703199919,
+          13.645152573896215
+        ]
+      },
+      "properties": {
+        "id": "mrt_yellow_YL23",
+        "name": "Samrong",
+        "name_th": "สำโรง ",
+        "line": "mrt_yellow",
+        "system": "MRT",
+        "code": "YL23",
+        "color": "#FFD320",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51808822081249,
+          13.859981377098004
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK01",
+        "name": "Nonthaburi Civic Center",
+        "name_th": "ศูนย์ราชการนนทบุรี",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK01",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52092721454089,
+          13.863348731354323
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK02",
+        "name": "Khae Rai",
+        "name_th": "แคราย",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK02",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51643929466523,
+          13.875099858677423
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK03",
+        "name": "Sanambin Nam",
+        "name_th": "สนามบินน้ำ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK03",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51055764314847,
+          13.890046601651603
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK04",
+        "name": "Samakkhi",
+        "name_th": "สามัคคี",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK04",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50703019727511,
+          13.898935991745624
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK05",
+        "name": "Royal Irrigation Department",
+        "name_th": "กรมชลประทาน",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK05",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50534239025903,
+          13.906617898877647
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK06",
+        "name": "Yaek Pak Kret",
+        "name_th": "แยกปากเกร็ด",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK06",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51570423336604,
+          13.906749075433808
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK07",
+        "name": "Pak Kret Bypass",
+        "name_th": "เลี่ยงเมืองปากเกร็ด",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK07",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52923740196744,
+          13.904605027489042
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK08",
+        "name": "Chaeng Wattana-Pak Kret 28",
+        "name_th": "แจ้งวัฒนะ-ปากเกร็ด 28",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK08",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53997023701497,
+          13.90095959345877
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK09",
+        "name": "Si Rat",
+        "name_th": "ศรีรัช",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK09",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5483595519025,
+          13.897810705170656
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK10",
+        "name": "Muang Thong Thani",
+        "name_th": "เมืองทองธานี",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK10",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56041478662522,
+          13.893501393452746
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK11",
+        "name": "Chaeng Watthana 14",
+        "name_th": "แจ้งวัฒนะ 14",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK11",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56733934462675,
+          13.89093116557878
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK12",
+        "name": "Governmet Complex",
+        "name_th": "ศูนย์ราชการเฉลิมพระเกียรติ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK12",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5757445966984,
+          13.887713048995762
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK13",
+        "name": "National Telecom",
+        "name_th": "โทรคมนาคมแห่งชาติ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK13",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.58259052120043,
+          13.884195497874552
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK14",
+        "name": "Lak Si",
+        "name_th": "หลักสี่ ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK14",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.58955958882535,
+          13.88004219121738
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK15",
+        "name": "Rajabhat Phranakhon",
+        "name_th": "ราชภัฏพระนคร",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK15",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.59728338862084,
+          13.874814105509168
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK16",
+        "name": "Wat Phra Sri Mahathat",
+        "name_th": "วัดพระศรีมหาธาตุ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK16",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.60278859112213,
+          13.8710896425835
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK17",
+        "name": "Ram Inthra 3",
+        "name_th": "รามอินทรา 3",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK17",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.61788210102064,
+          13.86308239134644
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK18",
+        "name": "Lat Pla Khao",
+        "name_th": "ลาดปลาเค้า",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK18",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.62621618572825,
+          13.8584572585595
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK19",
+        "name": "Ram Inthra Kor Mor 4",
+        "name_th": "รามอินทรา กม.4",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK19",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.63221862243245,
+          13.855269191720884
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK20",
+        "name": "Maiyalap",
+        "name_th": "มัยลาภ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK20",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.64159954656326,
+          13.850306329888179
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK21",
+        "name": "Vacharaphol",
+        "name_th": "วัชรพล",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK21",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.65028777067822,
+          13.845488452606354
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK22",
+        "name": "Ram Inthra Kor Mor 6",
+        "name_th": "รามอินทรา กม.6",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK22",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.65907340177208,
+          13.840643961715454
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK23",
+        "name": "Khu Bon",
+        "name_th": "คู้บอน",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK23",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.66748449017555,
+          13.833865541996156
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK24",
+        "name": "Ram Inthra Kor Mor 9",
+        "name_th": "รามอินทรา กม.9",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK24",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.67704985561242,
+          13.824841842981845
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK25",
+        "name": "Outer Ring Road-Ram Inthra",
+        "name_th": "วงแหวนรามอินทรา ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK25",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.68555203545382,
+          13.816862322162661
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK26",
+        "name": "Nopparat",
+        "name_th": "นพรัตน์",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK26",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.70338593680222,
+          13.812912863587508
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK27",
+        "name": "Bang Chan",
+        "name_th": "บางชัน",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK27",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.71322378136603,
+          13.812682088835919
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK28",
+        "name": "Setthabutbamphen",
+        "name_th": "เศรษฐบุตรบำเพ็ญ",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK28",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.72566233996656,
+          13.812674158465025
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK29",
+        "name": "Min Buri Market",
+        "name_th": "ตลาดมีนบุรี",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK29",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.73251529175671,
+          13.809164833613147
+        ]
+      },
+      "properties": {
+        "id": "mrt_pink_PK30",
+        "name": "Min Buri",
+        "name_th": "มีนบุรี",
+        "line": "mrt_pink",
+        "system": "MRT",
+        "code": "PK30",
+        "color": "#E91E63",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.47415978223759,
+          13.729664962132594
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL01",
+        "name": "Tha Phra",
+        "name_th": "ท่าพระ",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL01",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.47076700517724,
+          13.739890804166683
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL02",
+        "name": "Charan 13",
+        "name_th": "จรัญฯ 13",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL02",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.46923315893436,
+          13.755194245833342
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL03",
+        "name": "Fai Chai",
+        "name_th": "ไฟฉาย",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL03",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.47321306465354,
+          13.763258134472723
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL04",
+        "name": "Bang Khun Non",
+        "name_th": "บางขุนนนท์",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL04",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.48525125543114,
+          13.777466626040958
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL05",
+        "name": "Bang Yi Khan",
+        "name_th": "บางยี่ขัน",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL05",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.4934815778391,
+          13.784214373447556
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL06",
+        "name": "Sirindhorn",
+        "name_th": "สิรินธร",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL06",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50503295515605,
+          13.792488230905978
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL07",
+        "name": "Bang Phlat",
+        "name_th": "บางพลัด",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL07",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50968426496702,
+          13.798910244737344
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL08",
+        "name": "Bang O",
+        "name_th": "บางอ้อ",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL08",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52104487226538,
+          13.806410192826263
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL09",
+        "name": "Bang Pho",
+        "name_th": "บางโพ",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL09",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53076287111456,
+          13.806144721910051
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL10",
+        "name": "Tao Poon",
+        "name_th": "เตาปูน",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL10",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53918369197004,
+          13.803095919866747
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL11",
+        "name": "Bang Sue",
+        "name_th": "บางซื่อ",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL11",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.54757421617025,
+          13.7980926835544
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL12",
+        "name": "Kamphaeng Phet",
+        "name_th": "กำแพงเพชร",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL12",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.55350668006174,
+          13.802928124350993
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL13",
+        "name": "Chatuchak Park",
+        "name_th": "สวนจตุจักร",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL13",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56015727046898,
+          13.814291102257265
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL14",
+        "name": "Phahon Yothin",
+        "name_th": "พหลโยธิน",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL14",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57365600160914,
+          13.806137991802899
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL15",
+        "name": "Lat Phrao",
+        "name_th": "ลาดพร้าว",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL15",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57460495141301,
+          13.799337942129371
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL16",
+        "name": "Ratchadaphisek",
+        "name_th": "รัชดาภิเษก",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL16",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57417962986582,
+          13.789865665003001
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL17",
+        "name": "Sutthisan",
+        "name_th": "สุทธิสาร",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL17",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.57364764097595,
+          13.778568895128968
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL18",
+        "name": "Huai Khwang",
+        "name_th": "ห้วยขวาง",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL18",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5702606515618,
+          13.766334769848621
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL19",
+        "name": "Thailand Cultural Centre",
+        "name_th": "ศูนย์วัฒนธรรมแห่งประเทศไทย",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL19",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56557776964694,
+          13.758011971862992
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL20",
+        "name": "Phra Ram 9",
+        "name_th": "พระราม 9",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL20",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56311635688029,
+          13.748811491836818
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL21",
+        "name": "Phetchaburi",
+        "name_th": "เพชรบุรี",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL21",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.56145236780627,
+          13.738571221506328
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL22",
+        "name": "Sukhumvit",
+        "name_th": "สุขุมวิท",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL22",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5600914299742,
+          13.7231865453532
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL23",
+        "name": "Queen Sirikit National Convention Centre",
+        "name_th": "ศูนย์การประชุมแห่งชาติสิริกิติ์",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL23",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.55392096578856,
+          13.722377290541274
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL24",
+        "name": "Khlong Toei",
+        "name_th": "คลองเตย",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL24",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.54566602902936,
+          13.725795501916208
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL25",
+        "name": "Lumphini",
+        "name_th": "ลุมพินี",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL25",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53655270325453,
+          13.729321697850235
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL26",
+        "name": "Si Lom",
+        "name_th": "สีลม",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL26",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52998980809384,
+          13.732389158678385
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL27",
+        "name": "Sam Yan",
+        "name_th": "สามย่าน",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL27",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5171524256254,
+          13.737923873027215
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL28",
+        "name": "Hua Lamphong",
+        "name_th": "หัวลำโพง",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL28",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51022554382735,
+          13.742114623089961
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL29",
+        "name": "Wat Mangkon",
+        "name_th": "วัดมังกร",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL29",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5022323306348,
+          13.74724515511964
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL30",
+        "name": "Sam Yot",
+        "name_th": "สามยอด",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL30",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.49466069604686,
+          13.744039777475894
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL31",
+        "name": "Sanam Chai",
+        "name_th": "สนามไชย",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL31",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.48528762149162,
+          13.73834333785185
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL32",
+        "name": "Itsaraphap",
+        "name_th": "อิสรภาพ",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL32",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.46519558894909,
+          13.724834277537775
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL33",
+        "name": "Bang Phai",
+        "name_th": "บางไผ่",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL33",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.45772988965818,
+          13.720714984083209
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL34",
+        "name": "Bang Wa",
+        "name_th": "บางหว้า",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL34",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.44559650067829,
+          13.715614690910302
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL35",
+        "name": "Phetkasem 48",
+        "name_th": "เพชรเกษม 48",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL35",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.43413528465767,
+          13.713023522229909
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL36",
+        "name": "Phasi Charoen",
+        "name_th": "ภาษีเจริญ",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL36",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.41001492630446,
+          13.711035880986977
+        ]
+      },
+      "properties": {
+        "id": "mrt_blue_BL37",
+        "name": "Lak Song",
+        "name_th": "หลักสอง",
+        "line": "mrt_blue",
+        "system": "MRT",
+        "code": "BL37",
+        "color": "#0047AB",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.40828055562825,
+          13.8924236281136
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP01",
+        "name": "Khlong Bang Phai",
+        "name_th": "คลองบางไผ่",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP01",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.40921160734524,
+          13.881015384130825
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP02",
+        "name": "Talad Bang Yai",
+        "name_th": "ตลาดบางใหญ่",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP02",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.41943478694294,
+          13.874747246652277
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP03",
+        "name": "Sam Yaek Bang Yai",
+        "name_th": "สามแยกบางใหญ่\t",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP03",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.43388946517699,
+          13.875896064489469
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP04",
+        "name": "Bang Phlu",
+        "name_th": "บางพลู",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP04",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.44492354340382,
+          13.876885117934027
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP05",
+        "name": "Bang Rak Yai",
+        "name_th": "บางรักใหญ่",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP05",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.45620877407023,
+          13.874745562717116
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP06",
+        "name": "Bang Rak Noi Tha It",
+        "name_th": "บางรักน้อย-ท่าอิฐ",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP06",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.4666075344131,
+          13.870686082658473
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP07",
+        "name": "Sai Ma",
+        "name_th": "ไทรม้า",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP07",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.48036896710784,
+          13.870435019692664
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP08",
+        "name": "Phra Nang Klao Bridge",
+        "name_th": "สะพานพระนั่งเกล้า",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP08",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.48038413997263,
+          13.870457115335338
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP09",
+        "name": "Yaek Nonthaburi 1",
+        "name_th": "แยกนนทบุรี 1",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP09",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.50442622808224,
+          13.861803072653277
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP10",
+        "name": "Bang Krasor",
+        "name_th": "บางกระสอ",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP10",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51326060810499,
+          13.860353794068935
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP11",
+        "name": "Nonthaburi Civic Center",
+        "name_th": "ศูนย์ราชการนนทบุรี",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP11",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51470720275853,
+          13.848685962152379
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP12",
+        "name": "Ministry of Public Health",
+        "name_th": "กระทรวงสาธารณสุข",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP12",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.51484453328703,
+          13.839702589922078
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP13",
+        "name": "Yaek Tiwanon",
+        "name_th": "แยกติวานนท์",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP13",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.52649380763535,
+          13.829887714634216
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP14",
+        "name": "Wong Sawang",
+        "name_th": "วงศ์สว่าง",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP14",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53252619094773,
+          13.820313916298973
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP15",
+        "name": "Bang Son",
+        "name_th": "บางซ่อน",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP15",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.53081908699767,
+          13.806990288303007
+        ]
+      },
+      "properties": {
+        "id": "mrt_purple_PP16",
+        "name": "Tao Poon",
+        "name_th": "เตาปูน",
+        "line": "mrt_purple",
+        "system": "MRT",
+        "code": "PP16",
+        "color": "#663399",
+        "is_interchange": false,
+        "interchange_lines": []
       }
     }
   ]
