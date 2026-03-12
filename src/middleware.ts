@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Middleware is currently a placeholder for auth or other future needs.
-  // We've moved away from ID-based redirect pages in favor of direct slug routing.
   return NextResponse.next();
 }
 
