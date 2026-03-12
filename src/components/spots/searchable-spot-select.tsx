@@ -71,7 +71,7 @@ export default function SearchableSpotSelect({
             }}
             onFocus={() => setIsOpen(true)}
             placeholder={placeholder}
-            className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none pr-10"
+            className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none pr-10"
           />
           {selectedSpot && (
             <button

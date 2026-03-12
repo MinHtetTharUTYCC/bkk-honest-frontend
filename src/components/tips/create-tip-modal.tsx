@@ -113,7 +113,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="E.g. Best time for photos, Hidden menu item..."
-                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-medium text-foreground placeholder:text-white/30 focus:ring-2 focus:ring-amber-400/50 transition-all outline-none focus:border-amber-400/50"
+                            className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm font-medium text-foreground placeholder:text-white/30 focus:ring-2 focus:ring-amber-400/50 transition-all outline-none focus:border-amber-400"
                         />
                     </div>
 

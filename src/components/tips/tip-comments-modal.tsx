@@ -138,7 +138,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts..."
-                    className="w-full bg-black/20 border border-border rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400/50 transition-all placeholder:text-white/30"
+                    className="w-full bg-black/20 border border-border rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30"
                   />
                   <button 
                     type="submit"
@@ -199,7 +199,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                                type="text" 
                                value={editContent}
                                onChange={(e) => setEditContent(e.target.value)}
-                               className="w-full bg-black/40 border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400/50"
+                               className="w-full bg-black/40 border border-border rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
                              />
                              <div className="flex gap-2 justify-end mt-1">
                                <button onClick={() => setEditingCommentId(null)} className="text-xs px-2 py-1 font-semibold text-white/50 hover:text-white transition-colors">Cancel</button>

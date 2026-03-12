@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Heart, MessageSquare, Loader2, User } from 'lucide-react';
+import { MessageSquare, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LikeButton } from '@/components/ui/like-button';
 import { TipActionsMenu } from './tip-actions-menu';
 
 interface TipCardProps {
@@ -118,23 +119,16 @@ export function TipCard({
           <span>{tip._count?.comments || 0}</span>
         </button>
 
-        <button
-          onClick={() => onVoteClick(tip)}
+        <LikeButton
+          count={tip._count?.votes || 0}
+          isVoted={tip.hasVoted}
+          onVote={() => onVoteClick(tip)}
+          isPending={isVotePending || isDeleting}
           disabled={isDeleting}
-          className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
-            tip.hasVoted
-              ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-              : 'bg-white/8 text-white/70 hover:bg-white/12'
-          )}
+          variant="default"
+          size="md"
           title={tip.hasVoted ? 'Unlike this tip' : 'Like this tip'}
-        >
-          <Heart
-            size={16}
-            fill={tip.hasVoted ? 'currentColor' : 'none'}
-          />
-          <span>{tip._count?.votes || 0}</span>
-        </button>
+        />
       </div>
 
       {/* Mobile Actions - Vertical Layout (Below Content) */}
@@ -148,23 +142,19 @@ export function TipCard({
           <span>{tip._count?.comments || 0}</span>
         </button>
 
-        <button
-          onClick={() => onVoteClick(tip)}
-          disabled={isDeleting}
-          className={cn(
-            'flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-lg text-xs font-medium transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
-            tip.hasVoted
-              ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-              : 'bg-white/8 text-white/70 hover:bg-white/12'
-          )}
-          title={tip.hasVoted ? 'Unlike this tip' : 'Like this tip'}
-        >
-          <Heart
-            size={14}
-            fill={tip.hasVoted ? 'currentColor' : 'none'}
+        <div className="flex-1">
+          <LikeButton
+            count={tip._count?.votes || 0}
+            isVoted={tip.hasVoted}
+            onVote={() => onVoteClick(tip)}
+            isPending={isVotePending || isDeleting}
+            disabled={isDeleting}
+            variant="default"
+            size="sm"
+            className="w-full justify-center"
+            title={tip.hasVoted ? 'Unlike this tip' : 'Like this tip'}
           />
-          <span>{tip._count?.votes || 0}</span>
-        </button>
+        </div>
       </div>
     </div>
   );

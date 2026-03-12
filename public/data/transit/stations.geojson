@@ -1,0 +1,500 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Mo Chit",
+        "name_th": "หมอชิต",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.53445, 13.84465]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Saphan Phut",
+        "name_th": "สะพานพุทธ",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.53975, 13.84031]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Senineramit",
+        "name_th": "เสนีรามิต",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.54510, 13.83596]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ari",
+        "name_th": "อารีย์",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.55045, 13.83162]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sanam Pao",
+        "name_th": "สนามเป้า",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.55579, 13.82727]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Victory Monument",
+        "name_th": "อนุสาวรีย์ชัยสมรภูมิ",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.56114, 13.82293]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Phaya Thai",
+        "name_th": "พญาไท",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": ["ARL_Express"]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.56649, 13.81858]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ratchathewi",
+        "name_th": "ราชเทวี",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.57184, 13.81424]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Siam",
+        "name_th": "สยาม",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": ["BTS_Silom"]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.53445, 13.84465]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chit Lom",
+        "name_th": "ชิดลม",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.58253, 13.80555]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Phloen Chit",
+        "name_th": "เพลินจิต",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.58788, 13.80120]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Nana",
+        "name_th": "นานา",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.59323, 13.79686]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Asok",
+        "name_th": "อโศก",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": ["MRT_Blue"]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.59857, 13.79251]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Phrom Phong",
+        "name_th": "พร้อมพงษ์",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.60392, 13.78817]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Thong Lo",
+        "name_th": "ทองหล่อ",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.60927, 13.78382]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ekkamai",
+        "name_th": "เอกมัย",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.61462, 13.77948]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Phra Khanong",
+        "name_th": "พระโขนง",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.61996, 13.77513]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "On Nut",
+        "name_th": "อ่อนนุช",
+        "line": "BTS_Sukhumvit",
+        "system": "BTS",
+        "color": "#00A651",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.62531, 13.77079]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "National Stadium",
+        "name_th": "สนามกีฬาแห่งชาติ",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.53110, 13.84100]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ratchadamri",
+        "name_th": "ราชดำริ",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.52775, 13.83735]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sala Daeng",
+        "name_th": "ศาลาแดง",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": ["MRT_Blue"]
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.52440, 13.83370]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Chong Nonsi",
+        "name_th": "ช่องนนทรี",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.52105, 13.83005]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Surasak",
+        "name_th": "สุรศักดิ์",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.51770, 13.82640]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Saphan Taksin",
+        "name_th": "สะพานตากสิน",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.51435, 13.82275]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Krung Thon Buri",
+        "name_th": "กรุงธนบุรี",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.51100, 13.81910]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wongwian Yai",
+        "name_th": "วงเวียนใหญ่",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.50765, 13.81545]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Pho Nimit",
+        "name_th": "โพธิ์นิมิต",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.50430, 13.81180]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Talad Phlu",
+        "name_th": "ตลาดพลู",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.50095, 13.80815]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wutthakat",
+        "name_th": "วุฒากาศ",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.49760, 13.80450]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bang Wa",
+        "name_th": "บางหว้า",
+        "line": "BTS_Silom",
+        "system": "BTS",
+        "color": "#004B87",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.49425, 13.80085]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Wat Mangkon",
+        "name_th": "วัดมังกร",
+        "line": "BTS_Gold",
+        "system": "BTS",
+        "color": "#FFD700",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.58450, 13.80420]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Saphan Phut",
+        "name_th": "สะพานพุทธ",
+        "line": "BTS_Gold",
+        "system": "BTS",
+        "color": "#FFD700",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.58647, 13.80285]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Khlong San",
+        "name_th": "คลองสาน",
+        "line": "BTS_Gold",
+        "system": "BTS",
+        "color": "#FFD700",
+        "interchange": []
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [100.58844, 13.80150]
+      }
+    }
+  ]
+}

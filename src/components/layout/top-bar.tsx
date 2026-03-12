@@ -58,7 +58,7 @@ export default function TopBar() {
                             onChange={(e) => setSearchInput(e.target.value)}
                             onFocus={handleSearchFocus}
                             onKeyDown={handleKeyDown}
-                            className="w-full bg-white/5 h-9 md:h-12 pl-9 pr-4 rounded-xl md:rounded-2xl text-xs md:text-sm font-medium text-foreground placeholder:text-white/30 outline-none border border-white/10 focus:border-amber-400/50 transition-all focus:bg-white/8 focus:shadow-sm cursor-text"
+                            className="w-full bg-white/5 h-9 md:h-12 pl-9 pr-4 rounded-xl md:rounded-2xl text-xs md:text-sm font-medium text-foreground placeholder:text-white/30 outline-none border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all focus:bg-white/8 focus:shadow-sm cursor-text"
                         />
                     </div>
                 </div>
@@ -77,8 +77,8 @@ export default function TopBar() {
                         href="/login"
                         className="flex items-center gap-2 px-4 py-2 bg-amber-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10"
                     >
-                        <img src="https://www.google.com/favicon.ico" alt="G" className="w-3 h-3 grayscale invert brightness-0" />
-                        Join with Google
+                        <LogIn size={14} />
+                        Join Us
                     </Link>
                 )}
             </div>

@@ -33,7 +33,7 @@ export function SearchInput({
             <input
                 type="text"
                 placeholder={placeholder}
-                className="w-full bg-white/5 border border-white/10 pl-12 pr-6 py-3 rounded-2xl text-sm font-bold tracking-tight text-foreground placeholder:text-white/40 focus:outline-none focus:ring-4 focus:ring-amber-400/10 focus:border-amber-400/50 transition-all shadow-lg shadow-black/20"
+                className="w-full bg-white/5 border border-white/10 pl-12 pr-6 py-3 rounded-2xl text-sm font-bold tracking-tight text-foreground placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400 transition-all shadow-lg shadow-black/20"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onFocus={onFocus}

@@ -5,10 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Map, { Marker, ViewState, MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useNearbySpots, usePopularArea, useCategories } from '@/hooks/use-api';
-import { Loader2, Navigation, Heart, Zap, Info, MapPin, X, Utensils, Music, ShoppingBag, Bed, Coffee, Ticket } from 'lucide-react';
+import { Loader2, Navigation, Heart, Zap, Info, MapPin, X, Utensils, Music, ShoppingBag, Bed, Coffee, Ticket, Train } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSpotUrl } from '@/lib/slug';
+import TransitOverlay from '@/components/map/transit-overlay';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -68,6 +69,7 @@ export default function MapPage() {
   const [nearMeActive, setNearMeActive] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
+  const [transitVisible, setTransitVisible] = useState(false);
   // Skip geolocation if we already have a position from URL (returning user)
   const [hasRequestedLocation, setHasRequestedLocation] = useState(hasUrlPosition);
   // Flag: set when user switches category so next spot load triggers auto-fit if needed
@@ -317,6 +319,9 @@ export default function MapPage() {
             </Marker>
           );
         })}
+        
+        {/* Transit Overlay */}
+        <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />
       </Map>
 
       {/* NEAR ME TOGGLE — top right */}
@@ -332,6 +337,21 @@ export default function MapPage() {
       >
         <Navigation size={14} className={nearMeActive ? "fill-black" : ""} />
         Near Me
+      </button>
+
+      {/* TRANSIT TOGGLE — below Near Me */}
+      <button
+        onClick={() => setTransitVisible(!transitVisible)}
+        title="Transit Lines"
+        className={cn(
+          "absolute top-16 right-4 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all shadow-xl",
+          transitVisible
+            ? "bg-amber-500 text-black shadow-amber-500/40"
+            : "bg-black/60 backdrop-blur-md border border-white/10 text-white/60 hover:text-amber-400 hover:border-amber-400/40"
+        )}
+      >
+        <Train size={14} />
+        Transit
       </button>
 
       {/* TOP FILTER BAR */}

@@ -85,26 +85,19 @@ export default function SpotForm({
   const fetchAddressFromLocation = useCallback(async (lat: number, lng: number) => {
     setIsFetchingAddress(true);
     try {
-      const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-      if (!token) {
-        console.error('Mapbox token not configured');
-        return;
-      }
-
-      const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${token}`
-      );
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/spots/reverse-geocode`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ latitude: lat, longitude: lng }),
+      });
 
       if (!response.ok) {
         throw new Error('Failed to fetch address');
       }
 
       const data = await response.json();
-      if (data.features && data.features.length > 0) {
-        const placeName = data.features[0].place_name;
-        if (placeName) {
-          setAddress(placeName);
-        }
+      if (data.address) {
+        setAddress(data.address);
       }
     } catch (error) {
       console.error('Failed to fetch address:', error);
@@ -114,14 +107,9 @@ export default function SpotForm({
   }, []);
 
   const handleLocationSelect = useCallback(
-    (selectedLocation: { latitude: number; longitude: number; address?: string }) => {
+    (selectedLocation: { latitude: number; longitude: number }) => {
       setLocation(selectedLocation);
-      if (selectedLocation.address) {
-        setAddress(selectedLocation.address);
-      } else {
-        // If no address from LocationPicker, fetch it
-        fetchAddressFromLocation(selectedLocation.latitude, selectedLocation.longitude);
-      }
+      fetchAddressFromLocation(selectedLocation.latitude, selectedLocation.longitude);
     },
     [fetchAddressFromLocation]
   );
@@ -202,8 +190,8 @@ export default function SpotForm({
             "w-full bg-white/5 border rounded-xl px-4 py-3 text-sm text-white placeholder-white/20",
             "focus:outline-none transition-all",
             errors.name
-              ? "border-red-500/50 focus:border-red-500"
-              : "border-white/10 focus:border-amber-400/50"
+              ? "border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+              : "border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
           )}
         />
         {errors.name && <p className="text-xs text-red-400">{errors.name}</p>}
@@ -244,8 +232,8 @@ export default function SpotForm({
               "w-full bg-white/5 border rounded-xl px-4 py-3 text-sm text-white placeholder-white/20",
               "focus:outline-none transition-all",
               errors.address
-                ? "border-red-500/50 focus:border-red-500"
-                : "border-white/10 focus:border-amber-400/50"
+                ? "border-red-500/50 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                : "border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
             )}
           />
           {isFetchingAddress && (

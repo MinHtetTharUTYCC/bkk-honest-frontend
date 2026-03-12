@@ -16,23 +16,55 @@ import LocationPicker from '@/components/spots/location-picker';
 import { Dropdown } from '@/components/ui/dropdown';
 import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin, Upload, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useCity } from '@/components/providers/city-provider';
+import { useAuth } from '@/components/providers/auth-provider';
+import { useEffect } from 'react';
 
 export default function ReportPage() {
+    const { user, loading: authLoading } = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
+    const { selectedCityId, selectedCity } = useCity();
     const [activeTab, setActiveTab] = useState<'price' | 'scam' | 'vibe' | 'spot'>('price');
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!authLoading && !user) {
+            router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
+        }
+    }, [user, authLoading, router, pathname]);
+
     const [submitted, setSubmitted] = useState(false);
+    
+    // Price State
+    const [priceSpotId, setPriceSpotId] = useState('');
+
+    // Scam State
+    const [scamName, setScamName] = useState('');
+    const [scamDescription, setScamDescription] = useState('');
+    const [scamPreventionTip, setScamPreventionTip] = useState('');
+    const [scamCategory, setScamCategory] = useState('');
+    const [scamCity, setScamCity] = useState(selectedCityId || '');
+
+    // Spot State
     const [spotName, setSpotName] = useState('');
     const [spotAddress, setSpotAddress] = useState('');
-    const [spotCity, setSpotCity] = useState('');
+    const [spotCity, setSpotCity] = useState(selectedCityId || '');
     const [spotCategory, setSpotCategory] = useState('');
     const [spotLocation, setSpotLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [spotImageFile, setSpotImageFile] = useState<File | null>(null);
     const [spotImagePreview, setSpotImagePreview] = useState<string>('');
     const [scamImageFile, setScamImageFile] = useState<File | null>(null);
     const [scamImagePreview, setScamImagePreview] = useState<string>('');
-    const router = useRouter();
-    const { selectedCityId, selectedCity } = useCity();
+
+    // Sync cities when selectedCityId changes
+    useEffect(() => {
+        if (selectedCityId) {
+            setSpotCity(selectedCityId);
+            setScamCity(selectedCityId);
+        }
+    }, [selectedCityId]);
 
     // Data for Selects
     const { data: spotsResponse } = useSpots({ cityId: selectedCityId });
@@ -54,29 +86,40 @@ export default function ReportPage() {
 
     const handlePriceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        await createPrice.mutateAsync({
-            spotId: formData.get('spotId') as string,
-            itemName: formData.get('itemName') as string,
-            priceThb: Number(formData.get('priceThb')),
-        });
-        setSubmitted(true);
+        setError(null);
+        if (!priceSpotId) return setError('Please select a spot');
+        
+        try {
+            const formData = new FormData(e.currentTarget);
+            await createPrice.mutateAsync({
+                spotId: priceSpotId,
+                itemName: formData.get('itemName') as string,
+                priceThb: Number(formData.get('priceThb')),
+            });
+            setSubmitted(true);
+        } catch (err: any) {
+            setError(err?.response?.data?.message || 'Failed to publish price report');
+        }
     };
 
     const handleScamSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!selectedCityId) return alert('Please select a city first');
+        setError(null);
+        if (!scamCity) return setError('Please select a city');
 
-        const formData = new FormData(e.currentTarget);
-        await createScam.mutateAsync({
-            scamName: formData.get('scamName') as string,
-            description: formData.get('description') as string,
-            preventionTip: formData.get('preventionTip') as string,
-            cityId: selectedCityId,
-            categoryId: formData.get('categoryId') as string,
-            image: scamImageFile || undefined,
-        });
-        setSubmitted(true);
+        try {
+            await createScam.mutateAsync({
+                scamName,
+                description: scamDescription,
+                preventionTip: scamPreventionTip,
+                cityId: scamCity,
+                categoryId: scamCategory,
+                image: scamImageFile || undefined,
+            });
+            setSubmitted(true);
+        } catch (err: any) {
+            setError(err?.response?.data?.message || 'Failed to publish scam alert');
+        }
     };
 
     const handleScamImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,8 +195,9 @@ export default function ReportPage() {
 
     const handleSpotSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setError(null);
         if (!spotLocation) {
-            alert('Please select a location on the map');
+            setError('Please select a location on the map');
             return;
         }
         
@@ -170,10 +214,21 @@ export default function ReportPage() {
             });
 
             setSubmitted(true);
-        } catch (error) {
-            console.error('Failed to create spot:', error);
+        } catch (err: any) {
+            console.error('Failed to create spot:', err);
+            setError(err?.response?.data?.message || 'Failed to create spot');
         }
     };
+
+    if (authLoading || !user) {
+        return (
+            <div className="space-y-12 animate-pulse">
+                <div className="h-12 w-48 bg-white/5 rounded-xl" />
+                <div className="h-16 bg-white/5 rounded-3xl" />
+                <div className="h-96 bg-white/5 rounded-2xl" />
+            </div>
+        );
+    }
 
     if (submitted) {
         return (
@@ -215,7 +270,10 @@ export default function ReportPage() {
                 {(['price', 'scam', 'vibe', 'spot'] as const).map((tab) => (
                     <button
                         key={tab}
-                        onClick={() => setActiveTab(tab)}
+                        onClick={() => {
+                            setActiveTab(tab);
+                            setError(null);
+                        }}
                         className={cn(
                             'flex-1 min-w-25 py-3.5 rounded-2xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === tab
@@ -247,6 +305,13 @@ export default function ReportPage() {
                 ))}
             </div>
 
+            {error && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                    <AlertCircle size={18} />
+                    {error}
+                </div>
+            )}
+
             <div className="bg-card rounded-2xl p-8 md:p-10 border border-white/8 shadow-2xl shadow-black/30">
                 {activeTab === 'price' && (
                     <form onSubmit={handlePriceSubmit} className="space-y-8">
@@ -255,6 +320,7 @@ export default function ReportPage() {
                             required
                             placeholder="Search spots..."
                             cityId={selectedCityId}
+                            onSelect={(id) => setPriceSpotId(id)}
                         />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -266,7 +332,7 @@ export default function ReportPage() {
                                     name="itemName"
                                     required
                                     placeholder="e.g. Pad Thai"
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
                                 />
                             </div>
                             <div className="space-y-4">
@@ -279,13 +345,13 @@ export default function ReportPage() {
                                     step="0.01"
                                     required
                                     placeholder="0.00"
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
                                 />
                             </div>
                         </div>
 
                         <button
-                            disabled={createPrice.isPending}
+                            disabled={createPrice.isPending || !priceSpotId}
                             className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <Send size={16} />
@@ -301,29 +367,29 @@ export default function ReportPage() {
                                 Scam Name
                             </label>
                             <input
-                                name="scamName"
+                                value={scamName}
+                                onChange={(e) => setScamName(e.target.value)}
                                 required
                                 placeholder="e.g. Broken Meter Taxi"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
                             />
                         </div>
 
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Category
-                            </label>
-                            <select
-                                name="categoryId"
-                                required
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground outline-none appearance-none cursor-pointer"
-                            >
-                                <option value="">Select category...</option>
-                                {categories?.map((c: any) => (
-                                    <option key={c.id} value={c.id}>
-                                        {c.name}
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Dropdown
+                                label="City"
+                                options={cities || []}
+                                value={scamCity}
+                                onChange={setScamCity}
+                                placeholder="Select city..."
+                            />
+                            <Dropdown
+                                label="Category"
+                                options={categories || []}
+                                value={scamCategory}
+                                onChange={setScamCategory}
+                                placeholder="Select category..."
+                            />
                         </div>
 
                         <div className="space-y-4">
@@ -331,11 +397,12 @@ export default function ReportPage() {
                                 Description
                             </label>
                             <textarea
-                                name="description"
+                                value={scamDescription}
+                                onChange={(e) => setScamDescription(e.target.value)}
                                 required
                                 rows={4}
                                 placeholder="What happened? Be specific."
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
+                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
                             />
                         </div>
 
@@ -343,11 +410,13 @@ export default function ReportPage() {
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Prevention Tip
                             </label>
-                            <input
-                                name="preventionTip"
+                            <textarea
+                                value={scamPreventionTip}
+                                onChange={(e) => setScamPreventionTip(e.target.value)}
                                 required
+                                rows={3}
                                 placeholder="How can others avoid this?"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
                             />
                         </div>
 
@@ -401,7 +470,7 @@ export default function ReportPage() {
                         </div>
 
                         <button
-                            disabled={createScam.isPending}
+                            disabled={createScam.isPending || !scamName || !scamDescription || !scamCategory || !scamCity}
                             className="w-full bg-red-500 text-white py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-red-600 transition-all flex items-center justify-center gap-3 shadow-xl shadow-red-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <AlertCircle size={16} />
@@ -429,7 +498,7 @@ export default function ReportPage() {
                                 onChange={(e) => setSpotName(e.target.value)}
                                 required
                                 placeholder="e.g. Jek Pui Curry"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
                             />
                         </div>
 
@@ -437,7 +506,7 @@ export default function ReportPage() {
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Pick Location on Map
                             </label>
-                            <div className="rounded-2xl overflow-hidden h-96 border border-white/10">
+                            <div className="rounded-2xl overflow-hidden h-[500px] border border-white/10">
                                 <LocationPicker
                                     onLocationSelected={(loc) => {
                                         setSpotLocation(loc);
@@ -460,7 +529,7 @@ export default function ReportPage() {
                                 required
                                 placeholder="e.g. 25 Mangkon Rd, Bangkok"
                                 rows={3}
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400/50 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
+                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
                             />
                         </div>
 
@@ -532,7 +601,7 @@ export default function ReportPage() {
 
                         <button
                             type="submit"
-                            disabled={createSpot.isPending || !spotLocation}
+                            disabled={createSpot.isPending || !spotLocation || !spotName || !spotAddress || !spotCategory || !spotCity}
                             className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <MapPin size={16} />

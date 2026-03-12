@@ -21,10 +21,10 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
   const getQueryPredicate = () => {
     if (type === 'image') return (query: any) => (query.queryKey[0] === 'gallery' || query.queryKey[0] === 'gallery-infinite') && (!spotId || query.queryKey[1] === spotId);
     if (type === 'tip') return (query: any) => (query.queryKey[0] === 'tips' || query.queryKey[0] === 'tips-infinite') && (!spotId || query.queryKey[1] === spotId);
-    if (type === 'alert') return (query: any) => query.queryKey[0] === 'scam-alerts' || query.queryKey[0] === 'scam-alerts-infinite';
+    if (type === 'alert') return (query: any) => ['scam-alerts', 'scam-alerts-infinite', 'scam-alert'].includes(query.queryKey[0]?.toString());
     if (type === 'spot') return (query: any) => {
       const key = query.queryKey[0]?.toString();
-      return key === 'spots' || key === 'spots-infinite';
+      return ['spots', 'spots-infinite', 'spot', 'spot-search', 'user-spots-infinite', 'spots-nearby'].includes(key);
     };
     return () => false;
   };
@@ -127,10 +127,15 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
         );
         return { voteId: response.voteId };
       }
-    } catch (error) {
+    } catch (error: any) {
       // Rollback all snapshots on error
       snapshots.forEach(([key, data]) => queryClient.setQueryData(key, data));
-      toast.error('Failed to update vote');
+      
+      if (error?.response?.status === 401) {
+        toast.error('Please join us first to like this!');
+      } else {
+        toast.error('Failed to update vote');
+      }
       return { voteId: item.voteId ?? null };
     }
   };

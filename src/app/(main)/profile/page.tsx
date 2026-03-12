@@ -24,22 +24,28 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useState, useEffect, useMemo, useRef } from "react";
 import api from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { getSpotUrl, getScamAlertUrl } from "@/lib/slug";
-import LoginRequired from "@/components/auth/login-required";
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
   const supabase = createClient();
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
+    }
+  }, [user, authLoading, router, pathname]);
 
   // Tab State maintained via URL
   const activeTab = (searchParams.get("tab") as "scams" | "reports" | "tips" | "spots") || "scams";
@@ -223,17 +229,13 @@ export default function ProfilePage() {
     router.push("/login");
   };
 
-  if (authLoading) {
+  if (authLoading || !user) {
     return (
       <div className="space-y-12 animate-pulse">
         <div className="h-64 bg-white/5 rounded-2xl" />
         <div className="h-96 bg-white/5 rounded-2xl" />
       </div>
     );
-  }
-
-  if (!user) {
-    return <LoginRequired />;
   }
 
   if (profileLoading || (isProfileNotFound && user)) {
@@ -316,7 +318,7 @@ export default function ProfilePage() {
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-lg font-bold text-foreground focus:outline-none focus:border-amber-400/50 focus:ring-4 focus:ring-amber-400/10 transition-all placeholder:text-white/20"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-lg font-bold text-foreground focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all placeholder:text-white/20"
                   placeholder="Enter your name"
                 />
               </div>
@@ -328,7 +330,7 @@ export default function ProfilePage() {
                 <textarea
                   value={editBio}
                   onChange={(e) => setEditBio(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400/50 focus:ring-4 focus:ring-amber-400/10 transition-all placeholder:text-white/20 min-h-[120px] resize-none"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all placeholder:text-white/20 min-h-[120px] resize-none"
                   placeholder="Tell us about yourself..."
                 />
               </div>
@@ -341,7 +343,7 @@ export default function ProfilePage() {
                   type="text"
                   value={editCountry}
                   onChange={(e) => setEditCountry(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400/50 focus:ring-4 focus:ring-amber-400/10 transition-all placeholder:text-white/20"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all placeholder:text-white/20"
                   placeholder="e.g. Thailand, Japan, USA…"
                 />
               </div>

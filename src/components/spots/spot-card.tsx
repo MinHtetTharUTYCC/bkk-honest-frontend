@@ -1,6 +1,6 @@
 'use client';
 
-import { MapPin, Zap, ImageIcon, Heart } from 'lucide-react';
+import { MapPin, Zap, ImageIcon } from 'lucide-react';
 import { components } from '@/types/api';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -8,14 +8,11 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
 import { getSpotUrl } from '@/lib/slug';
+import { LikeButton } from '@/components/ui/like-button';
 
 export default function SpotCard({ spot }: { spot: any }) {
     const { name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
     const { user } = useAuth();
-
-    const [localHasVoted, setLocalHasVoted] = useState(spot.hasVoted ?? false);
-    const [localVoteCount, setLocalVoteCount] = useState(spot._count?.votes ?? 0);
-    const [localVoteId, setLocalVoteId] = useState<string | null>(spot.voteId ?? null);
     const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
     // Format category name
@@ -27,12 +24,8 @@ export default function SpotCard({ spot }: { spot: any }) {
     const handleVote = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        if (!user || votePending) return;
-        const isRemoving = localHasVoted;
-        setLocalHasVoted(!isRemoving);
-        setLocalVoteCount((prev: number) => isRemoving ? prev - 1 : prev + 1);
-        const result = await toggleVote({ id: spot.id, hasVoted: localHasVoted, voteId: localVoteId });
-        setLocalVoteId(result.voteId);
+        if (votePending) return;
+        await toggleVote({ id: spot.id, hasVoted: spot.hasVoted, voteId: spot.voteId });
     };
 
     return (
@@ -68,24 +61,19 @@ export default function SpotCard({ spot }: { spot: any }) {
                 </div>
 
                 {/* Action buttons — bottom-right of image */}
-                <div className="absolute bottom-3 right-3 flex items-center gap-2">
-                    {/* Heart vote button — only for logged-in users */}
-                    {user && (
-                        <button
-                            onClick={handleVote}
-                            disabled={votePending}
-                            className={cn(
-                                'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border text-[9px] font-black uppercase tracking-widest transition-all shadow-lg',
-                                localHasVoted
-                                    ? 'bg-amber-400/90 border-amber-300/30 text-black'
-                                    : 'bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400',
-                            )}
-                            title={localHasVoted ? 'Remove like' : 'Like this spot'}
-                        >
-                            <Heart size={10} fill={localHasVoted ? 'currentColor' : 'none'} />
-                            {localVoteCount > 0 && <span>{localVoteCount}</span>}
-                        </button>
-                    )}
+                <div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-auto">
+                    <LikeButton
+                      count={spot._count?.votes || 0}
+                      isVoted={spot.hasVoted}
+                      onVote={() => handleVote({} as React.MouseEvent)}
+                      isPending={votePending}
+                      disabled={votePending}
+                      variant="overlay"
+                      size="sm"
+                      showCount={true}
+                      className="text-[9px] font-black uppercase tracking-widest gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border shadow-lg bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400"
+                      title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
+                    />
                 </div>
             </div>
 

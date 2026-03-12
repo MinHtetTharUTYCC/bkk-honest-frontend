@@ -27,7 +27,6 @@ export default function CreateVibeForm({
   const handleSubmit = async () => {
     const finalSpotId = selectedSpotId || initialSpotId;
     if (!finalSpotId) {
-      alert('Please select a spot');
       return;
     }
 
@@ -94,14 +93,14 @@ export default function CreateVibeForm({
               placeholder="0"
               value={waitTime}
               onChange={(e) => setWaitTime(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-amber-400/50"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20"
             />
           </div>
 
           {/* Submit Button */}
           <button
             type="button"
-            disabled={isSubmitting}
+            disabled={isSubmitting || (!selectedSpotId && !initialSpotId)}
             onClick={handleSubmit}
             className="w-full bg-amber-500 text-black py-3 rounded-xl text-xs font-semibold tracking-wide hover:bg-amber-400 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >

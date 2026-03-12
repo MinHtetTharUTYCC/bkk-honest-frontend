@@ -5,6 +5,7 @@ import QueryProvider from '@/components/providers/query-provider';
 import { AuthProvider } from '@/components/providers/auth-provider';
 import { CityProvider } from '@/components/providers/city-provider';
 import { createClient } from '@/lib/supabase/server';
+import { Toaster } from 'sonner';
 
 const syne = Syne({
     variable: '--font-display',
@@ -43,6 +44,7 @@ export default async function RootLayout({
                         <CityProvider>{children}</CityProvider>
                     </QueryProvider>
                 </AuthProvider>
+                <Toaster position="top-center" richColors />
             </body>
         </html>
     );

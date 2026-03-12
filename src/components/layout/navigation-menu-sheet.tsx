@@ -69,10 +69,10 @@ export default function NavigationMenuSheet() {
                 className="flex items-center gap-3 px-4 py-4 mb-4 rounded-xl bg-amber-400 text-black shadow-lg shadow-amber-400/10 transition-all active:scale-95"
               >
                 <div className="flex items-center justify-center">
-                  <img src="https://www.google.com/favicon.ico" alt="G" className="w-4 h-4 grayscale invert brightness-0" />
+                  <LogIn size={18} />
                 </div>
                 <span className="text-sm font-black uppercase tracking-wide">
-                  Join with Google
+                  Join Us
                 </span>
               </Link>
             )}

@@ -1,19 +1,21 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useSpots, useCategories } from '@/hooks/use-api';
+import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
 import SpotCard from '@/components/spots/spot-card';
 import { SearchInput } from '@/components/ui/search-input';
-import { Filter, MapPin, Clock, TrendingUp } from 'lucide-react';
+import { Filter, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
 
 export default function DiscoveryPage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const { ref, inView } = useInView();
 
     // Initialize from URL
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
@@ -74,16 +76,22 @@ export default function DiscoveryPage() {
     // @ts-ignore
     const categories = categoriesResponse?.data || categoriesResponse || [];
 
-    const { data: spotsResponse, isLoading } = useSpots({
+    const { data: spotsData, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteSpots({
         cityId: selectedCityId,
         categoryId: selectedCategory,
         search: search,
         sort: sort,
     });
-    // @ts-ignore - API response structure varies during transition
-    const spots = spotsResponse?.data || spotsResponse || [];
+
+    useEffect(() => {
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     if (!isClient) return null;
+
+    const spots = spotsData?.pages.flatMap((page) => page.data) || [];
 
     return (
         <div className="space-y-6 pb-24">
@@ -196,7 +204,22 @@ export default function DiscoveryPage() {
                         </div>
                     ))
                 ) : spots && spots.length > 0 ? (
-                    spots.map((spot: any) => <SpotCard key={spot.id} spot={spot} />)
+                    <>
+                        {spots.map((spot: any) => <SpotCard key={spot.id} spot={spot} />)}
+                        
+                        {/* Load More Trigger */}
+                        <div ref={ref} className="col-span-full py-8 flex justify-center">
+                            {isFetchingNextPage ? (
+                                <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
+                            ) : hasNextPage ? (
+                                <div className="h-1" />
+                            ) : (
+                                <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">
+                                    — End of Discovery —
+                                </p>
+                            )}
+                        </div>
+                    </>
                 ) : (
                     <div className="col-span-full py-40 text-center space-y-6 bg-card rounded-2xl border border-dashed border-white/10 shadow-sm">
                         <div className="w-20 h-20 bg-white/5 rounded-2xl flex items-center justify-center mx-auto text-white/15">

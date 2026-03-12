@@ -18,7 +18,7 @@ import {
     Trash2,
     Send,
     Loader2,
-    Heart,
+
     User,
     Calendar,
     ShieldCheck,
@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Image from 'next/image';
 import ScamEditModal from '@/components/scams/scam-edit-modal';
+import { LikeButton } from '@/components/ui/like-button';
 
 export default function ScamAlertDetailPage() {
     const { citySlug, alertSlug } = useParams() as { citySlug: string; alertSlug: string };
@@ -65,8 +66,6 @@ export default function ScamAlertDetailPage() {
     const comments = commentsResponse?.pages?.flatMap((page) => page.data || (Array.isArray(page) ? page : [])) || [];
     const createCommentMutation = useCreateComment();
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
-    const [localHasVoted, setLocalHasVoted] = useState(alert?.hasVoted || false);
-    const [localVoteCount, setLocalVoteCount] = useState(alert?._count?.votes || 0);
     const [newComment, setNewComment] = useState('');
 
     const updateCommentMutation = useUpdateComment();
@@ -126,16 +125,8 @@ export default function ScamAlertDetailPage() {
     };
 
     const handleVoteToggle = async () => {
-        if (!user || !alert) return;
-        setLocalHasVoted(!localHasVoted);
-        setLocalVoteCount(localHasVoted ? localVoteCount - 1 : localVoteCount + 1);
-
-        try {
-            await toggleVote(alert.id);
-        } catch (err) {
-            setLocalHasVoted(!localHasVoted);
-            setLocalVoteCount(localHasVoted ? localVoteCount + 1 : localVoteCount - 1);
-        }
+        if (!alert) return;
+        await toggleVote(alert);
     };
 
     const handleDeleteAlert = async () => {
@@ -297,22 +288,19 @@ export default function ScamAlertDetailPage() {
                                 </div>
                             </div>
 
-                            {user && (
-                                <button
-                                    onClick={handleVoteToggle}
+                            <div className="min-w-[120px]">
+                                <LikeButton
+                                    count={localAlert._count?.votes || 0}
+                                    isVoted={localAlert.hasVoted}
+                                    onVote={handleVoteToggle}
+                                    isPending={votePending}
                                     disabled={votePending}
-                                    className={cn(
-                                        'flex items-center gap-2 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all border shadow-sm active:scale-95 min-w-[120px] justify-center',
-                                        localHasVoted
-                                            ? 'bg-amber-400/10 border-amber-400/20 text-amber-400'
-                                            : 'bg-white/5 border-white/10 text-white/40 hover:text-amber-400 hover:border-amber-400/20'
-                                    )}
-                                >
-                                    <Heart size={14} fill={localHasVoted ? 'currentColor' : 'none'} />
-                                    <span>{localVoteCount}</span>
-                                    <span className="ml-1">{localHasVoted ? 'Upvoted' : 'Upvote'}</span>
-                                </button>
-                            )}
+                                    variant="default"
+                                    size="sm"
+                                    className="text-[11px] font-black uppercase tracking-widest gap-2 px-6 py-2.5 rounded-xl border shadow-sm w-full justify-center bg-white/5 border-white/10 hover:border-amber-400/20"
+                                    title={localAlert.hasVoted ? 'Remove upvote' : 'Upvote this alert'}
+                                />
+                            </div>
                         </div>
                     </div>
 

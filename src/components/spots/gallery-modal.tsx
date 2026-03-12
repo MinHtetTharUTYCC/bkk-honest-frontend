@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useInfiniteSpotGallery, useUploadSpotImage } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { X, Camera, Loader2, TrendingUp, Calendar, User, Upload, Heart } from 'lucide-react';
+import { X, Camera, Loader2, TrendingUp, Calendar, User, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { LikeButton } from '@/components/ui/like-button';
 
 interface GalleryModalProps {
     spotId: string;
@@ -135,24 +136,17 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                 loading="lazy"
                                             />
                                             <div className="absolute top-4 right-4 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                                                <button
-                                                    onClick={() => toggleVote(img)}
+                                                <LikeButton
+                                                    count={img._count?.votes || 0}
+                                                    isVoted={img.hasVoted}
+                                                    onVote={async () => { await toggleVote(img); }}
+                                                    isPending={votePending}
                                                     disabled={votePending}
-                                                    className={cn(
-                                                        'flex items-center gap-1.5 px-4 py-2 rounded-md text-xs font-semibold transition-all',
-                                                        img.hasVoted
-                                                            ? 'bg-amber-400/90 border-amber-300/30 text-black'
-                                                            : 'text-white/60 hover:text-amber-400 hover:bg-amber-500/10',
-                                                    )}
-                                                >
-                                                    <Heart
-                                                        size={14}
-                                                        fill={
-                                                            img.hasVoted ? 'currentColor' : 'none'
-                                                        }
-                                                    />
-                                                    <span>{img._count?.votes || 0}</span>
-                                                </button>
+                                                    variant="overlay"
+                                                    size="sm"
+                                                    className="text-xs font-semibold gap-1.5 px-4 py-2 rounded-md bg-white/0 hover:bg-white/0"
+                                                    title={img.hasVoted ? 'Unlike this image' : 'Like this image'}
+                                                />
                                             </div>
                                         </div>
 

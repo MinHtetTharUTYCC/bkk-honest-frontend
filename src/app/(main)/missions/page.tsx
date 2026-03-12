@@ -8,11 +8,19 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useCity } from '@/components/providers/city-provider';
 import { getSpotUrl } from '@/lib/slug';
 import { useAuth } from '@/components/providers/auth-provider';
-import LoginRequired from '@/components/auth/login-required';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function MissionsPage() {
     const { user, loading: authLoading } = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
     const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        if (!authLoading && !user) {
+            router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
+        }
+    }, [user, authLoading, router, pathname]);
     const { selectedCity } = useCity();
     const { 
         data: missionsData, 
@@ -80,17 +88,13 @@ export default function MissionsPage() {
     const totalCount = stats?.total || 0;
     const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
-    if (authLoading) {
+    if (authLoading || !user) {
         return (
             <div className="space-y-12 animate-pulse">
                 <div className="h-64 bg-white/5 rounded-2xl" />
                 <div className="h-96 bg-white/5 rounded-2xl" />
             </div>
         );
-    }
-
-    if (!user) {
-        return <LoginRequired />;
     }
 
     return (

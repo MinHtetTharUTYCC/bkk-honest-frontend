@@ -4,9 +4,11 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import Map, { Marker, Source, Layer } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { MapPin, ArrowLeft, Loader2, X, ChevronDown } from 'lucide-react';
+import { MapPin, ArrowLeft, Loader2, X, ChevronDown, Train } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 import ManualLocationModal from './ManualLocationModal';
+import TransitOverlay from '@/components/map/transit-overlay';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 const DEFAULT_CENTER = { lat: 13.7563, lng: 100.5018 };
@@ -55,6 +57,7 @@ export default function NavigatePage() {
   const [showDirections, setShowDirections] = useState(false);
   const [showManualLocation, setShowManualLocation] = useState(false);
   const [permissionError, setPermissionError] = useState<PermissionErrorType | null>(null);
+  const [transitVisible, setTransitVisible] = useState(false);
   const mapRef = useRef<any>(null);
 
   useEffect(() => {
@@ -225,6 +228,9 @@ export default function NavigatePage() {
               />
             </Source>
           )}
+          
+          {/* Transit Overlay */}
+          <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />
         </Map>
       ) : (
         <div className="w-full h-full flex items-center justify-center bg-gray-900">
@@ -254,13 +260,29 @@ export default function NavigatePage() {
             )}
           </div>
 
-          <button
-            onClick={() => router.back()}
-            className="p-2 hover:bg-white/10 rounded-full transition-colors"
-            title="Exit"
-          >
-            <X size={20} className="text-white" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Transit Toggle */}
+            <button
+              onClick={() => setTransitVisible(!transitVisible)}
+              title="Transit Lines"
+              className={cn(
+                "p-2 rounded-full transition-colors",
+                transitVisible
+                  ? "bg-amber-500/20 text-amber-400"
+                  : "hover:bg-white/10 text-white/60 hover:text-amber-400"
+              )}
+            >
+              <Train size={18} />
+            </button>
+            
+            <button
+              onClick={() => router.back()}
+              className="p-2 hover:bg-white/10 rounded-full transition-colors"
+              title="Exit"
+            >
+              <X size={20} className="text-white" />
+            </button>
+          </div>
         </div>
       </div>
 
