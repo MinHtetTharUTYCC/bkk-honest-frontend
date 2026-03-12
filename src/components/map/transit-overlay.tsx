@@ -99,6 +99,21 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
 
   return (
     <>
+      {/* Screen reader context for transit overlay */}
+      <div 
+        className="sr-only" 
+        role="status" 
+        aria-live="polite"
+        aria-label="Transit overlay information"
+      >
+        {shouldShowLines && (
+          <span>
+            Transit lines are now visible on the map. 
+            {shouldShowStations && ' Station names and icons are also displayed.'}
+          </span>
+        )}
+      </div>
+
       {/* Transit Lines - visible at zoom 10+ */}
       {shouldShowLines && (
         <>

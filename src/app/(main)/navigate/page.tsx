@@ -264,9 +264,11 @@ export default function NavigatePage() {
             {/* Transit Toggle */}
             <button
               onClick={() => setTransitVisible(!transitVisible)}
-              title="Transit Lines"
+              title={transitVisible ? "Hide transit lines" : "Show transit lines"}
+              aria-label={transitVisible ? "Hide Bangkok BTS/MRT transit overlay" : "Show Bangkok BTS/MRT transit overlay"}
+              aria-pressed={transitVisible}
               className={cn(
-                "p-2 rounded-full transition-colors",
+                "p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black",
                 transitVisible
                   ? "bg-amber-500/20 text-amber-400"
                   : "hover:bg-white/10 text-white/60 hover:text-amber-400"

@@ -15,7 +15,42 @@ export default function TransitStations({ data }: TransitStationsProps) {
   // Create a unique source ID for this data
   const sourceId = `transit-stations-data-${Math.random().toString(36).substr(2, 9)}`;
 
-  // Create station circle layer
+  // Station icon symbols for different systems
+  const stationIconStyle: LayerProps = {
+    id: `transit-station-icons-${sourceId}`,
+    type: 'symbol',
+    layout: {
+      'icon-image': [
+        'case',
+        ['==', ['get', 'system'], 'BTS'], 'bts-icon',
+        ['==', ['get', 'system'], 'MRT'], 'mrt-icon',
+        ['==', ['get', 'system'], 'ARL'], 'arl-icon',
+        'default-station-icon'
+      ],
+      'icon-size': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        13, 0.3,
+        16, 0.5,
+        20, 0.8
+      ],
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true
+    },
+    paint: {
+      'icon-opacity': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        13, 0.8,
+        14, 1,
+        20, 1
+      ]
+    }
+  };
+
+  // Create station circle layer (fallback when icons aren't available)
   const stationCircleStyle: LayerProps = {
     id: `transit-stations-${sourceId}`,
     type: 'circle',
@@ -23,15 +58,16 @@ export default function TransitStations({ data }: TransitStationsProps) {
       // Use the color from feature properties with fallback
       'circle-color': [
         'case',
-        ['has', 'color'],
-        ['get', 'color'],
+        ['==', ['get', 'system'], 'BTS'], '#00A651',
+        ['==', ['get', 'system'], 'MRT'], '#0047AB', 
+        ['==', ['get', 'system'], 'ARL'], '#FF0000',
         '#FFFFFF'
       ],
       'circle-radius': [
         'interpolate',
         ['linear'],
         ['zoom'],
-        13, 4,   // At zoom 13, radius is 4px
+        13, 5,   // At zoom 13, radius is 5px
         16, 8,   // At zoom 16, radius is 8px
         20, 12   // At zoom 20, radius is 12px
       ],
@@ -65,25 +101,26 @@ export default function TransitStations({ data }: TransitStationsProps) {
         'interpolate',
         ['linear'],
         ['zoom'],
-        13, 10,  // At zoom 13, text size is 10px
-        16, 12,  // At zoom 16, text size is 12px
-        20, 16   // At zoom 20, text size is 16px
+        13, 9,   // At zoom 13, text size is 9px
+        16, 11,  // At zoom 16, text size is 11px
+        20, 14   // At zoom 20, text size is 14px
       ],
-      'text-offset': [0, 1.5],
+      'text-offset': [0, 2],
       'text-anchor': 'top',
       'text-allow-overlap': false,
-      'text-ignore-placement': false
+      'text-ignore-placement': false,
+      'text-max-width': 10
     },
     paint: {
       'text-color': '#FFFFFF',
-      'text-halo-color': '#000000',
+      'text-halo-color': '#000000', 
       'text-halo-width': 2,
       'text-opacity': [
         'interpolate',
         ['linear'],
         ['zoom'],
-        13, 0.8,
-        14, 1,
+        13, 0.7,
+        14, 0.9,
         20, 1
       ]
     }
@@ -104,21 +141,60 @@ export default function TransitStations({ data }: TransitStationsProps) {
         'interpolate',
         ['linear'],
         ['zoom'],
-        13, 6,   // Larger than regular stations
-        16, 10,
-        20, 16
+        13, 8,   // Larger than regular stations
+        16, 12,
+        20, 18
       ],
       'circle-stroke-color': '#FFD700', // Gold border for interchange
       'circle-stroke-width': [
         'interpolate',
         ['linear'],
         ['zoom'],
-        13, 2,
-        16, 3,
-        20, 4
+        13, 3,
+        16, 4,
+        20, 6
       ],
       'circle-opacity': 0.9,
       'circle-stroke-opacity': 1
+    }
+  };
+
+  // Interchange station labels (higher priority)
+  const interchangeLabelStyle: LayerProps = {
+    id: `transit-interchange-labels-${sourceId}`,
+    type: 'symbol',
+    filter: [
+      '>',
+      ['length', ['get', 'interchange']],
+      0
+    ],
+    layout: {
+      'text-field': [
+        'case',
+        ['has', 'name'],
+        ['get', 'name'],
+        'Interchange'
+      ],
+      'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+      'text-size': [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        13, 10,  // Slightly larger for interchange stations
+        16, 12,
+        20, 16
+      ],
+      'text-offset': [0, 2.5],
+      'text-anchor': 'top',
+      'text-allow-overlap': false,
+      'text-ignore-placement': false,
+      'text-max-width': 10
+    },
+    paint: {
+      'text-color': '#FFD700', // Gold text for interchange stations
+      'text-halo-color': '#000000',
+      'text-halo-width': 2,
+      'text-opacity': 1
     }
   };
 
@@ -134,8 +210,11 @@ export default function TransitStations({ data }: TransitStationsProps) {
       {/* Render interchange stations on top (they're larger) */}
       <Layer {...interchangeStationStyle} />
       
-      {/* Render station labels on top of everything */}
+      {/* Render regular station labels */}
       <Layer {...stationLabelStyle} />
+      
+      {/* Render interchange station labels on top with special styling */}
+      <Layer {...interchangeLabelStyle} />
     </Source>
   );
 }
