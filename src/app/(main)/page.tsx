@@ -12,7 +12,6 @@ import { useSpots, useScamAlerts, useLiveVibes, useNearbySpots, useCategories } 
 import { useGeolocation } from '@/hooks/use-geolocation';
 import SpotCard from '@/components/spots/spot-card';
 import { LeaderboardList } from '@/components/leaderboard-list';
-import ScamDetailsModal from '@/components/scams/scam-details-modal';
 import ScamAlertCard from '@/components/scams/scam-alert-card';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
@@ -24,7 +23,6 @@ import { getSpotUrl } from '@/lib/slug';
 export default function HomeFeed() {
     const { selectedCityId, selectedCity } = useCity();
     const { latitude, longitude } = useGeolocation();
-    const [selectedAlert, setSelectedAlert] = useState<any>(null);
 
     const { data: nearbySpots, isLoading: nearbyLoading } = useNearbySpots({
         latitude: latitude || 0,
@@ -196,7 +194,6 @@ export default function HomeFeed() {
                                     <ScamAlertCard
                                         key={alert.id}
                                         alert={alert}
-                                        onClick={() => setSelectedAlert(alert)}
                                     />
                                 ))
                             ) : (
@@ -328,13 +325,6 @@ export default function HomeFeed() {
                     <LeaderboardList />
                 </section>
             </div>
-
-            {selectedAlert && (
-                <ScamDetailsModal
-                    alert={selectedAlert}
-                    onClose={() => setSelectedAlert(null)}
-                />
-            )}
         </div>
     );
 }

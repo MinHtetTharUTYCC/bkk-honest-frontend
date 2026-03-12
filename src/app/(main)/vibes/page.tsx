@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Zap, MapPin, Loader2, ArrowLeft, Filter, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useInfiniteLiveVibes, useCategories } from '@/hooks/use-api';
@@ -8,11 +8,44 @@ import { useCity } from '@/components/providers/city-provider';
 import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { getSpotUrl } from '@/lib/slug';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 export default function VibesPage() {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
     const { selectedCityId, selectedCity } = useCity();
-    const { data: categories } = useCategories();
-    const [selectedCategory, setSelectedCategory] = useState<string>('');
+    const { data: categoriesResponse } = useCategories();
+    const categories = categoriesResponse?.data || categoriesResponse || [];
+    
+    // Initialize from URL
+    const [selectedCategory, setSelectedCategory] = useState<string>(
+        searchParams.get('category') || ''
+    );
+
+    // Function to update URL params
+    const createQueryString = useCallback(
+        (params: Record<string, string | null>) => {
+            const newSearchParams = new URLSearchParams(searchParams.toString());
+            
+            Object.entries(params).forEach(([name, value]) => {
+                if (value === null || value === undefined) {
+                    newSearchParams.delete(name);
+                } else {
+                    newSearchParams.set(name, value);
+                }
+            });
+
+            return newSearchParams.toString();
+        },
+        [searchParams]
+    );
+
+    const handleCategoryChange = (catId: string) => {
+        setSelectedCategory(catId);
+        router.push(pathname + '?' + createQueryString({ category: catId || null }), { scroll: false });
+    };
 
     const {
         data: vibesData,
@@ -22,7 +55,7 @@ export default function VibesPage() {
         isFetchingNextPage,
     } = useInfiniteLiveVibes({ 
         cityId: selectedCityId, 
-        categoryId: selectedCategory as any // Need to ensure categoryId is supported in API
+        categoryId: selectedCategory as any
     });
 
     const vibes = vibesData?.pages.flatMap(page => page.data || []) || [];
@@ -68,7 +101,7 @@ export default function VibesPage() {
             {/* Filters */}
             <div className="flex items-center gap-4 bg-card p-2 rounded-2xl border border-white/8 overflow-x-auto no-scrollbar shadow-xl">
                 <button
-                    onClick={() => setSelectedCategory('')}
+                    onClick={() => handleCategoryChange('')}
                     className={cn(
                         "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
                         selectedCategory === '' 
@@ -81,7 +114,7 @@ export default function VibesPage() {
                 {Array.isArray(categories) && categories.map((cat: any) => (
                     <button
                         key={cat.id}
-                        onClick={() => setSelectedCategory(cat.id)}
+                        onClick={() => handleCategoryChange(cat.id)}
                         className={cn(
                             "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
                             selectedCategory === cat.id 

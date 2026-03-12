@@ -2,15 +2,15 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 interface ScamAlertLayoutProps {
-  params: {
+  params: Promise<{
     citySlug: string;
     alertSlug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: ScamAlertLayoutProps): Promise<Metadata> {
   try {
-    const { citySlug, alertSlug } = params;
+    const { citySlug, alertSlug } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
     
     // Fetch alert data for dynamic metadata

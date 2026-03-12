@@ -16,11 +16,19 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       // Ensure we redirect within the basePath
-      const redirectPath = next.startsWith('/bkk-honest') ? next : `/bkk-honest${next}`;
+      let redirectPath = next.startsWith('/bkk-honest') ? next : `/bkk-honest${next}`;
+      // Ensure trailing slash for consistent routing
+      if (!redirectPath.endsWith('/')) {
+        redirectPath = `${redirectPath}/`;
+      }
       return NextResponse.redirect(`${origin}${redirectPath}`);
     }
   }
 
   // return the user to an error page within the basePath
-  return NextResponse.redirect(`${origin}/bkk-honest/login?error=Authentication failed`);
+  return NextResponse.redirect(`${origin}/bkk-honest/login/?error=Authentication failed`);
+}
+
+export async function POST(request: Request) {
+  return GET(request);
 }

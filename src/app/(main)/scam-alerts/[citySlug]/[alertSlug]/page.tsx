@@ -1,7 +1,14 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useScamAlertBySlug, useScamComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
+import { 
+    useScamAlertBySlug, 
+    useScamComments, 
+    useCreateComment, 
+    useUpdateComment, 
+    useDeleteComment,
+    useDeleteScamAlert 
+} from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
     X,
@@ -17,6 +24,7 @@ import {
     ShieldCheck,
     MapPin,
     ArrowLeft,
+    MoreVertical,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -25,6 +33,12 @@ import { useInView } from 'react-intersection-observer';
 import ReactionButton from '@/components/reactions/reaction-button';
 import ReportButton from '@/components/report/report-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+    DropdownMenu,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import Image from 'next/image';
+import ScamEditModal from '@/components/scams/scam-edit-modal';
 
 export default function ScamAlertDetailPage() {
     const { citySlug, alertSlug } = useParams() as { citySlug: string; alertSlug: string };
@@ -32,6 +46,7 @@ export default function ScamAlertDetailPage() {
     const router = useRouter();
     const { data: alert, isLoading: alertLoading } = useScamAlertBySlug(citySlug === 'thailand' ? '' : citySlug, alertSlug);
     const [localAlert, setLocalAlert] = useState<any>(alert);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     useEffect(() => {
         if (alert) {
@@ -56,6 +71,7 @@ export default function ScamAlertDetailPage() {
 
     const updateCommentMutation = useUpdateComment();
     const deleteCommentMutation = useDeleteComment();
+    const deleteScamAlertMutation = useDeleteScamAlert();
     const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
     const [editContent, setEditContent] = useState('');
 
@@ -122,6 +138,17 @@ export default function ScamAlertDetailPage() {
         }
     };
 
+    const handleDeleteAlert = async () => {
+        if (!confirm('Are you sure you want to delete this scam alert?')) return;
+        try {
+            await deleteScamAlertMutation.mutateAsync(alert.id);
+            router.push('/scam-alerts');
+        } catch (err) {
+            console.error(err);
+            alert('Failed to delete alert');
+        }
+    };
+
     if (alertLoading || !localAlert) {
         return (
             <div className="flex items-center justify-center min-h-screen">
@@ -133,24 +160,33 @@ export default function ScamAlertDetailPage() {
     return (
         <div className="min-h-screen bg-background pb-20">
             {/* Header */}
-            <div className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur-sm">
-                <div className="mx-auto max-w-2xl px-4 py-4 flex items-center justify-between">
+            <div className="border-b bg-background">
+                <div className="mx-auto max-w-2xl px-4 py-4 flex items-center">
                     <button
                         onClick={() => router.back()}
                         className="p-2 hover:bg-muted rounded-lg"
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h1 className="text-[10px] font-black uppercase tracking-widest flex-1 text-center px-4 line-clamp-1 text-white/40">
-                        {localAlert.scamName}
-                    </h1>
-                    <div className="w-10" />
                 </div>
             </div>
 
             {/* Main Content */}
             <ScrollArea className="h-[calc(100vh-80px)]">
                 <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
+                    {/* Hero Image */}
+                    {localAlert.imageUrl && (
+                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                            <Image 
+                                src={localAlert.imageUrl} 
+                                alt={localAlert.scamName}
+                                fill
+                                className="object-cover"
+                                priority
+                            />
+                        </div>
+                    )}
+
                     {/* Alert Header */}
                     <div className="space-y-6">
                         <div className="flex items-start justify-between">
@@ -175,7 +211,43 @@ export default function ScamAlertDetailPage() {
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                {user && <ReportButton targetId={localAlert.id} reportType="SCAM_ALERT" />}
+                                {user && (
+                                    <DropdownMenu
+                                        trigger={
+                                            <button className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors bg-white/5 border border-white/10">
+                                                <MoreVertical size={20} />
+                                            </button>
+                                        }
+                                    >
+                                        {user.id === localAlert.userId ? (
+                                            <>
+                                                <DropdownMenuItem 
+                                                    onClick={() => setIsEditModalOpen(true)}
+                                                    className="gap-3 py-3"
+                                                >
+                                                    <Edit2 size={16} />
+                                                    <span className="text-sm font-medium">Edit Alert</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem 
+                                                    onClick={handleDeleteAlert}
+                                                    className="gap-3 py-3"
+                                                    danger
+                                                >
+                                                    <Trash2 size={16} />
+                                                    <span className="text-sm font-medium">Delete Alert</span>
+                                                </DropdownMenuItem>
+                                            </>
+                                        ) : (
+                                            <DropdownMenuItem asChild>
+                                                <ReportButton 
+                                                    targetId={localAlert.id} 
+                                                    reportType="SCAM_ALERT" 
+                                                    className="w-full flex items-center justify-start gap-3 px-3 py-3 text-sm font-medium hover:bg-white/5 rounded-md transition-colors border-none"
+                                                />
+                                            </DropdownMenuItem>
+                                        )}
+                                    </DropdownMenu>
+                                )}
                             </div>
                         </div>
 
@@ -398,6 +470,14 @@ export default function ScamAlertDetailPage() {
                     </div>
                 </div>
             </ScrollArea>
+
+            {/* Edit Modal */}
+            {isEditModalOpen && (
+                <ScamEditModal 
+                    alert={localAlert}
+                    onClose={() => setIsEditModalOpen(false)}
+                />
+            )}
         </div>
     );
 }

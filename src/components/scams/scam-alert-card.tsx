@@ -24,10 +24,9 @@ import ReportButton from '@/components/report/report-button';
 
 interface ScamAlertCardProps {
     alert: any;
-    onClick?: () => void;
 }
 
-export default function ScamAlertCard({ alert: initialAlert, onClick }: ScamAlertCardProps) {
+export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProps) {
     const router = useRouter();
     const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);

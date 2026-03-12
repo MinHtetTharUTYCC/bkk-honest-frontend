@@ -22,7 +22,7 @@ export default function LoginPage() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
             options: {
-                redirectTo: `${window.location.origin}/bkk-honest/auth/callback?redirectTo=${encodeURIComponent(redirectTo)}`,
+                redirectTo: `${window.location.origin}/bkk-honest/auth/callback/?redirectTo=${encodeURIComponent(redirectTo)}`,
             },
         });
 

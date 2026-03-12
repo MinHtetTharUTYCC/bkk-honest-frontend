@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import SpotCard from '@/components/spots/spot-card';
 import ScamAlertCard from '@/components/scams/scam-alert-card';
-import ScamDetailsModal from '@/components/scams/scam-details-modal';
 import { CardSkeleton, ScamAlertCardSkeleton } from '@/components/ui/skeleton';
 import { useInfiniteSpots, useInfiniteScamAlerts } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
@@ -27,7 +26,6 @@ export function SearchResultsTabs({
   cityId,
 }: SearchResultsTabsProps) {
   const [tab, setTab] = useState(activeTab);
-  const [selectedAlert, setSelectedAlert] = useState<any>(null);
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -100,9 +98,6 @@ export function SearchResultsTabs({
 
   return (
     <div className="flex-1">
-      {selectedAlert && (
-        <ScamDetailsModal alert={selectedAlert} onClose={() => setSelectedAlert(null)} />
-      )}
       <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-2 bg-white/5 border border-white/10 p-1 mb-6">
           <TabsTrigger
@@ -165,7 +160,7 @@ export function SearchResultsTabs({
             <>
               <div className="flex flex-col gap-4">
                 {scams.map((scam: any) => (
-                  <ScamAlertCard key={scam.id} alert={scam} onClick={() => setSelectedAlert(scam)} />
+                  <ScamAlertCard key={scam.id} alert={scam} />
                 ))}
               </div>
               {(scamsHasNextPage || scamsFetchingNextPage) && (

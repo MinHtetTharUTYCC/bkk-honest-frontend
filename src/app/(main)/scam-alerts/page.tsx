@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useInfiniteScamAlerts, useCategories } from '@/hooks/use-api';
 import { SearchInput } from '@/components/ui/search-input';
 import ScamAlertCard from '@/components/scams/scam-alert-card';
@@ -9,25 +9,64 @@ import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useInView } from 'react-intersection-observer';
-
-function useDebounce<T>(value: T, delay: number): T {
-    const [debouncedValue, setDebouncedValue] = useState<T>(value);
-    useEffect(() => {
-        const handler = setTimeout(() => setDebouncedValue(value), delay);
-        return () => clearTimeout(handler);
-    }, [value, delay]);
-    return debouncedValue;
-}
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 export default function ScamAlertsPage() {
-    const [selectedCategory, setSelectedCategory] = useState<string | undefined>(undefined);
-    const [search, setSearch] = useState('');
-    const debouncedSearch = useDebounce(search, 500);
-    const [sort, setSort] = useState<'newest' | 'popular'>('newest');
-    const { selectedCityId, selectedCity } = useCity();
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
+    // Initialize from URL
+    const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
+        searchParams.get('category') || undefined
+    );
+    const [search, setSearch] = useState(searchParams.get('q') || '');
+    const [sort, setSort] = useState<'newest' | 'popular'>(
+        (searchParams.get('sort') as 'newest' | 'popular') || 'newest'
+    );
+    
+    const { selectedCityId, selectedCity } = useCity();
     const [isClient, setIsClient] = useState(false);
     const { ref, inView } = useInView();
+
+    // Function to update URL params
+    const createQueryString = useCallback(
+        (params: Record<string, string | null>) => {
+            const newSearchParams = new URLSearchParams(searchParams.toString());
+            
+            Object.entries(params).forEach(([name, value]) => {
+                if (value === null || value === undefined) {
+                    newSearchParams.delete(name);
+                } else {
+                    newSearchParams.set(name, value);
+                }
+            });
+
+            return newSearchParams.toString();
+        },
+        [searchParams]
+    );
+
+    // Sync URL when filters change (except search which is handled by debounce)
+    const handleCategoryChange = (catId: string | undefined) => {
+        setSelectedCategory(catId);
+        router.push(pathname + '?' + createQueryString({ category: catId || null }), { scroll: false });
+    };
+
+    const handleSortChange = (newSort: 'newest' | 'popular') => {
+        setSort(newSort);
+        router.push(pathname + '?' + createQueryString({ sort: newSort }), { scroll: false });
+    };
+
+    // Debounce search URL update
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (search !== (searchParams.get('q') || '')) {
+                router.push(pathname + '?' + createQueryString({ q: search || null }), { scroll: false });
+            }
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [search, pathname, createQueryString, searchParams]);
 
     useEffect(() => {
         setIsClient(true);
@@ -41,7 +80,7 @@ export default function ScamAlertsPage() {
             cityId: selectedCityId,
             categoryId: selectedCategory,
             sort,
-            search: debouncedSearch,
+            search, // Use the state directly here since we want it to react to search input
         });
 
     useEffect(() => {
@@ -73,7 +112,7 @@ export default function ScamAlertsPage() {
                     {/* Sort Toggle */}
                     <div className="flex bg-white/8 p-1 rounded-2xl w-full sm:w-auto">
                         <button
-                            onClick={() => setSort('newest')}
+                            onClick={() => handleSortChange('newest')}
                             className={cn(
                                 'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all',
                                 sort === 'newest'
@@ -85,7 +124,7 @@ export default function ScamAlertsPage() {
                             Newest
                         </button>
                         <button
-                            onClick={() => setSort('popular')}
+                            onClick={() => handleSortChange('popular')}
                             className={cn(
                                 'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all',
                                 sort === 'popular'
@@ -111,12 +150,12 @@ export default function ScamAlertsPage() {
             <ScrollArea className="w-full whitespace-nowrap -mx-2 px-2">
                 <div className="flex gap-2 pb-2">
                     <button
-                        onClick={() => setSelectedCategory(undefined)}
+                        onClick={() => handleCategoryChange(undefined)}
                         className={cn(
                             'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
                             !selectedCategory
-                                ? 'bg-cyan-400 text-white shadow-lg shadow-cyan-400/20'
-                                : 'bg-white border border-gray-300 text-gray-400 hover:bg-gray-50',
+                                ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
+                                : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
                         )}
                     >
                         All Scams
@@ -124,7 +163,7 @@ export default function ScamAlertsPage() {
                     {categories?.map((cat: any) => (
                         <button
                             key={cat.id}
-                            onClick={() => setSelectedCategory(cat.id)}
+                            onClick={() => handleCategoryChange(cat.id)}
                             className={cn(
                                 'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
                                 selectedCategory === cat.id

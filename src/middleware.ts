@@ -2,36 +2,20 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-
-  // Remove basePath if it exists
-  const path = pathname.replace(/^\/bkk-honest/, '');
-
-  // Match old spot routes: /spots/[id]
-  const spotMatch = path.match(/^\/spots\/([a-z0-9]+)(?:\/)?$/i);
-  if (spotMatch && !path.includes('[')) {
-    const spotId = spotMatch[1];
-    // Redirect to a temporary redirect page that will handle the slug lookup
-    return NextResponse.redirect(
-      new URL(`/bkk-honest/redirect/spot/${spotId}`, request.url)
-    );
-  }
-
-  // Match old scam-alerts routes: /scam-alerts/[id]
-  const scamMatch = path.match(/^\/scam-alerts\/([a-z0-9]+)(?:\/)?$/i);
-  if (scamMatch && !path.includes('[')) {
-    const alertId = scamMatch[1];
-    return NextResponse.redirect(
-      new URL(`/bkk-honest/redirect/scam-alert/${alertId}`, request.url)
-    );
-  }
-
+  // Middleware is currently a placeholder for auth or other future needs.
+  // We've moved away from ID-based redirect pages in favor of direct slug routing.
   return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    '/bkk-honest/spots/:path*',
-    '/bkk-honest/scam-alerts/:path*',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 };
