@@ -62,14 +62,18 @@ export default function SpotCard({ spot }: { spot: any }) {
                     </div>
 
                     {/* Action buttons — bottom-right of image */}
-                    <div
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleVote(e);
+                        }}
                         className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-auto"
-                        onClick={(e) => e.stopPropagation()}
                     >
                         <LikeButton
                             count={spot._count?.votes || 0}
                             isVoted={spot.hasVoted}
-                            onVote={() => handleVote({} as React.MouseEvent)}
+                            onVote={async () => {}} // Handler is on button wrapper instead
                             isPending={votePending}
                             disabled={votePending}
                             variant="overlay"
@@ -78,7 +82,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                             className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border shadow-lg bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400"
                             title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
                         />
-                    </div>
+                    </button>
                 </div>
 
                 <div className="space-y-1 mb-5">
