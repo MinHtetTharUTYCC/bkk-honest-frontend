@@ -48,8 +48,16 @@ export default function TopBar() {
             </div>
 
             {!isSearchPage && (
-                <div className="flex-1 max-w-xl">
-                    <div className="relative group">
+                <div className="flex-1 max-w-xl flex justify-end md:block">
+                    <button
+                        onClick={handleSearchFocus}
+                        aria-label="Open search"
+                        className="md:hidden w-9 h-9 rounded-xl border border-white/10 bg-white/5 text-white/70 hover:text-amber-400 hover:border-amber-400/30 transition-colors flex items-center justify-center"
+                    >
+                        <Search className="w-4 h-4" />
+                    </button>
+
+                    <div className="relative group hidden md:block">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 w-3.5 h-3.5 transition-colors group-focus-within:text-amber-400" />
                         <input
                             type="text"
@@ -72,14 +80,16 @@ export default function TopBar() {
                             {profile?.reputation || 0}
                         </span>
                     </div>
-                ) : !loading && (
-                    <Link 
-                        href="/login"
-                        className="flex items-center gap-2 px-4 py-2 bg-amber-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10"
-                    >
-                        <LogIn size={14} />
-                        Join Us
-                    </Link>
+                ) : (
+                    !loading && (
+                        <Link
+                            href="/login"
+                            className="flex items-center gap-2 px-4 py-2 bg-amber-400 text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-300 transition-all shadow-lg shadow-amber-400/10"
+                        >
+                            <LogIn size={14} />
+                            Join Us
+                        </Link>
+                    )
                 )}
             </div>
         </header>
