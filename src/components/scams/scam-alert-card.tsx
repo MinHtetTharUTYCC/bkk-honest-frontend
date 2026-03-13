@@ -207,7 +207,10 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
     return (
         <div
             onClick={() => {
-                const citySlug = alert.city?.slug || alert.city?.name?.toLowerCase().replace(/\s+/g, '-') || 'bangkok';
+                const citySlug =
+                    alert.city?.slug ||
+                    alert.city?.name?.toLowerCase().replace(/\s+/g, '-') ||
+                    'bangkok';
                 const alertSlug = alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-');
                 router.push(`/scam-alerts/${citySlug}/${alertSlug}`);
             }}
@@ -242,7 +245,10 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg">
                             {alert.user?.avatarUrl ? (
-                                <img src={alert.user.avatarUrl} className="w-full h-full object-cover" />
+                                <img
+                                    src={alert.user.avatarUrl}
+                                    className="w-full h-full object-cover"
+                                />
                             ) : (
                                 <User size={16} />
                             )}
@@ -291,7 +297,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
 
                 {/* Footer */}
                 <div className="mt-auto flex items-center justify-end gap-2 pt-2 border-t border-white/8">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all border border-white/10 text-white/30">
+                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-widest transition-all border border-white/10 text-white/30">
                         <MessageCircle size={12} />
                         {alert._count?.comments || 0}
                     </div>
@@ -305,7 +311,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                         disabled={votePending}
                         variant="default"
                         size="sm"
-                        className="text-[9px] font-black uppercase tracking-widest gap-1.5 px-3 py-1.5 rounded-full border transition-all bg-white/0 hover:bg-white/0"
+                        className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-3 py-1.5 rounded-full border transition-all bg-white/0 hover:bg-white/0"
                         title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
                     />
                 </div>

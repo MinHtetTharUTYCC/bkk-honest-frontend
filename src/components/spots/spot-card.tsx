@@ -29,7 +29,7 @@ export default function SpotCard({ spot }: { spot: any }) {
     };
 
     return (
-        <div className="flex-shrink-0 w-full bg-card rounded-2xl p-5 border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500">
+        <div className="shrink-0 w-full bg-card rounded-2xl p-5 border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500">
             {/* Image Section */}
             <div className="relative w-full aspect-square mb-5 rounded-xl overflow-hidden bg-white/5 border border-white/8">
                 {displayImage ? (
@@ -41,7 +41,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
                         <ImageIcon size={32} strokeWidth={1.5} />
-                        <span className="text-[9px] font-black uppercase tracking-widest">
+                        <span className="text-[12px] font-black uppercase tracking-widest">
                             No Photos
                         </span>
                     </div>
@@ -49,13 +49,13 @@ export default function SpotCard({ spot }: { spot: any }) {
 
                 {/* Badge Container - top row */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                    <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[9px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
+                    <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
                         {categoryName}
                     </span>
-                    <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[9px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
+                    <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
                         <Zap size={10} fill="currentColor" />
                         {(vibeStats as any)?.avgCrowdLevel
-                            ? `Busy: ${((vibeStats as any).avgCrowdLevel).toFixed(1)}/5`
+                            ? `Busy: ${(vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
                             : 'New'}
                     </div>
                 </div>
@@ -63,16 +63,16 @@ export default function SpotCard({ spot }: { spot: any }) {
                 {/* Action buttons — bottom-right of image */}
                 <div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-auto">
                     <LikeButton
-                      count={spot._count?.votes || 0}
-                      isVoted={spot.hasVoted}
-                      onVote={() => handleVote({} as React.MouseEvent)}
-                      isPending={votePending}
-                      disabled={votePending}
-                      variant="overlay"
-                      size="sm"
-                      showCount={true}
-                      className="text-[9px] font-black uppercase tracking-widest gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border shadow-lg bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400"
-                      title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
+                        count={spot._count?.votes || 0}
+                        isVoted={spot.hasVoted}
+                        onVote={() => handleVote({} as React.MouseEvent)}
+                        isPending={votePending}
+                        disabled={votePending}
+                        variant="overlay"
+                        size="sm"
+                        showCount={true}
+                        className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border shadow-lg bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400"
+                        title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
                     />
                 </div>
             </div>
@@ -82,7 +82,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                     <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
                         {name}
                     </h3>
-                    <p className="text-white/60 font-medium text-[9px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
+                    <p className="text-white/60 font-medium text-[12px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
                         <MapPin size={11} className="text-amber-400 shrink-0" />
                         {address?.split(',')[0]}
                     </p>
@@ -90,7 +90,7 @@ export default function SpotCard({ spot }: { spot: any }) {
 
                 <div className="grid grid-cols-2 gap-3">
                     <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
-                        <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest block mb-1">
+                        <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
                             Avg Price
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
@@ -98,7 +98,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                         </span>
                     </div>
                     <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
-                        <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest block mb-1">
+                        <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
                             Pulse
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
@@ -110,4 +110,3 @@ export default function SpotCard({ spot }: { spot: any }) {
         </div>
     );
 }
-

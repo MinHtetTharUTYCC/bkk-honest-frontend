@@ -19,11 +19,11 @@ export default function DiscoveryPage() {
 
     // Initialize from URL
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-        searchParams.get('category') || undefined
+        searchParams.get('category') || undefined,
     );
     const [search, setSearch] = useState(searchParams.get('q') || '');
     const [sort, setSort] = useState<'newest' | 'popular'>(
-        (searchParams.get('sort') as 'newest' | 'popular') || 'popular'
+        (searchParams.get('sort') as 'newest' | 'popular') || 'popular',
     );
 
     const { selectedCityId, selectedCity } = useCity();
@@ -33,7 +33,7 @@ export default function DiscoveryPage() {
     const createQueryString = useCallback(
         (params: Record<string, string | null>) => {
             const newSearchParams = new URLSearchParams(searchParams.toString());
-            
+
             Object.entries(params).forEach(([name, value]) => {
                 if (value === null || value === undefined) {
                     newSearchParams.delete(name);
@@ -44,13 +44,15 @@ export default function DiscoveryPage() {
 
             return newSearchParams.toString();
         },
-        [searchParams]
+        [searchParams],
     );
 
     // Sync URL when filters change
     const handleCategoryChange = (catId: string | undefined) => {
         setSelectedCategory(catId);
-        router.push(pathname + '?' + createQueryString({ category: catId || null }), { scroll: false });
+        router.push(pathname + '?' + createQueryString({ category: catId || null }), {
+            scroll: false,
+        });
     };
 
     const handleSortChange = (newSort: 'newest' | 'popular') => {
@@ -62,7 +64,9 @@ export default function DiscoveryPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (search !== (searchParams.get('q') || '')) {
-                router.push(pathname + '?' + createQueryString({ q: search || null }), { scroll: false });
+                router.push(pathname + '?' + createQueryString({ q: search || null }), {
+                    scroll: false,
+                });
             }
         }, 500);
         return () => clearTimeout(timer);
@@ -76,7 +80,13 @@ export default function DiscoveryPage() {
     // @ts-ignore
     const categories = categoriesResponse?.data || categoriesResponse || [];
 
-    const { data: spotsData, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteSpots({
+    const {
+        data: spotsData,
+        isLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteSpots({
         cityId: selectedCityId,
         categoryId: selectedCategory,
         search: search,
@@ -141,7 +151,7 @@ export default function DiscoveryPage() {
                         value={search}
                         onChange={setSearch}
                         placeholder="Search spots..."
-                        className="md:w-[240px]"
+                        className="md:w-60"
                     />
                 </div>
             </header>
@@ -152,7 +162,7 @@ export default function DiscoveryPage() {
                     <button
                         onClick={() => handleCategoryChange(undefined)}
                         className={cn(
-                            'flex-shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
+                            'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
                             !selectedCategory
                                 ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
                                 : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
@@ -165,7 +175,7 @@ export default function DiscoveryPage() {
                             key={cat.id}
                             onClick={() => handleCategoryChange(cat.id)}
                             className={cn(
-                                'flex-shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
+                                'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
                                 selectedCategory === cat.id
                                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
                                     : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
@@ -175,7 +185,7 @@ export default function DiscoveryPage() {
                             {cat._count?.spots > 0 && (
                                 <span
                                     className={cn(
-                                        'px-1.5 py-0.5 rounded-md text-[9px]',
+                                        'px-1.5 py-0.5 rounded-md text-[12px]',
                                         selectedCategory === cat.id
                                             ? 'bg-white/20 text-black'
                                             : 'bg-white/8 text-white/40',
@@ -196,7 +206,7 @@ export default function DiscoveryPage() {
                     Array.from({ length: 6 }).map((_, i) => (
                         <div
                             key={i}
-                            className="h-[420px] bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 animate-pulse p-8 space-y-6"
+                            className="h-105 bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 animate-pulse p-8 space-y-6"
                         >
                             <div className="w-full h-48 bg-white/5 rounded-xl" />
                             <div className="h-6 w-3/4 bg-white/5 rounded-full" />
@@ -205,8 +215,10 @@ export default function DiscoveryPage() {
                     ))
                 ) : spots && spots.length > 0 ? (
                     <>
-                        {spots.map((spot: any) => <SpotCard key={spot.id} spot={spot} />)}
-                        
+                        {spots.map((spot: any) => (
+                            <SpotCard key={spot.id} spot={spot} />
+                        ))}
+
                         {/* Load More Trigger */}
                         <div ref={ref} className="col-span-full py-8 flex justify-center">
                             {isFetchingNextPage ? (
@@ -214,7 +226,7 @@ export default function DiscoveryPage() {
                             ) : hasNextPage ? (
                                 <div className="h-1" />
                             ) : (
-                                <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">
+                                <p className="text-[12px] font-bold text-white/50 uppercase tracking-[0.2em]">
                                     — End of Discovery —
                                 </p>
                             )}

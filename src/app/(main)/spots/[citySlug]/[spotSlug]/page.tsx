@@ -1,9 +1,46 @@
 'use client';
 
 import { useParams, useRouter, usePathname } from 'next/navigation';
-import { useSpot, useSpotBySlug, useSpotPriceReports, useInfiniteSpotTips, useSpotGallery, useUploadSpotImage, useMissions, useAddMission, useUpdateSpot, useCategories, useCities, useLiveVibes, useCreateLiveVibe, useUpdateCommunityTip, useDeleteCommunityTip } from '@/hooks/use-api';
+import {
+    useSpot,
+    useSpotBySlug,
+    useSpotPriceReports,
+    useInfiniteSpotTips,
+    useSpotGallery,
+    useUploadSpotImage,
+    useMissions,
+    useAddMission,
+    useUpdateSpot,
+    useCategories,
+    useCities,
+    useLiveVibes,
+    useCreateLiveVibe,
+    useUpdateCommunityTip,
+    useDeleteCommunityTip,
+} from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { MapPin, Zap, Info, ArrowLeft, TrendingDown, TrendingUp, AlertTriangle, CheckCircle2, Camera, Maximize2, Upload, Loader2, User, Trash2, Target, Edit2, Save, X, MessageSquare, Navigation } from 'lucide-react';
+import {
+    MapPin,
+    Zap,
+    Info,
+    ArrowLeft,
+    TrendingDown,
+    TrendingUp,
+    AlertTriangle,
+    CheckCircle2,
+    Camera,
+    Maximize2,
+    Upload,
+    Loader2,
+    User,
+    Trash2,
+    Target,
+    Edit2,
+    Save,
+    X,
+    MessageSquare,
+    Navigation,
+} from 'lucide-react';
 import { LikeButton } from '@/components/ui/like-button';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -26,929 +63,1131 @@ import api from '@/lib/api';
 import { MoreVertical, Flag } from 'lucide-react';
 
 export default function SpotDetailPage() {
-  const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
-  const { user: authUser, loading: authLoading } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
-  const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
-  const { data: reports } = useSpotPriceReports(spot?.id || '');
-  const { data: galleryResponse } = useSpotGallery(spot?.id || '', 6);
-  const { data: missionsData } = useMissions();
-  const addMission = useAddMission();
-  const updateSpotMutation = useUpdateSpot();
-  const { data: categories } = useCategories();
-  const { data: cities } = useCities();
-  const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: spot?.id || '' });
-  
-  const missionsList = missionsData?.pages.flatMap(page => page.data || []) || [];
-  const isInMissions = missionsList.some((m: any) => m.spot?.id === spot?.id);
-  const currentMission = missionsList.find((m: any) => m.spot?.id === spot?.id);
-  const gallery = galleryResponse?.data || [];
-  
-  const isOwner = authUser?.id === spot?.userId;
+    const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
+    const { user: authUser, loading: authLoading } = useAuth();
+    const router = useRouter();
+    const pathname = usePathname();
+    const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
+    const { data: reports } = useSpotPriceReports(spot?.id || '');
+    const { data: galleryResponse } = useSpotGallery(spot?.id || '', 6);
+    const { data: missionsData } = useMissions();
+    const addMission = useAddMission();
+    const updateSpotMutation = useUpdateSpot();
+    const { data: categories } = useCategories();
+    const { data: cities } = useCities();
+    const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: spot?.id || '' });
 
-  const [isClient, setIsClient] = useState(false);
-  const [showGalleryModal, setShowGalleryModal] = useState(false);
-  const [showTipModal, setShowTipModal] = useState(false);
-  const [showReportModal, setShowReportModal] = useState(false);
-  const [selectedTip, setSelectedTip] = useState<any>(null);
-  const [editingTip, setEditingTip] = useState<any>(null);
-  const [editingTipTitle, setEditingTipTitle] = useState('');
-  const [editingTipDescription, setEditingTipDescription] = useState('');
-  const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const editFileInputRef = useRef<HTMLInputElement>(null);
+    const missionsList = missionsData?.pages.flatMap((page) => page.data || []) || [];
+    const isInMissions = missionsList.some((m: any) => m.spot?.id === spot?.id);
+    const currentMission = missionsList.find((m: any) => m.spot?.id === spot?.id);
+    const gallery = galleryResponse?.data || [];
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editName, setEditName] = useState('');
-  const [editAddress, setEditAddress] = useState('');
-  const [editCategory, setEditCategory] = useState('');
-  const [editCity, setEditCity] = useState('');
-  const [editFile, setEditFile] = useState<File | null>(null);
-  const [editPreview, setEditPreview] = useState<string | null>(null);
-  const [editLocation, setEditLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    const isOwner = authUser?.id === spot?.userId;
 
-  useEffect(() => {
-    if (spot) {
-      setEditName(spot.name);
-      setEditAddress(spot.address);
-      setEditCategory(spot.categoryId || (spot.category as any)?.id);
-      setEditCity(spot.cityId || (spot.city as any)?.id);
-      setEditLocation({ latitude: spot.latitude, longitude: spot.longitude });
-    }
-  }, [spot]);
+    const [isClient, setIsClient] = useState(false);
+    const [showGalleryModal, setShowGalleryModal] = useState(false);
+    const [showTipModal, setShowTipModal] = useState(false);
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [selectedTip, setSelectedTip] = useState<any>(null);
+    const [editingTip, setEditingTip] = useState<any>(null);
+    const [editingTipTitle, setEditingTipTitle] = useState('');
+    const [editingTipDescription, setEditingTipDescription] = useState('');
+    const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const editFileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchAddressFromLocation = async (latitude: number, longitude: number) => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/spots/reverse-geocode`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude, longitude }),
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        if (data.address) {
-          setEditAddress(data.address);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editName, setEditName] = useState('');
+    const [editAddress, setEditAddress] = useState('');
+    const [editCategory, setEditCategory] = useState('');
+    const [editCity, setEditCity] = useState('');
+    const [editFile, setEditFile] = useState<File | null>(null);
+    const [editPreview, setEditPreview] = useState<string | null>(null);
+    const [editLocation, setEditLocation] = useState<{
+        latitude: number;
+        longitude: number;
+    } | null>(null);
+
+    useEffect(() => {
+        if (spot) {
+            setEditName(spot.name);
+            setEditAddress(spot.address);
+            setEditCategory(spot.categoryId || (spot.category as any)?.id);
+            setEditCity(spot.cityId || (spot.city as any)?.id);
+            setEditLocation({ latitude: spot.latitude, longitude: spot.longitude });
         }
-      }
-    } catch (error) {
-      console.error('Failed to fetch address:', error);
-    }
-  };
+    }, [spot]);
 
-  const handleUpdateSpot = async () => {
-    try {
-      await updateSpotMutation.mutateAsync({
-        id: spot?.id || "",
-        payload: {
-          name: editName,
-          address: editAddress,
-          categoryId: editCategory,
-          cityId: editCity,
-          latitude: editLocation?.latitude,
-          longitude: editLocation?.longitude,
-          image: editFile || undefined,
+    const fetchAddressFromLocation = async (latitude: number, longitude: number) => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/spots/reverse-geocode`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ latitude, longitude }),
+                },
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.address) {
+                    setEditAddress(data.address);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch address:', error);
         }
-      });
-      setIsEditing(false);
-      setEditFile(null);
-      setEditPreview(null);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to update spot');
-    }
-  };
+    };
 
-  const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setEditFile(file);
-      setEditPreview(URL.createObjectURL(file));
-    }
-  };
-  
-  const [tipType, setTipType] = useState<'TRY' | 'AVOID'>('TRY');
-  const [tipSort, setTipSort] = useState<'popular' | 'newest'>('popular');
-
-  const { 
-    data: tipsData, 
-    fetchNextPage: fetchNextTips, 
-    hasNextPage: hasNextTips, 
-    isFetchingNextPage: isFetchingNextTips, 
-    isLoading: tipsLoading 
-  } = useInfiniteSpotTips(spot?.id || "", tipType, tipSort);
-
-  const tips = tipsData?.pages.flatMap(page => page.data) || [];
-
-  // Infinite scroll trigger
-  const observerTarget = useRef(null);
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasNextTips && !isFetchingNextTips) {
-          console.log('Fetching next tips...');
-          fetchNextTips();
+    const handleUpdateSpot = async () => {
+        try {
+            await updateSpotMutation.mutateAsync({
+                id: spot?.id || '',
+                payload: {
+                    name: editName,
+                    address: editAddress,
+                    categoryId: editCategory,
+                    cityId: editCity,
+                    latitude: editLocation?.latitude,
+                    longitude: editLocation?.longitude,
+                    image: editFile || undefined,
+                },
+            });
+            setIsEditing(false);
+            setEditFile(null);
+            setEditPreview(null);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to update spot');
         }
-      },
-      { 
-        rootMargin: '200px',
-        threshold: 0.1 
-      }
+    };
+
+    const handleEditFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setEditFile(file);
+            setEditPreview(URL.createObjectURL(file));
+        }
+    };
+
+    const [tipType, setTipType] = useState<'TRY' | 'AVOID'>('TRY');
+    const [tipSort, setTipSort] = useState<'popular' | 'newest'>('popular');
+
+    const {
+        data: tipsData,
+        fetchNextPage: fetchNextTips,
+        hasNextPage: hasNextTips,
+        isFetchingNextPage: isFetchingNextTips,
+        isLoading: tipsLoading,
+    } = useInfiniteSpotTips(spot?.id || '', tipType, tipSort);
+
+    const tips = tipsData?.pages.flatMap((page) => page.data) || [];
+
+    // Infinite scroll trigger
+    const observerTarget = useRef(null);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasNextTips && !isFetchingNextTips) {
+                    console.log('Fetching next tips...');
+                    fetchNextTips();
+                }
+            },
+            {
+                rootMargin: '200px',
+                threshold: 0.1,
+            },
+        );
+        if (observerTarget.current) {
+            observer.observe(observerTarget.current);
+        }
+        return () => observer.disconnect();
+    }, [hasNextTips, isFetchingNextTips, fetchNextTips]);
+
+    const uploadMutation = useUploadSpotImage();
+    const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle(
+        'tip',
+        spot?.id || '',
     );
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-    return () => observer.disconnect();
-  }, [hasNextTips, isFetchingNextTips, fetchNextTips]);
-  
-  const uploadMutation = useUploadSpotImage();
-  const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle('tip', spot?.id || '');
-  const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle('image', spot?.id || '');
-  const { toggleVote: toggleSpotVote } = useVoteToggle('spot');
-  const updateTipMutation = useUpdateCommunityTip();
-  const deleteTipMutation = useDeleteCommunityTip();
-
-  const handleSpotVote = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    await toggleSpotVote({ id: spot?.id || "", hasVoted: spot?.hasVoted, voteId: spot?.voteId });
-  };
-
-  const handleSpotVoteClick = async () => {
-    await toggleSpotVote({ id: spot?.id || "", hasVoted: spot?.hasVoted, voteId: spot?.voteId });
-  };
-  
-  const queryClient = useQueryClient();
-  const deleteSpotMutation = useMutation({
-    mutationFn: async () => {
-      if (!confirm('Are you sure you want to delete this spot? This action cannot be undone.')) return;
-      await api.delete(`/spots/${spot?.id || ""}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['spots'] });
-      router.push('/');
-    },
-  });
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    await uploadMutation.mutateAsync({ spotId: spot?.id || "", file });
-  };
-
-  if (!isClient || spotLoading) {
-    return (
-      <div className="space-y-12 animate-pulse">
-        <div className="h-64 bg-white/5 rounded-2xl" />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 h-96 bg-white/5 rounded-2xl" />
-          <div className="h-96 bg-white/5 rounded-2xl" />
-        </div>
-      </div>
+    const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle(
+        'image',
+        spot?.id || '',
     );
-  }
+    const { toggleVote: toggleSpotVote } = useVoteToggle('spot');
+    const updateTipMutation = useUpdateCommunityTip();
+    const deleteTipMutation = useDeleteCommunityTip();
 
-  if (!spot) return <div>Spot not found</div>;
+    const handleSpotVote = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        await toggleSpotVote({
+            id: spot?.id || '',
+            hasVoted: spot?.hasVoted,
+            voteId: spot?.voteId,
+        });
+    };
 
-  const galleryList = Array.isArray(gallery) ? gallery : [];
+    const handleSpotVoteClick = async () => {
+        await toggleSpotVote({
+            id: spot?.id || '',
+            hasVoted: spot?.hasVoted,
+            voteId: spot?.voteId,
+        });
+    };
 
-  const handleEditTip = (tip: any) => {
-    setEditingTip(tip);
-    setEditingTipTitle(tip.title);
-    setEditingTipDescription(tip.description);
-  };
+    const queryClient = useQueryClient();
+    const deleteSpotMutation = useMutation({
+        mutationFn: async () => {
+            if (
+                !confirm('Are you sure you want to delete this spot? This action cannot be undone.')
+            )
+                return;
+            await api.delete(`/spots/${spot?.id || ''}`);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['spots'] });
+            router.push('/');
+        },
+    });
 
-  const handleSaveEditedTip = async () => {
-    if (!editingTip || !editingTipTitle.trim() || !editingTipDescription.trim()) return;
-    
-    try {
-      await updateTipMutation.mutateAsync({
-        id: editingTip.id,
-        spotId: spot?.id || '',
-        title: editingTipTitle,
-        description: editingTipDescription,
-      });
-      setEditingTip(null);
-      setEditingTipTitle('');
-      setEditingTipDescription('');
-    } catch (error) {
-      console.error('Failed to update tip:', error);
-      alert('Failed to update tip');
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        await uploadMutation.mutateAsync({ spotId: spot?.id || '', file });
+    };
+
+    if (!isClient || spotLoading) {
+        return (
+            <div className="space-y-12 animate-pulse">
+                <div className="h-64 bg-white/5 rounded-2xl" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="md:col-span-2 h-96 bg-white/5 rounded-2xl" />
+                    <div className="h-96 bg-white/5 rounded-2xl" />
+                </div>
+            </div>
+        );
     }
-  };
 
-  const handleDeleteTip = async (tipId: string) => {
-    try {
-      await deleteTipMutation.mutateAsync({ id: tipId, spotId: spot?.id || "" });
-    } catch (error) {
-      console.error('Failed to delete tip:', error);
-      alert('Failed to delete tip');
-    }
-  };
+    if (!spot) return <div>Spot not found</div>;
 
-  return (
-    <div className="space-y-12 pb-24">
-      {showGalleryModal && (
-        <GalleryModal 
-          spotId={spot?.id || ""} 
-          spotName={spot.name} 
-          onClose={() => setShowGalleryModal(false)} 
-        />
-      )}
-      {showTipModal && (
-        <CreateTipModal 
-          spotId={spot?.id || ""} 
-          onClose={() => setShowTipModal(false)} 
-        />
-      )}
-      {showReportModal && (
-        <ReportModal
-          targetId={spot?.id || ""}
-          reportType="SPOT"
-          onClose={() => setShowReportModal(false)}
-        />
-      )}
-      {editingTip && (
-        <EditTipModal
-          tip={editingTip}
-          title={editingTipTitle}
-          description={editingTipDescription}
-          onTitleChange={setEditingTipTitle}
-          onDescriptionChange={setEditingTipDescription}
-          onSave={handleSaveEditedTip}
-          onClose={() => {
+    const galleryList = Array.isArray(gallery) ? gallery : [];
+
+    const handleEditTip = (tip: any) => {
+        setEditingTip(tip);
+        setEditingTipTitle(tip.title);
+        setEditingTipDescription(tip.description);
+    };
+
+    const handleSaveEditedTip = async () => {
+        if (!editingTip || !editingTipTitle.trim() || !editingTipDescription.trim()) return;
+
+        try {
+            await updateTipMutation.mutateAsync({
+                id: editingTip.id,
+                spotId: spot?.id || '',
+                title: editingTipTitle,
+                description: editingTipDescription,
+            });
             setEditingTip(null);
             setEditingTipTitle('');
             setEditingTipDescription('');
-          }}
-          isSaving={updateTipMutation.isPending}
-        />
-      )}
-      {selectedTip && (
-        <TipCommentsModal 
-          tip={selectedTip}
-          onClose={() => setSelectedTip(null)}
-        />
-      )}
+        } catch (error) {
+            console.error('Failed to update tip:', error);
+            alert('Failed to update tip');
+        }
+    };
 
-      {/* Edit Spot Modal */}
-      {isEditing && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-card rounded-2xl p-8 max-w-lg w-full shadow-2xl border border-border relative max-h-[90vh] overflow-y-auto">
-            <button
-              onClick={() => setIsEditing(false)}
-              className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
-            >
-              <X size={20} className="text-white/50" />
-            </button>
+    const handleDeleteTip = async (tipId: string) => {
+        try {
+            await deleteTipMutation.mutateAsync({ id: tipId, spotId: spot?.id || '' });
+        } catch (error) {
+            console.error('Failed to delete tip:', error);
+            alert('Failed to delete tip');
+        }
+    };
 
-            <h3 className="text-2xl font-semibold text-white uppercase italic tracking-tighter mb-8">
-              Edit Spot
-            </h3>
-
-            <div className="space-y-6">
-              {/* Image Preview/Upload */}
-              <div className="space-y-2">
-                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                  Spot Image
-                </label>
-                <div 
-                  onClick={() => editFileInputRef.current?.click()}
-                  className="relative h-48 rounded-2xl bg-white/5 border border-dashed border-white/20 overflow-hidden cursor-pointer group hover:border-amber-400 transition-colors"
-                >
-                  {editPreview || spot.imageUrl ? (
-                    <img 
-                      src={editPreview || spot.imageUrl} 
-                      className="w-full h-full object-cover transition-opacity group-hover:opacity-50" 
-                      alt="Spot preview" 
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-white/40"><Camera size={32} />
-                      <span className="text-[10px] font-semibold tracking-wide mt-2">Upload Image</span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Camera size={24} className="text-amber-400" />
-                  </div>
-                </div>
-                <input 
-                  type="file" 
-                  ref={editFileInputRef} 
-                  className="hidden" 
-                  accept="image/*" 
-                  onChange={handleEditFileChange} 
+    return (
+        <div className="space-y-12 pb-24">
+            {showGalleryModal && (
+                <GalleryModal
+                    spotId={spot?.id || ''}
+                    spotName={spot.name}
+                    onClose={() => setShowGalleryModal(false)}
                 />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                  Pick Location on Map
-                </label>
-                <div className="rounded-2xl overflow-hidden h-96 border border-border shadow-inner">
-                  <LocationPicker
-                    onLocationSelected={(loc) => {
-                      setEditLocation(loc);
-                      fetchAddressFromLocation(loc.latitude, loc.longitude);
+            )}
+            {showTipModal && (
+                <CreateTipModal spotId={spot?.id || ''} onClose={() => setShowTipModal(false)} />
+            )}
+            {showReportModal && (
+                <ReportModal
+                    targetId={spot?.id || ''}
+                    reportType="SPOT"
+                    onClose={() => setShowReportModal(false)}
+                />
+            )}
+            {editingTip && (
+                <EditTipModal
+                    tip={editingTip}
+                    title={editingTipTitle}
+                    description={editingTipDescription}
+                    onTitleChange={setEditingTipTitle}
+                    onDescriptionChange={setEditingTipDescription}
+                    onSave={handleSaveEditedTip}
+                    onClose={() => {
+                        setEditingTip(null);
+                        setEditingTipTitle('');
+                        setEditingTipDescription('');
                     }}
-                    initialLocation={editLocation || undefined}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                  Spot Name
-                </label>
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-lg font-semibold text-white focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
-                  placeholder="Spot name"
+                    isSaving={updateTipMutation.isPending}
                 />
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  value={editAddress}
-                  onChange={(e) => setEditAddress(e.target.value)}
-                  className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
-                  placeholder="Address"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <Dropdown
-                  label="Category"
-                  options={categories || []}
-                  value={editCategory}
-                  onChange={setEditCategory}
-                  placeholder="Select category..."
-                />
-                <Dropdown
-                  label="City"
-                  options={cities || []}
-                  value={editCity}
-                  onChange={setEditCity}
-                  placeholder="Select city..."
-                />
-              </div>
-
-              <div className="pt-4 flex gap-4">
-                <button
-                  onClick={() => setIsEditing(false)}
-                  disabled={updateSpotMutation.isPending}
-                  className="flex-1 py-4 px-6 rounded-2xl bg-white/10 text-white/60 font-semibold tracking-wide text-xs hover:bg-white/15 transition-all disabled:opacity-50"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleUpdateSpot}
-                  disabled={updateSpotMutation.isPending}
-                  className="flex-1 py-4 px-6 rounded-2xl bg-amber-500 text-black font-semibold tracking-wide text-xs hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {updateSpotMutation.isPending ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <Save size={16} />
-                  )}
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 1. Header & Hero Image */}
-      <header className="space-y-6">
-        <button 
-          onClick={() => router.back()}
-          className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-white/50 hover:text-amber-400 transition-colors"
-        >
-          <ArrowLeft size={14} strokeWidth={3} />
-          Back
-        </button>
-        
-        {/* Hero Image Section */}
-        <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden group shadow-2xl shadow-black/30">
-          <img 
-            src={spot.imageUrl || 'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'} 
-            alt={spot.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
-          
-          {/* Admin Actions - Mobile Only (Top Left) */}
-          {/* Removed as functionality moved to Dropdown Menu */}
-
-          {/* Like Button - Mobile Only (Top Right) */}
-          {/* Removed as functionality moved to Desktop/Mobile footer or Dropdown */}
-          
-          {/* Badge Container - top row */}
-          <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
-            <div className="flex items-center gap-2 pointer-events-auto">
-              <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[9px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
-                {(spot.category as any)?.name}
-              </span>
-              <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[9px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
-                <Zap size={10} fill="currentColor" />
-                {(spot.vibeStats as any)?.avgCrowdLevel ? `Busy: ${((spot.vibeStats as any).avgCrowdLevel).toFixed(1)}/5` : 'New Spot'}
-              </div>
-            </div>
-
-            <div className="pointer-events-auto">
-              <DropdownMenu
-                trigger={
-                  <button className="bg-black/40 backdrop-blur-md text-white p-2.5 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform">
-                    <MoreVertical size={18} />
-                  </button>
-                }
-              >
-                {isOwner && (
-                  <>
-                    <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                      <Edit2 size={16} />
-                      <span>Edit Spot</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem 
-                      onClick={() => deleteSpotMutation.mutate()}
-                      danger
-                    >
-                      {deleteSpotMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                      <span>Delete Spot</span>
-                    </DropdownMenuItem>
-                  </>
-                )}
-                <DropdownMenuItem onClick={() => setShowReportModal(true)}>
-                  <Flag size={16} />
-                  <span>Report Spot</span>
-                </DropdownMenuItem>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div className="space-y-2">
-              <h1 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight drop-shadow-sm">{spot.name}</h1>
-              <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                <MapPin size={14} strokeWidth={3} className="text-amber-400 shrink-0" />
-                {spot.address}
-              </p>
-            </div>
-            
-            <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-3 md:gap-4">
-              <button 
-                onClick={() => !isInMissions && addMission.mutate(spot?.id || '')}
-                disabled={addMission.isPending || isInMissions}
-                className={cn(
-                  "flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide",
-                  isInMissions 
-                    ? "bg-emerald-500/80 border-emerald-400 text-white" 
-                    : "hover:bg-amber-400 border-white/20"
-                )}
-              >
-                {addMission.isPending ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : isInMissions ? (
-                  <>
-                    <CheckCircle2 size={18} />
-                    <span className="hidden md:inline">Mission Accepted</span>
-                    <span className="md:hidden">Accepted</span>
-                  </>
-                ) : (
-                  <>
-                    <Target size={18} />
-                    <span className="hidden md:inline">Accept Mission</span>
-                    <span className="md:hidden">Accept</span>
-                  </>
-                )}
-              </button>
-
-              <button 
-                onClick={() => router.push(`/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`)}
-                className="flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide"
-                title="Navigate to this spot"
-              >
-                <Navigation size={18} />
-                Navigate
-              </button>
-              
-              {/* Removed as functionality moved to Dropdown Menu */}
-
-              <LikeButton
-                count={spot._count?.votes || 0}
-                isVoted={spot.hasVoted}
-                onVote={handleSpotVoteClick}
-                variant="default"
-                size="lg"
-                className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
-                title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
-              />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* 2. Key Data Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
-          <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">Avg Price (THB)</span>
-          <div className="text-2xl md:text-4xl font-display font-bold text-white">
-            {(spot.priceStats as any)?.avg ? `${(spot.priceStats as any).avg.toFixed(0)}` : '--'}
-          </div>
-          <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">Across {(spot.priceStats as any)?.count || 0} Reports</div>
-        </div>
-        <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
-          <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">Fair Range</span>
-          <div className="text-lg md:text-xl font-display font-bold text-white flex items-center gap-1 md:gap-2">
-            <span className="text-emerald-500 italic">{(spot.priceStats as any)?.min || '--'}</span>
-            <span className="text-white/20">-</span>
-            <span className="text-red-500 italic">{(spot.priceStats as any)?.max || '--'}</span>
-          </div>
-          <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest italic">THB Range</div>
-        </div>
-        <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
-          <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">Live Vibe</span>
-          <div className="text-lg md:text-xl font-display font-bold text-white">
-            {(spot.vibeStats as any)?.avgCrowdLevel ? `${((spot.vibeStats as any).avgCrowdLevel).toFixed(1)} / 5` : 'No Data'}
-          </div>
-          <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">Crowd Rating</div>
-        </div>
-        <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
-          <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">Verified by</span>
-          <div className="text-lg md:text-xl font-display font-bold text-white">
-            {reports?.length || 0} Locals
-          </div>
-          <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">Community Score</div>
-        </div>
-      </div>
-
-      {/* Mobile Tabs Switcher */}
-      <div className="md:hidden sticky top-0 bg-card/80 backdrop-blur-md z-30 -mx-4 px-4 py-3 border-b border-border">
-        <div className="flex bg-white/5 p-1 rounded-2xl">
-          <button 
-            onClick={() => setActiveTab('gallery')}
-            className={cn(
-              "flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all",
-              activeTab === 'gallery' ? "bg-white text-amber-400 shadow-sm" : "text-white/50"
             )}
-          >
-            Gallery
-          </button>
-          <button 
-            onClick={() => setActiveTab('prices')}
-            className={cn(
-              "flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all",
-              activeTab === 'prices' ? "bg-white text-amber-400 shadow-sm" : "text-white/50"
+            {selectedTip && (
+                <TipCommentsModal tip={selectedTip} onClose={() => setSelectedTip(null)} />
             )}
-          >
-            Prices
-          </button>
-          <button 
-            onClick={() => setActiveTab('tips')}
-            className={cn(
-              "flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all",
-              activeTab === 'tips' ? "bg-white text-amber-400 shadow-sm" : "text-white/50"
-            )}
-          >
-            Tips
-          </button>
-          <button 
-            onClick={() => setActiveTab('vibes')}
-            className={cn(
-              "flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all",
-              activeTab === 'vibes' ? "bg-white text-amber-400 shadow-sm" : "text-white/50"
-            )}
-          >
-            Vibes
-          </button>
-        </div>
-      </div>
 
-      {/* 3. Image Gallery */}
-      <section className={cn("space-y-8 md:block", activeTab === 'gallery' ? "block" : "hidden")}>
-        <header className="flex items-center justify-between px-2">
-          <div className="flex items-center gap-3">
-            <Camera size={20} className="text-amber-400" />
-            <h3 className="text-2xl font-display font-bold text-white">
-              <span className="md:hidden">Vibe</span>
-              <span className="hidden md:block">Vibe Gallery</span>
-            </h3>
-          </div>
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadMutation.isPending}
-              className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
-            >
-              {uploadMutation.isPending ? (
-                <Loader2 size={14} className="animate-spin text-black group-hover:text-white" />
-              ) : (
-                <Upload size={14} className="text-black group-hover:text-white transition-colors" />
-              )}
-              <span className="hidden md:inline">{uploadMutation.isPending ? 'Uploading...' : 'Upload Vibe'}</span>
-              <span className="md:hidden">{uploadMutation.isPending ? '...' : 'Upload'}</span>
-            </button>
-            <input 
-              type="file" 
-              className="hidden" 
-              ref={fileInputRef} 
-              accept="image/*" 
-              onChange={handleFileUpload} 
-            />
-            <button 
-              onClick={() => setShowGalleryModal(true)}
-              className="text-[10px] font-medium text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors flex items-center gap-2"
-            >
-              <span className="hidden md:inline">View All {(galleryResponse as any)?.pagination?.total || galleryList.length} Photos</span>
-              <span className="md:hidden">All ({(galleryResponse as any)?.pagination?.total || galleryList.length})</span>
-              <Maximize2 size={12} />
-            </button>
-          </div>
-        </header>
-        
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          {galleryList.length === 0 ? (
-            <div className="col-span-full py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/20">
-               <p className="text-[10px] font-semibold text-white/40 tracking-wide">No vibe photos yet</p>
-            </div>
-          ) : (
-            <>
-              {galleryList.slice(0, 5).map((img: any) => (
-                <div key={img.id} className="aspect-square rounded-2xl overflow-hidden shadow-lg shadow-black/20 group relative border border-border">
-                  <img 
-                    src={`${img.url}?w=300&h=300&fit=crop`} 
-                    className="w-full h-full object-cover transition-transform group-hover:scale-110 cursor-pointer" 
-                    alt="Spot Vibe" 
-                    onClick={() => setShowGalleryModal(true)}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = img.url;
-                    }}
-                  />
-                  <div className="absolute top-3 right-3 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                    <LikeButton
-                      count={img._count?.votes || 0}
-                      isVoted={img.hasVoted}
-                      onVote={async () => { await toggleImageVote(img); }}
-                      isPending={imageVotePending}
-                      disabled={imageVotePending}
-                      variant="overlay"
-                      size="sm"
-                      className="text-xs font-semibold gap-1.5 px-4 py-2 rounded-md bg-white/0 hover:bg-white/0"
-                      title={img.hasVoted ? 'Unlike this image' : 'Like this image'}
-                    />
-                  </div>
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-[8px] font-semibold text-white tracking-widest">by {img.user?.name || 'local'}</span>
-                    {img.user?.level && (
-                      <span className="bg-cyan-400 text-white px-1.5 py-0.5 rounded-md text-[6px] font-semibold tracking-tighter mt-1">
-                        Lvl {img.user.level === 'LOCAL_GURU' ? '3' : img.user.level === 'EXPLORER' ? '2' : '1'}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-              {(galleryResponse as any)?.pagination?.total && (galleryResponse as any).pagination.total > 5 ? (
-                <button 
-                  onClick={() => setShowGalleryModal(true)}
-                  className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform"
-                >
-                  <span className="text-xl font-display font-bold">+{(galleryResponse as any).pagination.total - 5}</span>
-                  <span className="text-[8px] font-semibold tracking-wide">More Vibes</span>
-                </button>
-              ) : galleryList.length > 5 ? (
-                <button 
-                  onClick={() => setShowGalleryModal(true)}
-                  className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform"
-                >
-                  <span className="text-xl font-display font-bold">+{galleryList.length - 5}</span>
-                  <span className="text-[8px] font-semibold tracking-wide">More Vibes</span>
-                </button>
-              ) : null}
-            </>
-          )}
-        </div>
-      </section>
+            {/* Edit Spot Modal */}
+            {isEditing && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="bg-card rounded-2xl p-8 max-w-lg w-full shadow-2xl border border-border relative max-h-[90vh] overflow-y-auto">
+                        <button
+                            onClick={() => setIsEditing(false)}
+                            className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors"
+                        >
+                            <X size={20} className="text-white/50" />
+                        </button>
 
-      {/* 4. Detailed Data Sections */}
-      <div className="flex flex-col gap-12">
-        {/* Price History Table */}
-        <section className={cn("space-y-8 md:block", activeTab === 'prices' ? "block" : "hidden")}>
-          <header className="flex items-center justify-between px-2">
-            <h3 className="text-2xl font-display font-bold text-white">Recent Price Reports</h3>
-            <Info size={16} className="text-white/40" />
-          </header>
-          <div className="bg-card rounded-2xl border border-border shadow-xl shadow-black/20 overflow-hidden">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">Item Name</th>
-                  <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">Price</th>
-                  <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">Status</th>
-                  <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {!Array.isArray(reports) || reports.length === 0 ? (
-                  <tr>
-                    <td colSpan={4} className="px-8 py-20 text-center text-xs font-medium text-white/40">No reports yet</td>
-                  </tr>
-                ) : (
-                  reports.map((r: any) => (
-                    <tr key={r.id} className="hover:bg-white/5 transition-colors">
-                      <td className="px-8 py-6 text-sm font-semibold text-white">{r.itemName}</td>
-                      <td className="px-8 py-6 text-sm font-semibold text-amber-400 italic">{r.priceThb} THB</td>
-                      <td className="px-8 py-6">
-                        <div className={cn(
-                          "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-semibold tracking-tighter",
-                          Number(r.priceThb) <= (spot.priceStats as any).avg ? "bg-emerald-50 text-emerald-500" : "bg-red-50 text-red-500"
-                        )}>
-                          {Number(r.priceThb) <= (spot.priceStats as any).avg ? <TrendingDown size={10} /> : <TrendingUp size={10} />}
-                          {Number(r.priceThb) <= (spot.priceStats as any).avg ? 'Fair Price' : 'Expensive'}
+                        <h3 className="text-2xl font-semibold text-white uppercase italic tracking-tighter mb-8">
+                            Edit Spot
+                        </h3>
+
+                        <div className="space-y-6">
+                            {/* Image Preview/Upload */}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
+                                    Spot Image
+                                </label>
+                                <div
+                                    onClick={() => editFileInputRef.current?.click()}
+                                    className="relative h-48 rounded-2xl bg-white/5 border border-dashed border-white/20 overflow-hidden cursor-pointer group hover:border-amber-400 transition-colors"
+                                >
+                                    {editPreview || spot.imageUrl ? (
+                                        <img
+                                            src={editPreview || spot.imageUrl}
+                                            className="w-full h-full object-cover transition-opacity group-hover:opacity-50"
+                                            alt="Spot preview"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center text-white/40">
+                                            <Camera size={32} />
+                                            <span className="text-[10px] font-semibold tracking-wide mt-2">
+                                                Upload Image
+                                            </span>
+                                        </div>
+                                    )}
+                                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Camera size={24} className="text-amber-400" />
+                                    </div>
+                                </div>
+                                <input
+                                    type="file"
+                                    ref={editFileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleEditFileChange}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
+                                    Pick Location on Map
+                                </label>
+                                <div className="rounded-2xl overflow-hidden h-96 border border-border shadow-inner">
+                                    <LocationPicker
+                                        onLocationSelected={(loc) => {
+                                            setEditLocation(loc);
+                                            fetchAddressFromLocation(loc.latitude, loc.longitude);
+                                        }}
+                                        initialLocation={editLocation || undefined}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
+                                    Spot Name
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editName}
+                                    onChange={(e) => setEditName(e.target.value)}
+                                    className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-lg font-semibold text-white focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
+                                    placeholder="Spot name"
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
+                                    Address
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editAddress}
+                                    onChange={(e) => setEditAddress(e.target.value)}
+                                    className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
+                                    placeholder="Address"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <Dropdown
+                                    label="Category"
+                                    options={categories || []}
+                                    value={editCategory}
+                                    onChange={setEditCategory}
+                                    placeholder="Select category..."
+                                />
+                                <Dropdown
+                                    label="City"
+                                    options={cities || []}
+                                    value={editCity}
+                                    onChange={setEditCity}
+                                    placeholder="Select city..."
+                                />
+                            </div>
+
+                            <div className="pt-4 flex gap-4">
+                                <button
+                                    onClick={() => setIsEditing(false)}
+                                    disabled={updateSpotMutation.isPending}
+                                    className="flex-1 py-4 px-6 rounded-2xl bg-white/10 text-white/60 font-semibold tracking-wide text-xs hover:bg-white/15 transition-all disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleUpdateSpot}
+                                    disabled={updateSpotMutation.isPending}
+                                    className="flex-1 py-4 px-6 rounded-2xl bg-amber-500 text-black font-semibold tracking-wide text-xs hover:bg-amber-400 transition-all shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                                >
+                                    {updateSpotMutation.isPending ? (
+                                        <Loader2 size={16} className="animate-spin" />
+                                    ) : (
+                                        <Save size={16} />
+                                    )}
+                                    Save Changes
+                                </button>
+                            </div>
                         </div>
-                      </td>
-                      <td className="px-8 py-6 text-[10px] font-medium text-white/50 uppercase tracking-widest" suppressHydrationWarning>
-                        {new Date(r.timestamp).toLocaleDateString()}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        {/* Community Tips (Avoid/Try) */}
-        <section className={cn("space-y-8 md:block", activeTab === 'tips' ? "block" : "hidden")}>
-          <header className="flex flex-col gap-6 px-2">
-            <div className="flex items-center justify-between gap-4">
-              <h3 className="text-2xl font-display font-bold text-white">Tips</h3>
-              <button 
-                onClick={() => {
-                  if (!authUser) {
-                    router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
-                    return;
-                  }
-                  setShowTipModal(true);
-                }}
-                className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
-              >
-                <Zap size={14} fill="currentColor" className="text-black group-hover:text-white transition-colors" />
-                <span className="hidden sm:inline">Share a New Tip</span>
-                <span className="sm:hidden">New Tip</span>
-              </button>
-            </div>
-            
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setTipType('TRY')}
-                  className={cn(
-                    "flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border",
-                    tipType === 'TRY' ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-white/5 text-white/50 border-border hover:bg-white/10"
-                  )}
-                >
-                  To Try
-                </button>
-                <button
-                  onClick={() => setTipType('AVOID')}
-                  className={cn(
-                    "flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border",
-                    tipType === 'AVOID' ? "bg-red-500/20 text-red-400 border-red-500/30" : "bg-white/5 text-white/50 border-border hover:bg-white/10"
-                  )}
-                >
-                  To Avoid
-                </button>
-              </div>
-            </div>
-          </header>
-
-          <div className="space-y-4">
-            <div className="flex justify-end">
-              <div className="flex bg-white/5 p-1 rounded-xl w-fit border border-border">
-                <button 
-                  onClick={() => setTipSort('popular')}
-                  className={cn(
-                    "px-4 py-1.5 rounded-lg text-xs font-semibold transition-all",
-                    tipSort === 'popular' ? "bg-white/10 text-amber-400" : "text-white/50 hover:text-white/70"
-                  )}
-                >
-                  Popular
-                </button>
-                <button 
-                  onClick={() => setTipSort('newest')}
-                  className={cn(
-                    "px-4 py-1.5 rounded-lg text-xs font-semibold transition-all",
-                    tipSort === 'newest' ? "bg-white/10 text-amber-400" : "text-white/50 hover:text-white/70"
-                  )}
-                >
-                  Newest
-                </button>
-              </div>
-            </div>
-            {tipsLoading ? (
-               <div className="py-20 flex justify-center">
-                 <Loader2 size={24} className="text-amber-400 animate-spin" />
-               </div>
-            ) : tips?.length === 0 ? (
-              <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/20 text-xs font-medium text-white/40">Be the first to share a {tipType.toLowerCase()} tip</div>
-            ) : (
-              <ScrollArea className="h-[600px] pr-4">
-                <div className="space-y-2.5 pb-8">
-                                  {tips?.map((tip: any) => (
-                    <TipCard
-                      key={tip.id}
-                      tip={tip}
-                      authUser={authUser}
-                      onCommentClick={() => setSelectedTip(tip)}
-                      onVoteClick={async () => toggleTipVote(tip)}
-                      onEditClick={() => handleEditTip(tip)}
-                      onDeleteClick={() => handleDeleteTip(tip.id)}
-                    />
-                  ))}
-                  
-                  {/* Infinite scroll target */}
-                  <div ref={observerTarget} className="py-6 flex justify-center">
-                    {isFetchingNextTips ? (
-                      <Loader2 size={20} className="text-amber-400 animate-spin" />
-                    ) : hasNextTips ? (
-                      <div className="h-4 w-4" />
-                    ) : (
-                      <p className="text-[10px] font-semibold text-white/40 tracking-wide">End of tips</p>
-                    )}
-                  </div>
+                    </div>
                 </div>
-              </ScrollArea>
             )}
-          </div>
-        </section>
 
-        {/* Live Vibes Section */}
-        <section className={cn("space-y-8 md:block", activeTab === 'vibes' ? "block" : "hidden")}>
-          <header className="flex items-center justify-between px-2">
-            <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
-              <Zap size={20} className="text-amber-400" />
-              Live Vibes
-            </h3>
-          </header>
+            {/* 1. Header & Hero Image */}
+            <header className="space-y-6">
+                <button
+                    onClick={() => router.back()}
+                    className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-white/50 hover:text-amber-400 transition-colors"
+                >
+                    <ArrowLeft size={14} strokeWidth={3} />
+                    Back
+                </button>
 
-          {/* Check-in Form */}
-          {authUser && <CreateVibeForm spotId={spot?.id || ""} onSuccess={() => {}} />}
+                {/* Hero Image Section */}
+                <div className="relative h-100 md:h-125 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30">
+                    <img
+                        src={
+                            spot.imageUrl ||
+                            'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'
+                        }
+                        alt={spot.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
 
-          {/* Vibe List */}
-          {vibesLoading ? (
-            <div className="space-y-3">
-              {[1, 2, 3].map(i => <div key={i} className="h-20 bg-white/5 rounded-2xl animate-pulse" />)}
-            </div>
-          ) : Array.isArray(spotVibes) && spotVibes.length > 0 ? (
-            <div className="space-y-3">
-              {spotVibes.map((vibe: any) => (
-                <div key={vibe.id} className="bg-white/5 rounded-2xl p-5 border border-white/8 flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex gap-1">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            "w-2 h-6 rounded-full transition-colors",
-                            i < vibe.crowdLevel ? "bg-amber-400" : "bg-white/10"
-                          )}
-                        />
-                      ))}
+                    {/* Admin Actions - Mobile Only (Top Left) */}
+                    {/* Removed as functionality moved to Dropdown Menu */}
+
+                    {/* Like Button - Mobile Only (Top Right) */}
+                    {/* Removed as functionality moved to Desktop/Mobile footer or Dropdown */}
+
+                    {/* Badge Container - top row */}
+                    <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
+                        <div className="flex items-center gap-2 pointer-events-auto">
+                            <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
+                                {(spot.category as any)?.name}
+                            </span>
+                            <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
+                                <Zap size={10} fill="currentColor" />
+                                {(spot.vibeStats as any)?.avgCrowdLevel
+                                    ? `Busy: ${(spot.vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
+                                    : 'New Spot'}
+                            </div>
+                        </div>
+
+                        <div className="pointer-events-auto">
+                            <DropdownMenu
+                                trigger={
+                                    <button className="bg-black/40 backdrop-blur-md text-white p-2.5 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform">
+                                        <MoreVertical size={18} />
+                                    </button>
+                                }
+                            >
+                                {isOwner && (
+                                    <>
+                                        <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                                            <Edit2 size={16} />
+                                            <span>Edit Spot</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={() => deleteSpotMutation.mutate()}
+                                            danger
+                                        >
+                                            {deleteSpotMutation.isPending ? (
+                                                <Loader2 size={16} className="animate-spin" />
+                                            ) : (
+                                                <Trash2 size={16} />
+                                            )}
+                                            <span>Delete Spot</span>
+                                        </DropdownMenuItem>
+                                    </>
+                                )}
+                                <DropdownMenuItem onClick={() => setShowReportModal(true)}>
+                                    <Flag size={16} />
+                                    <span>Report Spot</span>
+                                </DropdownMenuItem>
+                            </DropdownMenu>
+                        </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        Crowd: {vibe.crowdLevel}/5
-                      </p>
-                      {vibe.waitTimeMinutes != null && (
-                        <p className="text-xs text-white/50">{vibe.waitTimeMinutes} min wait</p>
-                      )}
+
+                    <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div className="space-y-2">
+                            <h1 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight drop-shadow-sm">
+                                {spot.name}
+                            </h1>
+                            <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                                <MapPin
+                                    size={14}
+                                    strokeWidth={3}
+                                    className="text-amber-400 shrink-0"
+                                />
+                                {spot.address}
+                            </p>
+                        </div>
+
+                        <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-3 md:gap-4">
+                            <button
+                                onClick={() => !isInMissions && addMission.mutate(spot?.id || '')}
+                                disabled={addMission.isPending || isInMissions}
+                                className={cn(
+                                    'flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide',
+                                    isInMissions
+                                        ? 'bg-emerald-500/80 border-emerald-400 text-white'
+                                        : 'hover:bg-amber-400 border-white/20',
+                                )}
+                            >
+                                {addMission.isPending ? (
+                                    <Loader2 size={18} className="animate-spin" />
+                                ) : isInMissions ? (
+                                    <>
+                                        <CheckCircle2 size={18} />
+                                        <span className="hidden md:inline">Mission Accepted</span>
+                                        <span className="md:hidden">Accepted</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Target size={18} />
+                                        <span className="hidden md:inline">Accept Mission</span>
+                                        <span className="md:hidden">Accept</span>
+                                    </>
+                                )}
+                            </button>
+
+                            <button
+                                onClick={() =>
+                                    router.push(
+                                        `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`,
+                                    )
+                                }
+                                className="flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide"
+                                title="Navigate to this spot"
+                            >
+                                <Navigation size={18} />
+                                Navigate
+                            </button>
+
+                            {/* Removed as functionality moved to Dropdown Menu */}
+
+                            <LikeButton
+                                count={spot._count?.votes || 0}
+                                isVoted={spot.hasVoted}
+                                onVote={handleSpotVoteClick}
+                                variant="default"
+                                size="lg"
+                                className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
+                                title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
+                            />
+                        </div>
                     </div>
-                  </div>
-                  <p className="text-[10px] text-white/30 whitespace-nowrap">
-                    {new Date(vibe.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </p>
                 </div>
-              ))}
+            </header>
+
+            {/* 2. Key Data Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
+                    <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">
+                        Avg Price (THB)
+                    </span>
+                    <div className="text-2xl md:text-4xl font-display font-bold text-white">
+                        {(spot.priceStats as any)?.avg
+                            ? `${(spot.priceStats as any).avg.toFixed(0)}`
+                            : '--'}
+                    </div>
+                    <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
+                        Across {(spot.priceStats as any)?.count || 0} Reports
+                    </div>
+                </div>
+                <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
+                    <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">
+                        Fair Range
+                    </span>
+                    <div className="text-lg md:text-xl font-display font-bold text-white flex items-center gap-1 md:gap-2">
+                        <span className="text-emerald-500 italic">
+                            {(spot.priceStats as any)?.min || '--'}
+                        </span>
+                        <span className="text-white/20">-</span>
+                        <span className="text-red-500 italic">
+                            {(spot.priceStats as any)?.max || '--'}
+                        </span>
+                    </div>
+                    <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest italic">
+                        THB Range
+                    </div>
+                </div>
+                <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
+                    <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">
+                        Live Vibe
+                    </span>
+                    <div className="text-lg md:text-xl font-display font-bold text-white">
+                        {(spot.vibeStats as any)?.avgCrowdLevel
+                            ? `${(spot.vibeStats as any).avgCrowdLevel.toFixed(1)} / 5`
+                            : 'No Data'}
+                    </div>
+                    <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
+                        Crowd Rating
+                    </div>
+                </div>
+                <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
+                    <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">
+                        Verified by
+                    </span>
+                    <div className="text-lg md:text-xl font-display font-bold text-white">
+                        {reports?.length || 0} Locals
+                    </div>
+                    <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
+                        Community Score
+                    </div>
+                </div>
             </div>
-          ) : (
-            <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
-              <Zap size={32} className="text-white/10 mx-auto mb-3" />
-              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">No vibes yet. Be the first to check in!</p>
+
+            {/* Mobile Tabs Switcher */}
+            <div className="md:hidden sticky top-0 bg-card/80 backdrop-blur-md z-30 -mx-4 px-4 py-3 border-b border-border">
+                <div className="flex bg-white/5 p-1 rounded-2xl">
+                    <button
+                        onClick={() => setActiveTab('gallery')}
+                        className={cn(
+                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            activeTab === 'gallery'
+                                ? 'bg-white text-amber-400 shadow-sm'
+                                : 'text-white/50',
+                        )}
+                    >
+                        Gallery
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('prices')}
+                        className={cn(
+                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            activeTab === 'prices'
+                                ? 'bg-white text-amber-400 shadow-sm'
+                                : 'text-white/50',
+                        )}
+                    >
+                        Prices
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('tips')}
+                        className={cn(
+                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            activeTab === 'tips'
+                                ? 'bg-white text-amber-400 shadow-sm'
+                                : 'text-white/50',
+                        )}
+                    >
+                        Tips
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('vibes')}
+                        className={cn(
+                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            activeTab === 'vibes'
+                                ? 'bg-white text-amber-400 shadow-sm'
+                                : 'text-white/50',
+                        )}
+                    >
+                        Vibes
+                    </button>
+                </div>
             </div>
-          )}
-        </section>
-      </div>
-    </div>
-  );
+
+            {/* 3. Image Gallery */}
+            <section
+                className={cn('space-y-8 md:block', activeTab === 'gallery' ? 'block' : 'hidden')}
+            >
+                <header className="flex items-center justify-between px-2">
+                    <div className="flex items-center gap-3">
+                        <Camera size={20} className="text-amber-400" />
+                        <h3 className="text-2xl font-display font-bold text-white">
+                            <span className="md:hidden">Vibe</span>
+                            <span className="hidden md:block">Vibe Gallery</span>
+                        </h3>
+                    </div>
+                    <div className="flex items-center gap-6">
+                        <button
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploadMutation.isPending}
+                            className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
+                        >
+                            {uploadMutation.isPending ? (
+                                <Loader2
+                                    size={14}
+                                    className="animate-spin text-black group-hover:text-white"
+                                />
+                            ) : (
+                                <Upload
+                                    size={14}
+                                    className="text-black group-hover:text-white transition-colors"
+                                />
+                            )}
+                            <span className="hidden md:inline">
+                                {uploadMutation.isPending ? 'Uploading...' : 'Upload Vibe'}
+                            </span>
+                            <span className="md:hidden">
+                                {uploadMutation.isPending ? '...' : 'Upload'}
+                            </span>
+                        </button>
+                        <input
+                            type="file"
+                            className="hidden"
+                            ref={fileInputRef}
+                            accept="image/*"
+                            onChange={handleFileUpload}
+                        />
+                        <button
+                            onClick={() => setShowGalleryModal(true)}
+                            className="text-[10px] font-medium text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors flex items-center gap-2"
+                        >
+                            <span className="hidden md:inline">
+                                View All{' '}
+                                {(galleryResponse as any)?.pagination?.total || galleryList.length}{' '}
+                                Photos
+                            </span>
+                            <span className="md:hidden">
+                                All (
+                                {(galleryResponse as any)?.pagination?.total || galleryList.length})
+                            </span>
+                            <Maximize2 size={12} />
+                        </button>
+                    </div>
+                </header>
+
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                    {galleryList.length === 0 ? (
+                        <div className="col-span-full py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/20">
+                            <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                                No vibe photos yet
+                            </p>
+                        </div>
+                    ) : (
+                        <>
+                            {galleryList.slice(0, 5).map((img: any) => (
+                                <div
+                                    key={img.id}
+                                    className="aspect-square rounded-2xl overflow-hidden shadow-lg shadow-black/20 group relative border border-border"
+                                >
+                                    <img
+                                        src={`${img.url}?w=300&h=300&fit=crop`}
+                                        className="w-full h-full object-cover transition-transform group-hover:scale-110 cursor-pointer"
+                                        alt="Spot Vibe"
+                                        onClick={() => setShowGalleryModal(true)}
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = img.url;
+                                        }}
+                                    />
+                                    <div className="absolute top-3 right-3 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
+                                        <LikeButton
+                                            count={img._count?.votes || 0}
+                                            isVoted={img.hasVoted}
+                                            onVote={async () => {
+                                                await toggleImageVote(img);
+                                            }}
+                                            isPending={imageVotePending}
+                                            disabled={imageVotePending}
+                                            variant="overlay"
+                                            size="sm"
+                                            className="text-xs font-semibold gap-1.5 px-4 py-2 rounded-md bg-white/0 hover:bg-white/0"
+                                            title={
+                                                img.hasVoted
+                                                    ? 'Unlike this image'
+                                                    : 'Like this image'
+                                            }
+                                        />
+                                    </div>
+                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center pointer-events-none">
+                                        <span className="text-[8px] font-semibold text-white tracking-widest">
+                                            by {img.user?.name || 'local'}
+                                        </span>
+                                        {img.user?.level && (
+                                            <span className="bg-cyan-400 text-white px-1.5 py-0.5 rounded-md text-[6px] font-semibold tracking-tighter mt-1">
+                                                Lvl{' '}
+                                                {img.user.level === 'LOCAL_GURU'
+                                                    ? '3'
+                                                    : img.user.level === 'EXPLORER'
+                                                      ? '2'
+                                                      : '1'}
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                            {(galleryResponse as any)?.pagination?.total &&
+                            (galleryResponse as any).pagination.total > 5 ? (
+                                <button
+                                    onClick={() => setShowGalleryModal(true)}
+                                    className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform"
+                                >
+                                    <span className="text-xl font-display font-bold">
+                                        +{(galleryResponse as any).pagination.total - 5}
+                                    </span>
+                                    <span className="text-[8px] font-semibold tracking-wide">
+                                        More Vibes
+                                    </span>
+                                </button>
+                            ) : galleryList.length > 5 ? (
+                                <button
+                                    onClick={() => setShowGalleryModal(true)}
+                                    className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform"
+                                >
+                                    <span className="text-xl font-display font-bold">
+                                        +{galleryList.length - 5}
+                                    </span>
+                                    <span className="text-[8px] font-semibold tracking-wide">
+                                        More Vibes
+                                    </span>
+                                </button>
+                            ) : null}
+                        </>
+                    )}
+                </div>
+            </section>
+
+            {/* 4. Detailed Data Sections */}
+            <div className="flex flex-col gap-12">
+                {/* Price History Table */}
+                <section
+                    className={cn(
+                        'space-y-8 md:block',
+                        activeTab === 'prices' ? 'block' : 'hidden',
+                    )}
+                >
+                    <header className="flex items-center justify-between px-2">
+                        <h3 className="text-2xl font-display font-bold text-white">
+                            Recent Price Reports
+                        </h3>
+                        <Info size={16} className="text-white/40" />
+                    </header>
+                    <div className="bg-card rounded-2xl border border-border shadow-xl shadow-black/20 overflow-hidden">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-border">
+                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                        Item Name
+                                    </th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                        Price
+                                    </th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                        Status
+                                    </th>
+                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                        Date
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-border">
+                                {!Array.isArray(reports) || reports.length === 0 ? (
+                                    <tr>
+                                        <td
+                                            colSpan={4}
+                                            className="px-8 py-20 text-center text-xs font-medium text-white/40"
+                                        >
+                                            No reports yet
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    reports.map((r: any) => (
+                                        <tr
+                                            key={r.id}
+                                            className="hover:bg-white/5 transition-colors"
+                                        >
+                                            <td className="px-8 py-6 text-sm font-semibold text-white">
+                                                {r.itemName}
+                                            </td>
+                                            <td className="px-8 py-6 text-sm font-semibold text-amber-400 italic">
+                                                {r.priceThb} THB
+                                            </td>
+                                            <td className="px-8 py-6">
+                                                <div
+                                                    className={cn(
+                                                        'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold tracking-tighter',
+                                                        Number(r.priceThb) <=
+                                                            (spot.priceStats as any).avg
+                                                            ? 'bg-emerald-50 text-emerald-500'
+                                                            : 'bg-red-50 text-red-500',
+                                                    )}
+                                                >
+                                                    {Number(r.priceThb) <=
+                                                    (spot.priceStats as any).avg ? (
+                                                        <TrendingDown size={10} />
+                                                    ) : (
+                                                        <TrendingUp size={10} />
+                                                    )}
+                                                    {Number(r.priceThb) <=
+                                                    (spot.priceStats as any).avg
+                                                        ? 'Fair Price'
+                                                        : 'Expensive'}
+                                                </div>
+                                            </td>
+                                            <td
+                                                className="px-8 py-6 text-[10px] font-medium text-white/50 uppercase tracking-widest"
+                                                suppressHydrationWarning
+                                            >
+                                                {new Date(r.timestamp).toLocaleDateString()}
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                {/* Community Tips (Avoid/Try) */}
+                <section
+                    className={cn('space-y-8 md:block', activeTab === 'tips' ? 'block' : 'hidden')}
+                >
+                    <header className="flex flex-col gap-6 px-2">
+                        <div className="flex items-center justify-between gap-4">
+                            <h3 className="text-2xl font-display font-bold text-white">Tips</h3>
+                            <button
+                                onClick={() => {
+                                    if (!authUser) {
+                                        router.push(
+                                            `/login?redirectTo=${encodeURIComponent(pathname)}`,
+                                        );
+                                        return;
+                                    }
+                                    setShowTipModal(true);
+                                }}
+                                className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                                <Zap
+                                    size={14}
+                                    fill="currentColor"
+                                    className="text-black group-hover:text-white transition-colors"
+                                />
+                                <span className="hidden sm:inline">Share a New Tip</span>
+                                <span className="sm:hidden">New Tip</span>
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => setTipType('TRY')}
+                                    className={cn(
+                                        'flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border',
+                                        tipType === 'TRY'
+                                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                            : 'bg-white/5 text-white/50 border-border hover:bg-white/10',
+                                    )}
+                                >
+                                    To Try
+                                </button>
+                                <button
+                                    onClick={() => setTipType('AVOID')}
+                                    className={cn(
+                                        'flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border',
+                                        tipType === 'AVOID'
+                                            ? 'bg-red-500/20 text-red-400 border-red-500/30'
+                                            : 'bg-white/5 text-white/50 border-border hover:bg-white/10',
+                                    )}
+                                >
+                                    To Avoid
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="space-y-4">
+                        <div className="flex justify-end">
+                            <div className="flex bg-white/5 p-1 rounded-xl w-fit border border-border">
+                                <button
+                                    onClick={() => setTipSort('popular')}
+                                    className={cn(
+                                        'px-4 py-1.5 rounded-lg text-xs font-semibold transition-all',
+                                        tipSort === 'popular'
+                                            ? 'bg-white/10 text-amber-400'
+                                            : 'text-white/50 hover:text-white/70',
+                                    )}
+                                >
+                                    Popular
+                                </button>
+                                <button
+                                    onClick={() => setTipSort('newest')}
+                                    className={cn(
+                                        'px-4 py-1.5 rounded-lg text-xs font-semibold transition-all',
+                                        tipSort === 'newest'
+                                            ? 'bg-white/10 text-amber-400'
+                                            : 'text-white/50 hover:text-white/70',
+                                    )}
+                                >
+                                    Newest
+                                </button>
+                            </div>
+                        </div>
+                        {tipsLoading ? (
+                            <div className="py-20 flex justify-center">
+                                <Loader2 size={24} className="text-amber-400 animate-spin" />
+                            </div>
+                        ) : tips?.length === 0 ? (
+                            <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/20 text-xs font-medium text-white/40">
+                                Be the first to share a {tipType.toLowerCase()} tip
+                            </div>
+                        ) : (
+                            <ScrollArea className="h-150 pr-4">
+                                <div className="space-y-2.5 pb-8">
+                                    {tips?.map((tip: any) => (
+                                        <TipCard
+                                            key={tip.id}
+                                            tip={tip}
+                                            authUser={authUser}
+                                            onCommentClick={() => setSelectedTip(tip)}
+                                            onVoteClick={async () => toggleTipVote(tip)}
+                                            onEditClick={() => handleEditTip(tip)}
+                                            onDeleteClick={() => handleDeleteTip(tip.id)}
+                                        />
+                                    ))}
+
+                                    {/* Infinite scroll target */}
+                                    <div ref={observerTarget} className="py-6 flex justify-center">
+                                        {isFetchingNextTips ? (
+                                            <Loader2
+                                                size={20}
+                                                className="text-amber-400 animate-spin"
+                                            />
+                                        ) : hasNextTips ? (
+                                            <div className="h-4 w-4" />
+                                        ) : (
+                                            <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                                                End of tips
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </ScrollArea>
+                        )}
+                    </div>
+                </section>
+
+                {/* Live Vibes Section */}
+                <section
+                    className={cn('space-y-8 md:block', activeTab === 'vibes' ? 'block' : 'hidden')}
+                >
+                    <header className="flex items-center justify-between px-2">
+                        <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                            <Zap size={20} className="text-amber-400" />
+                            Live Vibes
+                        </h3>
+                    </header>
+
+                    {/* Check-in Form */}
+                    {authUser && <CreateVibeForm spotId={spot?.id || ''} onSuccess={() => {}} />}
+
+                    {/* Vibe List */}
+                    {vibesLoading ? (
+                        <div className="space-y-3">
+                            {[1, 2, 3].map((i) => (
+                                <div
+                                    key={i}
+                                    className="h-20 bg-white/5 rounded-2xl animate-pulse"
+                                />
+                            ))}
+                        </div>
+                    ) : Array.isArray(spotVibes) && spotVibes.length > 0 ? (
+                        <div className="space-y-3">
+                            {spotVibes.map((vibe: any) => (
+                                <div
+                                    key={vibe.id}
+                                    className="bg-white/5 rounded-2xl p-5 border border-white/8 flex items-center justify-between gap-4"
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex gap-1">
+                                            {Array.from({ length: 5 }).map((_, i) => (
+                                                <div
+                                                    key={i}
+                                                    className={cn(
+                                                        'w-2 h-6 rounded-full transition-colors',
+                                                        i < vibe.crowdLevel
+                                                            ? 'bg-amber-400'
+                                                            : 'bg-white/10',
+                                                    )}
+                                                />
+                                            ))}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-semibold text-white">
+                                                Crowd: {vibe.crowdLevel}/5
+                                            </p>
+                                            {vibe.waitTimeMinutes != null && (
+                                                <p className="text-xs text-white/50">
+                                                    {vibe.waitTimeMinutes} min wait
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] text-white/30 whitespace-nowrap">
+                                        {new Date(vibe.timestamp).toLocaleTimeString([], {
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                            <Zap size={32} className="text-white/10 mx-auto mb-3" />
+                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                                No vibes yet. Be the first to check in!
+                            </p>
+                        </div>
+                    )}
+                </section>
+            </div>
+        </div>
+    );
 }

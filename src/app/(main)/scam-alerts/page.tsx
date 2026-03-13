@@ -18,13 +18,13 @@ export default function ScamAlertsPage() {
 
     // Initialize from URL
     const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-        searchParams.get('category') || undefined
+        searchParams.get('category') || undefined,
     );
     const [search, setSearch] = useState(searchParams.get('q') || '');
     const [sort, setSort] = useState<'newest' | 'popular'>(
-        (searchParams.get('sort') as 'newest' | 'popular') || 'newest'
+        (searchParams.get('sort') as 'newest' | 'popular') || 'newest',
     );
-    
+
     const { selectedCityId, selectedCity } = useCity();
     const [isClient, setIsClient] = useState(false);
     const { ref, inView } = useInView();
@@ -33,7 +33,7 @@ export default function ScamAlertsPage() {
     const createQueryString = useCallback(
         (params: Record<string, string | null>) => {
             const newSearchParams = new URLSearchParams(searchParams.toString());
-            
+
             Object.entries(params).forEach(([name, value]) => {
                 if (value === null || value === undefined) {
                     newSearchParams.delete(name);
@@ -44,13 +44,15 @@ export default function ScamAlertsPage() {
 
             return newSearchParams.toString();
         },
-        [searchParams]
+        [searchParams],
     );
 
     // Sync URL when filters change (except search which is handled by debounce)
     const handleCategoryChange = (catId: string | undefined) => {
         setSelectedCategory(catId);
-        router.push(pathname + '?' + createQueryString({ category: catId || null }), { scroll: false });
+        router.push(pathname + '?' + createQueryString({ category: catId || null }), {
+            scroll: false,
+        });
     };
 
     const handleSortChange = (newSort: 'newest' | 'popular') => {
@@ -62,7 +64,9 @@ export default function ScamAlertsPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             if (search !== (searchParams.get('q') || '')) {
-                router.push(pathname + '?' + createQueryString({ q: search || null }), { scroll: false });
+                router.push(pathname + '?' + createQueryString({ q: search || null }), {
+                    scroll: false,
+                });
             }
         }, 500);
         return () => clearTimeout(timer);
@@ -175,7 +179,7 @@ export default function ScamAlertsPage() {
                             {cat._count?.scamAlerts > 0 && (
                                 <span
                                     className={cn(
-                                        'px-1.5 py-0.5 rounded-md text-[9px]',
+                                        'px-1.5 py-0.5 rounded-md text-[12px]',
                                         selectedCategory === cat.id
                                             ? 'bg-white/20 text-black'
                                             : 'bg-white/8 text-white/40',
@@ -209,10 +213,7 @@ export default function ScamAlertsPage() {
                 ) : alerts && alerts.length > 0 ? (
                     <>
                         {alerts.map((alert: any) => (
-                            <ScamAlertCard
-                                key={alert.id}
-                                alert={alert}
-                            />
+                            <ScamAlertCard key={alert.id} alert={alert} />
                         ))}
 
                         {/* Load More Trigger */}
@@ -222,7 +223,7 @@ export default function ScamAlertsPage() {
                             ) : hasNextPage ? (
                                 <div className="h-1" />
                             ) : (
-                                <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.2em]">
+                                <p className="text-[12px] font-bold text-white/50 uppercase tracking-[0.2em]">
                                     — You've reached the end —
                                 </p>
                             )}

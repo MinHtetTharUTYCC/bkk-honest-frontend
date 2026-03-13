@@ -68,13 +68,17 @@ export default function LoginPage() {
                             <Loader2 className="animate-spin" size={18} />
                         ) : (
                             <>
-                                <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4" />
+                                <img
+                                    src="https://www.google.com/favicon.ico"
+                                    alt="Google"
+                                    className="w-4 h-4"
+                                />
                                 Continue with Google
                             </>
                         )}
                     </button>
-                    
-                    <p className="text-center text-[9px] text-white/20 font-bold uppercase tracking-widest px-4 leading-relaxed">
+
+                    <p className="text-center text-[12px] text-white/20 font-bold uppercase tracking-widest px-4 leading-relaxed">
                         By continuing, you agree to our Terms of Service and Privacy Policy.
                     </p>
                 </div>

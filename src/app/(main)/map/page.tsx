@@ -485,17 +485,17 @@ export default function MapPage() {
               <div className="grid grid-cols-3 gap-3 mb-6">
                 <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-white/5">
                   <Heart size={16} className="text-emerald-400 mb-1" />
-                  <span className="text-[10px] text-white/40 uppercase font-semibold">Tips</span>
+                  <span className="text-[10px] text-white/50 uppercase font-semibold">Tips</span>
                   <span className="text-sm font-bold text-white">{selectedSpot.community_tips_count || 0}</span>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-white/5">
                   <Zap size={16} className="text-amber-400 mb-1" />
-                  <span className="text-[10px] text-white/40 uppercase font-semibold">Vibes</span>
+                  <span className="text-[10px] text-white/50 uppercase font-semibold">Vibes</span>
                   <span className="text-sm font-bold text-white">{selectedSpot.vibe_checks_count || 0}</span>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-white/5">
                   <MapPin size={16} className="text-cyan-400 mb-1" />
-                  <span className="text-[10px] text-white/40 uppercase font-semibold">Reports</span>
+                  <span className="text-[10px] text-white/50 uppercase font-semibold">Reports</span>
                   <span className="text-sm font-bold text-white">{selectedSpot.price_reports_count || 0}</span>
                 </div>
               </div>

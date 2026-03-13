@@ -36,7 +36,7 @@ export default function ReportPage() {
     }, [user, authLoading, router, pathname]);
 
     const [submitted, setSubmitted] = useState(false);
-    
+
     // Price State
     const [priceSpotId, setPriceSpotId] = useState('');
 
@@ -52,7 +52,10 @@ export default function ReportPage() {
     const [spotAddress, setSpotAddress] = useState('');
     const [spotCity, setSpotCity] = useState(selectedCityId || '');
     const [spotCategory, setSpotCategory] = useState('');
-    const [spotLocation, setSpotLocation] = useState<{ latitude: number; longitude: number } | null>(null);
+    const [spotLocation, setSpotLocation] = useState<{
+        latitude: number;
+        longitude: number;
+    } | null>(null);
     const [spotImageFile, setSpotImageFile] = useState<File | null>(null);
     const [spotImagePreview, setSpotImagePreview] = useState<string>('');
     const [scamImageFile, setScamImageFile] = useState<File | null>(null);
@@ -88,7 +91,7 @@ export default function ReportPage() {
         e.preventDefault();
         setError(null);
         if (!priceSpotId) return setError('Please select a spot');
-        
+
         try {
             const formData = new FormData(e.currentTarget);
             await createPrice.mutateAsync({
@@ -158,7 +161,7 @@ export default function ReportPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ latitude, longitude }),
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 if (data.address) {
@@ -200,7 +203,7 @@ export default function ReportPage() {
             setError('Please select a location on the map');
             return;
         }
-        
+
         try {
             // Create spot with image in one request
             await createSpot.mutateAsync({
@@ -452,12 +455,19 @@ export default function ReportPage() {
                                         className="hidden"
                                         aria-label="Upload scam image"
                                     />
-                                    <div className={cn(
-                                        "border-2 border-dashed rounded-xl p-8 text-center transition-all",
-                                        "hover:bg-white/5 hover:border-red-400/50",
-                                        createScam.isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                                    )}>
-                                        <Upload size={24} className="text-white/50 group-hover:text-red-400 mx-auto mb-2 transition-colors" />
+                                    <div
+                                        className={cn(
+                                            'border-2 border-dashed rounded-xl p-8 text-center transition-all',
+                                            'hover:bg-white/5 hover:border-red-400/50',
+                                            createScam.isPending
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : 'cursor-pointer',
+                                        )}
+                                    >
+                                        <Upload
+                                            size={24}
+                                            className="text-white/50 group-hover:text-red-400 mx-auto mb-2 transition-colors"
+                                        />
                                         <p className="text-sm text-white/70">
                                             Click to upload or drag and drop
                                         </p>
@@ -470,7 +480,13 @@ export default function ReportPage() {
                         </div>
 
                         <button
-                            disabled={createScam.isPending || !scamName || !scamDescription || !scamCategory || !scamCity}
+                            disabled={
+                                createScam.isPending ||
+                                !scamName ||
+                                !scamDescription ||
+                                !scamCategory ||
+                                !scamCity
+                            }
                             className="w-full bg-red-500 text-white py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-red-600 transition-all flex items-center justify-center gap-3 shadow-xl shadow-red-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <AlertCircle size={16} />
@@ -506,7 +522,7 @@ export default function ReportPage() {
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Pick Location on Map
                             </label>
-                            <div className="rounded-2xl overflow-hidden h-[500px] border border-white/10">
+                            <div className="rounded-2xl overflow-hidden h-125 border border-white/10">
                                 <LocationPicker
                                     onLocationSelected={(loc) => {
                                         setSpotLocation(loc);
@@ -521,7 +537,9 @@ export default function ReportPage() {
                         <div className="space-y-4">
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Address
-                                <span className="text-white/60 text-[9px] ml-2">(Auto-populated, editable)</span>
+                                <span className="text-white/60 text-[12px] ml-2">
+                                    (Auto-populated, editable)
+                                </span>
                             </label>
                             <textarea
                                 value={spotAddress}
@@ -582,12 +600,19 @@ export default function ReportPage() {
                                         className="hidden"
                                         aria-label="Upload spot image"
                                     />
-                                    <div className={cn(
-                                        "border-2 border-dashed rounded-xl p-8 text-center transition-all",
-                                        "hover:bg-white/5 hover:border-amber-400/50",
-                                        createSpot.isPending ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-                                    )}>
-                                        <Upload size={24} className="text-white/50 group-hover:text-amber-400 mx-auto mb-2 transition-colors" />
+                                    <div
+                                        className={cn(
+                                            'border-2 border-dashed rounded-xl p-8 text-center transition-all',
+                                            'hover:bg-white/5 hover:border-amber-400/50',
+                                            createSpot.isPending
+                                                ? 'opacity-50 cursor-not-allowed'
+                                                : 'cursor-pointer',
+                                        )}
+                                    >
+                                        <Upload
+                                            size={24}
+                                            className="text-white/50 group-hover:text-amber-400 mx-auto mb-2 transition-colors"
+                                        />
                                         <p className="text-sm text-white/70">
                                             Click to upload or drag and drop
                                         </p>
@@ -601,7 +626,14 @@ export default function ReportPage() {
 
                         <button
                             type="submit"
-                            disabled={createSpot.isPending || !spotLocation || !spotName || !spotAddress || !spotCategory || !spotCity}
+                            disabled={
+                                createSpot.isPending ||
+                                !spotLocation ||
+                                !spotName ||
+                                !spotAddress ||
+                                !spotCategory ||
+                                !spotCity
+                            }
                             className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <MapPin size={16} />
