@@ -435,7 +435,7 @@ export default function ProfilePage() {
 
             {profile?.country && (
               <p className="text-white/40 font-medium uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2 mb-4">
-                <MapPin size={12} className="text-white/20" />
+                <MapPin size={12} className="text-white/20 shrink-0" />
                 {profile.country}
               </p>
             )}
@@ -447,7 +447,7 @@ export default function ProfilePage() {
             ) : (
               <button
                 onClick={() => setIsEditing(true)}
-                className="text-white/25 font-medium text-sm mb-8 hover:text-amber-400/60 transition-colors italic"
+                className="text-white/50 font-medium text-sm mb-8 hover:text-amber-400/60 transition-colors italic"
               >
                 + Add a bio…
               </button>
@@ -591,7 +591,7 @@ export default function ProfilePage() {
                     )}
                     <div className="flex-1 flex flex-col justify-center">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-[9px] font-medium text-white/20 uppercase tracking-tighter">
+                        <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
                           {new Date(scam.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -646,7 +646,7 @@ export default function ProfilePage() {
                       </div>
                     )}
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-[9px] font-medium text-white/20 uppercase tracking-tighter">
+                      <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
                         {new Date(tip.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -658,7 +658,7 @@ export default function ProfilePage() {
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-1">
-                        <MapPin size={10} /> {tip.spot?.name}
+                        <MapPin size={10} className="shrink-0" /> {tip.spot?.name}
                       </span>
                       <Link
                         href={getSpotUrl(tip.spot?.city?.name || 'Bangkok', tip.spot?.name || '')}
@@ -705,7 +705,7 @@ export default function ProfilePage() {
                       </div>
                     )}
                     <div className="flex items-center justify-between mb-4">
-                      <span className="text-[9px] font-medium text-white/20 uppercase tracking-tighter">
+                      <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
                         {new Date(report.timestamp).toLocaleDateString()}
                       </span>
                     </div>
@@ -765,7 +765,7 @@ export default function ProfilePage() {
                     )}
                     <div className="flex-1 flex flex-col justify-center">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-[9px] font-medium text-white/20 uppercase tracking-tighter">
+                        <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
                           {new Date(spot.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -773,7 +773,7 @@ export default function ProfilePage() {
                         {spot.name}
                       </h4>
                       <p className="text-xs font-medium text-white/50 line-clamp-1 mb-6 leading-relaxed flex items-center gap-1">
-                        <MapPin size={10} className="text-orange-400" />{" "}
+                        <MapPin size={10} className="text-orange-400 shrink-0" />{" "}
                         {spot.address}
                       </p>
                       <Link

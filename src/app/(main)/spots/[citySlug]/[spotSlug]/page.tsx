@@ -431,10 +431,13 @@ export default function SpotDetailPage() {
 
       {/* 1. Header & Hero Image */}
       <header className="space-y-6">
-        <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-white/50 hover:text-amber-400 transition-colors">
+        <button 
+          onClick={() => router.back()}
+          className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-white/50 hover:text-amber-400 transition-colors"
+        >
           <ArrowLeft size={14} strokeWidth={3} />
-          Back to Pulse
-        </Link>
+          Back
+        </button>
         
         {/* Hero Image Section */}
         <div className="relative h-[400px] md:h-[500px] rounded-2xl overflow-hidden group shadow-2xl shadow-black/30">
@@ -498,7 +501,7 @@ export default function SpotDetailPage() {
             <div className="space-y-2">
               <h1 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight drop-shadow-sm">{spot.name}</h1>
               <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                <MapPin size={14} strokeWidth={3} className="text-amber-400" />
+                <MapPin size={14} strokeWidth={3} className="text-amber-400 shrink-0" />
                 {spot.address}
               </p>
             </div>

@@ -83,7 +83,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                         {name}
                     </h3>
                     <p className="text-white/60 font-medium text-[9px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
-                        <MapPin size={11} className="text-amber-400" />
+                        <MapPin size={11} className="text-amber-400 shrink-0" />
                         {address?.split(',')[0]}
                     </p>
                 </div>

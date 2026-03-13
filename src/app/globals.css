@@ -39,6 +39,9 @@
     --color-sidebar-accent-foreground: oklch(0.85 0.005 85);
     --color-sidebar-border: oklch(1 0 0 / 8%);
     --color-sidebar-ring: oklch(0.78 0.17 75 / 50%);
+    /* Selection */
+    --color-selection-background: oklch(0.78 0.17 75 / 30%);
+    --color-selection-foreground: inherit;
     /* Fonts */
     --font-sans: var(--font-body);
     --font-display: var(--font-display);
@@ -107,6 +110,11 @@
         background-color: oklch(0.09 0.008 65);
         color: oklch(0.95 0.005 85);
         @apply bg-background text-foreground;
+    }
+
+    ::selection {
+        background-color: var(--color-selection-background);
+        color: var(--color-selection-foreground);
     }
 }
 

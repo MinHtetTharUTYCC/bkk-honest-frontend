@@ -53,15 +53,7 @@ export default function Sidebar() {
                 <LeaderboardSidebarList take={5} />
             </div>
 
-            <div className="mt-auto bg-white/5 p-6 rounded-3xl border border-dashed border-white/10">
-                <h5 className="font-semibold text-sm mb-2 text-foreground">
-                    {selectedCity?.name || 'Bangkok'} is changing fast.
-                </h5>
-                <p className="text-[11px] font-medium text-white/40 leading-relaxed">
-                    Your reports help others navigate the city with confidence and honesty. Keep at
-                    it!
-                </p>
-            </div>
+            {/* Removed: Bangkok/City changing fast callout */}
         </aside>
     );
 }

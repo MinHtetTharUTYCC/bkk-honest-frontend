@@ -26,6 +26,7 @@ const Footer: React.FC = () => {
     { href: '/terms', label: 'Terms of Service' },
   ];
 
+  /* Social Media Links - Commented out for now
   const socialLinks = [
     { 
       href: 'https://instagram.com/bkkhonest', 
@@ -52,6 +53,7 @@ const Footer: React.FC = () => {
       color: 'hover:text-red-400'
     },
   ];
+  */
 
   return (
     <footer className="bg-black/95 border-t border-white/10 text-white">
@@ -62,7 +64,7 @@ const Footer: React.FC = () => {
           {/* About & Quick Links */}
           <FooterSection title="BKK Honest">
             <p className="text-white/70 text-sm mb-4 leading-relaxed">
-              The honest guide to Bangkok. Real spots, real prices, real vibes. 
+              The honest guide to Thailand. Real spots, real prices, real vibes. 
               By locals, for locals and travelers who want the truth.
             </p>
             <div className="space-y-2">
@@ -82,18 +84,12 @@ const Footer: React.FC = () => {
           <FooterSection title="Community">
             <div className="space-y-3">
               <Link 
-                href="/submit"
+                href="/report"
                 className="flex items-center text-sm text-amber-400 hover:text-amber-300 transition-colors duration-200 group"
               >
                 <Heart className="w-4 h-4 mr-2 fill-current" />
-                Submit a Spot
+                Submit Report
                 <ExternalLink className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-              </Link>
-              <Link 
-                href="/report-scam"
-                className="flex items-center text-sm text-white/70 hover:text-amber-400 transition-colors duration-200"
-              >
-                Report a Scam
               </Link>
               <Link 
                 href="/contact"
@@ -111,7 +107,8 @@ const Footer: React.FC = () => {
             </div>
           </FooterSection>
 
-          {/* Social Media */}
+          {/* Social Media - Commented out for now */}
+          {/* 
           <FooterSection title="Follow Us">
             <div className="grid grid-cols-2 gap-3">
               {socialLinks.map((social) => {
@@ -134,11 +131,12 @@ const Footer: React.FC = () => {
             
             <div className="mt-4">
               <p className="text-xs text-white/50">
-                Tag us in your Bangkok adventures! 
-                <span className="text-amber-400"> #BKKHonest</span>
+                Tag us in your Thailand adventures! 
+                <span className="text-amber-400"> #ThailandHonest</span>
               </p>
             </div>
           </FooterSection>
+          */}
 
           {/* Legal & Company */}
           <FooterSection title="Legal">
@@ -157,7 +155,7 @@ const Footer: React.FC = () => {
             <div className="mt-4 pt-4 border-t border-white/10">
               <div className="flex items-center text-xs text-white/50 mb-1">
                 <MapPin className="w-3 h-3 mr-1" />
-                Made in Bangkok
+                Made in Thailand
               </div>
               <p className="text-xs text-white/50">
                 App version 2.1.0
@@ -174,10 +172,10 @@ const Footer: React.FC = () => {
             </div>
             
             <div className="flex items-center space-x-6 text-sm text-white/50">
-              <span>Keep Bangkok honest</span>
+              <span>Keep Thailand honest</span>
               <div className="flex items-center">
                 <Heart className="w-4 h-4 mr-1 fill-amber-400 text-amber-400" />
-                <span>กรุงเทพฯ</span>
+                <span>ประเทศไทย</span>
               </div>
             </div>
           </div>
