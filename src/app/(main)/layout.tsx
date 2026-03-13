@@ -15,7 +15,7 @@ export default async function MainLayout({
             <NavDock />
             <div className="md:pl-20 min-h-screen flex flex-col">
                 <TopBar />
-                <div className="flex flex-1 w-full max-w-[1440px] mx-auto px-4 md:px-8 py-10 lg:gap-12">
+                <div className="flex flex-1 w-full max-w-360 mx-auto px-4 md:px-8 py-10 lg:gap-12">
                     <main className="flex-1 min-w-0 pb-32 md:pb-12">{children}</main>
                     <Sidebar />
                 </div>

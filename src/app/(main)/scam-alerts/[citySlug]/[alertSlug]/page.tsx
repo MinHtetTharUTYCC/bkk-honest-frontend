@@ -213,7 +213,7 @@ export default function ScamAlertDetailPage() {
                                                 <span>{localAlert.city.name}</span>
                                             </div>
                                         )}
-                                        <div className="flex items-center gap-1.5 text-white/20 ml-2">
+                                        <div className="flex items-center gap-1.5 text-white/50 ml-2">
                                             <Calendar size={14} />
                                             <span>
                                                 {new Date(
@@ -344,7 +344,7 @@ export default function ScamAlertDetailPage() {
                         <div className="flex items-center justify-between gap-4">
                             <h2 className="text-2xl font-display font-bold text-white flex items-center gap-2">
                                 <MessageSquare size={20} className="text-amber-400" />
-                                Community Talk ({comments.length})
+                                What others says ({comments.length})
                             </h2>
                         </div>
 
@@ -426,27 +426,80 @@ export default function ScamAlertDetailPage() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            {user?.id === comment.userId && (
-                                                <div className="flex gap-1 opacity-40 hover:opacity-100 transition-opacity">
-                                                    <button
-                                                        onClick={() => {
-                                                            setEditingCommentId(comment.id);
-                                                            setEditContent(comment.content);
-                                                        }}
-                                                        className="p-1.5 hover:bg-white/10 rounded-lg text-white/50 hover:text-amber-400"
-                                                    >
-                                                        <Edit2 size={14} />
+                                            <DropdownMenu
+                                                trigger={
+                                                    <button className="p-1.5 hover:bg-white/10 rounded-lg text-white/50 hover:text-white transition-colors">
+                                                        <MoreVertical size={14} />
                                                     </button>
-                                                    <button
-                                                        onClick={() =>
-                                                            handleDeleteComment(comment.id)
-                                                        }
-                                                        className="p-1.5 hover:bg-red-500/10 rounded-lg text-white/50 hover:text-red-400"
+                                                }
+                                            >
+                                                {user?.id === comment.userId &&
+                                                editingCommentId === comment.id ? (
+                                                    <>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleEditSubmit(comment.id)
+                                                            }
+                                                            className="gap-2 py-3"
+                                                        >
+                                                            <Send size={14} />
+                                                            <span className="text-sm font-medium">
+                                                                Save
+                                                            </span>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                setEditingCommentId(null)
+                                                            }
+                                                            className="gap-2 py-3"
+                                                        >
+                                                            <X size={14} />
+                                                            <span className="text-sm font-medium">
+                                                                Cancel
+                                                            </span>
+                                                        </DropdownMenuItem>
+                                                    </>
+                                                ) : (
+                                                    user?.id === comment.userId && (
+                                                        <>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    setEditingCommentId(comment.id);
+                                                                    setEditContent(comment.content);
+                                                                }}
+                                                                className="gap-2 py-3"
+                                                            >
+                                                                <Edit2 size={14} />
+                                                                <span className="text-sm font-medium">
+                                                                    Edit
+                                                                </span>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    handleDeleteComment(comment.id)
+                                                                }
+                                                                className="gap-2 py-3"
+                                                                danger
+                                                            >
+                                                                <Trash2 size={14} />
+                                                                <span className="text-sm font-medium">
+                                                                    Delete
+                                                                </span>
+                                                            </DropdownMenuItem>
+                                                        </>
+                                                    )
+                                                )}
+
+                                                <DropdownMenuItem asChild>
+                                                    <ReportButton
+                                                        targetId={comment.id}
+                                                        reportType="COMMENT"
+                                                        className="w-full flex items-center justify-start gap-3 px-4 py-3 text-sm font-medium hover:bg-white/5 rounded-md transition-colors border-none"
                                                     >
-                                                        <Trash2 size={14} />
-                                                    </button>
-                                                </div>
-                                            )}
+                                                        <div className="text-white/70">Report</div>
+                                                    </ReportButton>
+                                                </DropdownMenuItem>
+                                            </DropdownMenu>
                                         </div>
 
                                         {editingCommentId === comment.id ? (
@@ -456,21 +509,6 @@ export default function ScamAlertDetailPage() {
                                                     onChange={(e) => setEditContent(e.target.value)}
                                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 min-h-20 resize-none"
                                                 />
-                                                <div className="flex gap-2 justify-end">
-                                                    <button
-                                                        onClick={() => setEditingCommentId(null)}
-                                                        className="px-4 py-2 bg-white/5 text-white/50 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-white/10"
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleEditSubmit(comment.id)}
-                                                        disabled={updateCommentMutation.isPending}
-                                                        className="px-4 py-2 bg-amber-400 text-black rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-amber-300 disabled:opacity-50"
-                                                    >
-                                                        Save
-                                                    </button>
-                                                </div>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
@@ -485,11 +523,6 @@ export default function ScamAlertDetailPage() {
                                                             comment.userHasReacted || false
                                                         }
                                                     />
-                                                    <ReportButton
-                                                        targetId={comment.id}
-                                                        reportType="COMMENT"
-                                                        size="sm"
-                                                    />
                                                 </div>
                                             </div>
                                         )}
@@ -502,11 +535,11 @@ export default function ScamAlertDetailPage() {
                                 {isFetchingNextPage ? (
                                     <Loader2 className="animate-spin text-amber-400" size={24} />
                                 ) : hasNextPage ? (
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-white/20">
+                                    <span className="text-[12px] font-black uppercase tracking-widest text-white/50">
                                         Scroll for more
                                     </span>
                                 ) : comments.length > 0 ? (
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-white/10">
+                                    <span className="text-[12px] font-black uppercase tracking-widest text-white/50">
                                         End of conversation
                                     </span>
                                 ) : null}
