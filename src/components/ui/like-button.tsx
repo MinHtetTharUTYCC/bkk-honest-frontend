@@ -1,6 +1,6 @@
 'use client';
 
-import { Heart, Loader2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { ReactNode } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -79,22 +79,14 @@ export function LikeButton({
                 className,
             })}
         >
-            {isPending ? (
-                <Loader2
-                    size={iconSize}
-                    className="text-amber-400 animate-spin"
-                    aria-label="Loading"
-                />
-            ) : (
-                <Heart
-                    size={iconSize}
-                    className={`transition-all duration-200 ${
-                        isVoted
-                            ? 'fill-amber-400 text-amber-400'
-                            : 'text-white/70 group-hover:text-amber-400'
-                    }`}
-                />
-            )}
+            <Heart
+                size={iconSize}
+                className={`transition-all duration-200 ${
+                    isVoted
+                        ? 'fill-amber-400 text-amber-400'
+                        : 'text-white/70 group-hover:text-amber-400'
+                }`}
+            />
             {showCount && (
                 <span
                     className={`font-medium transition-colors duration-200 ${

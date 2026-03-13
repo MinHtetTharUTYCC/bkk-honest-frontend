@@ -64,9 +64,9 @@ describe('LikeButton', () => {
       expect(button).toBeDisabled();
     });
 
-    it('shows loading spinner when isPending is true', () => {
+    it('keeps heart icon visible when isPending is true', () => {
       render(<LikeButton isPending={true} />);
-      expect(screen.getByLabelText('Loading')).toBeInTheDocument();
+      expect(document.querySelector('svg')).toBeInTheDocument();
     });
   });
 
@@ -179,9 +179,9 @@ describe('LikeButton', () => {
       expect(button).toBeInTheDocument();
     });
 
-    it('announces loading state', () => {
+    it('does not render loading indicator', () => {
       render(<LikeButton isPending={true} />);
-      expect(screen.getByLabelText('Loading')).toBeInTheDocument();
+      expect(screen.queryByLabelText('Loading')).not.toBeInTheDocument();
     });
 
     it('announces voted state via title', () => {
