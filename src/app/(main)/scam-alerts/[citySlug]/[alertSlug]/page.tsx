@@ -428,66 +428,41 @@ export default function ScamAlertDetailPage() {
                                             </div>
                                             <DropdownMenu
                                                 trigger={
-                                                    <button className="p-1.5 hover:bg-white/10 rounded-lg text-white/50 hover:text-white transition-colors">
+                                                    <button
+                                                        disabled={editingCommentId === comment.id}
+                                                        className="p-1.5 hover:bg-white/10 rounded-lg text-white/50 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                                    >
                                                         <MoreVertical size={14} />
                                                     </button>
                                                 }
                                             >
-                                                {user?.id === comment.userId &&
-                                                editingCommentId === comment.id ? (
+                                                {user?.id === comment.userId && (
                                                     <>
                                                         <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleEditSubmit(comment.id)
-                                                            }
+                                                            onClick={() => {
+                                                                setEditingCommentId(comment.id);
+                                                                setEditContent(comment.content);
+                                                            }}
                                                             className="gap-2 py-3"
                                                         >
-                                                            <Send size={14} />
+                                                            <Edit2 size={14} />
                                                             <span className="text-sm font-medium">
-                                                                Save
+                                                                Edit
                                                             </span>
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             onClick={() =>
-                                                                setEditingCommentId(null)
+                                                                handleDeleteComment(comment.id)
                                                             }
                                                             className="gap-2 py-3"
+                                                            danger
                                                         >
-                                                            <X size={14} />
+                                                            <Trash2 size={14} />
                                                             <span className="text-sm font-medium">
-                                                                Cancel
+                                                                Delete
                                                             </span>
                                                         </DropdownMenuItem>
                                                     </>
-                                                ) : (
-                                                    user?.id === comment.userId && (
-                                                        <>
-                                                            <DropdownMenuItem
-                                                                onClick={() => {
-                                                                    setEditingCommentId(comment.id);
-                                                                    setEditContent(comment.content);
-                                                                }}
-                                                                className="gap-2 py-3"
-                                                            >
-                                                                <Edit2 size={14} />
-                                                                <span className="text-sm font-medium">
-                                                                    Edit
-                                                                </span>
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    handleDeleteComment(comment.id)
-                                                                }
-                                                                className="gap-2 py-3"
-                                                                danger
-                                                            >
-                                                                <Trash2 size={14} />
-                                                                <span className="text-sm font-medium">
-                                                                    Delete
-                                                                </span>
-                                                            </DropdownMenuItem>
-                                                        </>
-                                                    )
                                                 )}
 
                                                 <DropdownMenuItem asChild>
@@ -509,6 +484,21 @@ export default function ScamAlertDetailPage() {
                                                     onChange={(e) => setEditContent(e.target.value)}
                                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 min-h-20 resize-none"
                                                 />
+                                                <div className="flex gap-2 justify-end pt-1">
+                                                    <button
+                                                        onClick={() => setEditingCommentId(null)}
+                                                        className="px-4 py-2 bg-white/5 text-white/50 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-white/10"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleEditSubmit(comment.id)}
+                                                        disabled={updateCommentMutation.isPending}
+                                                        className="px-4 py-2 bg-amber-400 text-black rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-amber-300 disabled:opacity-50"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="space-y-3">
