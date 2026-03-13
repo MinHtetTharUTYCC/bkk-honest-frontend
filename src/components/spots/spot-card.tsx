@@ -29,55 +29,58 @@ export default function SpotCard({ spot }: { spot: any }) {
     };
 
     return (
-        <div className="shrink-0 w-full bg-card rounded-2xl p-5 border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500">
-            {/* Image Section */}
-            <div className="relative w-full aspect-square mb-5 rounded-xl overflow-hidden bg-white/5 border border-white/8">
-                {displayImage ? (
-                    <img
-                        src={displayImage}
-                        alt={name}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
-                        <ImageIcon size={32} strokeWidth={1.5} />
-                        <span className="text-[12px] font-black uppercase tracking-widest">
-                            No Photos
+        <Link href={getSpotUrl(spot.city?.name || 'Bangkok', name)} className="block">
+            <div className="shrink-0 w-full bg-card rounded-2xl p-5 border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500 cursor-pointer">
+                {/* Image Section */}
+                <div className="relative w-full aspect-square mb-5 rounded-xl overflow-hidden bg-white/5 border border-white/8">
+                    {displayImage ? (
+                        <img
+                            src={displayImage}
+                            alt={name}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
+                            <ImageIcon size={32} strokeWidth={1.5} />
+                            <span className="text-[12px] font-black uppercase tracking-widest">
+                                No Photo
+                            </span>
+                        </div>
+                    )}
+
+                    {/* Badge Container - top row */}
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+                        <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
+                            {categoryName}
                         </span>
+                        <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
+                            <Zap size={10} fill="currentColor" />
+                            {(vibeStats as any)?.avgCrowdLevel
+                                ? `Busy: ${(vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
+                                : 'New'}
+                        </div>
                     </div>
-                )}
 
-                {/* Badge Container - top row */}
-                <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                    <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
-                        {categoryName}
-                    </span>
-                    <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
-                        <Zap size={10} fill="currentColor" />
-                        {(vibeStats as any)?.avgCrowdLevel
-                            ? `Busy: ${(vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
-                            : 'New'}
+                    {/* Action buttons — bottom-right of image */}
+                    <div
+                        className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <LikeButton
+                            count={spot._count?.votes || 0}
+                            isVoted={spot.hasVoted}
+                            onVote={() => handleVote({} as React.MouseEvent)}
+                            isPending={votePending}
+                            disabled={votePending}
+                            variant="overlay"
+                            size="sm"
+                            showCount={true}
+                            className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border shadow-lg bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400"
+                            title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
+                        />
                     </div>
                 </div>
 
-                {/* Action buttons — bottom-right of image */}
-                <div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-auto">
-                    <LikeButton
-                        count={spot._count?.votes || 0}
-                        isVoted={spot.hasVoted}
-                        onVote={() => handleVote({} as React.MouseEvent)}
-                        isPending={votePending}
-                        disabled={votePending}
-                        variant="overlay"
-                        size="sm"
-                        showCount={true}
-                        className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-2.5 py-1.5 rounded-xl backdrop-blur-md border shadow-lg bg-black/40 border-white/10 text-white/70 hover:bg-amber-400/20 hover:border-amber-400/30 hover:text-amber-400"
-                        title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
-                    />
-                </div>
-            </div>
-
-            <Link href={getSpotUrl(spot.city?.name || 'Bangkok', name)} className="block">
                 <div className="space-y-1 mb-5">
                     <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
                         {name}
@@ -106,7 +109,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                         </span>
                     </div>
                 </div>
-            </Link>
-        </div>
+            </div>
+        </Link>
     );
 }
