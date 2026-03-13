@@ -301,19 +301,21 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                         <MessageCircle size={12} />
                         {alert._count?.comments || 0}
                     </div>
-                    <LikeButton
-                        count={alert._count?.votes || 0}
-                        isVoted={alert.hasVoted}
-                        onVote={async () => {
-                            await toggleVote(alert);
-                        }}
-                        isPending={votePending}
-                        disabled={votePending}
-                        variant="default"
-                        size="sm"
-                        className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-3 py-1.5 rounded-full border transition-all bg-white/0 hover:bg-white/0"
-                        title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
-                    />
+                    <div onClick={(e) => e.stopPropagation()}>
+                        <LikeButton
+                            count={alert._count?.votes || 0}
+                            isVoted={alert.hasVoted}
+                            onVote={async () => {
+                                await toggleVote(alert);
+                            }}
+                            isPending={votePending}
+                            disabled={votePending}
+                            variant="default"
+                            size="sm"
+                            className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-3 py-1.5 rounded-full border transition-all bg-white/0 hover:bg-white/0"
+                            title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
