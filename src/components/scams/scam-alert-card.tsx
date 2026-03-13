@@ -4,22 +4,17 @@ import {
     AlertTriangle,
     Calendar,
     User,
-    Edit2,
-    Trash2,
     Loader2,
     Save,
     X,
     Camera,
-    MapPin,
     MessageCircle,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { useAuth } from '@/components/providers/auth-provider';
-import { useState, useRef } from 'react';
+// import { useAuth } from '@/components/providers/auth-provider';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { useUpdateScamAlert, useDeleteScamAlert, useCategories, useCities } from '@/hooks/use-api';
-import ReportButton from '@/components/report/report-button';
+import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { LikeButton } from '@/components/ui/like-button';
 
 interface ScamAlertCardProps {
@@ -28,15 +23,15 @@ interface ScamAlertCardProps {
 
 export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProps) {
     const router = useRouter();
-    const { user } = useAuth();
+    // const { user } = useAuth();
     const [alert, setAlert] = useState(initialAlert);
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const updateScamMutation = useUpdateScamAlert();
-    const deleteScamMutation = useDeleteScamAlert();
+    // const deleteScamMutation = useDeleteScamAlert();
     const { data: categories } = useCategories();
     const { data: cities } = useCities();
 
-    const isOwner = user?.id === alert.userId || user?.id === alert.user?.id;
+    // const isOwner = user?.id === alert.userId || user?.id === alert.user?.id;
 
     const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState(alert.scamName);
@@ -47,6 +42,12 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
     const [editFile, setEditFile] = useState<File | null>(null);
     const [editPreview, setEditPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (!isEditing) {
+            setAlert(initialAlert);
+        }
+    }, [initialAlert, isEditing]);
 
     const handleUpdate = async () => {
         try {
@@ -69,16 +70,16 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
         }
     };
 
-    const handleDelete = async () => {
-        if (confirm('Are you sure you want to delete this scam alert?')) {
-            try {
-                await deleteScamMutation.mutateAsync(alert.id);
-            } catch (err) {
-                console.error(err);
-                alert('Failed to delete scam alert');
-            }
-        }
-    };
+    // const handleDelete = async () => {
+    //     if (confirm('Are you sure you want to delete this scam alert?')) {
+    //         try {
+    //             await deleteScamMutation.mutateAsync(alert.id);
+    //         } catch (err) {
+    //             console.error(err);
+    //             alert('Failed to delete scam alert');
+    //         }
+    //     }
+    // };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -306,7 +307,28 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             count={alert._count?.votes || 0}
                             isVoted={alert.hasVoted}
                             onVote={async () => {
-                                await toggleVote(alert);
+                                const wasVoted = Boolean(alert.hasVoted);
+
+                                setAlert((prev: any) => ({
+                                    ...prev,
+                                    hasVoted: !wasVoted,
+                                    voteId: wasVoted ? null : 'temp-id',
+                                    _count: {
+                                        ...prev._count,
+                                        votes: Math.max(
+                                            0,
+                                            (prev._count?.votes || 0) + (wasVoted ? -1 : 1),
+                                        ),
+                                    },
+                                }));
+
+                                const result = await toggleVote(alert);
+
+                                setAlert((prev: any) => ({
+                                    ...prev,
+                                    hasVoted: Boolean(result.voteId),
+                                    voteId: result.voteId,
+                                }));
                             }}
                             isPending={votePending}
                             disabled={votePending}
