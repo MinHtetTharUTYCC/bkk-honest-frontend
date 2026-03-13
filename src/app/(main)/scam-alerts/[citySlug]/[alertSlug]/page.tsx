@@ -126,8 +126,27 @@ export default function ScamAlertDetailPage() {
     };
 
     const handleVoteToggle = async () => {
-        if (!alert) return;
-        await toggleVote(alert);
+        if (!localAlert) return;
+
+        const wasVoted = Boolean(localAlert.hasVoted);
+
+        setLocalAlert((prev: any) => ({
+            ...prev,
+            hasVoted: !wasVoted,
+            voteId: wasVoted ? null : 'temp-id',
+            _count: {
+                ...prev._count,
+                votes: Math.max(0, (prev._count?.votes || 0) + (wasVoted ? -1 : 1)),
+            },
+        }));
+
+        const result = await toggleVote(localAlert);
+
+        setLocalAlert((prev: any) => ({
+            ...prev,
+            hasVoted: Boolean(result.voteId),
+            voteId: result.voteId,
+        }));
     };
 
     const handleDeleteAlert = async () => {
