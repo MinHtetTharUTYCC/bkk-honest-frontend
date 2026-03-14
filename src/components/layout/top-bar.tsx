@@ -6,6 +6,7 @@ import { useProfile } from '@/hooks/use-api';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import CitySwitcher from './city-switcher';
 
 export default function TopBar() {
@@ -35,9 +36,7 @@ export default function TopBar() {
         <header className="sticky top-0 z-40 w-full h-16 md:h-20 bg-background/90 backdrop-blur-xl border-b border-white/8 px-3 md:px-8 flex items-center justify-between gap-3 md:gap-6">
             <div className="flex items-center gap-2 md:gap-6">
                 <Link href="/" className="flex items-center gap-2">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-amber-400 rounded-xl flex items-center justify-center text-black font-black text-xl shadow-lg shadow-amber-400/20 shrink-0">
-                        H
-                    </div>
+                    <Image src="/logo-bh-linked-1-trans.png" alt="BKK Honest Logo" width={40} height={40} className="w-8 h-8 md:w-10 md:h-10 shrink-0 object-contain" />
                     <span className="hidden lg:block font-display font-bold text-xl tracking-tight text-foreground">
                         BKK Honest
                     </span>

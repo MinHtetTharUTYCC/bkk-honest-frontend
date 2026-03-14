@@ -2,14 +2,14 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Zap, ArrowRight, Loader2, ShieldAlert } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Zap, Loader2, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage() {
-    const [loading, setLoading] = useState(false);
     const [googleLoading, setGoogleLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
     const searchParams = useSearchParams();
     const supabase = createClient();
 
@@ -33,62 +33,144 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6 selection:bg-amber-400/30">
-            <div className="max-w-md w-full bg-card rounded-[40px] p-8 md:p-12 border border-white/10 shadow-2xl shadow-black/60 space-y-8 relative overflow-hidden">
-                {/* Background Glow */}
-                <div className="absolute -top-24 -left-24 w-48 h-48 bg-amber-400/10 blur-[100px] rounded-full" />
-                <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-amber-400/5 blur-[100px] rounded-full" />
+        <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background px-4 py-8">
+            {/* Animated background gradients */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(251,191,36,0.2),transparent_50%),radial-gradient(ellipse_60%_40%_at_80%_60%,rgba(59,130,246,0.15),transparent_50%)]"
+            />
 
-                <header className="text-center space-y-3 relative">
-                    <div className="w-16 h-16 bg-amber-400 text-black rounded-3xl flex items-center justify-center mx-auto shadow-lg shadow-amber-400/20 mb-6 group transition-transform hover:scale-110 active:scale-95 cursor-pointer">
-                        <Zap size={32} fill="currentColor" />
+            {/* Animated flowing background elements */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-40 -left-40 h-80 w-80 rounded-full bg-amber-400/10 blur-3xl opacity-0 animate-pulse"
+                style={{ animationDuration: '8s' }}
+            />
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-blue-500/10 blur-3xl opacity-0 animate-pulse"
+                style={{ animationDuration: '10s', animationDelay: '2s' }}
+            />
+
+            {/* Subtle grid overlay */}
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,1)_1px,transparent_1px)] [background-size:50px_50px]"
+            />
+
+            {/* Content */}
+            <section className="relative w-full max-w-sm space-y-8 text-center">
+                {/* Logo & Branding */}
+                <div className="space-y-6">
+                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-gradient-to-br from-amber-400/20 to-amber-600/20 shadow-2xl shadow-amber-400/20 backdrop-blur-xl border border-amber-400/30 p-3"><Image src="/logo-bh-linked-1-trans.png" alt="BKK Honest Logo" width={80} height={80} className="w-full h-full object-contain drop-shadow-lg" /></div>
+                    <div className="space-y-3">
+                        <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-white sm:text-6xl">
+                            Honest
+                        </h1>
+                        <p className="text-sm font-semibold uppercase tracking-widest text-white/50">
+                            Keep Bangkok Real
+                        </p>
                     </div>
-                    <h1 className="text-3xl font-display font-bold text-white tracking-tighter uppercase italic">
-                        Welcome to Honest
-                    </h1>
-                    <p className="text-white/40 font-bold uppercase tracking-widest text-[10px]">
-                        Join the Bangkok Community Talk
+                </div>
+
+                {/* Description */}
+                <div className="space-y-3">
+                    <p className="text-lg font-medium leading-relaxed text-white/60">
+                        Share prices, report scams, and real vibes.
                     </p>
-                </header>
-
-                {error && (
-                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl text-xs font-bold flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <ShieldAlert size={18} />
-                        {error}
-                    </div>
-                )}
-
-                <div className="space-y-4 relative">
-                    <button
-                        onClick={handleGoogleLogin}
-                        disabled={googleLoading}
-                        className="w-full bg-white text-black py-5 rounded-[24px] text-xs font-black uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center justify-center gap-3 shadow-xl shadow-white/5 active:scale-[0.98] disabled:opacity-50"
-                    >
-                        {googleLoading ? (
-                            <Loader2 className="animate-spin" size={18} />
-                        ) : (
-                            <>
-                                <img
-                                    src="https://www.google.com/favicon.ico"
-                                    alt="Google"
-                                    className="w-4 h-4"
-                                />
-                                Continue with Google
-                            </>
-                        )}
-                    </button>
-
-                    <p className="text-center text-[12px] text-white/20 font-bold uppercase tracking-widest px-4 leading-relaxed">
-                        By continuing, you agree to our Terms of Service and Privacy Policy.
+                    <p className="text-sm text-white/50">
+                        Join thousands protecting the Bangkok community with honest intelligence.
                     </p>
                 </div>
 
-                <footer className="text-center space-y-4 pt-4 border-t border-white/5 relative">
-                    <p className="text-[10px] text-white/20 font-bold uppercase tracking-widest">
-                        The pulse of Bangkok is waiting for you.
+                {/* Error State */}
+                {error && (
+                    <div
+                        role="alert"
+                        aria-live="polite"
+                        className="animate-in slide-in-from-top-4 rounded-2xl border border-red-400/40 bg-red-500/15 p-4 text-sm font-semibold text-red-300 backdrop-blur-sm"
+                    >
+                        <div className="flex items-start gap-3">
+                            <ShieldAlert size={18} className="mt-0.5 shrink-0" />
+                            <span>{error}</span>
+                        </div>
+                    </div>
+                )}
+
+                {/* Auth Section */}
+                <div className="space-y-5">
+                    <button
+                        type="button"
+                        onClick={handleGoogleLogin}
+                        disabled={googleLoading}
+                        aria-busy={googleLoading}
+                        className="group relative w-full overflow-hidden rounded-2xl bg-white px-6 py-4 text-xs font-black uppercase tracking-widest text-black shadow-2xl shadow-white/10 transition-all hover:shadow-3xl hover:shadow-white/20 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="relative flex items-center justify-center gap-3">
+                            {googleLoading ? (
+                                <>
+                                    <Loader2 size={18} className="animate-spin" />
+                                    Connecting...
+                                </>
+                            ) : (
+                                <>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 48 48"
+                                        className="h-5 w-5"
+                                        aria-hidden="true"
+                                    >
+                                        <path
+                                            fill="#FFC107"
+                                            d="M43.611 20.083H42V20H24v8h11.303C33.656 32.657 29.221 36 24 36c-6.627 0-12-5.373-12-12S17.373 12 24 12c3.059 0 5.842 1.154 7.959 3.041l5.657-5.657C34.046 6.053 29.274 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"
+                                        />
+                                        <path
+                                            fill="#FF3D00"
+                                            d="M6.306 14.691l6.571 4.819C14.655 16.108 19.009 12 24 12c3.059 0 5.842 1.154 7.959 3.041l5.657-5.657C34.046 6.053 29.274 4 24 4c-7.682 0-14.344 4.337-17.694 10.691z"
+                                        />
+                                        <path
+                                            fill="#4CAF50"
+                                            d="M24 44c5.177 0 9.862-1.977 13.417-5.192l-6.193-5.238C29.182 35.092 26.715 36 24 36c-5.2 0-9.623-3.318-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"
+                                        />
+                                        <path
+                                            fill="#1976D2"
+                                            d="M43.611 20.083H42V20H24v8h11.303a12.035 12.035 0 0 1-4.079 5.571h.003l6.193 5.238C36.979 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
+                                        />
+                                    </svg>
+                                    Continue with Google
+                                </>
+                            )}
+                        </div>
+                    </button>
+
+                    {/* Legal text - brighter */}
+                    <p className="text-xs leading-relaxed text-white/50">
+                        By continuing, you agree to our{' '}
+                        <Link
+                            href="/terms"
+                            className="text-amber-300 underline underline-offset-2 transition-colors hover:text-amber-200"
+                        >
+                            Terms
+                        </Link>
+                        {' '}and{' '}
+                        <Link
+                            href="/privacy"
+                            className="text-amber-300 underline underline-offset-2 transition-colors hover:text-amber-200"
+                        >
+                            Privacy
+                        </Link>
+                        .
+                    </p>
+                </div>
+
+                {/* Footer tagline */}
+                <footer className="border-t border-white/10 pt-6">
+                    <p className="text-xs font-bold uppercase tracking-wider text-white/40">
+                        Real pulse. Real people. Real honesty.
                     </p>
                 </footer>
-            </div>
-        </div>
+            </section>
+        </main>
     );
 }
