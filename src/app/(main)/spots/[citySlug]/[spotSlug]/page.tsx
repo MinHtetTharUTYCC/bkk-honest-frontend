@@ -42,6 +42,7 @@ import {
     Navigation,
 } from 'lucide-react';
 import { LikeButton } from '@/components/ui/like-button';
+import { ImageViewer } from '@/components/ui/image-viewer';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
@@ -86,6 +87,7 @@ export default function SpotDetailPage() {
 
     const [isClient, setIsClient] = useState(false);
     const [showGalleryModal, setShowGalleryModal] = useState(false);
+    const [showImageViewer, setShowImageViewer] = useState(false);
     const [showTipModal, setShowTipModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [selectedTip, setSelectedTip] = useState<any>(null);
@@ -499,7 +501,10 @@ export default function SpotDetailPage() {
                 {/* Hero Image Section */}
                 <div className="flex flex-col md:flex-row gap-6">
                     {/* Left Column: Image & Top Badges */}
-                    <div className="relative h-100 md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] shrink-0 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30">
+                    <div 
+                        className="relative h-100 md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] shrink-0 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30 cursor-pointer"
+                        onClick={() => setShowImageViewer(true)}
+                    >
                         <img
                             src={
                                 spot.imageUrl ||
@@ -562,18 +567,34 @@ export default function SpotDetailPage() {
 
                         {/* Mobile Info Overlay (Hidden on Desktop) */}
                         <div className="absolute bottom-6 left-6 right-6 flex flex-col justify-between gap-6 md:hidden">
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <h1 className="text-4xl font-display font-bold text-white tracking-tight drop-shadow-sm">
                                     {spot.name}
                                 </h1>
-                                <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                                    <MapPin
-                                        size={14}
-                                        strokeWidth={3}
-                                        className="text-amber-400 shrink-0"
-                                    />
-                                    <span className="truncate">{spot.address}</span>
-                                </p>
+                                <div className="space-y-1">
+                                    <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                                        <MapPin
+                                            size={14}
+                                            strokeWidth={3}
+                                            className="text-amber-400 shrink-0"
+                                        />
+                                        <span className="truncate">{spot.address}</span>
+                                    </p>
+                                    {spot.user && (
+                                        <div className="flex items-center gap-2 pl-[22px]">
+                                            <div className="w-4 h-4 rounded-full bg-white/10 overflow-hidden shrink-0">
+                                                <img 
+                                                    src={spot.user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${spot.user.id}`} 
+                                                    alt={spot.user.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            </div>
+                                            <span className="text-[10px] text-white/40 font-semibold tracking-wide">
+                                                Discovered by <span className="text-white/70">@{spot.user.name}</span>
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex w-full items-center justify-between gap-3">
@@ -637,14 +658,30 @@ export default function SpotDetailPage() {
                                     <h1 className="text-5xl lg:text-6xl font-display font-bold text-white tracking-tight leading-none">
                                         {spot.name}
                                     </h1>
-                                    <p className="text-white/60 font-bold uppercase tracking-widest text-sm flex items-center gap-2">
-                                        <MapPin
-                                            size={16}
-                                            strokeWidth={3}
-                                            className="text-amber-400 shrink-0"
-                                        />
-                                        {spot.address}
-                                    </p>
+                                    <div className="space-y-2">
+                                        <p className="text-white/60 font-bold uppercase tracking-widest text-sm flex items-center gap-2">
+                                            <MapPin
+                                                size={16}
+                                                strokeWidth={3}
+                                                className="text-amber-400 shrink-0"
+                                            />
+                                            {spot.address}
+                                        </p>
+                                        {spot.user && (
+                                            <div className="flex items-center gap-2 pl-[26px]">
+                                                <div className="w-5 h-5 rounded-full bg-white/10 overflow-hidden shrink-0 border border-white/10">
+                                                    <img 
+                                                        src={spot.user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${spot.user.id}`} 
+                                                        alt={spot.user.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <span className="text-xs text-white/40 font-semibold tracking-wide">
+                                                    Discovered by <span className="text-white/80 hover:text-white transition-colors cursor-pointer">@{spot.user.name}</span>
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 {/* Desktop Dropdown Menu */}
@@ -1289,6 +1326,16 @@ export default function SpotDetailPage() {
                     )}
                 </section>
             </div>
+
+            <ImageViewer
+                isOpen={showImageViewer}
+                imageUrl={
+                    spot.imageUrl ||
+                    'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'
+                }
+                alt={spot.name}
+                onClose={() => setShowImageViewer(false)}
+            />
         </div>
     );
 }
