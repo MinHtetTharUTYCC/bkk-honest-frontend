@@ -126,6 +126,10 @@ export default function ScamAlertDetailPage() {
     };
 
     const handleVoteToggle = async () => {
+        if (!user) {
+            import('sonner').then(m => m.toast.error('Please join us first to like this!'));
+            return;
+        }
         if (!localAlert) return;
 
         const wasVoted = Boolean(localAlert.hasVoted);
