@@ -497,96 +497,201 @@ export default function SpotDetailPage() {
                 </button>
 
                 {/* Hero Image Section */}
-                <div className="relative h-100 md:h-125 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30">
-                    <img
-                        src={
-                            spot.imageUrl ||
-                            'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'
-                        }
-                        alt={spot.name}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
+                <div className="flex flex-col md:flex-row gap-6">
+                    {/* Left Column: Image & Top Badges */}
+                    <div className="relative h-100 md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] shrink-0 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30">
+                        <img
+                            src={
+                                spot.imageUrl ||
+                                'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'
+                            }
+                            alt={spot.name}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 md:from-transparent md:via-transparent via-transparent to-transparent" />
 
-                    {/* Admin Actions - Mobile Only (Top Left) */}
-                    {/* Removed as functionality moved to Dropdown Menu */}
+                        {/* Badge Container - top row (Both Mobile & Desktop) */}
+                        <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
+                            <div className="flex items-center gap-2 pointer-events-auto">
+                                <span className="bg-black/40 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
+                                    {(spot.category as any)?.name}
+                                </span>
+                                <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
+                                    <Zap size={10} fill="currentColor" />
+                                    {(spot.vibeStats as any)?.avgCrowdLevel
+                                        ? `Busy: ${(spot.vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
+                                        : 'New Spot'}
+                                </div>
+                            </div>
 
-                    {/* Like Button - Mobile Only (Top Right) */}
-                    {/* Removed as functionality moved to Desktop/Mobile footer or Dropdown */}
-
-                    {/* Badge Container - top row */}
-                    <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
-                        <div className="flex items-center gap-2 pointer-events-auto">
-                            <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
-                                {(spot.category as any)?.name}
-                            </span>
-                            <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
-                                <Zap size={10} fill="currentColor" />
-                                {(spot.vibeStats as any)?.avgCrowdLevel
-                                    ? `Busy: ${(spot.vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
-                                    : 'New Spot'}
+                            {/* Dropdown Menu - Mobile Only (Desktop moved to right column) */}
+                            <div className="pointer-events-auto md:hidden">
+                                <DropdownMenu
+                                    trigger={
+                                        <button className="bg-black/40 backdrop-blur-md text-white p-2.5 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform">
+                                            <MoreVertical size={18} />
+                                        </button>
+                                    }
+                                >
+                                    {isOwner && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                                                <Edit2 size={16} />
+                                                <span>Edit Spot</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                onClick={() => deleteSpotMutation.mutate()}
+                                                danger
+                                            >
+                                                {deleteSpotMutation.isPending ? (
+                                                    <Loader2 size={16} className="animate-spin" />
+                                                ) : (
+                                                    <Trash2 size={16} />
+                                                )}
+                                                <span>Delete Spot</span>
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
+                                    <DropdownMenuItem onClick={() => setShowReportModal(true)}>
+                                        <Flag size={16} />
+                                        <span>Report Spot</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenu>
                             </div>
                         </div>
 
-                        <div className="pointer-events-auto">
-                            <DropdownMenu
-                                trigger={
-                                    <button className="bg-black/40 backdrop-blur-md text-white p-2.5 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform">
-                                        <MoreVertical size={18} />
-                                    </button>
-                                }
-                            >
-                                {isOwner && (
-                                    <>
-                                        <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                                            <Edit2 size={16} />
-                                            <span>Edit Spot</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem
-                                            onClick={() => deleteSpotMutation.mutate()}
-                                            danger
-                                        >
-                                            {deleteSpotMutation.isPending ? (
-                                                <Loader2 size={16} className="animate-spin" />
-                                            ) : (
-                                                <Trash2 size={16} />
-                                            )}
-                                            <span>Delete Spot</span>
-                                        </DropdownMenuItem>
-                                    </>
-                                )}
-                                <DropdownMenuItem onClick={() => setShowReportModal(true)}>
-                                    <Flag size={16} />
-                                    <span>Report Spot</span>
-                                </DropdownMenuItem>
-                            </DropdownMenu>
+                        {/* Mobile Info Overlay (Hidden on Desktop) */}
+                        <div className="absolute bottom-6 left-6 right-6 flex flex-col justify-between gap-6 md:hidden">
+                            <div className="space-y-2">
+                                <h1 className="text-4xl font-display font-bold text-white tracking-tight drop-shadow-sm">
+                                    {spot.name}
+                                </h1>
+                                <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
+                                    <MapPin
+                                        size={14}
+                                        strokeWidth={3}
+                                        className="text-amber-400 shrink-0"
+                                    />
+                                    <span className="truncate">{spot.address}</span>
+                                </p>
+                            </div>
+
+                            <div className="flex w-full items-center justify-between gap-3">
+                                <button
+                                    onClick={() => !isInMissions && addMission.mutate(spot?.id || '')}
+                                    disabled={addMission.isPending || isInMissions}
+                                    className={cn(
+                                        'flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide',
+                                        isInMissions
+                                            ? 'bg-emerald-500/80 border-emerald-400 text-white'
+                                            : 'hover:bg-amber-400 border-white/20',
+                                    )}
+                                >
+                                    {addMission.isPending ? (
+                                        <Loader2 size={16} className="animate-spin" />
+                                    ) : isInMissions ? (
+                                        <>
+                                            <CheckCircle2 size={16} />
+                                            <span>Accepted</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Target size={16} />
+                                            <span>Accept</span>
+                                        </>
+                                    )}
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        router.push(
+                                            `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`,
+                                        )
+                                    }
+                                    className="flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide"
+                                    title="Navigate to this spot"
+                                >
+                                    <Navigation size={16} />
+                                    Navigate
+                                </button>
+
+                                <LikeButton
+                                    count={spot._count?.votes || 0}
+                                    isVoted={spot.hasVoted}
+                                    onVote={handleSpotVoteClick}
+                                    variant="default"
+                                    size="lg"
+                                    className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
+                                    title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
+                                />
+                            </div>
                         </div>
                     </div>
 
-                    <div className="absolute bottom-6 md:bottom-10 left-6 md:left-10 right-6 md:right-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-                        <div className="space-y-2">
-                            <h1 className="text-4xl md:text-6xl font-display font-bold text-white tracking-tight drop-shadow-sm">
-                                {spot.name}
-                            </h1>
-                            <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
-                                <MapPin
-                                    size={14}
-                                    strokeWidth={3}
-                                    className="text-amber-400 shrink-0"
-                                />
-                                {spot.address}
-                            </p>
+                    {/* Right Column: Info & Actions (Desktop Only) */}
+                    <div className="hidden md:flex flex-1 flex-col justify-between bg-card rounded-2xl p-8 border border-border shadow-xl shadow-black/20">
+                        {/* Top Section */}
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-start gap-4">
+                                <div className="space-y-4">
+                                    <h1 className="text-5xl lg:text-6xl font-display font-bold text-white tracking-tight leading-none">
+                                        {spot.name}
+                                    </h1>
+                                    <p className="text-white/60 font-bold uppercase tracking-widest text-sm flex items-center gap-2">
+                                        <MapPin
+                                            size={16}
+                                            strokeWidth={3}
+                                            className="text-amber-400 shrink-0"
+                                        />
+                                        {spot.address}
+                                    </p>
+                                </div>
+
+                                {/* Desktop Dropdown Menu */}
+                                <DropdownMenu
+                                    trigger={
+                                        <button className="bg-white/5 hover:bg-white/10 text-white p-3 rounded-xl border border-border shadow-sm active:scale-95 transition-all shrink-0">
+                                            <MoreVertical size={20} />
+                                        </button>
+                                    }
+                                >
+                                    {isOwner && (
+                                        <>
+                                            <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                                                <Edit2 size={16} />
+                                                <span>Edit Spot</span>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem
+                                                onClick={() => deleteSpotMutation.mutate()}
+                                                danger
+                                            >
+                                                {deleteSpotMutation.isPending ? (
+                                                    <Loader2 size={16} className="animate-spin" />
+                                                ) : (
+                                                    <Trash2 size={16} />
+                                                )}
+                                                <span>Delete Spot</span>
+                                            </DropdownMenuItem>
+                                        </>
+                                    )}
+                                    <DropdownMenuItem onClick={() => setShowReportModal(true)}>
+                                        <Flag size={16} />
+                                        <span>Report Spot</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenu>
+                            </div>
                         </div>
 
-                        <div className="flex w-full md:w-auto items-center justify-between md:justify-end gap-3 md:gap-4">
+                        {/* Bottom Section: Actions */}
+                        <div className="flex items-center gap-4 mt-8 pt-8 border-t border-border">
                             <button
                                 onClick={() => !isInMissions && addMission.mutate(spot?.id || '')}
                                 disabled={addMission.isPending || isInMissions}
                                 className={cn(
-                                    'flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide',
+                                    'flex-1 bg-white/5 hover:bg-white/10 text-white px-6 py-4 rounded-2xl transition-all active:scale-95 border border-border shadow-sm flex items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase',
                                     isInMissions
-                                        ? 'bg-emerald-500/80 border-emerald-400 text-white'
-                                        : 'hover:bg-amber-400 border-white/20',
+                                        ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                                        : 'hover:border-amber-400/50 hover:text-amber-400',
                                 )}
                             >
                                 {addMission.isPending ? (
@@ -594,14 +699,12 @@ export default function SpotDetailPage() {
                                 ) : isInMissions ? (
                                     <>
                                         <CheckCircle2 size={18} />
-                                        <span className="hidden md:inline">Mission Accepted</span>
-                                        <span className="md:hidden">Accepted</span>
+                                        <span>Mission Accepted</span>
                                     </>
                                 ) : (
                                     <>
                                         <Target size={18} />
-                                        <span className="hidden md:inline">Accept Mission</span>
-                                        <span className="md:hidden">Accept</span>
+                                        <span>Accept Mission</span>
                                     </>
                                 )}
                             </button>
@@ -612,14 +715,12 @@ export default function SpotDetailPage() {
                                         `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`,
                                     )
                                 }
-                                className="flex-1 md:flex-none bg-white/10 backdrop-blur-md text-white px-4 md:px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-3 text-[10px] font-semibold tracking-wide"
+                                className="flex-1 bg-amber-500 hover:bg-amber-400 text-black px-6 py-4 rounded-2xl transition-all active:scale-95 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase"
                                 title="Navigate to this spot"
                             >
                                 <Navigation size={18} />
                                 Navigate
                             </button>
-
-                            {/* Removed as functionality moved to Dropdown Menu */}
 
                             <LikeButton
                                 count={spot._count?.votes || 0}
@@ -627,7 +728,7 @@ export default function SpotDetailPage() {
                                 onVote={handleSpotVoteClick}
                                 variant="default"
                                 size="lg"
-                                className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
+                                className="bg-white/5 hover:bg-white/10 border-border text-xs font-bold tracking-widest px-6 py-4 rounded-2xl shadow-sm hover:border-amber-400/50 hover:text-amber-400"
                                 title={spot.hasVoted ? 'Remove like' : 'Like this spot'}
                             />
                         </div>
