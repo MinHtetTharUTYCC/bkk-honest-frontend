@@ -40,7 +40,7 @@ const iconSizeMap = {
 export interface LikeButtonProps extends VariantProps<typeof likeButtonVariants> {
     count?: number;
     isVoted?: boolean;
-    onVote?: () => Promise<void>;
+    onVote?: (e: React.MouseEvent<HTMLButtonElement>) => Promise<void>;
     isPending?: boolean;
     disabled?: boolean;
     title?: string;
@@ -69,7 +69,11 @@ export function LikeButton({
 
     return (
         <button
-            onClick={onVote}
+            onClick={(e) => {
+                if (onVote) {
+                    onVote(e);
+                }
+            }}
             disabled={disabled || isPending}
             title={title || defaultTitle}
             className={likeButtonVariants({

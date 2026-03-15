@@ -247,8 +247,8 @@ export default function HomeFeed() {
                                     <Link
                                         key={vibe.id}
                                         href={getSpotUrl(
-                                            vibe.spot?.city?.name || 'Bangkok',
-                                            vibe.spot?.name || '',
+                                            vibe.spot?.city?.slug || 'bangkok',
+                                            vibe.spot?.slug || '',
                                         )}
                                         className="block bg-card rounded-2xl p-6 border border-white/8 shadow-xl shadow-black/30 group hover:scale-[1.02] transition-all duration-300"
                                     >

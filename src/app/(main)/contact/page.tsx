@@ -42,43 +42,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Contact Options */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-card p-6 rounded-xl shadow-lg border border-border text-center">
-              <Mail className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Email Support</h3>
-              <p className="text-foreground/70 text-sm mb-4">
-                Get detailed help with any questions or issues
-              </p>
-              <p className="text-primary font-medium">support@bkkhonest.com</p>
-              <p className="text-foreground/50 text-xs mt-2">Response within 48 hours</p>
-            </div>
-
-            <div className="bg-card p-6 rounded-xl shadow-lg border border-border text-center">
-              <MessageSquare className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Community Feedback</h3>
-              <p className="text-foreground/70 text-sm mb-4">
-                Suggestions to improve the platform
-              </p>
-              <p className="text-blue-500 font-medium">feedback@bkkhonest.com</p>
-              <p className="text-foreground/50 text-xs mt-2">Response within 5 days</p>
-            </div>
-
-            <div className="bg-card p-6 rounded-xl shadow-lg border border-border text-center">
-              <Phone className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Emergency Issues</h3>
-              <p className="text-foreground/70 text-sm mb-4">
-                Critical safety concerns or urgent matters
-              </p>
-              <p className="text-green-500 font-medium">urgent@bkkhonest.com</p>
-              <p className="text-foreground/50 text-xs mt-2">Priority response</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Form */}
       <section className="bg-background py-16">
         <div className="max-w-4xl mx-auto px-4">

@@ -32,6 +32,7 @@ import ReactionButton from '@/components/reactions/reaction-button';
 import ReportButton from '@/components/report/report-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { ImageViewer } from '@/components/ui/image-viewer';
 import Image from 'next/image';
 import ScamEditModal from '@/components/scams/scam-edit-modal';
 import { LikeButton } from '@/components/ui/like-button';
@@ -46,6 +47,7 @@ export default function ScamAlertDetailPage() {
     );
     const [localAlert, setLocalAlert] = useState<any>(alert);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [showImageViewer, setShowImageViewer] = useState(false);
 
     useEffect(() => {
         if (alert) {
@@ -126,6 +128,10 @@ export default function ScamAlertDetailPage() {
     };
 
     const handleVoteToggle = async () => {
+        if (!user) {
+            import('sonner').then(m => m.toast.error('Please join us first to like this!'));
+            return;
+        }
         if (!localAlert) return;
 
         const wasVoted = Boolean(localAlert.hasVoted);
@@ -184,12 +190,15 @@ export default function ScamAlertDetailPage() {
                 <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
                     {/* Hero Image */}
                     {localAlert.imageUrl && (
-                        <div className="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+                        <div 
+                            className="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl cursor-pointer group"
+                            onClick={() => setShowImageViewer(true)}
+                        >
                             <Image
                                 src={localAlert.imageUrl}
                                 alt={localAlert.scamName}
                                 fill
-                                className="object-cover"
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 priority
                             />
                         </div>
@@ -542,6 +551,16 @@ export default function ScamAlertDetailPage() {
             {/* Edit Modal */}
             {isEditModalOpen && (
                 <ScamEditModal alert={localAlert} onClose={() => setIsEditModalOpen(false)} />
+            )}
+
+            {/* Image Viewer */}
+            {localAlert.imageUrl && (
+                <ImageViewer
+                    isOpen={showImageViewer}
+                    imageUrl={localAlert.imageUrl}
+                    alt={localAlert.scamName}
+                    onClose={() => setShowImageViewer(false)}
+                />
             )}
         </div>
     );

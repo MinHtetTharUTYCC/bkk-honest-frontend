@@ -607,7 +607,7 @@ export default function ProfilePage() {
 
                 <div className="space-y-6">
                     {activeTab === 'scams' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="flex flex-col gap-6">
                             {!scamsData ? (
                                 // Loading skeleton
                                 [1, 2].map((i) => (
@@ -623,7 +623,7 @@ export default function ProfilePage() {
                                         className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-row items-stretch gap-6"
                                     >
                                         {scam.imageUrl && (
-                                            <div className="w-32 md:w-48 rounded-xl bg-white/5 overflow-hidden shrink-0 flex items-center justify-center">
+                                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 overflow-hidden shrink-0 flex items-center justify-center">
                                                 <img
                                                     src={scam.imageUrl}
                                                     alt={scam.scamName}
@@ -645,8 +645,8 @@ export default function ProfilePage() {
                                             </p>
                                             <Link
                                                 href={getScamAlertUrl(
-                                                    scam?.city?.name || 'Bangkok',
-                                                    scam?.scamName || '',
+                                                    scam?.city?.slug || 'bangkok',
+                                                    scam?.slug || '',
                                                 )}
                                                 className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
                                             >
@@ -657,7 +657,7 @@ export default function ProfilePage() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="col-span-2 py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
+                                <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
                                     <p className="text-[12px] font-medium text-white/20 uppercase tracking-widest">
                                         No scam alerts reported yet
                                     </p>
@@ -673,7 +673,7 @@ export default function ProfilePage() {
                     )}
 
                     {activeTab === 'tips' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="flex flex-col gap-6">
                             {!tipsData ? (
                                 [1, 2].map((i) => (
                                     <div
@@ -682,21 +682,24 @@ export default function ProfilePage() {
                                     />
                                 ))
                             ) : tipsList.length > 0 ? (
-                                tipsList.map((tip: any) => (
+                                tipsList.map((tip: any) => {
+                                    const displayImg = tip.imageUrl || tip.spot?.imageUrl;
+                                    return (
                                     <div
                                         key={tip.id}
-                                        className="bg-card rounded-2xl p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-col"
+                                        className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-row items-stretch gap-6"
                                     >
-                                        {tip.imageUrl && (
-                                            <div className="w-full h-48 mb-6 rounded-xl bg-white/5 overflow-hidden shrink-0">
+                                        {displayImg && (
+                                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 overflow-hidden shrink-0">
                                                 <img
-                                                    src={tip.imageUrl}
+                                                    src={displayImg}
                                                     alt={tip.title}
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
                                         )}
-                                        <div className="flex items-center justify-between mb-4">
+                                        <div className="flex-1 flex flex-col justify-center">
+                                            <div className="flex items-center justify-between mb-4">
                                             <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
                                                 {new Date(tip.createdAt).toLocaleDateString()}
                                             </span>
@@ -714,8 +717,8 @@ export default function ProfilePage() {
                                             </span>
                                             <Link
                                                 href={getSpotUrl(
-                                                    tip.spot?.city?.name || 'Bangkok',
-                                                    tip.spot?.name || '',
+                                                    tip.spot?.city?.slug || 'bangkok',
+                                                    tip.spot?.slug || '',
                                                 )}
                                                 className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
                                             >
@@ -723,10 +726,11 @@ export default function ProfilePage() {
                                                 <ArrowRight size={14} />
                                             </Link>
                                         </div>
+                                        </div>
                                     </div>
-                                ))
+                                )})
                             ) : (
-                                <div className="col-span-2 py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
+                                <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
                                     <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                                         No community tips shared yet
                                     </p>
@@ -742,7 +746,7 @@ export default function ProfilePage() {
                     )}
 
                     {activeTab === 'reports' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="flex flex-col gap-6">
                             {!reportsData ? (
                                 [1, 2].map((i) => (
                                     <div
@@ -751,21 +755,24 @@ export default function ProfilePage() {
                                     />
                                 ))
                             ) : reportsList.length > 0 ? (
-                                reportsList.map((report: any) => (
+                                reportsList.map((report: any) => {
+                                    const displayImg = report.imageUrl || report.spot?.imageUrl;
+                                    return (
                                     <div
                                         key={report.id}
-                                        className="bg-card rounded-2xl p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-col"
+                                        className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-row items-stretch gap-6"
                                     >
-                                        {report.imageUrl && (
-                                            <div className="w-full h-48 mb-6 rounded-xl bg-white/5 overflow-hidden shrink-0">
+                                        {displayImg && (
+                                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 overflow-hidden shrink-0 flex items-center justify-center">
                                                 <img
-                                                    src={report.imageUrl}
+                                                    src={displayImg}
                                                     alt={report.itemName}
                                                     className="w-full h-full object-cover"
                                                 />
                                             </div>
                                         )}
-                                        <div className="flex items-center justify-between mb-4">
+                                        <div className="flex-1 flex flex-col justify-center">
+                                            <div className="flex items-center justify-between mb-4">
                                             <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
                                                 {new Date(report.timestamp).toLocaleDateString()}
                                             </span>
@@ -788,10 +795,11 @@ export default function ProfilePage() {
                                             View Spot
                                             <ArrowRight size={14} />
                                         </Link>
+                                        </div>
                                     </div>
-                                ))
+                                )})
                             ) : (
-                                <div className="col-span-2 py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
+                                <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
                                     <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                                         No price reports shared yet
                                     </p>
@@ -807,7 +815,7 @@ export default function ProfilePage() {
                     )}
 
                     {activeTab === 'spots' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="flex flex-col gap-6">
                             {!spotsData ? (
                                 [1, 2].map((i) => (
                                     <div
@@ -822,7 +830,7 @@ export default function ProfilePage() {
                                         className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-row items-stretch gap-6"
                                     >
                                         {spot.imageUrl && (
-                                            <div className="w-32 md:w-48 rounded-xl bg-white/5 overflow-hidden shrink-0 flex items-center justify-center">
+                                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 overflow-hidden shrink-0 flex items-center justify-center">
                                                 <img
                                                     src={spot.imageUrl}
                                                     alt={spot.name}
@@ -848,8 +856,8 @@ export default function ProfilePage() {
                                             </p>
                                             <Link
                                                 href={getSpotUrl(
-                                                    spot?.city?.name || 'Bangkok',
-                                                    spot?.name || '',
+                                                    spot?.city?.slug || 'bangkok',
+                                                    spot?.slug || '',
                                                 )}
                                                 className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
                                             >
@@ -860,7 +868,7 @@ export default function ProfilePage() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="col-span-2 py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
+                                <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
                                     <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
                                         No spots added yet
                                     </p>

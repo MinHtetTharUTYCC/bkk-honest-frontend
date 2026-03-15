@@ -137,7 +137,7 @@ export default function VibesPage() {
                     vibes.map((vibe: any) => (
                         <Link
                             key={vibe.id}
-                            href={getSpotUrl(vibe.spot?.city?.name || 'Bangkok', vibe.spot?.name || '')}
+                            href={getSpotUrl(vibe.spot?.city?.slug || 'bangkok', vibe.spot?.slug || '')}
                             className="group relative bg-card rounded-3xl p-8 border border-white/8 shadow-2xl shadow-black/40 hover:scale-[1.02] transition-all duration-500 overflow-hidden"
                         >
                             {/* Accent Glow */}
