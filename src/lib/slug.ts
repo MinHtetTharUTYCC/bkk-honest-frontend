@@ -11,26 +11,17 @@ export function generateSlug(text: string): string {
 }
 
 /**
- * Generate a city slug (just the city name in slug format)
+ * Generate a spot URL based on city slug and spot slug
+ * NOTE: citySlug should come from API (city.slug), not generated from city name
  */
-export function generateCitySlug(cityName: string): string {
-  return generateSlug(cityName);
-}
-
-/**
- * Generate a spot URL based on city name and spot name
- */
-export function getSpotUrl(cityName: string, spotName: string): string {
-  const citySlug = generateCitySlug(cityName);
-  const spotSlug = generateSlug(spotName);
+export function getSpotUrl(citySlug: string, spotSlug: string): string {
   return `/spots/${citySlug}/${spotSlug}`;
 }
 
 /**
- * Generate a scam alert URL based on city name and alert name
+ * Generate a scam alert URL based on city slug and alert slug
+ * NOTE: citySlug should come from API (city.slug), not generated from city name
  */
-export function getScamAlertUrl(cityName: string, scamName: string): string {
-  const citySlug = generateCitySlug(cityName);
-  const alertSlug = generateSlug(scamName);
+export function getScamAlertUrl(citySlug: string, alertSlug: string): string {
   return `/scam-alerts/${citySlug}/${alertSlug}`;
 }

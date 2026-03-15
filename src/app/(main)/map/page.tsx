@@ -502,7 +502,7 @@ export default function MapPage() {
 
               <div className="flex gap-3">
                 <button 
-                  onClick={() => router.push(getSpotUrl(selectedSpot?.city?.name || 'Bangkok', selectedSpot?.name || ''))}
+                  onClick={() => router.push(getSpotUrl(selectedSpot?.city?.slug || 'bangkok', selectedSpot?.slug || ''))}
                   className="flex-1 bg-white/10 text-white font-bold py-3.5 rounded-xl text-sm hover:bg-white/15 transition-colors border border-white/10 text-center"
                 >
                   View Details

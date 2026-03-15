@@ -151,16 +151,6 @@ const Footer: React.FC = () => {
                 </Link>
               ))}
             </div>
-
-            <div className="mt-4 pt-4 border-t border-white/10">
-              <div className="flex items-center text-xs text-white/50 mb-1">
-                <MapPin className="w-3 h-3 mr-1" />
-                Made in Thailand
-              </div>
-              <p className="text-xs text-white/50">
-                App version 2.1.0
-              </p>
-            </div>
           </FooterSection>
         </div>
 

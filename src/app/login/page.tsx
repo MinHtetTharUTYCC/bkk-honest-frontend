@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import logoImg from '../../../public/logo-bh-linked-1-trans.png';
 import { Zap, Loader2, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage() {
@@ -62,13 +63,13 @@ export default function LoginPage() {
             <section className="relative w-full max-w-sm space-y-8 text-center">
                 {/* Logo & Branding */}
                 <div className="space-y-6">
-                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[2rem] bg-gradient-to-br from-amber-400/20 to-amber-600/20 shadow-2xl shadow-amber-400/20 backdrop-blur-xl border border-amber-400/30 p-3"><Image src="/logo-bh-linked-1-trans.png" alt="BKK Honest Logo" width={80} height={80} className="w-full h-full object-contain drop-shadow-lg" /></div>
+                    <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-[2rem] bg-gradient-to-br from-amber-500/15 to-amber-700/15 shadow-2xl shadow-amber-500/30 backdrop-blur-2xl border border-amber-300/40 p-4 hover:shadow-amber-500/40 transition-all duration-300"><Image src={logoImg} alt="BKK Honest Logo" width={80} height={80} className="w-full h-full object-contain drop-shadow-lg" /></div>
                     <div className="space-y-3">
                         <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-white sm:text-6xl">
-                            Honest
+                            BKK Honest
                         </h1>
                         <p className="text-sm font-semibold uppercase tracking-widest text-white/50">
-                            Keep Bangkok Real
+                            Keep Thailand Real
                         </p>
                     </div>
                 </div>
@@ -76,10 +77,10 @@ export default function LoginPage() {
                 {/* Description */}
                 <div className="space-y-3">
                     <p className="text-lg font-medium leading-relaxed text-white/60">
-                        Share prices, report scams, and real vibes.
+                        Share spots, prices, report scams, and real vibes.
                     </p>
                     <p className="text-sm text-white/50">
-                        Join thousands protecting the Bangkok community with honest intelligence.
+                        Join thousands protecting the Thailand community with honest intelligence.
                     </p>
                 </div>
 

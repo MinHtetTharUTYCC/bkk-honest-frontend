@@ -645,8 +645,8 @@ export default function ProfilePage() {
                                             </p>
                                             <Link
                                                 href={getScamAlertUrl(
-                                                    scam?.city?.name || 'Bangkok',
-                                                    scam?.scamName || '',
+                                                    scam?.city?.slug || 'bangkok',
+                                                    scam?.slug || '',
                                                 )}
                                                 className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
                                             >
@@ -717,8 +717,8 @@ export default function ProfilePage() {
                                             </span>
                                             <Link
                                                 href={getSpotUrl(
-                                                    tip.spot?.city?.name || 'Bangkok',
-                                                    tip.spot?.name || '',
+                                                    tip.spot?.city?.slug || 'bangkok',
+                                                    tip.spot?.slug || '',
                                                 )}
                                                 className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
                                             >
@@ -856,8 +856,8 @@ export default function ProfilePage() {
                                             </p>
                                             <Link
                                                 href={getSpotUrl(
-                                                    spot?.city?.name || 'Bangkok',
-                                                    spot?.name || '',
+                                                    spot?.city?.slug || 'bangkok',
+                                                    spot?.slug || '',
                                                 )}
                                                 className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
                                             >

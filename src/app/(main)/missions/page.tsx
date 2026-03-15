@@ -280,8 +280,8 @@ export default function MissionsPage() {
                                         <div className="pt-2 flex gap-2">
                                             <Link
                                                 href={getSpotUrl(
-                                                    mission.spot?.city?.name || 'Bangkok',
-                                                    mission.spot?.name || '',
+                                                    mission.spot?.city?.slug || 'bangkok',
+                                                    mission.spot?.slug || '',
                                                 )}
                                                 className="text-[12px] font-bold text-amber-400 uppercase tracking-widest hover:underline flex items-center gap-1"
                                             >
