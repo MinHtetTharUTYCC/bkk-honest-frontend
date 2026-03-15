@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 
 interface ScamAlertLayoutProps {
   params: Promise<{
@@ -8,10 +7,14 @@ interface ScamAlertLayoutProps {
   }>;
 }
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
+
 export async function generateMetadata({ params }: ScamAlertLayoutProps): Promise<Metadata> {
   try {
     const { citySlug, alertSlug } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const path = `/scam-alerts/${citySlug}/${alertSlug}`;
+    const canonicalUrl = `${siteUrl}${path}`;
     
     // Fetch alert data for dynamic metadata
     const response = await fetch(
@@ -23,6 +26,7 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
       return {
         title: 'Scam Alert - BKK Honest',
         description: 'View scam alert details and community discussion',
+        alternates: { canonical: path },
       };
     }
 
@@ -37,7 +41,7 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
         title: `${alertData.scamName} - Scam Alert`,
         description: alertData.description || `Learn about the ${alertData.scamName} scam`,
         type: 'article',
-        url: `https://bkkhonest.com/scam-alerts/${citySlug}/${alertSlug}`,
+        url: canonicalUrl,
         images: alertData.imageUrl ? [{
           url: alertData.imageUrl,
           width: 1200,
@@ -50,6 +54,9 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
         title: `${alertData.scamName} - Scam Alert`,
         description: alertData.description || `Learn about the ${alertData.scamName} scam`,
         images: alertData.imageUrl ? [alertData.imageUrl] : [],
+      },
+      alternates: {
+        canonical: path,
       },
     };
   } catch (error) {

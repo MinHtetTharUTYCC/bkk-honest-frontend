@@ -7,6 +7,8 @@ import { CityProvider } from '@/components/providers/city-provider';
 import { createClient } from '@/lib/supabase/server';
 import { Toaster } from 'sonner';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
+
 const syne = Syne({
     variable: '--font-display',
     subsets: ['latin'],
@@ -20,9 +22,13 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL(siteUrl),
     title: 'Honest Bangkok | Scam Alerts, Price Reports & Local Vibes',
     description:
         'A community platform for locals and tourists in Bangkok to share honest tips, real prices, and live city updates.',
+    alternates: {
+        canonical: '/',
+    },
 };
 
 export default async function RootLayout({
