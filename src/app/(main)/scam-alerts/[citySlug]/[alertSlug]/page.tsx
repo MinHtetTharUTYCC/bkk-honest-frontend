@@ -36,6 +36,17 @@ import { ImageViewer } from '@/components/ui/image-viewer';
 import Image from 'next/image';
 import ScamEditModal from '@/components/scams/scam-edit-modal';
 import { LikeButton } from '@/components/ui/like-button';
+import { toast } from 'sonner';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function ScamAlertDetailPage() {
     const { citySlug, alertSlug } = useParams() as { citySlug: string; alertSlug: string };
@@ -48,6 +59,8 @@ export default function ScamAlertDetailPage() {
     const [localAlert, setLocalAlert] = useState<any>(alert);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [showImageViewer, setShowImageViewer] = useState(false);
+    const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+    const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         if (alert) {
@@ -95,9 +108,10 @@ export default function ScamAlertDetailPage() {
                 content: newComment.trim(),
             });
             setNewComment('');
+            toast.success('Comment posted');
         } catch (err) {
             console.error(err);
-            alert('Failed to post comment');
+            toast.error('Failed to post comment');
         }
     };
 
@@ -110,20 +124,22 @@ export default function ScamAlertDetailPage() {
                 scamAlertId: alert.id,
             });
             setEditingCommentId(null);
+            toast.success('Comment updated');
         } catch (err) {
             console.error(err);
-            alert('Failed to update comment');
+            toast.error('Failed to update comment');
         }
     };
 
     const handleDeleteComment = async (commentId: string) => {
-        if (!confirm('Are you sure you want to delete this comment?')) return;
         if (!alert) return;
         try {
             await deleteCommentMutation.mutateAsync({ id: commentId, scamAlertId: alert.id });
+            setCommentToDelete(null);
+            toast.success('Comment deleted');
         } catch (err) {
             console.error(err);
-            alert('Failed to delete comment');
+            toast.error('Failed to delete comment');
         }
     };
 
@@ -156,13 +172,13 @@ export default function ScamAlertDetailPage() {
     };
 
     const handleDeleteAlert = async () => {
-        if (!confirm('Are you sure you want to delete this scam alert?')) return;
         try {
             await deleteScamAlertMutation.mutateAsync(alert.id);
+            toast.success('Scam alert deleted');
             router.push('/scam-alerts');
         } catch (err) {
             console.error(err);
-            alert('Failed to delete alert');
+            toast.error('Failed to delete alert');
         }
     };
 
@@ -176,6 +192,56 @@ export default function ScamAlertDetailPage() {
 
     return (
         <div className="min-h-screen bg-background pb-20">
+            {/* Delete Scam Alert Confirmation */}
+            <AlertDialog open={isDeleteAlertOpen} onOpenChange={setIsDeleteAlertOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Scam Alert?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this scam alert? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleteScamAlertMutation.isPending}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleDeleteAlert();
+                            }}
+                            disabled={deleteScamAlertMutation.isPending}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                        >
+                            {deleteScamAlertMutation.isPending ? "Deleting..." : "Delete Alert"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {/* Delete Comment Confirmation */}
+            <AlertDialog open={!!commentToDelete} onOpenChange={(open) => !open && setCommentToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Comment?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to delete this comment?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleteCommentMutation.isPending}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (commentToDelete) handleDeleteComment(commentToDelete);
+                            }}
+                            disabled={deleteCommentMutation.isPending}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                        >
+                            {deleteCommentMutation.isPending ? "Deleting..." : "Delete Comment"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {/* Header */}
             <div className="border-b bg-background">
                 <div className="mx-auto max-w-2xl px-4 py-4 flex items-center">
@@ -254,7 +320,7 @@ export default function ScamAlertDetailPage() {
                                                     </span>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    onClick={handleDeleteAlert}
+                                                    onClick={() => setIsDeleteAlertOpen(true)}
                                                     className="gap-3 py-3"
                                                     danger
                                                 >
@@ -461,7 +527,7 @@ export default function ScamAlertDetailPage() {
                                                         </DropdownMenuItem>
                                                         <DropdownMenuItem
                                                             onClick={() =>
-                                                                handleDeleteComment(comment.id)
+                                                                setCommentToDelete(comment.id)
                                                             }
                                                             className="gap-2 py-3"
                                                             danger
