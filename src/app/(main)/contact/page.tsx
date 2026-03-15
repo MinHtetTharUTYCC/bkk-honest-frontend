@@ -1,7 +1,9 @@
 'use client';
 
-import { Mail, MessageSquare, MapPin, Clock, Send, Phone } from 'lucide-react';
+import { Mail, MessageSquare, MapPin, Clock, Send, Phone, Loader2, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
+import Link from 'next/link';
+import api from '@/lib/api';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -10,14 +12,25 @@ export default function ContactPage() {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-    // For now, just show an alert
-    alert('Thank you for your message! We\'ll get back to you within 48 hours.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+    setError(null);
+    
+    try {
+      await api.post('/contact', formData);
+      setIsSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err: any) {
+      console.error('Form submission error:', err);
+      setError(err.response?.data?.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -42,43 +55,6 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Contact Options */}
-      <section className="py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-card p-6 rounded-xl shadow-lg border border-border text-center">
-              <Mail className="w-12 h-12 text-primary mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Email Support</h3>
-              <p className="text-foreground/70 text-sm mb-4">
-                Get detailed help with any questions or issues
-              </p>
-              <p className="text-primary font-medium">support@bkkhonest.com</p>
-              <p className="text-foreground/50 text-xs mt-2">Response within 48 hours</p>
-            </div>
-
-            <div className="bg-card p-6 rounded-xl shadow-lg border border-border text-center">
-              <MessageSquare className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Community Feedback</h3>
-              <p className="text-foreground/70 text-sm mb-4">
-                Suggestions to improve the platform
-              </p>
-              <p className="text-blue-500 font-medium">feedback@bkkhonest.com</p>
-              <p className="text-foreground/50 text-xs mt-2">Response within 5 days</p>
-            </div>
-
-            <div className="bg-card p-6 rounded-xl shadow-lg border border-border text-center">
-              <Phone className="w-12 h-12 text-green-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Emergency Issues</h3>
-              <p className="text-foreground/70 text-sm mb-4">
-                Critical safety concerns or urgent matters
-              </p>
-              <p className="text-green-500 font-medium">urgent@bkkhonest.com</p>
-              <p className="text-foreground/50 text-xs mt-2">Priority response</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Form */}
       <section className="bg-background py-16">
         <div className="max-w-4xl mx-auto px-4">
@@ -92,87 +68,117 @@ export default function ContactPage() {
           <div className="grid md:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
-                    Your Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors placeholder:text-muted-foreground/70"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors placeholder:text-muted-foreground/70"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
-                    Subject
-                  </label>
-                  <select
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+              {isSuccess ? (
+                <div className="bg-green-500/10 border border-green-500/20 p-8 rounded-xl text-center">
+                  <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold text-foreground mb-2">Message Sent!</h3>
+                  <p className="text-foreground/70 mb-6">
+                    Thank you for reaching out. We've received your message and will get back to you within 48 hours.
+                  </p>
+                  <button 
+                    onClick={() => setIsSuccess(false)}
+                    className="text-primary font-semibold hover:underline"
                   >
-                    <option value="">Select a topic...</option>
-                    <option value="general">General Question</option>
-                    <option value="bug">Bug Report</option>
-                    <option value="feature">Feature Request</option>
-                    <option value="content">Content Issue</option>
-                    <option value="account">Account Problem</option>
-                    <option value="safety">Safety Concern</option>
-                    <option value="business">Business Inquiry</option>
-                    <option value="other">Other</option>
-                  </select>
+                    Send another message
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {error && (
+                    <div className="bg-destructive/10 border border-destructive/20 p-4 rounded-lg text-destructive text-sm">
+                      {error}
+                    </div>
+                  )}
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors placeholder:text-muted-foreground/70 disabled:opacity-50"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={6}
-                    className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none placeholder:text-muted-foreground/70"
-                    placeholder="Please provide as much detail as possible to help us assist you better..."
-                  />
-                </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors placeholder:text-muted-foreground/70 disabled:opacity-50"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition-colors duration-200 flex items-center justify-center"
-                >
-                  <Send className="w-5 h-5 mr-2" />
-                  Send Message
-                </button>
-              </form>
+                  <div>
+                    <label htmlFor="subject" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
+                      Subject
+                    </label>
+                    <select
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      disabled={isSubmitting}
+                      className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors disabled:opacity-50"
+                    >
+                      <option value="">Select a topic...</option>
+                      <option value="general">General Question</option>
+                      <option value="bug">Bug Report</option>
+                      <option value="feature">Feature Request</option>
+                      <option value="content">Content Issue</option>
+                      <option value="account">Account Problem</option>
+                      <option value="safety">Safety Concern</option>
+                      <option value="business">Business Inquiry</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-semibold text-muted-foreground/90 mb-2">
+                      Message
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      disabled={isSubmitting}
+                      rows={6}
+                      className="w-full px-4 py-3 bg-card border border-border rounded-lg text-foreground focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none placeholder:text-muted-foreground/70 disabled:opacity-50"
+                      placeholder="Please provide as much detail as possible to help us assist you better..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-amber-700 hover:to-orange-700 transition-colors duration-200 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    ) : (
+                      <Send className="w-5 h-5 mr-2" />
+                    )}
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              )}
             </div>
 
             {/* Contact Information */}
@@ -219,12 +225,12 @@ export default function ContactPage() {
                   Want to help make Thailand Honest better? We're always looking for community moderators, 
                   local experts, and passionate contributors.
                 </p>
-                <a 
+                <Link
                   href="/about" 
                   className="text-blue-400 text-sm font-medium hover:text-blue-300 transition-colors"
                 >
                   Learn more about getting involved →
-                </a>
+                </Link>
               </div>
             </div>
           </div>
