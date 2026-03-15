@@ -9,6 +9,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ReportButton from '@/components/report/report-button';
 import ReactionButton from '@/components/reactions/reaction-button';
+import Link from 'next/link';
 
 interface TipCommentsModalProps {
   tip: any;
@@ -162,19 +163,25 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                 ) : comments?.length > 0 ? (
                   comments.map((comment: any) => (
                     <div key={comment.id} className="flex gap-3 items-start group">
-                      <div className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden">
+                      <Link 
+                        href={`/profile/${comment.userId}`}
+                        className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
+                      >
                          {comment.user?.avatarUrl ? (
                             <img src={comment.user.avatarUrl} className="w-full h-full object-cover" />
                           ) : (
                             <User size={16} />
                           )}
-                      </div>
+                      </Link>
                       <div className="flex-1 space-y-1">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-white/80">
+                            <Link 
+                              href={`/profile/${comment.userId}`}
+                              className="text-xs font-bold text-white/80 hover:text-amber-400 transition-colors"
+                            >
                               {comment.user?.name || 'Local'}
-                            </span>
+                            </Link>
                             {comment.user?.level && (
                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white/10 text-white/60">
                                 Lvl {comment.user.level === 'LOCAL_GURU' ? '3' : comment.user.level === 'EXPLORER' ? '2' : '1'}

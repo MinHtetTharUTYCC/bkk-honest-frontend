@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { getSpotUrl } from '@/lib/slug';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
 
 export default function VibesPage() {
     const router = useRouter();
@@ -61,21 +62,12 @@ export default function VibesPage() {
     const vibes = vibesData?.pages.flatMap(page => page.data || []) || [];
 
     // Intersection Observer for Infinite Scroll
-    const observerTarget = useRef(null);
+    const { ref: observerTarget, inView } = useInView({ threshold: 0.1 });
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            entries => {
-                if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-                    fetchNextPage();
-                }
-            },
-            { threshold: 0.1 }
-        );
-        if (observerTarget.current) {
-            observer.observe(observerTarget.current);
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-        return () => observer.disconnect();
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     return (
         <div className="space-y-8 pb-24">

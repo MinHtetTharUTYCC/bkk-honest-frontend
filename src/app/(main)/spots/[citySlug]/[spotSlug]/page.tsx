@@ -77,6 +77,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import SpotEditModal from '@/components/spots/spot-edit-modal';
+import { useInView } from 'react-intersection-observer';
 
 export default function SpotDetailPage() {
     const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
@@ -126,25 +127,13 @@ export default function SpotDetailPage() {
     const tips = tipsData?.pages.flatMap((page) => page.data) || [];
 
     // Infinite scroll trigger
-    const observerTarget = useRef(null);
+    const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: '200px' });
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasNextTips && !isFetchingNextTips) {
-                    console.log('Fetching next tips...');
-                    fetchNextTips();
-                }
-            },
-            {
-                rootMargin: '200px',
-                threshold: 0.1,
-            },
-        );
-        if (observerTarget.current) {
-            observer.observe(observerTarget.current);
+        if (inView && hasNextTips && !isFetchingNextTips) {
+            console.log('Fetching next tips...');
+            fetchNextTips();
         }
-        return () => observer.disconnect();
-    }, [hasNextTips, isFetchingNextTips, fetchNextTips]);
+    }, [inView, hasNextTips, isFetchingNextTips, fetchNextTips]);
 
     const uploadMutation = useUploadSpotImage();
     const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle(
@@ -427,11 +416,12 @@ export default function SpotDetailPage() {
                                         <span className="truncate">{spot.address}</span>
                                     </p>
                                     {spot.user && (
-                                        <div 
-                                            className="flex items-center gap-2 pl-[22px]"
+                                        <Link 
+                                            href={`/profile/${spot.user.id}`}
+                                            className="flex items-center gap-2 pl-[22px] group/author cursor-pointer"
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            <div className="w-4 h-4 rounded-full bg-white/10 overflow-hidden shrink-0">
+                                            <div className="w-4 h-4 rounded-full bg-white/10 overflow-hidden shrink-0 group-hover/author:border-amber-400 transition-colors">
                                                 <img 
                                                     src={spot.user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${spot.user.id}`} 
                                                     alt={spot.user.name}
@@ -439,9 +429,9 @@ export default function SpotDetailPage() {
                                                 />
                                             </div>
                                             <span className="text-[10px] text-white/40 font-semibold tracking-wide">
-                                                Discovered by <span className="text-white/70">@{spot.user.name}</span>
+                                                Discovered by <span className="text-white/70 group-hover/author:text-amber-400 transition-colors">@{spot.user.name}</span>
                                             </span>
-                                        </div>
+                                        </Link>
                                     )}
                                 </div>
                             </div>
@@ -520,8 +510,8 @@ export default function SpotDetailPage() {
                                             {spot.address}
                                         </p>
                                         {spot.user && (
-                                            <div className="flex items-center gap-2 pl-[26px]">
-                                                <div className="w-5 h-5 rounded-full bg-white/10 overflow-hidden shrink-0 border border-white/10">
+                                            <Link href={`/profile/${spot.user.id}`} className="flex items-center gap-2 pl-[26px] group/author">
+                                                <div className="w-5 h-5 rounded-full bg-white/10 overflow-hidden shrink-0 border border-white/10 group-hover/author:border-amber-400 transition-colors">
                                                     <img 
                                                         src={spot.user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${spot.user.id}`} 
                                                         alt={spot.user.name}
@@ -529,9 +519,9 @@ export default function SpotDetailPage() {
                                                     />
                                                 </div>
                                                 <span className="text-xs text-white/40 font-semibold tracking-wide">
-                                                    Discovered by <span className="text-white/80 hover:text-white transition-colors cursor-pointer">@{spot.user.name}</span>
+                                                    Discovered by <span className="text-white/80 group-hover/author:text-amber-400 transition-colors cursor-pointer">@{spot.user.name}</span>
                                                 </span>
-                                            </div>
+                                            </Link>
                                         )}
                                     </div>
                                 </div>

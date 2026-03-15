@@ -6,6 +6,8 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { X, Camera, Loader2, TrendingUp, Calendar, User, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LikeButton } from '@/components/ui/like-button';
+import Link from 'next/link';
+import { useInView } from 'react-intersection-observer';
 
 interface GalleryModalProps {
     spotId: string;
@@ -25,24 +27,13 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     const images = data?.pages.flatMap((page) => page.data) || [];
 
     // Infinite scroll trigger
-    const observerTarget = useRef(null);
+    const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-                    fetchNextPage();
-                }
-            },
-            { threshold: 0.5 },
-        );
-
-        if (observerTarget.current) {
-            observer.observe(observerTarget.current);
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-
-        return () => observer.disconnect();
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -152,7 +143,10 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
 
                                         <div className="p-5 space-y-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center text-white/40 overflow-hidden">
+                                                <Link 
+                                                    href={`/profile/${img.userId}`}
+                                                    className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 transition-colors"
+                                                >
                                                     {img.user?.avatarUrl ? (
                                                         <img
                                                             src={img.user.avatarUrl}
@@ -161,12 +155,15 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                     ) : (
                                                         <User size={14} />
                                                     )}
-                                                </div>
+                                                </Link>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2">
-                                                        <p className="text-[10px] font-bold text-foreground uppercase truncate">
+                                                        <Link 
+                                                            href={`/profile/${img.userId}`}
+                                                            className="text-[10px] font-bold text-foreground uppercase truncate hover:text-amber-400 transition-colors"
+                                                        >
                                                             {img.user?.name || 'Local'}
-                                                        </p>
+                                                        </Link>
                                                         {img.user?.level && (
                                                             <span className="bg-amber-400/10 text-amber-400 px-1.5 py-0.5 rounded-md text-[7px] font-bold uppercase tracking-tighter">
                                                                 Lvl{' '}

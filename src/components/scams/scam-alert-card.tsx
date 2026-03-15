@@ -242,9 +242,15 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 </div>
 
                 {/* User Info Overlay — Bottom of Image */}
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                <div 
+                    className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent group/author cursor-pointer pointer-events-auto"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/profile/${alert.userId || alert.user?.id}`);
+                    }}
+                >
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg">
+                        <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
                             {alert.user?.avatarUrl ? (
                                 <img
                                     src={alert.user.avatarUrl}
@@ -255,7 +261,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             )}
                         </div>
                         <div className="flex flex-col min-w-0">
-                            <span className="text-[10px] font-black text-white uppercase tracking-tight truncate leading-none mb-1">
+                            <span className="text-[10px] font-black text-white uppercase tracking-tight truncate leading-none mb-1 group-hover/author:text-amber-400 transition-colors">
                                 {alert.user?.name || 'Local'}
                             </span>
                             {alert.user?.level && (

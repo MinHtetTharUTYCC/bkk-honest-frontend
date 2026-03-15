@@ -22,6 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, use } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
+import { ProfileTabs } from '@/components/profile/profile-tabs';
 
 export default function UserProfilePage({ params }: { params: Promise<{ userId: string }> }) {
     const { userId } = use(params);
@@ -37,9 +38,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
     }, [currentUser, userId, authLoading, router]);
 
     // Tab State maintained via URL
-    const activeTab = (searchParams.get('tab') as 'scams' | 'tips' | 'spots') || 'spots';
+    const activeTab = (searchParams.get('tab') as 'scams' | 'reports' | 'tips' | 'spots') || 'spots';
 
-    const setActiveTab = (tab: string) => {
+    const setActiveTab = (tab: 'scams' | 'reports' | 'tips' | 'spots') => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('tab', tab);
         router.replace(`/profile/${userId}?${params.toString()}`, { scroll: false });
@@ -54,48 +55,6 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
     const profile = profileResponse?.data || profileResponse;
 
     const isProfileNotFound = (profileError as any)?.response?.status === 404;
-
-    const { ref, inView } = useInView();
-
-    // Fetch user's content
-    const {
-        data: scamsData,
-        fetchNextPage: fetchNextScams,
-        hasNextPage: hasNextScams,
-        isFetchingNextPage: isFetchingScams,
-    } = useInfiniteUserScamAlerts(userId);
-
-    const {
-        data: tipsData,
-        fetchNextPage: fetchNextTips,
-        hasNextPage: hasNextTips,
-        isFetchingNextPage: isFetchingTips,
-    } = useInfiniteUserCommunityTips(userId);
-
-    const {
-        data: spotsData,
-        fetchNextPage: fetchNextSpots,
-        hasNextPage: hasNextSpots,
-        isFetchingNextPage: isFetchingSpots,
-    } = useInfiniteUserSpots(userId);
-
-    // Infinite scroll handler
-    useEffect(() => {
-        if (!inView) return;
-
-        if (activeTab === 'scams' && hasNextScams) {
-            fetchNextScams();
-        } else if (activeTab === 'tips' && hasNextTips) {
-            fetchNextTips();
-        } else if (activeTab === 'spots' && hasNextSpots) {
-            fetchNextSpots();
-        }
-    }, [inView, activeTab, hasNextScams, hasNextTips, hasNextSpots, fetchNextScams, fetchNextTips, fetchNextSpots]);
-
-    // Flatten paginated data
-    const scams = scamsData?.pages?.flatMap((page) => page.data || []) || [];
-    const tips = tipsData?.pages?.flatMap((page) => page.data || []) || [];
-    const spots = spotsData?.pages?.flatMap((page) => page.data || []) || [];
 
     if (profileLoading) {
         return (
@@ -179,146 +138,14 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
                     </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="border-b border-white/10 mb-12">
-                    <div className="flex gap-8 overflow-x-auto">
-                        {['spots', 'tips', 'scams'].map((tab) => (
-                            <button
-                                key={tab}
-                                onClick={() => setActiveTab(tab)}
-                                className={cn(
-                                    'px-4 py-3 text-sm font-semibold uppercase tracking-widest transition-all whitespace-nowrap',
-                                    activeTab === tab
-                                        ? 'text-white border-b-2 border-amber-400'
-                                        : 'text-white/50 hover:text-white/70',
-                                )}
-                            >
-                                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Content */}
+                {/* Contribution History Tabs */}
                 <div className="pb-20">
-                    {/* Spots Tab */}
-                    {activeTab === 'spots' && (
-                        <div className="space-y-6">
-                            {spots.length === 0 ? (
-                                <div className="py-12 text-center text-white/40">
-                                    <Target size={32} className="mx-auto mb-3 opacity-50" />
-                                    <p>No spots shared yet</p>
-                                </div>
-                            ) : (
-                                spots.map((spot: any) => (
-                                    <Link
-                                        key={spot.id}
-                                        href={getSpotUrl(spot.city?.slug || '', spot.slug)}
-                                        className="bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-colors group cursor-pointer"
-                                    >
-                                        <div className="flex items-start gap-4">
-                                            {spot.imageUrl && (
-                                                <div className="h-20 w-20 rounded-xl overflow-hidden flex-shrink-0 bg-white/5">
-                                                    <img
-                                                        src={spot.imageUrl}
-                                                        alt={spot.name}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="flex-1">
-                                                <h3 className="text-lg font-semibold text-white mb-1">{spot.name}</h3>
-                                                <p className="text-sm text-white/60 mb-2">{spot.address}</p>
-                                                <div className="flex items-center gap-2 text-amber-400">
-                                                    <Zap size={14} />
-                                                    <span className="text-xs font-semibold">
-                                                        {spot.vibeStats?.avgCrowdLevel?.toFixed(1)}/5 Busy
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))
-                            )}
-                            {isFetchingSpots && <Loader2 className="animate-spin mx-auto mt-6 text-white/50" />}
-                            <div ref={ref} />
-                        </div>
-                    )}
-
-                    {/* Tips Tab */}
-                    {activeTab === 'tips' && (
-                        <div className="space-y-4">
-                            {tips.length === 0 ? (
-                                <div className="py-12 text-center text-white/40">
-                                    <Loader2 size={32} className="mx-auto mb-3 opacity-50" />
-                                    <p>No tips shared yet</p>
-                                </div>
-                            ) : (
-                                tips.map((tip: any) => (
-                                    <div
-                                        key={tip.id}
-                                        className="bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-colors"
-                                    >
-                                        <h3 className="text-lg font-semibold text-white mb-2">{tip.title}</h3>
-                                        <p className="text-white/60 text-sm line-clamp-3 mb-3">{tip.description}</p>
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-2 text-white/40 text-xs">
-                                                <Calendar size={14} />
-                                                {new Date(tip.createdAt).toLocaleDateString()}
-                                            </div>
-                                            {tip.commentsCount > 0 && (
-                                                <div className="text-amber-400 text-xs font-semibold">
-                                                    {tip.commentsCount} {tip.commentsCount === 1 ? 'comment' : 'comments'}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-                            {isFetchingTips && <Loader2 className="animate-spin mx-auto mt-6 text-white/50" />}
-                            <div ref={ref} />
-                        </div>
-                    )}
-
-                    {/* Scams Tab */}
-                    {activeTab === 'scams' && (
-                        <div className="space-y-4">
-                            {scams.length === 0 ? (
-                                <div className="py-12 text-center text-white/40">
-                                    <AlertTriangle size={32} className="mx-auto mb-3 opacity-50" />
-                                    <p>No scam alerts reported yet</p>
-                                </div>
-                            ) : (
-                                scams.map((scam: any) => (
-                                    <Link
-                                        key={scam.id}
-                                        href={getScamAlertUrl(scam.city?.slug || '', scam.slug)}
-                                        className="bg-red-500/5 border border-red-500/20 rounded-2xl p-4 hover:bg-red-500/10 transition-colors group cursor-pointer"
-                                    >
-                                        <div className="flex items-start gap-4">
-                                            {scam.imageUrl && (
-                                                <div className="h-20 w-20 rounded-xl overflow-hidden flex-shrink-0 bg-white/5">
-                                                    <img
-                                                        src={scam.imageUrl}
-                                                        alt={scam.scamName}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="text-lg font-semibold text-white">{scam.scamName}</h3>
-                                                </div>
-                                                <p className="text-sm text-white/60 line-clamp-2">{scam.description}</p>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))
-                            )}
-                            {isFetchingScams && <Loader2 className="animate-spin mx-auto mt-6 text-white/50" />}
-                            <div ref={ref} />
-                        </div>
-                    )}
+                    <ProfileTabs 
+                        userId={userId}
+                        activeTab={activeTab}
+                        onTabChange={setActiveTab}
+                        isPublic={true}
+                    />
                 </div>
             </div>
         </div>

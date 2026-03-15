@@ -5,6 +5,7 @@ import { MessageSquare, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LikeButton } from '@/components/ui/like-button';
 import { TipActionsMenu } from './tip-actions-menu';
+import Link from 'next/link';
 
 interface TipCardProps {
   tip: any;
@@ -50,7 +51,10 @@ export function TipCard({
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4 flex-1 min-w-0">
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/5 border border-border shrink-0 overflow-hidden">
+          <Link
+            href={`/profile/${tip.userId}`}
+            className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/5 border border-border shrink-0 overflow-hidden hover:border-amber-400 transition-colors"
+          >
             {tip.user?.avatarUrl ? (
               <img
                 src={tip.user.avatarUrl}
@@ -62,13 +66,16 @@ export function TipCard({
                 <User size={20} />
               </div>
             )}
-          </div>
+          </Link>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h5 className="font-bold text-white text-sm md:text-base truncate">
+              <Link
+                href={`/profile/${tip.userId}`}
+                className="font-bold text-white text-sm md:text-base truncate hover:text-amber-400 transition-colors"
+              >
                 {tip.user?.name || 'Local'}
-              </h5>
+              </Link>
               {tip.user?.level && (
                 <span
                   className={cn(

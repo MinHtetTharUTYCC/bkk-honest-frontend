@@ -22,12 +22,14 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useCity } from '@/components/providers/city-provider';
 import { getSpotUrl } from '@/lib/slug';
 import { useAuth } from '@/components/providers/auth-provider';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
 
 export default function MissionsPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -35,9 +37,24 @@ export default function MissionsPage() {
             router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
         }
     }, [user, authLoading, router, pathname]);
+
     const { selectedCity } = useCity();
-    const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'completed'>('pending');
+
+    // Sync state with URL params
+    const statusFilter = (searchParams.get('status') as 'all' | 'pending' | 'completed') || 'pending';
+    const sortOrder = (searchParams.get('sort') as 'newest' | 'oldest') || 'newest';
+
+    const setStatusFilter = (status: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('status', status);
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    };
+
+    const setSortOrder = (sort: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('sort', sort);
+        router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    };
 
     const {
         data: missionsData,
@@ -45,13 +62,13 @@ export default function MissionsPage() {
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useMissions(statusFilter);
+    } = useMissions(statusFilter, sortOrder);
     const { data: stats } = useMissionStats();
 
     const updateMission = useUpdateMission();
     const deleteMission = useDeleteMission();
 
-    const observerTarget = useRef(null);
+    const { ref: observerTarget, inView } = useInView({ threshold: 0.1 });
 
     useEffect(() => {
         setIsClient(true);
@@ -65,32 +82,14 @@ export default function MissionsPage() {
     };
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-                    fetchNextPage();
-                }
-            },
-            { threshold: 0.1 },
-        );
-        if (observerTarget.current) {
-            observer.observe(observerTarget.current);
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-        return () => observer.disconnect();
-    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     const missions = useMemo(() => {
-        let list = missionsData?.pages.flatMap((page) => page.data || []) || [];
-
-        // Sort by date
-        list.sort((a, b) => {
-            const dateA = new Date(a.createdAt).getTime();
-            const dateB = new Date(b.createdAt).getTime();
-            return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-        });
-
-        return list;
-    }, [missionsData, sortOrder]);
+        return missionsData?.pages.flatMap((page) => page.data || []) || [];
+    }, [missionsData]);
     const completedCount = stats?.completed || 0;
     const totalCount = stats?.total || 0;
     const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
@@ -198,7 +197,7 @@ export default function MissionsPage() {
                         {/* Sort Toggle */}
                         <button
                             onClick={() =>
-                                setSortOrder((prev) => (prev === 'newest' ? 'oldest' : 'newest'))
+                                setSortOrder(sortOrder === 'newest' ? 'oldest' : 'newest')
                             }
                             className="flex items-center gap-2 px-4 py-2.5 bg-white/8 rounded-xl border border-white/10 text-[10px] font-bold uppercase tracking-widest text-white/60 hover:bg-white/12 transition-all"
                         >
