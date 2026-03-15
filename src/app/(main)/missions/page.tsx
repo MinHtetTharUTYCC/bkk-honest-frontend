@@ -36,17 +36,17 @@ export default function MissionsPage() {
         }
     }, [user, authLoading, router, pathname]);
     const { selectedCity } = useCity();
+    const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'completed'>('pending');
+
     const {
         data: missionsData,
         isLoading: missionsLoading,
         fetchNextPage,
         hasNextPage,
         isFetchingNextPage,
-    } = useMissions();
+    } = useMissions(statusFilter);
     const { data: stats } = useMissionStats();
-
-    const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
-    const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'completed'>('pending');
 
     const updateMission = useUpdateMission();
     const deleteMission = useDeleteMission();
@@ -82,13 +82,6 @@ export default function MissionsPage() {
     const missions = useMemo(() => {
         let list = missionsData?.pages.flatMap((page) => page.data || []) || [];
 
-        // Filter by status
-        if (statusFilter === 'pending') {
-            list = list.filter((m) => !m.completed);
-        } else if (statusFilter === 'completed') {
-            list = list.filter((m) => m.completed);
-        }
-
         // Sort by date
         list.sort((a, b) => {
             const dateA = new Date(a.createdAt).getTime();
@@ -97,7 +90,7 @@ export default function MissionsPage() {
         });
 
         return list;
-    }, [missionsData, sortOrder, statusFilter]);
+    }, [missionsData, sortOrder]);
     const completedCount = stats?.completed || 0;
     const totalCount = stats?.total || 0;
     const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;

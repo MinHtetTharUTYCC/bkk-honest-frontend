@@ -887,13 +887,15 @@ export function useDeleteVote() {
 
 // --- Missions (Checklist) ---
 
-export function useMissions(userId: string = 'me') {
+export function useMissions(status: string = 'all', userId: string = 'me') {
     return useInfiniteQuery({
-        queryKey: ['missions-infinite', userId],
+        queryKey: ['missions-infinite', userId, status],
         queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get('/checklist', {
-                params: { skip: pageParam, take: 20 }
-            });
+            const params: any = { skip: pageParam, take: 10 };
+            if (status !== 'all') {
+                params.status = status;
+            }
+            const { data } = await api.get('/checklist', { params });
             return data;
         },
         initialPageParam: 0,
