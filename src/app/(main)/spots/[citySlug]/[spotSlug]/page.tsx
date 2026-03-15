@@ -40,6 +40,7 @@ import {
     X,
     MessageSquare,
     Navigation,
+    ImageIcon,
 } from 'lucide-react';
 import { LikeButton } from '@/components/ui/like-button';
 import { ImageViewer } from '@/components/ui/image-viewer';
@@ -543,17 +544,23 @@ export default function SpotDetailPage() {
                 <div className="flex flex-col md:flex-row gap-6">
                     {/* Left Column: Image & Top Badges */}
                     <div 
-                        className="relative h-100 md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] shrink-0 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30 cursor-pointer"
-                        onClick={() => setShowImageViewer(true)}
+                        className="relative h-100 md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] shrink-0 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30 cursor-pointer bg-white/5 border border-white/8"
+                        onClick={() => spot.imageUrl ? setShowImageViewer(true) : undefined}
                     >
-                        <img
-                            src={
-                                spot.imageUrl ||
-                                'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'
-                            }
-                            alt={spot.name}
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        />
+                        {spot.imageUrl ? (
+                            <img
+                                src={spot.imageUrl}
+                                alt={spot.name}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                        ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-3">
+                                <ImageIcon size={64} strokeWidth={1} />
+                                <span className="text-sm font-black uppercase tracking-widest">
+                                    No Photo
+                                </span>
+                            </div>
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 md:from-transparent md:via-transparent via-transparent to-transparent" />
 
                         {/* Badge Container - top row (Both Mobile & Desktop) */}
@@ -1362,10 +1369,7 @@ export default function SpotDetailPage() {
 
             <ImageViewer
                 isOpen={showImageViewer}
-                imageUrl={
-                    spot.imageUrl ||
-                    'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=1200'
-                }
+                imageUrl={spot.imageUrl || ''}
                 alt={spot.name}
                 onClose={() => setShowImageViewer(false)}
             />
