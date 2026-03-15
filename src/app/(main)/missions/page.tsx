@@ -14,6 +14,7 @@ import {
     Filter,
     SortAsc,
     SortDesc,
+    ImageIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -253,15 +254,21 @@ export default function MissionsPage() {
                                 )}
                             >
                                 <div className="flex items-center gap-6">
-                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0">
-                                        <img
-                                            src={
-                                                mission.spot?.imageUrl ||
-                                                'https://images.unsplash.com/photo-1563245394-5b95b8022a4d?auto=format&fit=crop&q=80&w=200'
-                                            }
-                                            alt={mission.spot?.name}
-                                            className="w-full h-full object-cover"
-                                        />
+                                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-white/5">
+                                        {mission.spot?.imageUrl ? (
+                                            <img
+                                                src={mission.spot.imageUrl}
+                                                alt={mission.spot?.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
+                                                <ImageIcon size={24} strokeWidth={1.5} />
+                                                <span className="text-[8px] font-black uppercase tracking-widest">
+                                                    No Photo
+                                                </span>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="space-y-1">
                                         <h4
