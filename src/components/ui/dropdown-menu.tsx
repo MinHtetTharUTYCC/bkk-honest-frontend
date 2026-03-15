@@ -1,34 +1,34 @@
 'use client';
 
-import React, { useState, useRef, useEffect, ReactNode, createContext, useContext } from 'react';
+import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 interface DropdownMenuContextType {
   close: () => void;
 }
 
-const DropdownMenuContext = createContext<DropdownMenuContextType | null>(null);
+const DropdownMenuContext = React.createContext<DropdownMenuContextType | null>(null);
 
 export function useDropdownMenu() {
-  const context = useContext(DropdownMenuContext);
+  const context = React.useContext(DropdownMenuContext);
   if (!context) throw new Error('useDropdownMenu must be used within a DropdownMenu');
   return context;
 }
 
 interface DropdownMenuProps {
-  trigger: ReactNode;
-  children: ReactNode;
+  trigger: React.ReactNode;
+  children: React.ReactNode;
   align?: 'left' | 'right';
   className?: string;
 }
 
 export function DropdownMenu({ trigger, children, align = 'right', className }: DropdownMenuProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
 
   const close = () => setIsOpen(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -66,7 +66,7 @@ export function DropdownMenu({ trigger, children, align = 'right', className }: 
 }
 
 interface DropdownMenuItemProps {
-  children: ReactNode;
+  children: React.ReactNode;
   onClick?: (e: React.MouseEvent) => void;
   className?: string;
   danger?: boolean;
