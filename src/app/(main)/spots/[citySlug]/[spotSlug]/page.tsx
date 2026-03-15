@@ -62,6 +62,18 @@ import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { MoreVertical, Flag } from 'lucide-react';
+import { toast } from 'sonner';
+
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function SpotDetailPage() {
     const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
@@ -90,6 +102,7 @@ export default function SpotDetailPage() {
     const [showImageViewer, setShowImageViewer] = useState(false);
     const [showTipModal, setShowTipModal] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedTip, setSelectedTip] = useState<any>(null);
     const [editingTip, setEditingTip] = useState<any>(null);
     const [editingTipTitle, setEditingTipTitle] = useState('');
@@ -159,9 +172,10 @@ export default function SpotDetailPage() {
             setIsEditing(false);
             setEditFile(null);
             setEditPreview(null);
+            toast.success('Spot updated successfully');
         } catch (err) {
             console.error(err);
-            alert('Failed to update spot');
+            toast.error('Failed to update spot');
         }
     };
 
@@ -241,16 +255,16 @@ export default function SpotDetailPage() {
     const queryClient = useQueryClient();
     const deleteSpotMutation = useMutation({
         mutationFn: async () => {
-            if (
-                !confirm('Are you sure you want to delete this spot? This action cannot be undone.')
-            )
-                return;
             await api.delete(`/spots/${spot?.id || ''}`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['spots'] });
+            toast.success('Spot deleted');
             router.push('/');
         },
+        onError: () => {
+            toast.error('Failed to delete spot');
+        }
     });
 
     useEffect(() => {
@@ -298,23 +312,50 @@ export default function SpotDetailPage() {
             setEditingTip(null);
             setEditingTipTitle('');
             setEditingTipDescription('');
+            toast.success('Tip updated');
         } catch (error) {
             console.error('Failed to update tip:', error);
-            alert('Failed to update tip');
+            toast.error('Failed to update tip');
         }
     };
 
     const handleDeleteTip = async (tipId: string) => {
         try {
             await deleteTipMutation.mutateAsync({ id: tipId, spotId: spot?.id || '' });
+            toast.success('Tip deleted');
         } catch (error) {
             console.error('Failed to delete tip:', error);
-            alert('Failed to delete tip');
+            toast.error('Failed to delete tip');
         }
     };
 
     return (
         <div className="space-y-12 pb-24">
+            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action cannot be undone. This will permanently delete the spot
+                            and all associated contributions (tips, photos, vibe checks).
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleteSpotMutation.isPending}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                deleteSpotMutation.mutate();
+                            }}
+                            disabled={deleteSpotMutation.isPending}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                        >
+                            {deleteSpotMutation.isPending ? "Deleting..." : "Delete Spot"}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {showGalleryModal && (
                 <GalleryModal
                     spotId={spot?.id || ''}
@@ -545,14 +586,10 @@ export default function SpotDetailPage() {
                                                 <span>Edit Spot</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
-                                                onClick={() => deleteSpotMutation.mutate()}
+                                                onClick={() => setIsDeleteDialogOpen(true)}
                                                 danger
                                             >
-                                                {deleteSpotMutation.isPending ? (
-                                                    <Loader2 size={16} className="animate-spin" />
-                                                ) : (
-                                                    <Trash2 size={16} />
-                                                )}
+                                                <Trash2 size={16} />
                                                 <span>Delete Spot</span>
                                             </DropdownMenuItem>
                                         </>
@@ -699,14 +736,10 @@ export default function SpotDetailPage() {
                                                 <span>Edit Spot</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
-                                                onClick={() => deleteSpotMutation.mutate()}
+                                                onClick={() => setIsDeleteDialogOpen(true)}
                                                 danger
                                             >
-                                                {deleteSpotMutation.isPending ? (
-                                                    <Loader2 size={16} className="animate-spin" />
-                                                ) : (
-                                                    <Trash2 size={16} />
-                                                )}
+                                                <Trash2 size={16} />
                                                 <span>Delete Spot</span>
                                             </DropdownMenuItem>
                                         </>

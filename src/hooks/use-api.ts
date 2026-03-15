@@ -458,8 +458,8 @@ export function useUpdateSpot() {
             });
             return data;
         },
-        onSuccess: (_, { id }) => {
-            queryClient.invalidateQueries({ queryKey: ['spot', id] });
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['spot'] });
             queryClient.invalidateQueries({ queryKey: ['spots'] });
             queryClient.invalidateQueries({ queryKey: ['user-spots-infinite'] });
         },

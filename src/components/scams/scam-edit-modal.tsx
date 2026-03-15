@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
+import { toast } from 'sonner';
 
 interface ScamEditModalProps {
     alert: any;
@@ -43,10 +44,10 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                 },
             });
             onClose();
-            // Refresh logic should be handled by query invalidation in hook
+            toast.success('Scam alert updated');
         } catch (err) {
             console.error(err);
-            alert('Failed to update scam alert');
+            toast.error('Failed to update scam alert');
         }
     };
 
