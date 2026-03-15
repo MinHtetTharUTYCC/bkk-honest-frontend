@@ -361,7 +361,10 @@ export default function SpotDetailPage() {
 
                         {/* Badge Container - top row (Both Mobile & Desktop) */}
                         <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
-                            <div className="flex items-center gap-2 pointer-events-auto">
+                            <div 
+                                className="flex items-center gap-2 pointer-events-auto"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <span className="bg-black/40 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
                                     {(spot.category as any)?.name}
                                 </span>
@@ -374,7 +377,10 @@ export default function SpotDetailPage() {
                             </div>
 
                             {/* Dropdown Menu - Mobile Only (Desktop moved to right column) */}
-                            <div className="pointer-events-auto md:hidden">
+                            <div 
+                                className="pointer-events-auto md:hidden"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <DropdownMenu
                                     trigger={
                                         <button className="bg-black/40 backdrop-blur-md text-white p-2.5 rounded-xl border border-white/20 shadow-xl active:scale-95 transition-transform">
@@ -421,7 +427,10 @@ export default function SpotDetailPage() {
                                         <span className="truncate">{spot.address}</span>
                                     </p>
                                     {spot.user && (
-                                        <div className="flex items-center gap-2 pl-[22px]">
+                                        <div 
+                                            className="flex items-center gap-2 pl-[22px]"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
                                             <div className="w-4 h-4 rounded-full bg-white/10 overflow-hidden shrink-0">
                                                 <img 
                                                     src={spot.user.avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${spot.user.id}`} 
@@ -437,7 +446,10 @@ export default function SpotDetailPage() {
                                 </div>
                             </div>
 
-                            <div className="flex w-full items-center justify-between gap-3">
+                            <div 
+                                className="flex w-full items-center justify-between gap-3"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 <button
                                     onClick={() => !isInMissions && addMission.mutate(spot?.id || '')}
                                     disabled={addMission.isPending || isInMissions}
