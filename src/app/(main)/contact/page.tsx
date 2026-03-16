@@ -1,15 +1,6 @@
 'use client';
 
-import {
-    Mail,
-    MessageSquare,
-    MapPin,
-    Clock,
-    Send,
-    Phone,
-    Loader2,
-    CheckCircle2,
-} from 'lucide-react';
+import { MapPin, Clock, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
@@ -216,9 +207,13 @@ export default function ContactPage() {
                                     Get in Touch
                                 </h3>
                                 <p className="text-foreground/70 mb-6">
-                                    We're a small but passionate team dedicated to making Thailand
-                                    travel better for everyone. Your feedback, questions, and
-                                    suggestions help us improve.
+                                    I'm a solo developer on a mission to make Thailand travel better
+                                    and more transparent for everyone. This is a personal project,
+                                    and I personally read every message and suggestion. If you have
+                                    any feedback, ideas, or just want to say hi, please don't
+                                    hesitate to reach out! Your input helps shape the future of
+                                    Thailand Honest and makes it a better resource for travelers
+                                    like you. I look forward to hearing from you! 🙏
                                 </p>
                             </div>
 
@@ -327,9 +322,8 @@ export default function ContactPage() {
                                 Is there a mobile app?
                             </h3>
                             <p className="text-foreground/60 text-sm">
-                                Currently, Thailand Honest is a responsive web application that
-                                works great on mobile browsers. A dedicated app may come in the
-                                future!
+                                Currently, BKK Honest is a responsive web application that works
+                                great on mobile browsers. A dedicated app may come in the future!
                             </p>
                         </div>
                     </div>
