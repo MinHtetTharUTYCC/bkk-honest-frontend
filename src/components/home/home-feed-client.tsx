@@ -16,7 +16,6 @@ import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
-import { useState } from 'react';
 import { getSpotUrl } from '@/lib/slug';
 
 interface HomeFeedClientProps {
@@ -216,8 +215,8 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                             ) : (
                                 <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
                                     <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">
-                                        All clear in {selectedCity?.name || fallbackCityName}. No active
-                                        scams reported.
+                                        All clear in {selectedCity?.name || fallbackCityName}. No
+                                        active scams reported.
                                     </p>
                                 </div>
                             )}
@@ -330,7 +329,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     <Link
                                         key={cat.id}
                                         href={`/spots?categoryId=${cat.id}`}
-                                        className="flex-shrink-0 bg-card px-6 py-4 rounded-2xl border border-white/8 shadow-xl shadow-black/30 flex flex-col gap-1 active:scale-95 transition-transform"
+                                        className="shrink-0 bg-card px-6 py-4 rounded-2xl border border-white/8 shadow-xl shadow-black/30 flex flex-col gap-1 active:scale-95 transition-transform"
                                     >
                                         <span className="text-sm font-bold text-foreground">
                                             {cat.name}

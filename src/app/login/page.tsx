@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import logoImg from '../../../public/logo-bh-linked-1-trans.png';
-import { Zap, Loader2, ShieldAlert } from 'lucide-react';
+import { Loader2, ShieldAlert } from 'lucide-react';
 
 export default function LoginPage() {
     const [googleLoading, setGoogleLoading] = useState(false);
@@ -56,14 +56,22 @@ export default function LoginPage() {
             {/* Subtle grid overlay */}
             <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,1)_1px,transparent_1px)] [background-size:50px_50px]"
+                className="pointer-events-none absolute inset-0 opacity-[0.03] bg-[linear-gradient(rgba(255,255,255,1)_1px,transparent_1px),linear-gradient(to_right,rgba(255,255,255,1)_1px,transparent_1px)] bg-size-[50px_50px]"
             />
 
             {/* Content */}
             <section className="relative w-full max-w-sm space-y-8 text-center">
                 {/* Logo & Branding */}
                 <div className="space-y-6">
-                    <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-[2rem] bg-gradient-to-br from-amber-500/15 to-amber-700/15 shadow-2xl shadow-amber-500/30 backdrop-blur-2xl border border-amber-300/40 p-4 hover:shadow-amber-500/40 transition-all duration-300"><Image src={logoImg} alt="BKK Honest Logo" width={80} height={80} className="w-full h-full object-contain drop-shadow-lg" /></div>
+                    <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-[2rem] bg-linear-to-br from-amber-500/15 to-amber-700/15 shadow-2xl shadow-amber-500/30 backdrop-blur-2xl border border-amber-300/40 p-4 hover:shadow-amber-500/40 transition-all duration-300">
+                        <Image
+                            src={logoImg}
+                            alt="BKK Honest Logo"
+                            width={80}
+                            height={80}
+                            className="w-full h-full object-contain drop-shadow-lg"
+                        />
+                    </div>
                     <div className="space-y-3">
                         <h1 className="font-display text-5xl font-bold uppercase tracking-tight text-white sm:text-6xl">
                             BKK Honest
@@ -107,7 +115,7 @@ export default function LoginPage() {
                         aria-busy={googleLoading}
                         className="group relative w-full overflow-hidden rounded-2xl bg-white px-6 py-4 text-xs font-black uppercase tracking-widest text-black shadow-2xl shadow-white/10 transition-all hover:shadow-3xl hover:shadow-white/20 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         <div className="relative flex items-center justify-center gap-3">
                             {googleLoading ? (
                                 <>
@@ -153,8 +161,8 @@ export default function LoginPage() {
                             className="text-amber-300 underline underline-offset-2 transition-colors hover:text-amber-200"
                         >
                             Terms
-                        </Link>
-                        {' '}and{' '}
+                        </Link>{' '}
+                        and{' '}
                         <Link
                             href="/privacy"
                             className="text-amber-300 underline underline-offset-2 transition-colors hover:text-amber-200"

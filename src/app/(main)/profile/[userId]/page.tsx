@@ -7,15 +7,7 @@ import {
     useInfiniteUserCommunityTips,
     useInfiniteUserSpots,
 } from '@/hooks/use-api';
-import {
-    Zap,
-    MapPin,
-    Calendar,
-    ArrowRight,
-    Loader2,
-    AlertTriangle,
-    Target,
-} from 'lucide-react';
+import { Zap, MapPin, Calendar, ArrowRight, Loader2, AlertTriangle, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -38,7 +30,8 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
     }, [currentUser, userId, authLoading, router]);
 
     // Tab State maintained via URL
-    const activeTab = (searchParams.get('tab') as 'scams' | 'reports' | 'tips' | 'spots') || 'spots';
+    const activeTab =
+        (searchParams.get('tab') as 'scams' | 'reports' | 'tips' | 'spots') || 'spots';
 
     const setActiveTab = (tab: 'scams' | 'reports' | 'tips' | 'spots') => {
         const params = new URLSearchParams(searchParams.toString());
@@ -58,7 +51,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
 
     if (profileLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-black pt-20 flex items-center justify-center">
+            <div className="min-h-screen bg-linear-to-b from-black via-slate-950 to-black pt-20 flex items-center justify-center">
                 <Loader2 className="animate-spin text-white" size={40} />
             </div>
         );
@@ -66,11 +59,16 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
 
     if (isProfileNotFound || !profile) {
         return (
-            <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-black pt-20">
+            <div className="min-h-screen bg-linear-to-b from-black via-slate-950 to-black pt-20">
                 <div className="max-w-4xl mx-auto px-4 py-16 text-center">
                     <h1 className="text-4xl font-bold text-white mb-4">User Not Found</h1>
-                    <p className="text-white/60 mb-8">This user's profile doesn't exist or has been deleted.</p>
-                    <Link href="/" className="text-amber-400 hover:text-amber-300 inline-flex items-center gap-2">
+                    <p className="text-white/60 mb-8">
+                        This user's profile doesn't exist or has been deleted.
+                    </p>
+                    <Link
+                        href="/"
+                        className="text-amber-400 hover:text-amber-300 inline-flex items-center gap-2"
+                    >
                         Back to Home <ArrowRight size={18} />
                     </Link>
                 </div>
@@ -79,13 +77,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-black via-slate-950 to-black pt-20">
+        <div className="min-h-screen bg-linear-to-b from-black via-slate-950 to-black pt-20">
             <div className="max-w-4xl mx-auto px-4">
                 {/* Profile Header */}
                 <div className="space-y-6 mb-12">
                     <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                         {/* Avatar */}
-                        <div className="h-24 w-24 rounded-2xl overflow-hidden flex-shrink-0 bg-white/5 border border-white/10">
+                        <div className="h-24 w-24 rounded-2xl overflow-hidden flex-linear-0 bg-white/5 border border-white/10">
                             {profile?.avatarUrl ? (
                                 <img
                                     src={profile.avatarUrl}
@@ -102,7 +100,9 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
                         {/* Profile Info */}
                         <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
-                                <h1 className="text-4xl font-bold text-white">{profile?.name || 'User'}</h1>
+                                <h1 className="text-4xl font-bold text-white">
+                                    {profile?.name || 'User'}
+                                </h1>
                                 {profile?.level && (
                                     <span className="px-3 py-1 bg-amber-500/20 border border-amber-400/50 text-amber-300 rounded-full text-xs font-bold uppercase tracking-widest">
                                         {profile.level}
@@ -110,9 +110,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
                                 )}
                             </div>
 
-                            {profile?.bio && (
-                                <p className="text-white/60 mb-3">{profile.bio}</p>
-                            )}
+                            {profile?.bio && <p className="text-white/60 mb-3">{profile.bio}</p>}
 
                             <div className="flex flex-wrap gap-4 text-sm text-white/50">
                                 {profile?.country && (
@@ -132,15 +130,19 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
 
                         {/* Reputation */}
                         <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                            <div className="text-3xl font-bold text-amber-400">{profile?.reputation || 0}</div>
-                            <div className="text-xs text-white/50 uppercase tracking-widest mt-1">Reputation</div>
+                            <div className="text-3xl font-bold text-amber-400">
+                                {profile?.reputation || 0}
+                            </div>
+                            <div className="text-xs text-white/50 uppercase tracking-widest mt-1">
+                                Reputation
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Contribution History Tabs */}
                 <div className="pb-20">
-                    <ProfileTabs 
+                    <ProfileTabs
                         userId={userId}
                         activeTab={activeTab}
                         onTabChange={setActiveTab}
