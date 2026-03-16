@@ -15,10 +15,12 @@ import {
     Zap,
     Calendar,
     ImageIcon,
+    Lightbulb,
+    Tag,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 
@@ -31,6 +33,7 @@ interface ProfileTabsProps {
 
 export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }: ProfileTabsProps) {
     const { ref, inView } = useInView({ threshold: 0.1 });
+    const lastFetchTabRef = useRef<string | null>(null);
 
     const {
         data: reportsData,
@@ -61,13 +64,27 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
     } = useInfiniteUserSpots(userId);
 
     useEffect(() => {
-        if (inView) {
-            if (activeTab === 'scams' && hasNextScams && !isFetchingScams) fetchNextScams();
-            if (activeTab === 'tips' && hasNextTips && !isFetchingTips) fetchNextTips();
-            if (activeTab === 'reports' && hasNextReports && !isFetchingReports) fetchNextReports();
-            if (activeTab === 'spots' && hasNextSpots && !isFetchingSpots) fetchNextSpots();
+        if (!inView || lastFetchTabRef.current === activeTab) return;
+        
+        if (activeTab === 'scams' && hasNextScams && !isFetchingScams) {
+            lastFetchTabRef.current = activeTab;
+            fetchNextScams();
+        } else if (activeTab === 'tips' && hasNextTips && !isFetchingTips) {
+            lastFetchTabRef.current = activeTab;
+            fetchNextTips();
+        } else if (activeTab === 'reports' && hasNextReports && !isFetchingReports) {
+            lastFetchTabRef.current = activeTab;
+            fetchNextReports();
+        } else if (activeTab === 'spots' && hasNextSpots && !isFetchingSpots) {
+            lastFetchTabRef.current = activeTab;
+            fetchNextSpots();
         }
     }, [inView, activeTab, hasNextScams, hasNextTips, hasNextReports, hasNextSpots, isFetchingScams, isFetchingTips, isFetchingReports, isFetchingSpots, fetchNextScams, fetchNextTips, fetchNextReports, fetchNextSpots]);
+
+    // Reset fetch tracker when switching tabs
+    useEffect(() => {
+        lastFetchTabRef.current = null;
+    }, [activeTab]);
 
     const reportsList = useMemo(() => reportsData?.pages.flatMap((page) => page.data || []) || [], [reportsData]);
     const scamsList = useMemo(() => scamsData?.pages.flatMap((page) => page.data || []) || [], [scamsData]);
@@ -169,8 +186,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             ))
                         ) : (
                             <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
-                                <AlertTriangle size={32} className="text-white/20" />
-                                <p className="text-[12px] font-medium text-white/20 uppercase tracking-widest">
+                                <AlertTriangle size={32} className="text-white/50" />
+                                <p className="text-[12px] font-medium text-white/50 uppercase tracking-widest">
                                     No scam alerts reported yet
                                 </p>
                             </div>
@@ -224,8 +241,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             })
                         ) : (
                             <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
-                                <Target size={32} className="text-white/20" />
-                                <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
+                                <Lightbulb size={32} className="text-white/50" />
+                                <p className="text-[10px] font-medium text-white/50 uppercase tracking-widest">
                                     No community tips shared yet
                                 </p>
                             </div>
@@ -279,8 +296,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             })
                         ) : (
                             <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
-                                <Zap size={32} className="text-white/20" />
-                                <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
+                                <Zap size={32} className="text-white/50" />
+                                <p className="text-[10px] font-medium text-white/50 uppercase tracking-widest">
                                     No price reports shared yet
                                 </p>
                             </div>
@@ -326,8 +343,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             ))
                         ) : (
                             <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 flex flex-col items-center gap-4">
-                                <Target size={32} className="text-white/20" />
-                                <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
+                                <MapPin size={32} className="text-white/50" />
+                                <p className="text-[10px] font-medium text-white/50 uppercase tracking-widest">
                                     No spots added yet
                                 </p>
                             </div>
@@ -336,16 +353,26 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 )}
 
                 {/* Infinite Scroll Trigger */}
-                <div ref={ref} className="py-10 flex justify-center">
-                    {(isFetchingScams || isFetchingTips || isFetchingReports || isFetchingSpots) && (
-                        <div className="flex flex-col items-center gap-2">
-                            <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
-                            <span className="text-[10px] font-medium uppercase tracking-widest text-white/40">
-                                Syncing more pulse...
-                            </span>
+                {(() => {
+                    const shouldShowTrigger = 
+                        (activeTab === 'scams' && (hasNextScams || isFetchingScams)) ||
+                        (activeTab === 'tips' && (hasNextTips || isFetchingTips)) ||
+                        (activeTab === 'reports' && (hasNextReports || isFetchingReports)) ||
+                        (activeTab === 'spots' && (hasNextSpots || isFetchingSpots));
+                    
+                    return shouldShowTrigger && (
+                        <div ref={ref} className="py-10 flex justify-center">
+                            {(isFetchingScams || isFetchingTips || isFetchingReports || isFetchingSpots) && (
+                                <div className="flex flex-col items-center gap-2">
+                                    <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
+                                    <span className="text-[10px] font-medium uppercase tracking-widest text-white/40">
+                                        Syncing more pulse...
+                                    </span>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+                    );
+                })()}
             </div>
         </div>
     );

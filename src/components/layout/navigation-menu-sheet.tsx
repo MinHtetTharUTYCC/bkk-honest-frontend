@@ -30,6 +30,9 @@ export default function NavigationMenuSheet() {
   const isActive = (href: string) => {
     if (!pathname) return false;
     const cleanPathname = pathname.split('?')[0];
+    if (href === '/profile') {
+      return cleanPathname === '/profile' || cleanPathname === '/profile/';
+    }
     return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
   };
 

@@ -22,7 +22,7 @@ export default function Sidebar() {
         <aside className="hidden lg:flex flex-col gap-8 w-80 min-h-screen px-6 py-10 sticky top-20">
             {/* Categories */}
             <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
+                <h4 className="font-bold text-xs uppercase tracking-widest text-white/50 mb-6 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                     Browse Categories
                 </h4>
@@ -36,7 +36,7 @@ export default function Sidebar() {
                             <span className="text-sm font-medium text-white/60 group-hover:text-amber-400 transition-colors">
                                 {cat.name}
                             </span>
-                            <ArrowUpRight size={12} className="text-white/20 group-hover:text-amber-400/60 transition-colors" />
+                            <ArrowUpRight size={12} className="shrink-0 text-white/50 group-hover:text-amber-400/60 transition-colors" />
                         </Link>
                     ))}
                 </div>
@@ -46,7 +46,7 @@ export default function Sidebar() {
 
             {/* Top Contributors */}
             <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest text-white/40 mb-6 flex items-center gap-2">
+                <h4 className="font-bold text-xs uppercase tracking-widest text-white/50 mb-6 flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                     Top Contributors
                 </h4>

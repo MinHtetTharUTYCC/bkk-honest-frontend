@@ -26,6 +26,10 @@ export default function NavDock() {
       return cleanPathname === '/';
     }
     
+    if (href === '/profile') {
+      return cleanPathname === '/profile' || cleanPathname === '/profile/';
+    }
+    
     return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
   };
 

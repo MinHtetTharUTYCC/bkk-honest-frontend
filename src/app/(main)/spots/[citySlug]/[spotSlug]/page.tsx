@@ -78,6 +78,7 @@ import {
 
 import SpotEditModal from '@/components/spots/spot-edit-modal';
 import { useInView } from 'react-intersection-observer';
+import { ShareButton } from '@/components/ui/share-button';
 
 export default function SpotDetailPage() {
     const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };
@@ -478,6 +479,13 @@ export default function SpotDetailPage() {
                                     Navigate
                                 </button>
 
+                                <ShareButton
+                                    title={spot.name}
+                                    text={`Check out ${spot.name} on BKK Honest! ⚡`}
+                                    size="md"
+                                    className="px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
+                                />
+
                                 <LikeButton
                                     count={spot._count?.votes || 0}
                                     isVoted={spot.hasVoted}
@@ -596,6 +604,13 @@ export default function SpotDetailPage() {
                                 <Navigation size={18} />
                                 Navigate
                             </button>
+
+                            <ShareButton
+                                title={spot.name}
+                                text={`Check out ${spot.name} on BKK Honest! ⚡`}
+                                size="md"
+                                className="bg-white/5 hover:bg-white/10 border-border px-6 py-4 rounded-2xl shadow-sm hover:border-amber-400/50 hover:text-amber-400"
+                            />
 
                             <LikeButton
                                 count={spot._count?.votes || 0}

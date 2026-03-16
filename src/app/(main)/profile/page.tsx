@@ -375,23 +375,20 @@ export default function ProfilePage() {
                             </h1>
                         </div>
 
-                        <p
-                            className="text-white/40 font-medium uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2 mb-4"
-                            suppressHydrationWarning
-                        >
-                            <Calendar size={14} className="text-white/20" />
-                            Joined{' '}
-                            {profile?.createdAt
-                                ? new Date(profile.createdAt).toLocaleDateString()
-                                : 'Mar 2026'}
-                        </p>
-
-                        {profile?.country && (
-                            <p className="text-white/40 font-medium uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2 mb-4">
-                                <MapPin size={12} className="text-white/20 shrink-0" />
-                                {profile.country}
-                            </p>
-                        )}
+                        <div className="flex flex-wrap gap-4 text-sm text-white/50">
+                                {profile?.country && (
+                                    <div className="flex items-center gap-1">
+                                        <MapPin size={16} />
+                                        {profile.country}
+                                    </div>
+                                )}
+                                {profile?.createdAt && (
+                                    <div className="flex items-center gap-1">
+                                        <Calendar size={16} />
+                                        Joined {new Date(profile.createdAt).toLocaleDateString()}
+                                    </div>
+                                )}
+                            </div>
 
                         {profile?.bio ? (
                             <p className="text-white/50 font-medium leading-relaxed max-w-lg mb-8 text-sm md:text-base">

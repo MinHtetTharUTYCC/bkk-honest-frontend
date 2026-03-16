@@ -37,6 +37,7 @@ import Image from 'next/image';
 import ScamEditModal from '@/components/scams/scam-edit-modal';
 import { LikeButton } from '@/components/ui/like-button';
 import { toast } from 'sonner';
+import { ShareButton } from '@/components/ui/share-button';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -300,6 +301,13 @@ export default function ScamAlertDetailPage() {
                                 </div>
                             </div>
                             <div className="flex gap-2">
+                                <ShareButton
+                                    title={localAlert.scamName}
+                                    text={`Watch out for the ${localAlert.scamName} scam in ${localAlert.city?.name || 'Thailand'}! ⚠️`}
+                                    size="md"
+                                    variant="outline"
+                                    className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-white/50 hover:text-white"
+                                />
                                 {user && (
                                     <DropdownMenu
                                         trigger={

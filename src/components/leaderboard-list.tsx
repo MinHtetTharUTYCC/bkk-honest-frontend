@@ -94,7 +94,7 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
     if (list.length === 0) return null;
 
     return (
-        <div className="space-y-5">
+        <div className="space-y-4">
             {list.map((c: any, idx: number) => (
                 <Link
                     key={c.id}
