@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useMemo, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
@@ -153,9 +154,9 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                         {scamsList.length > 0 ? (
                             scamsList.map((scam: any) => (
                                 <div key={scam.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-col sm:flex-row items-stretch">
-                                    <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                    <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                         {scam.imageUrl ? (
-                                            <img src={scam.imageUrl} alt={scam.scamName} className="w-full h-full object-cover" />
+                                            <Image src={scam.imageUrl} alt={scam.scamName} fill className="object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                 <ImageIcon size={24} strokeWidth={1.5} />
@@ -202,9 +203,9 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                 const displayImg = tip.imageUrl || tip.spot?.imageUrl;
                                 return (
                                     <div key={tip.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
-                                        <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                        <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                             {displayImg ? (
-                                                <img src={displayImg} alt={tip.title} className="w-full h-full object-cover" />
+                                                <Image src={displayImg} alt={tip.title} fill className="object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                     <ImageIcon size={24} strokeWidth={1.5} />
@@ -252,9 +253,9 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                 const displayImg = report.imageUrl || report.spot?.imageUrl;
                                 return (
                                     <div key={report.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
-                                        <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                        <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                             {displayImg ? (
-                                                <img src={displayImg} alt={report.itemName} className="w-full h-full object-cover" />
+                                                <Image src={displayImg} alt={report.itemName} fill className="object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                     <ImageIcon size={24} strokeWidth={1.5} />
@@ -305,9 +306,9 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                         {spotsList.length > 0 ? (
                             spotsList.map((spot: any) => (
                                 <div key={spot.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
-                                    <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                    <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                         {spot.imageUrl ? (
-                                            <img src={spot.imageUrl} alt={spot.name} className="w-full h-full object-cover" />
+                                            <Image src={spot.imageUrl} alt={spot.name} fill className="object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                 <ImageIcon size={24} strokeWidth={1.5} />
