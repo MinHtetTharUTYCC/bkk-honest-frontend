@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Flag } from 'lucide-react';
 import ReportModal from './report-modal';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/components/providers/auth-provider';
+import { toast } from 'sonner';
 
 interface ReportButtonProps {
   targetId: string;
@@ -23,6 +25,7 @@ export default function ReportButton({
   onClick,
 }: ReportButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useAuth();
 
   const sizeClasses = {
     sm: 'w-8 h-8',
@@ -37,6 +40,14 @@ export default function ReportButton({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!user) {
+      toast.error('Join us first to help keep the city honest!', {
+        description: 'Please sign in to report content.',
+      });
+      return;
+    }
+
     onClick?.(e);
     setIsModalOpen(true);
   };
