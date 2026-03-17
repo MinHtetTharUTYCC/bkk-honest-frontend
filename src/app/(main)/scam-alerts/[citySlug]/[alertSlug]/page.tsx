@@ -252,7 +252,7 @@ export default function ScamAlertDetailPage() {
                         <button onClick={() => router.back()} className="p-2 hover:bg-white/5 rounded-xl transition-colors shrink-0">
                             <ArrowLeft size={20} />
                         </button>
-                        <h1 className="text-xl font-display font-bold text-foreground truncate">
+                        <h1 className="text-xl font-display font-bold text-foreground line-clamp-2">
                             {localAlert.scamName}
                         </h1>
                     </div>
@@ -279,9 +279,6 @@ export default function ScamAlertDetailPage() {
                             <div className="flex items-start gap-4">
                                 {/* AlertTriangle icon removed as requested */}
                                 <div className="space-y-1">
-                                    <h1 className="text-3xl font-display font-bold text-foreground tracking-tight leading-tight">
-                                        {localAlert.scamName}
-                                    </h1>
                                     <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">
                                         {localAlert.city?.name && (
                                             <div className="flex items-center gap-1.5 text-amber-400">
