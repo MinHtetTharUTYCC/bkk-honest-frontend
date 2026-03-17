@@ -25,7 +25,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
     // Redirect if viewing own profile
     useEffect(() => {
         if (!authLoading && currentUser && currentUser.id === userId) {
-            router.push('/profile');
+            router.replace('/profile');
         }
     }, [currentUser, userId, authLoading, router]);
 
