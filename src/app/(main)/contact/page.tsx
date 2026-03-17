@@ -208,11 +208,10 @@ export default function ContactPage() {
                                 </h3>
                                 <p className="text-foreground/70 mb-6">
                                     I'm a solo developer on a mission to make Thailand travel better
-                                    and more transparent for everyone. This is a personal project,
-                                    and I personally read every message and suggestion. If you have
+                                    and more transparent for everyone.I personally read every message and suggestion. If you have
                                     any feedback, ideas, or just want to say hi, please don't
                                     hesitate to reach out! Your input helps shape the future of
-                                    Thailand Honest and makes it a better resource for travelers
+                                    BKK Honest and makes it a better resource for travelers
                                     like you. I look forward to hearing from you! 🙏
                                 </p>
                             </div>
@@ -235,7 +234,7 @@ export default function ContactPage() {
                                             Response Time
                                         </p>
                                         <p className="text-foreground/60 text-sm">
-                                            Usually within 24-48 hours
+                                            Usually within 24 hours
                                         </p>
                                     </div>
                                 </div>
@@ -246,10 +245,10 @@ export default function ContactPage() {
                                     Quick Tips for Better Support
                                 </h4>
                                 <ul className="text-foreground/70 text-sm space-y-1">
+                                    <li>• I always welcome bugs reports and new feature suggestions</li>
                                     <li>• Be specific about the issue you're experiencing</li>
                                     <li>• Include your browser type if it's a technical problem</li>
                                     <li>• Mention specific locations or content when relevant</li>
-                                    <li>• Screenshots are helpful for bug reports</li>
                                 </ul>
                             </div>
 

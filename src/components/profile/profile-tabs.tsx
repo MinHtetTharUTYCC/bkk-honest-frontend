@@ -152,8 +152,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                     <div className="flex flex-col gap-6">
                         {scamsList.length > 0 ? (
                             scamsList.map((scam: any) => (
-                                <div key={scam.id} className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-row items-stretch gap-6">
-                                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                <div key={scam.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-col sm:flex-row items-stretch">
+                                    <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
                                         {scam.imageUrl ? (
                                             <img src={scam.imageUrl} alt={scam.scamName} className="w-full h-full object-cover" />
                                         ) : (
@@ -163,24 +163,24 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex-1 flex flex-col justify-center">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
-                                                {new Date(scam.createdAt).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                        <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight">
+                                    <div className="flex-1 flex flex-col justify-center min-w-0 p-5 sm:p-6 md:p-8">
+                                        <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight sm:mt-0 mt-2">
                                             {scam.scamName}
                                         </h4>
-                                        <p className="text-xs font-medium text-white/50 line-clamp-2 mb-6 leading-relaxed">
+                                        <p className="text-xs font-medium text-white/50 line-clamp-2 mb-4 leading-relaxed">
                                             {scam.description}
                                         </p>
-                                        <Link
-                                            href={getScamAlertUrl(scam?.city?.slug || 'bangkok', scam?.slug || '')}
-                                            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
-                                        >
-                                            View Details <ArrowRight size={14} />
-                                        </Link>
+                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                                            <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
+                                                {new Date(scam.createdAt).toLocaleDateString()}
+                                            </span>
+                                            <Link
+                                                href={getScamAlertUrl(scam?.city?.slug || 'bangkok', scam?.slug || '')}
+                                                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                                            >
+                                                View Details <ArrowRight size={14} />
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             ))
@@ -201,8 +201,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             tipsList.map((tip: any) => {
                                 const displayImg = tip.imageUrl || tip.spot?.imageUrl;
                                 return (
-                                    <div key={tip.id} className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-row items-stretch gap-6">
-                                        <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                    <div key={tip.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
+                                        <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
                                             {displayImg ? (
                                                 <img src={displayImg} alt={tip.title} className="w-full h-full object-cover" />
                                             ) : (
@@ -212,21 +212,16 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex-1 flex flex-col justify-center">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
-                                                    {new Date(tip.createdAt).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight">
+                                        <div className="flex-1 flex flex-col justify-center min-w-0 p-5 sm:p-6 md:p-8">
+                                            <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight sm:mt-0 mt-2">
                                                 {tip.title}
                                             </h4>
-                                            <p className="text-xs font-medium text-white/50 line-clamp-2 mb-6 leading-relaxed">
+                                            <p className="text-xs font-medium text-white/50 line-clamp-2 mb-4 leading-relaxed">
                                                 {tip.description}
                                             </p>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest flex items-center gap-1">
-                                                    <MapPin size={10} className="shrink-0" /> {tip.spot?.name}
+                                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                                                <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
+                                                    {new Date(tip.createdAt).toLocaleDateString()}
                                                 </span>
                                                 <Link
                                                     href={getSpotUrl(tip.spot?.city?.slug || 'bangkok', tip.spot?.slug || '')}
@@ -256,8 +251,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             reportsList.map((report: any) => {
                                 const displayImg = report.imageUrl || report.spot?.imageUrl;
                                 return (
-                                    <div key={report.id} className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-row items-stretch gap-6">
-                                        <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                    <div key={report.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
+                                        <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
                                             {displayImg ? (
                                                 <img src={displayImg} alt={report.itemName} className="w-full h-full object-cover" />
                                             ) : (
@@ -267,29 +262,29 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                                 </div>
                                             )}
                                         </div>
-                                        <div className="flex-1 flex flex-col justify-center">
-                                            <div className="flex items-center justify-between mb-4">
-                                                <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
-                                                    {new Date(report.timestamp).toLocaleDateString()}
-                                                </span>
-                                            </div>
-                                            <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight">
+                                        <div className="flex-1 flex flex-col justify-center min-w-0 p-5 sm:p-6 md:p-8">
+                                            <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight sm:mt-0 mt-2">
                                                 {report.itemName}
                                             </h4>
-                                            <div className="flex items-center gap-2 mb-6">
+                                            <div className="flex items-center gap-2 mb-4">
                                                 <span className="font-display text-2xl font-bold text-amber-400 tracking-tight">
                                                     {report.priceThb} THB
                                                 </span>
-                                                <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
+                                                <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest line-clamp-1">
                                                     @ {report.spot?.name || 'Local Spot'}
                                                 </span>
                                             </div>
-                                            <Link
-                                                href={getSpotUrl(report.spot?.city?.slug || 'bangkok', report.spot?.slug || '')}
-                                                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
-                                            >
-                                                View Spot <ArrowRight size={14} />
-                                            </Link>
+                                            <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                                                <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
+                                                    {new Date(report.timestamp).toLocaleDateString()}
+                                                </span>
+                                                <Link
+                                                    href={getSpotUrl(report.spot?.city?.slug || 'bangkok', report.spot?.slug || '')}
+                                                    className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                                                >
+                                                    View Spot <ArrowRight size={14} />
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 )
@@ -309,8 +304,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                     <div className="flex flex-col gap-6">
                         {spotsList.length > 0 ? (
                             spotsList.map((spot: any) => (
-                                <div key={spot.id} className="bg-card rounded-2xl p-6 md:p-8 border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-row items-stretch gap-6">
-                                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-xl bg-white/5 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
+                                <div key={spot.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
+                                    <div className="w-full h-48 sm:w-32 md:w-40 sm:h-auto bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center">
                                         {spot.imageUrl ? (
                                             <img src={spot.imageUrl} alt={spot.name} className="w-full h-full object-cover" />
                                         ) : (
@@ -320,24 +315,24 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                             </div>
                                         )}
                                     </div>
-                                    <div className="flex-1 flex flex-col justify-center">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <span className="text-[12px] font-medium text-white/40 uppercase tracking-tighter">
-                                                {new Date(spot.createdAt).toLocaleDateString()}
-                                            </span>
-                                        </div>
-                                        <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight">
+                                    <div className="flex-1 flex flex-col justify-center min-w-0 p-5 sm:p-6 md:p-8">
+                                        <h4 className="font-display text-xl font-bold text-foreground mb-2 tracking-tight sm:mt-0 mt-2">
                                             {spot.name}
                                         </h4>
-                                        <p className="text-xs font-medium text-white/50 line-clamp-1 mb-6 leading-relaxed flex items-center gap-1">
-                                            <MapPin size={10} className="text-orange-400 shrink-0" /> {spot.address}
+                                        <p className="text-xs font-medium text-white/50 line-clamp-2 mb-4 leading-relaxed flex items-start gap-1">
+                                            <MapPin size={12} className="text-orange-400 shrink-0 mt-0.5" /> {spot.address}
                                         </p>
-                                        <Link
-                                            href={getSpotUrl(spot?.city?.slug || 'bangkok', spot?.slug || '')}
-                                            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors mt-auto pt-4"
-                                        >
-                                            View Spot Details <ArrowRight size={14} />
-                                        </Link>
+                                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                                            <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
+                                                {new Date(spot.createdAt).toLocaleDateString()}
+                                            </span>
+                                            <Link
+                                                href={getSpotUrl(spot?.city?.slug || 'bangkok', spot?.slug || '')}
+                                                className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-amber-400 hover:text-amber-300 transition-colors"
+                                            >
+                                                View Spot Details <ArrowRight size={14} />
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             ))

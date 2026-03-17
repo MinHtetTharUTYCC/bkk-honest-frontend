@@ -27,7 +27,7 @@ export function ShareButton({
   const shareText = text || `Check out ${title} on BKK Honest!`;
 
   const handleShare = async () => {
-    if (navigator.share) {
+    if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({
           title,
@@ -42,9 +42,34 @@ export function ShareButton({
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(shareUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(shareUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } else {
+        // Fallback for non-secure contexts (HTTP) or older browsers
+        const textArea = document.createElement("textarea");
+        textArea.value = shareUrl;
+        // Ensure textarea is not visible but stays in the document to allow copying
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        textArea.style.top = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        try {
+          const successful = document.execCommand('copy');
+          if (successful) {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+          }
+        } catch (err) {
+          console.error('Fallback copy failed:', err);
+        }
+        
+        document.body.removeChild(textArea);
+      }
     } catch (err) {
       console.error('Failed to copy:', err);
     }
@@ -85,7 +110,7 @@ export function ShareButton({
   );
 
   // If mobile and supports native share, use that
-  if (typeof navigator !== 'undefined' && navigator.share) {
+  if (typeof navigator !== 'undefined' && !!navigator.share) {
     return (
       <button onClick={handleShare} className="focus:outline-none">
         {buttonContent}
