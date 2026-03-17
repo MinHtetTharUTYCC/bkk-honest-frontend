@@ -7,7 +7,7 @@ import {
     useInfiniteUserCommunityTips,
     useInfiniteUserSpots,
 } from '@/hooks/use-api';
-import { Zap, MapPin, Calendar, ArrowRight, Loader2, AlertTriangle, Target } from 'lucide-react';
+import { Zap, MapPin, Calendar, ArrowRight, Loader2, AlertTriangle, Target, MoreVertical, Flag, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -15,6 +15,8 @@ import { useState, useEffect, use } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ProfileTabs } from '@/components/profile/profile-tabs';
+import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import ReportButton from '@/components/report/report-button';
 
 export default function UserProfilePage({ params }: { params: Promise<{ userId: string }> }) {
     const { userId } = use(params);
@@ -129,13 +131,50 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
                         </div>
 
                         {/* Reputation */}
-                        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
-                            <div className="text-3xl font-bold text-amber-400">
-                                {profile?.reputation || 0}
+                        <div className="flex flex-col items-center gap-3">
+                            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-center min-w-28">
+                                <div className="text-3xl font-bold text-amber-400">
+                                    {profile?.reputation || 0}
+                                </div>
+                                <div className="text-xs text-white/50 uppercase tracking-widest mt-1">
+                                    Reputation
+                                </div>
                             </div>
-                            <div className="text-xs text-white/50 uppercase tracking-widest mt-1">
-                                Reputation
-                            </div>
+                            
+                            {currentUser && currentUser.id !== userId && (
+                                <DropdownMenu
+                                    trigger={
+                                        <button className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors bg-white/5 border border-white/10 w-full flex items-center justify-center gap-2">
+                                            <MoreVertical size={18} />
+                                            <span className="text-[10px] font-bold uppercase tracking-widest">More</span>
+                                        </button>
+                                    }
+                                >
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            if (navigator.share) {
+                                                navigator.share({
+                                                    title: `${profile?.name}'s Profile`,
+                                                    text: `Check out ${profile?.name}'s pulse on BKK Honest! ⚡`,
+                                                    url: window.location.href
+                                                });
+                                            }
+                                        }}
+                                        className="gap-3 py-3"
+                                    >
+                                        <Share2 size={16} className="text-amber-400" />
+                                        <span className="text-sm font-medium">Share Profile</span>
+                                    </DropdownMenuItem>
+
+                                    <DropdownMenuItem asChild>
+                                        <ReportButton
+                                            targetId={userId}
+                                            reportType="PROFILE"
+                                            className="w-full flex items-center justify-start gap-3 px-3 py-3 text-sm font-medium hover:bg-white/5 rounded-md transition-colors border-none"
+                                        />
+                                    </DropdownMenuItem>
+                                </DropdownMenu>
+                            )}
                         </div>
                     </div>
                 </div>

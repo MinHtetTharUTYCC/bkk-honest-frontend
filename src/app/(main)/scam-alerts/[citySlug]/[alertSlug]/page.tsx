@@ -245,14 +245,14 @@ export default function ScamAlertDetailPage() {
             </AlertDialog>
 
             {/* Main Content - Now everything scrolls together */}
-            <ScrollArea className="h-screen">
-                <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
+            <ScrollArea className="h-screen w-full">
+                <div className="mx-auto max-w-2xl px-4 py-6 space-y-6 overflow-hidden">
                     {/* Header inside ScrollArea */}
-                    <div className="flex items-center gap-4 mb-2">
+                    <div className="flex items-center gap-4 mb-2 w-full">
                         <button onClick={() => router.back()} className="p-2 hover:bg-white/5 rounded-xl transition-colors shrink-0">
                             <ArrowLeft size={20} />
                         </button>
-                        <h1 className="text-xl font-display font-bold text-foreground line-clamp-2">
+                        <h1 className="text-xl font-display font-bold text-foreground line-clamp-2 break-all flex-1 min-w-0">
                             {localAlert.scamName}
                         </h1>
                     </div>
