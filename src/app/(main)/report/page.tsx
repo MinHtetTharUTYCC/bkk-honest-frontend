@@ -20,6 +20,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useCity } from '@/components/providers/city-provider';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useEffect } from 'react';
+import LoginRequired from '@/components/auth/login-required';
 
 export default function ReportPage() {
     const { user, loading: authLoading } = useAuth();
@@ -28,12 +29,11 @@ export default function ReportPage() {
     const { selectedCityId, selectedCity } = useCity();
     const [activeTab, setActiveTab] = useState<'price' | 'scam' | 'vibe' | 'spot'>('price');
     const [error, setError] = useState<string | null>(null);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
-        }
-    }, [user, authLoading, router, pathname]);
+        setIsClient(true);
+    }, []);
 
     const [submitted, setSubmitted] = useState(false);
 
@@ -223,7 +223,7 @@ export default function ReportPage() {
         }
     };
 
-    if (authLoading || !user) {
+    if (!isClient || authLoading) {
         return (
             <div className="space-y-12 animate-pulse">
                 <div className="h-12 w-48 bg-white/5 rounded-xl" />
@@ -231,6 +231,10 @@ export default function ReportPage() {
                 <div className="h-96 bg-white/5 rounded-2xl" />
             </div>
         );
+    }
+
+    if (!user) {
+        return <LoginRequired />;
     }
 
     if (submitted) {

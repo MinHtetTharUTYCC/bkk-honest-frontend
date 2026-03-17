@@ -9,6 +9,7 @@ import {
   Music, 
   Mail, 
   MapPin, 
+  Plus,
   Heart,
   ExternalLink
 } from 'lucide-react';
@@ -87,7 +88,6 @@ const Footer: React.FC = () => {
                 href="/report"
                 className="flex items-center text-sm text-amber-400 hover:text-amber-300 transition-colors duration-200 group"
               >
-                <Heart className="w-4 h-4 mr-2 fill-current" />
                 Submit Report
                 <ExternalLink className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               </Link>
