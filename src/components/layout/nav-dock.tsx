@@ -5,18 +5,22 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import NavigationMenuSheet from './navigation-menu-sheet';
+import { useAuth } from '@/components/providers/auth-provider';
 
 export default function NavDock() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   const navItems = [
     { icon: Home, label: 'Home', href: '/' },
     { icon: Compass, label: 'Spots', href: '/spots' },
     { icon: AlertTriangle, label: 'Scams', href: '/scam-alerts' },
     { icon: MapIcon, label: 'Map', href: '/map' },
-    { icon: Target, label: 'Missions', href: '/missions', desktopOnly: true },
-    { icon: User, label: 'Profile', href: '/profile', desktopOnly: true },
+    { icon: Target, label: 'Missions', href: '/missions', desktopOnly: true, auth: true },
+    { icon: User, label: 'Profile', href: '/profile', desktopOnly: true, auth: true },
   ];
+
+  const visibleNavItems = navItems.filter(item => !item.auth || !!user);
 
   const isActiveRoute = (href: string) => {
     if (!pathname) return false;
@@ -42,7 +46,7 @@ export default function NavDock() {
         </div>
 
         {/* Core navigation items */}
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = isActiveRoute(item.href);
 

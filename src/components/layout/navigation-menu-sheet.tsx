@@ -23,9 +23,9 @@ export default function NavigationMenuSheet() {
 
   const menuItems: MenuItem[] = [
     { icon: <Zap size={20} />, label: 'Vibes', href: '/vibes' },
-    { icon: <Target size={20} />, label: 'Missions', href: '/missions' },
-    { icon: <User size={20} />, label: 'Profile', href: '/profile' },
-  ];
+    { icon: <Target size={20} />, label: 'Missions', href: '/missions', auth: true },
+    { icon: <User size={20} />, label: 'Profile', href: '/profile', auth: true },
+  ].filter(item => !item.auth || !!user);
 
   const isActive = (href: string) => {
     if (!pathname) return false;

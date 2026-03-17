@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 interface ReportModalProps {
   targetId: string;
-  reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT';
+  reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
   onClose: () => void;
 }
 

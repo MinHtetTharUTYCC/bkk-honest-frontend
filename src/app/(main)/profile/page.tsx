@@ -32,6 +32,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ProfileTabs } from '@/components/profile/profile-tabs';
+import LoginRequired from '@/components/auth/login-required';
 
 export default function ProfilePage() {
     const { user, loading: authLoading } = useAuth();
@@ -41,12 +42,11 @@ export default function ProfilePage() {
     const searchParams = useSearchParams();
     const queryClient = useQueryClient();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
-        }
-    }, [user, authLoading, router, pathname]);
+        setIsClient(true);
+    }, []);
 
     // Tab State maintained via URL
     const activeTab =
@@ -174,13 +174,17 @@ export default function ProfilePage() {
         router.push('/login');
     };
 
-    if (authLoading || !user) {
+    if (!isClient || authLoading) {
         return (
             <div className="space-y-12 animate-pulse">
                 <div className="h-64 bg-white/5 rounded-2xl" />
                 <div className="h-96 bg-white/5 rounded-2xl" />
             </div>
         );
+    }
+
+    if (!user) {
+        return <LoginRequired />;
     }
 
     if (profileLoading || (isProfileNotFound && user)) {

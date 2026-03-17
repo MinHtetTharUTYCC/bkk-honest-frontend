@@ -24,6 +24,7 @@ import { getSpotUrl } from '@/lib/slug';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
+import LoginRequired from '@/components/auth/login-required';
 
 export default function MissionsPage() {
     const { user, loading: authLoading } = useAuth();
@@ -33,10 +34,8 @@ export default function MissionsPage() {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        if (!authLoading && !user) {
-            router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
-        }
-    }, [user, authLoading, router, pathname]);
+        setIsClient(true);
+    }, []);
 
     const { selectedCity } = useCity();
 
@@ -94,13 +93,17 @@ export default function MissionsPage() {
     const totalCount = stats?.total || 0;
     const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
-    if (authLoading || !user) {
+    if (!isClient || authLoading) {
         return (
             <div className="space-y-12 animate-pulse">
                 <div className="h-64 bg-white/5 rounded-2xl" />
                 <div className="h-96 bg-white/5 rounded-2xl" />
             </div>
         );
+    }
+
+    if (!user) {
+        return <LoginRequired />;
     }
 
     return (
