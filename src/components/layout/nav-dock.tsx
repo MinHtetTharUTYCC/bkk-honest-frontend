@@ -1,6 +1,6 @@
 'use client';
 
-import { Home, Compass, Map as MapIcon, Plus, AlertTriangle, Target, User } from 'lucide-react';
+import { Home, Compass, Map as MapIcon, Plus, AlertTriangle, Target, User, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,7 @@ export default function NavDock() {
     { icon: Compass, label: 'Spots', href: '/spots' },
     { icon: AlertTriangle, label: 'Scams', href: '/scam-alerts' },
     { icon: MapIcon, label: 'Map', href: '/map' },
+    { icon: Zap, label: 'Vibes', href: '/vibes', desktopOnly: true },
     { icon: Target, label: 'Missions', href: '/missions', desktopOnly: true, auth: true },
     { icon: User, label: 'Profile', href: '/profile', desktopOnly: true, auth: true },
   ];
