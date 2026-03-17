@@ -187,14 +187,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                                 Lvl {comment.user.level === 'LOCAL_GURU' ? '3' : comment.user.level === 'EXPLORER' ? '2' : '1'}
                                </span>
                             )}
-                            <span className="text-[10px] font-medium text-white/40">
+                            <span className="text-[10px] font-medium text-white/50">
                               {new Date(comment.createdAt).toLocaleDateString()}
                             </span>
                           </div>
 
                           {user?.id === comment.userId && (
                              <div className="flex items-center gap-2">
-                               <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.text); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={18} /></button>
+                               <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.content || comment.text); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={18} /></button>
                                <button onClick={() => handleDeleteComment(comment.id)} className="text-white/40 hover:text-red-400 p-1"><Trash2 size={18} /></button>
                              </div>
                           )}
@@ -219,7 +219,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                           <div className="space-y-2">
                             <div className="bg-white/5 border border-border rounded-xl rounded-tl-none p-3">
                               <p className="text-xs text-white/80 leading-relaxed">
-                                {comment.text}
+                                {comment.content || comment.text}
                               </p>
                             </div>
                             <div className="flex items-center gap-2 px-3">

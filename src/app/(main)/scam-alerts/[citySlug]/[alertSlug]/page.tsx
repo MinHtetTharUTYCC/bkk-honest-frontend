@@ -24,6 +24,7 @@ import {
     MapPin,
     ArrowLeft,
     MoreVertical,
+    Share2,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -243,18 +244,19 @@ export default function ScamAlertDetailPage() {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Header */}
-            <div className="border-b bg-background">
-                <div className="mx-auto max-w-2xl px-4 py-4 flex items-center">
-                    <button onClick={() => router.back()} className="p-2 hover:bg-muted rounded-lg">
-                        <ArrowLeft size={20} />
-                    </button>
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <ScrollArea className="h-[calc(100vh-80px)]">
+            {/* Main Content - Now everything scrolls together */}
+            <ScrollArea className="h-screen">
                 <div className="mx-auto max-w-2xl px-4 py-6 space-y-6">
+                    {/* Header inside ScrollArea */}
+                    <div className="flex items-center gap-4 mb-2">
+                        <button onClick={() => router.back()} className="p-2 hover:bg-white/5 rounded-xl transition-colors shrink-0">
+                            <ArrowLeft size={20} />
+                        </button>
+                        <h1 className="text-xl font-display font-bold text-foreground truncate">
+                            {localAlert.scamName}
+                        </h1>
+                    </div>
+
                     {/* Hero Image */}
                     {localAlert.imageUrl && (
                         <div 
@@ -275,9 +277,7 @@ export default function ScamAlertDetailPage() {
                     <div className="space-y-6">
                         <div className="flex items-start justify-between">
                             <div className="flex items-start gap-4">
-                                <div className="mt-1 p-3 bg-red-500/10 border border-red-500/20 rounded-2xl">
-                                    <AlertTriangle size={24} className="text-red-500" />
-                                </div>
+                                {/* AlertTriangle icon removed as requested */}
                                 <div className="space-y-1">
                                     <h1 className="text-3xl font-display font-bold text-foreground tracking-tight leading-tight">
                                         {localAlert.scamName}
@@ -301,21 +301,31 @@ export default function ScamAlertDetailPage() {
                                 </div>
                             </div>
                             <div className="flex gap-2">
-                                <ShareButton
-                                    title={localAlert.scamName}
-                                    text={`Watch out for the ${localAlert.scamName} scam in ${localAlert.city?.name || 'Thailand'}! ⚠️`}
-                                    size="md"
-                                    variant="outline"
-                                    className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-white/50 hover:text-white"
-                                />
                                 {user && (
                                     <DropdownMenu
                                         trigger={
-                                            <button className="p-2 hover:bg-white/10 rounded-xl text-white transition-colors bg-white/5 border border-white/10">
+                                            <button className="p-2.5 hover:bg-white/10 rounded-xl text-white transition-colors bg-white/5 border border-white/10 shadow-sm">
                                                 <MoreVertical size={20} />
                                             </button>
                                         }
                                     >
+                                        {/* Share and Report moved into menu */}
+                                        <DropdownMenuItem
+                                            onClick={() => {
+                                                if (navigator.share) {
+                                                    navigator.share({
+                                                        title: localAlert.scamName,
+                                                        text: `Watch out for the ${localAlert.scamName} scam in ${localAlert.city?.name || 'Thailand'}! ⚠️`,
+                                                        url: window.location.href
+                                                    });
+                                                }
+                                            }}
+                                            className="gap-3 py-3"
+                                        >
+                                            <Share2 size={16} className="text-amber-400" />
+                                            <span className="text-sm font-medium">Share Alert</span>
+                                        </DropdownMenuItem>
+
                                         {user.id === localAlert.userId ? (
                                             <>
                                                 <DropdownMenuItem
@@ -380,8 +390,11 @@ export default function ScamAlertDetailPage() {
 
                         {/* Vote & Meta */}
                         <div className="flex items-center justify-between gap-4 pt-4 border-t border-white/8">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10">
+                            <div 
+                                className="flex items-center gap-3 cursor-pointer group/user"
+                                onClick={() => router.push(`/profile/${localAlert.userId || localAlert.user?.id}`)}
+                            >
+                                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10 group-hover/user:border-amber-400 transition-colors">
                                     {localAlert.user?.avatarUrl ? (
                                         <img
                                             src={localAlert.user.avatarUrl}
@@ -392,7 +405,7 @@ export default function ScamAlertDetailPage() {
                                     )}
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-xs font-bold text-white uppercase tracking-tight">
+                                    <span className="text-xs font-bold text-white uppercase tracking-tight group-hover/user:text-amber-400 transition-colors">
                                         {localAlert.user?.name || 'Local Expert'}
                                     </span>
                                     {localAlert.user?.level && (
@@ -412,7 +425,7 @@ export default function ScamAlertDetailPage() {
                                     disabled={votePending}
                                     variant="default"
                                     size="sm"
-                                    className="text-[11px] font-black uppercase tracking-widest gap-2 px-6 py-2.5 rounded-xl border shadow-sm w-full justify-center bg-white/5 border-white/10 hover:border-amber-400/20"
+                                    className="text-[11px] font-black uppercase tracking-widest gap-2 px-6 py-2.5 rounded-xl border border-white/10 shadow-sm w-full justify-center bg-white/5 hover:border-amber-400/20"
                                     title={
                                         localAlert.hasVoted ? 'Remove upvote' : 'Upvote this alert'
                                     }
@@ -477,8 +490,11 @@ export default function ScamAlertDetailPage() {
                                         className="p-5 bg-white/5 border border-white/8 rounded-2xl space-y-3"
                                     >
                                         <div className="flex items-start justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5">
+                                            <div 
+                                                className="flex items-center gap-3 cursor-pointer group/comment-user"
+                                                onClick={() => router.push(`/profile/${comment.userId || comment.user?.id}`)}
+                                            >
+                                                <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5 group-hover/comment-user:border-amber-400 transition-colors">
                                                     {comment.user?.avatarUrl ? (
                                                         <img
                                                             src={comment.user.avatarUrl}
@@ -490,7 +506,7 @@ export default function ScamAlertDetailPage() {
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-xs font-bold text-white uppercase tracking-tight">
+                                                        <span className="text-xs font-bold text-white uppercase tracking-tight group-hover/comment-user:text-amber-400 transition-colors">
                                                             {comment.user?.name || 'Local'}
                                                         </span>
                                                         {comment.user?.level && (
@@ -502,7 +518,7 @@ export default function ScamAlertDetailPage() {
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <span className="text-[12px] font-medium text-white/20 uppercase tracking-widest">
+                                                    <span className="text-[12px] font-medium text-white/50 uppercase tracking-widest">
                                                         {new Date(
                                                             comment.createdAt,
                                                         ).toLocaleDateString()}
@@ -586,7 +602,7 @@ export default function ScamAlertDetailPage() {
                                         ) : (
                                             <div className="space-y-3">
                                                 <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">
-                                                    {comment.content}
+                                                    {comment.content || (comment as any).text}
                                                 </p>
                                                 <div className="flex items-center gap-2 pt-1">
                                                     <ReactionButton

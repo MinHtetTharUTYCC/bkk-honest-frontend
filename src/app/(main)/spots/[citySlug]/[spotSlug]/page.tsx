@@ -62,7 +62,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
-import { MoreVertical, Flag } from 'lucide-react';
+import { MoreVertical, Flag, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -378,14 +378,31 @@ export default function SpotDetailPage() {
                                         </button>
                                     }
                                 >
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            if (navigator.share) {
+                                                navigator.share({
+                                                    title: spot.name,
+                                                    text: `Check out ${spot.name} on BKK Honest! ⚡`,
+                                                    url: window.location.href
+                                                });
+                                            }
+                                        }}
+                                        className="gap-3 py-3"
+                                    >
+                                        <Share2 size={16} className="text-amber-400" />
+                                        <span className="text-sm font-medium">Share Spot</span>
+                                    </DropdownMenuItem>
+
                                     {isOwner && (
                                         <>
-                                            <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                                            <DropdownMenuItem onClick={() => setIsEditing(true)} className="gap-3 py-3">
                                                 <Edit2 size={16} />
                                                 <span>Edit Spot</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
                                                 onClick={() => setIsDeleteDialogOpen(true)}
+                                                className="gap-3 py-3"
                                                 danger
                                             >
                                                 <Trash2 size={16} />
@@ -393,7 +410,7 @@ export default function SpotDetailPage() {
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    <DropdownMenuItem onClick={() => setShowReportModal(true)}>
+                                    <DropdownMenuItem onClick={() => setShowReportModal(true)} className="gap-3 py-3">
                                         <Flag size={16} />
                                         <span>Report Spot</span>
                                     </DropdownMenuItem>
@@ -479,13 +496,6 @@ export default function SpotDetailPage() {
                                     Navigate
                                 </button>
 
-                                <ShareButton
-                                    title={spot.name}
-                                    text={`Check out ${spot.name} on BKK Honest! ⚡`}
-                                    size="md"
-                                    className="px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
-                                />
-
                                 <LikeButton
                                     count={spot._count?.votes || 0}
                                     isVoted={spot.hasVoted}
@@ -542,14 +552,31 @@ export default function SpotDetailPage() {
                                         </button>
                                     }
                                 >
+                                    <DropdownMenuItem
+                                        onClick={() => {
+                                            if (navigator.share) {
+                                                navigator.share({
+                                                    title: spot.name,
+                                                    text: `Check out ${spot.name} on BKK Honest! ⚡`,
+                                                    url: window.location.href
+                                                });
+                                            }
+                                        }}
+                                        className="gap-3 py-3"
+                                    >
+                                        <Share2 size={16} className="text-amber-400" />
+                                        <span className="text-sm font-medium">Share Spot</span>
+                                    </DropdownMenuItem>
+
                                     {isOwner && (
                                         <>
-                                            <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                                            <DropdownMenuItem onClick={() => setIsEditing(true)} className="gap-3 py-3">
                                                 <Edit2 size={16} />
                                                 <span>Edit Spot</span>
                                             </DropdownMenuItem>
                                             <DropdownMenuItem
                                                 onClick={() => setIsDeleteDialogOpen(true)}
+                                                className="gap-3 py-3"
                                                 danger
                                             >
                                                 <Trash2 size={16} />
@@ -557,7 +584,7 @@ export default function SpotDetailPage() {
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    <DropdownMenuItem onClick={() => setShowReportModal(true)}>
+                                    <DropdownMenuItem onClick={() => setShowReportModal(true)} className="gap-3 py-3">
                                         <Flag size={16} />
                                         <span>Report Spot</span>
                                     </DropdownMenuItem>
@@ -604,13 +631,6 @@ export default function SpotDetailPage() {
                                 <Navigation size={18} />
                                 Navigate
                             </button>
-
-                            <ShareButton
-                                title={spot.name}
-                                text={`Check out ${spot.name} on BKK Honest! ⚡`}
-                                size="md"
-                                className="bg-white/5 hover:bg-white/10 border-border px-6 py-4 rounded-2xl shadow-sm hover:border-amber-400/50 hover:text-amber-400"
-                            />
 
                             <LikeButton
                                 count={spot._count?.votes || 0}
