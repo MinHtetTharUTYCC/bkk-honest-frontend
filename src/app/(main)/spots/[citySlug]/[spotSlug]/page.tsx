@@ -55,7 +55,6 @@ import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
 import { TipCard } from '@/components/tips/tip-card';
 import ReportButton from '@/components/report/report-button';
-import ReportModal from '@/components/report/report-modal';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import { Dropdown } from '@/components/ui/dropdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -103,7 +102,6 @@ export default function SpotDetailPage() {
     const [showGalleryModal, setShowGalleryModal] = useState(false);
     const [showImageViewer, setShowImageViewer] = useState(false);
     const [showTipModal, setShowTipModal] = useState(false);
-    const [showReportModal, setShowReportModal] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedTip, setSelectedTip] = useState<any>(null);
     const [editingTip, setEditingTip] = useState<any>(null);
@@ -281,13 +279,6 @@ export default function SpotDetailPage() {
             {showTipModal && (
                 <CreateTipModal spotId={spot?.id || ''} onClose={() => setShowTipModal(false)} />
             )}
-            {showReportModal && (
-                <ReportModal
-                    targetId={spot?.id || ''}
-                    reportType="SPOT"
-                    onClose={() => setShowReportModal(false)}
-                />
-            )}
             {editingTip && (
                 <EditTipModal
                     tip={editingTip}
@@ -410,9 +401,15 @@ export default function SpotDetailPage() {
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    <DropdownMenuItem onClick={() => setShowReportModal(true)} className="gap-3 py-3">
-                                        <Flag size={16} />
-                                        <span>Report Spot</span>
+                                    <DropdownMenuItem asChild>
+                                        <ReportButton
+                                            targetId={spot?.id || ''}
+                                            reportType="SPOT"
+                                            className="w-full flex items-center justify-start gap-3 py-3 px-4 text-sm font-medium hover:bg-white/5 transition-colors border-none text-white/70 hover:text-white"
+                                        >
+                                            <Flag size={16} />
+                                            <span>Report Spot</span>
+                                        </ReportButton>
                                     </DropdownMenuItem>
                                 </DropdownMenu>
                             </div>
@@ -584,9 +581,15 @@ export default function SpotDetailPage() {
                                             </DropdownMenuItem>
                                         </>
                                     )}
-                                    <DropdownMenuItem onClick={() => setShowReportModal(true)} className="gap-3 py-3">
-                                        <Flag size={16} />
-                                        <span>Report Spot</span>
+                                    <DropdownMenuItem asChild>
+                                        <ReportButton
+                                            targetId={spot?.id || ''}
+                                            reportType="SPOT"
+                                            className="w-full flex items-center justify-start gap-3 py-3 px-4 text-sm font-medium hover:bg-white/5 transition-colors border-none text-white/70 hover:text-white"
+                                        >
+                                            <Flag size={16} />
+                                            <span>Report Spot</span>
+                                        </ReportButton>
                                     </DropdownMenuItem>
                                 </DropdownMenu>
                             </div>

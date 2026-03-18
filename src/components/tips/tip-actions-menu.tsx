@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { MoreVertical, Edit2, Trash2, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { MoreVertical, Edit2, Trash2, AlertCircle, Flag } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { BottomSheet } from '@/components/ui/bottom-sheet';
 import ReportButton from '@/components/report/report-button';
+import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 
 interface TipActionsMenuProps {
   tipId: string;
@@ -20,123 +20,40 @@ export function TipActionsMenu({
   onDelete,
 }: TipActionsMenuProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [showDesktopMenu, setShowDesktopMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setShowDesktopMenu(false);
-      }
-    }
-
-    if (showDesktopMenu) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [showDesktopMenu]);
-
-  const handleDelete = () => {
-    setShowDeleteConfirm(false);
-    setShowMobileMenu(false);
-    onDelete?.();
-  };
-
-  const handleEdit = () => {
-    setShowMobileMenu(false);
-    setShowDesktopMenu(false);
-    onEdit?.();
-  };
-
-  if (!isOwner) {
-    return (
-      <ReportButton targetId={tipId} reportType="COMMUNITY_TIP" size="sm" />
-    );
-  }
 
   return (
     <>
-      {/* Desktop Menu */}
-      <div className="hidden md:block relative" ref={menuRef}>
-        <button
-          onClick={() => setShowDesktopMenu(!showDesktopMenu)}
-          className="p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-        >
-          <MoreVertical size={16} />
-        </button>
-
-        {showDesktopMenu && (
-          <div className="absolute right-0 top-full mt-2 bg-card border border-border rounded-xl shadow-lg z-50 overflow-hidden min-w-48">
-            <button
-              onClick={handleEdit}
-              className="w-full flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition-colors text-left text-sm font-medium"
-            >
+      <DropdownMenu
+        trigger={
+          <button className="p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors border border-transparent hover:border-white/10 shadow-sm active:scale-95 shrink-0">
+            <MoreVertical size={16} />
+          </button>
+        }
+      >
+        {isOwner ? (
+          <>
+            <DropdownMenuItem onClick={onEdit} className="gap-3 py-3">
               <Edit2 size={16} />
-              Edit Tip
-            </button>
-            <button
-              onClick={() => {
-                setShowDesktopMenu(false);
-                setShowDeleteConfirm(true);
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-500/10 transition-colors text-left text-sm font-medium border-t border-border"
-            >
+              <span>Edit Tip</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setShowDeleteConfirm(true)} className="gap-3 py-3" danger>
               <Trash2 size={16} />
-              Delete Tip
-            </button>
-            <div className="border-t border-border p-2">
-              <ReportButton
-                targetId={tipId}
-                reportType="COMMUNITY_TIP"
-                size="sm"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setShowMobileMenu(true)}
-        className="md:hidden p-2 text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-      >
-        <MoreVertical size={16} />
-      </button>
-
-      {/* Mobile Bottom Sheet */}
-      <BottomSheet
-        isOpen={showMobileMenu}
-        onClose={() => setShowMobileMenu(false)}
-        title="Tip Options"
-      >
-        <div className="space-y-3">
-          <button
-            onClick={handleEdit}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-medium transition-colors"
-          >
-            <Edit2 size={18} />
-            Edit Tip
-          </button>
-          <button
-            onClick={() => {
-              setShowMobileMenu(false);
-              setShowDeleteConfirm(true);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-400 font-medium transition-colors"
-          >
-            <Trash2 size={18} />
-            Delete Tip
-          </button>
-          <div className="pt-2 border-t border-border">
+              <span>Delete Tip</span>
+            </DropdownMenuItem>
+          </>
+        ) : (
+          <DropdownMenuItem asChild>
             <ReportButton
               targetId={tipId}
               reportType="COMMUNITY_TIP"
-              size="sm"
-            />
-          </div>
-        </div>
-      </BottomSheet>
+              className="w-full flex items-center justify-start gap-3 py-3 px-4 text-sm font-medium hover:bg-white/5 transition-colors border-none text-white/70 hover:text-white"
+            >
+              <Flag size={16} />
+              <span>Report Tip</span>
+            </ReportButton>
+          </DropdownMenuItem>
+        )}
+      </DropdownMenu>
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
@@ -162,7 +79,10 @@ export function TipActionsMenu({
                 Cancel
               </button>
               <button
-                onClick={handleDelete}
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  onDelete?.();
+                }}
                 className="flex-1 px-4 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-red-600 transition-colors active:scale-95"
               >
                 Delete

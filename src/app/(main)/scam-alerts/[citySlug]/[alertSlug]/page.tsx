@@ -24,6 +24,7 @@ import {
     MapPin,
     ArrowLeft,
     MoreVertical,
+    Flag,
     Share2,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -350,8 +351,11 @@ export default function ScamAlertDetailPage() {
                                                 <ReportButton
                                                     targetId={localAlert.id}
                                                     reportType="SCAM_ALERT"
-                                                    className="w-full flex items-center justify-start gap-3 px-3 py-3 text-sm font-medium hover:bg-white/5 rounded-md transition-colors border-none"
-                                                />
+                                                    className="w-full flex items-center justify-start gap-3 px-4 py-3 text-sm font-medium hover:bg-white/5 transition-colors border-none text-white/70 hover:text-white"
+                                                >
+                                                    <Flag size={16} />
+                                                    <span>Report Alert</span>
+                                                </ReportButton>
                                             </DropdownMenuItem>
                                         )}
                                     </DropdownMenu>
@@ -565,9 +569,10 @@ export default function ScamAlertDetailPage() {
                                                     <ReportButton
                                                         targetId={comment.id}
                                                         reportType="COMMENT"
-                                                        className="w-full flex items-center justify-start gap-3 px-4 py-3 text-sm font-medium hover:bg-white/5 rounded-md transition-colors border-none"
+                                                        className="w-full flex items-center justify-start gap-3 px-4 py-3 text-sm font-medium hover:bg-white/5 transition-colors border-none text-white/70 hover:text-white"
                                                     >
-                                                        <div className="text-white/70">Report</div>
+                                                        <Flag size={16} />
+                                                        <span>Report Comment</span>
                                                     </ReportButton>
                                                 </DropdownMenuItem>
                                             </DropdownMenu>

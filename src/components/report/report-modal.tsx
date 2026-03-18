@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Flag, X, Loader2 } from 'lucide-react';
 import { useReport } from '@/hooks/use-report';
 import { toast } from 'sonner';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ReportModalProps {
   targetId: string;
@@ -81,18 +82,18 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
             <label className="text-xs font-semibold text-white/60 uppercase tracking-widest">
               Reason
             </label>
-            <select
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg bg-white/8 border border-white/12 text-foreground focus:outline-none focus:ring-2 focus:ring-amber-400/50"
-            >
-              <option value="">Select a reason...</option>
-              {REPORT_REASONS.map((r) => (
-                <option key={r.value} value={r.value}>
-                  {r.label}
-                </option>
-              ))}
-            </select>
+            <Select value={reason} onValueChange={setReason}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a reason..." />
+              </SelectTrigger>
+              <SelectContent>
+                {REPORT_REASONS.map((r) => (
+                  <SelectItem key={r.value} value={r.value}>
+                    {r.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-3">

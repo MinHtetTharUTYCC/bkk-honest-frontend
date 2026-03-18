@@ -1,8 +1,6 @@
 'use client';
 
-import { useState } from 'react';
 import { Flag } from 'lucide-react';
-import ReportModal from './report-modal';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/components/providers/auth-provider';
 import { toast } from 'sonner';
@@ -24,7 +22,6 @@ export default function ReportButton({
   className,
   onClick,
 }: ReportButtonProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { user } = useAuth();
 
   const sizeClasses = {
@@ -42,14 +39,18 @@ export default function ReportButton({
     e.stopPropagation();
 
     if (!user) {
-      toast.error('Join us first to help keep the city honest!', {
-        description: 'Please sign in to report content.',
-      });
+      toast.error('Join us first to report content');
       return;
     }
 
     onClick?.(e);
-    setIsModalOpen(true);
+    
+    // Dispatch custom event to the GlobalReportModal sitting in layout.tsx
+    window.dispatchEvent(
+      new CustomEvent('OPEN_REPORT_MODAL', {
+        detail: { targetId, reportType },
+      })
+    );
   };
 
   return (
@@ -70,14 +71,6 @@ export default function ReportButton({
         >
           <Flag size={iconSizes[size]} />
         </button>
-      )}
-
-      {isModalOpen && (
-        <ReportModal
-          targetId={targetId}
-          reportType={reportType}
-          onClose={() => setIsModalOpen(false)}
-        />
       )}
     </>
   );
