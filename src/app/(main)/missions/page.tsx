@@ -44,6 +44,7 @@ export default function MissionsPage() {
     const searchParams = useSearchParams();
     const [isClient, setIsClient] = useState(false);
     const [missionToDelete, setMissionToDelete] = useState<string | null>(null);
+    const [missionToUpdate, setMissionToUpdate] = useState<string | null>(null);
 
     useEffect(() => {
         setIsClient(true);
@@ -336,13 +337,16 @@ export default function MissionsPage() {
 
                                 <div className="flex items-center gap-4">
                                     <button
-                                        onClick={() =>
+                                        onClick={() => {
+                                            setMissionToUpdate(mission.id);
                                             updateMission.mutate({
                                                 id: mission.id,
                                                 completed: !mission.completed,
-                                            })
-                                        }
-                                        disabled={updateMission.isPending}
+                                            }, {
+                                                onSettled: () => setMissionToUpdate(null)
+                                            });
+                                        }}
+                                        disabled={updateMission.isPending && missionToUpdate === mission.id}
                                         className={cn(
                                             'flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg',
                                             mission.completed
@@ -350,7 +354,7 @@ export default function MissionsPage() {
                                                 : 'bg-white/8 text-white/40 hover:bg-white/15 hover:text-white border border-white/8',
                                         )}
                                     >
-                                        {updateMission.isPending ? (
+                                        {updateMission.isPending && missionToUpdate === mission.id ? (
                                             <Loader2 size={16} className="animate-spin" />
                                         ) : mission.completed ? (
                                             <>
