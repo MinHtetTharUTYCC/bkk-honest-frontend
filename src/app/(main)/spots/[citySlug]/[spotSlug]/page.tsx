@@ -800,21 +800,23 @@ export default function SpotDetailPage() {
                             accept="image/*"
                             onChange={handleFileUpload}
                         />
-                        <button
-                            onClick={() => setShowGalleryModal(true)}
-                            className="text-[10px] font-medium text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors flex items-center gap-2"
-                        >
-                            <span className="hidden md:inline">
-                                View All{' '}
-                                {(galleryResponse as any)?.pagination?.total || galleryList.length}{' '}
-                                Photos
-                            </span>
-                            <span className="md:hidden">
-                                All (
-                                {(galleryResponse as any)?.pagination?.total || galleryList.length})
-                            </span>
-                            <Maximize2 size={12} />
-                        </button>
+                        {((galleryResponse as any)?.pagination?.total || galleryList.length) > 0 && (
+                            <button
+                                onClick={() => setShowGalleryModal(true)}
+                                className="text-[10px] font-medium text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors flex items-center gap-2"
+                            >
+                                <span className="hidden md:inline">
+                                    View All{' '}
+                                    {(galleryResponse as any)?.pagination?.total || galleryList.length}{' '}
+                                    Photos
+                                </span>
+                                <span className="md:hidden">
+                                    All (
+                                    {(galleryResponse as any)?.pagination?.total || galleryList.length})
+                                </span>
+                                <Maximize2 size={12} />
+                            </button>
+                        )}
                     </div>
                 </header>
 
