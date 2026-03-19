@@ -96,10 +96,10 @@ export default function ScamAlertDetailPage() {
     const { ref, inView } = useInView();
 
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
+        if (inView && hasNextPage && !isFetchingNextPage && !commentsLoading) {
             fetchNextPage();
         }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, commentsLoading]);
 
     const handleSendComment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -622,7 +622,7 @@ export default function ScamAlertDetailPage() {
                             )}
 
                             {/* Load more trigger */}
-                            <div ref={ref} className="flex justify-center py-6">
+                            <div ref={ref} className="flex justify-center py-6 min-h-[40px]">
                                 {isFetchingNextPage ? (
                                     <Loader2 className="animate-spin text-amber-400" size={24} />
                                 ) : hasNextPage ? (
