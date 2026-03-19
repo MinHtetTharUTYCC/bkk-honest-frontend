@@ -11,6 +11,17 @@ import ReportButton from '@/components/report/report-button';
 import ReactionButton from '@/components/reactions/reaction-button';
 import Link from 'next/link';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 interface TipCommentsModalProps {
   tip: any;
   onClose: () => void;
@@ -35,6 +46,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
   
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState('');
+  const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
 
   const { ref, inView } = useInView();
 
@@ -75,10 +87,11 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
-    if (!confirm('Are you sure you want to delete this comment?')) return;
+  const handleConfirmDelete = async () => {
+    if (!commentToDelete) return;
     try {
-      await deleteCommentMutation.mutateAsync({ id: commentId, communityTipId: tip.id });
+      await deleteCommentMutation.mutateAsync({ id: commentToDelete, communityTipId: tip.id });
+      setCommentToDelete(null);
     } catch (err) {
       console.error(err);
       alert('Failed to delete comment');
@@ -98,6 +111,33 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     <div 
       className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4"
     >
+      <AlertDialog open={!!commentToDelete} onOpenChange={(open) => !open && setCommentToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete your comment.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteCommentMutation.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={(e) => {
+                e.preventDefault();
+                handleConfirmDelete();
+              }}
+              disabled={deleteCommentMutation.isPending}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              {deleteCommentMutation.isPending ? (
+                <Loader2 size={16} className="animate-spin mr-2" />
+              ) : null}
+              Delete Comment
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <div className="absolute inset-0" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }} />
 
       <div 
@@ -195,7 +235,17 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                           {user?.id === comment.userId && (
                              <div className="flex items-center gap-2">
                                <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.content || comment.text); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={18} /></button>
-                               <button onClick={() => handleDeleteComment(comment.id)} className="text-white/40 hover:text-red-400 p-1"><Trash2 size={18} /></button>
+                               <button 
+                                 onClick={() => setCommentToDelete(comment.id)} 
+                                 disabled={deleteCommentMutation.isPending && commentToDelete === comment.id}
+                                 className="text-white/40 hover:text-red-400 p-1"
+                               >
+                                 {deleteCommentMutation.isPending && commentToDelete === comment.id ? (
+                                   <Loader2 size={18} className="animate-spin" />
+                                 ) : (
+                                   <Trash2 size={18} />
+                                 )}
+                               </button>
                              </div>
                           )}
                         </div>

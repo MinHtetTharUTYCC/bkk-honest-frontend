@@ -7,6 +7,18 @@ import { LikeButton } from '@/components/ui/like-button';
 import { TipActionsMenu } from './tip-actions-menu';
 import Link from 'next/link';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Loader2 } from 'lucide-react';
+
 interface TipCardProps {
   tip: any;
   authUser?: any;
@@ -27,13 +39,14 @@ export function TipCard({
   isVotePending = false,
 }: TipCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isOwner = authUser?.id === tip.userId;
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this tip?')) return;
+  const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
       await onDeleteClick();
+      setShowDeleteDialog(false);
     } finally {
       setIsDeleting(false);
     }
@@ -48,6 +61,32 @@ export function TipCard({
           : 'bg-emerald-500/10 border-emerald-500/20'
       )}
     >
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your tip.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={(e) => {
+                e.preventDefault();
+                handleConfirmDelete();
+              }}
+              disabled={isDeleting}
+              className="bg-red-500 hover:bg-red-600 text-white"
+            >
+              {isDeleting ? (
+                <Loader2 size={16} className="animate-spin mr-2" />
+              ) : null}
+              Delete Tip
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex gap-4 flex-1 min-w-0">
@@ -100,7 +139,7 @@ export function TipCard({
             tipId={tip.id}
             isOwner={isOwner}
             onEdit={onEditClick}
-            onDelete={handleDelete}
+            onDelete={() => setShowDeleteDialog(true)}
           />
         </div>
       </div>

@@ -26,12 +26,24 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import LoginRequired from '@/components/auth/login-required';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+
 export default function MissionsPage() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const [isClient, setIsClient] = useState(false);
+    const [missionToDelete, setMissionToDelete] = useState<string | null>(null);
 
     useEffect(() => {
         setIsClient(true);
@@ -74,9 +86,11 @@ export default function MissionsPage() {
     }, []);
 
     // Helper to manually remove item from local list on delete success
-    const handleRemoveLocally = (id: string) => {
-        if (confirm('Remove mission?')) {
-            deleteMission.mutate(id);
+    const handleConfirmDelete = () => {
+        if (missionToDelete) {
+            deleteMission.mutate(missionToDelete, {
+                onSettled: () => setMissionToDelete(null)
+            });
         }
     };
 
@@ -108,6 +122,33 @@ export default function MissionsPage() {
 
     return (
         <div className="space-y-12 pb-24">
+            <AlertDialog open={!!missionToDelete} onOpenChange={(open) => !open && setMissionToDelete(null)}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will remove the spot from your missions list.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deleteMission.isPending}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleConfirmDelete();
+                            }}
+                            disabled={deleteMission.isPending}
+                            className="bg-red-500 hover:bg-red-600 text-white"
+                        >
+                            {deleteMission.isPending ? (
+                                <Loader2 size={16} className="animate-spin mr-2" />
+                            ) : null}
+                            Remove Mission
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {/* 1. Progress Header */}
             <header className="relative bg-gray-900 rounded-[40px] p-8 md:p-12 overflow-hidden shadow-2xl shadow-gray-900/20">
                 <div className="absolute top-0 right-0 p-8 opacity-10">
@@ -325,11 +366,11 @@ export default function MissionsPage() {
                                     </button>
 
                                     <button
-                                        onClick={() => handleRemoveLocally(mission.id)}
-                                        disabled={deleteMission.isPending}
+                                        onClick={() => setMissionToDelete(mission.id)}
+                                        disabled={deleteMission.isPending && missionToDelete === mission.id}
                                         className="p-4 rounded-2xl bg-red-400/10 text-red-400 hover:bg-red-500 hover:text-white transition-all border border-red-400/20"
                                     >
-                                        {deleteMission.isPending ? (
+                                        {deleteMission.isPending && missionToDelete === mission.id ? (
                                             <Loader2 size={18} className="animate-spin" />
                                         ) : (
                                             <Trash2 size={18} />
