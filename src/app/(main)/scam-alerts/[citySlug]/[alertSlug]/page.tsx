@@ -96,10 +96,12 @@ export default function ScamAlertDetailPage() {
     const { ref, inView } = useInView();
 
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage && !commentsLoading) {
+        // Use a more robust check: ensure we have an alert ID and aren't already loading
+        if (inView && hasNextPage && !isFetchingNextPage && !commentsLoading && alert?.id) {
+            console.log('Fetching next page of comments...');
             fetchNextPage();
         }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, commentsLoading]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, commentsLoading, alert?.id]);
 
     const handleSendComment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -622,17 +624,23 @@ export default function ScamAlertDetailPage() {
                             )}
 
                             {/* Load more trigger */}
-                            <div ref={ref} className="flex justify-center py-6 min-h-[40px]">
+                            <div ref={ref} className="flex justify-center py-10 min-h-[100px] items-start">
                                 {isFetchingNextPage ? (
-                                    <Loader2 className="animate-spin text-amber-400" size={24} />
+                                    <div className="flex flex-col items-center gap-2">
+                                        <Loader2 className="animate-spin text-amber-400" size={24} />
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Loading...</span>
+                                    </div>
                                 ) : hasNextPage ? (
-                                    <span className="text-[12px] font-black uppercase tracking-widest text-white/50">
+                                    <span className="text-[12px] font-black uppercase tracking-widest text-white/50 animate-pulse">
                                         Scroll for more
                                     </span>
-                                ) : comments.length > 0 ? (
-                                    <span className="text-[12px] font-black uppercase tracking-widest text-white/50">
-                                        End of conversation
-                                    </span>
+                                ) : comments.length > 10 ? (
+                                    <div className="flex flex-col items-center gap-2 opacity-50">
+                                        <ShieldCheck size={20} className="text-emerald-500/50" />
+                                        <span className="text-[12px] font-black uppercase tracking-widest">
+                                            End of conversation
+                                        </span>
+                                    </div>
                                 ) : null}
                             </div>
                         </div>
