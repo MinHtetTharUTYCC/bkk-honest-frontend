@@ -27,7 +27,7 @@ import {
     Flag,
     Share2,
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInView } from 'react-intersection-observer';
 import ReactionButton from '@/components/reactions/reaction-button';
@@ -94,14 +94,20 @@ export default function ScamAlertDetailPage() {
     const [editContent, setEditContent] = useState('');
 
     const { ref, inView } = useInView();
+    const hasFetchedRef = useRef(false);
 
     useEffect(() => {
-        // Use a more robust check: ensure we have an alert ID and aren't already loading
-        if (inView && hasNextPage && !isFetchingNextPage && !commentsLoading && alert?.id) {
-            console.log('Fetching next page of comments...');
+        if (inView && hasNextPage && !isFetchingNextPage && alert?.id && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
             fetchNextPage();
         }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage, commentsLoading, alert?.id]);
+    }, [inView, hasNextPage, isFetchingNextPage, alert?.id, fetchNextPage]);
+
+    useEffect(() => {
+        if (!inView) {
+            hasFetchedRef.current = false;
+        }
+    }, [inView]);
 
     const handleSendComment = async (e: React.FormEvent) => {
         e.preventDefault();

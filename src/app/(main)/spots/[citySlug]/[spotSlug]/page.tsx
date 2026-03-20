@@ -127,12 +127,20 @@ export default function SpotDetailPage() {
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: '200px' });
+    const hasFetchedTipsRef = useRef(false);
+
     useEffect(() => {
-        if (inView && hasNextTips && !isFetchingNextTips) {
-            console.log('Fetching next tips...');
+        if (inView && hasNextTips && !isFetchingNextTips && !hasFetchedTipsRef.current) {
+            hasFetchedTipsRef.current = true;
             fetchNextTips();
         }
     }, [inView, hasNextTips, isFetchingNextTips, fetchNextTips]);
+
+    useEffect(() => {
+        if (!inView) {
+            hasFetchedTipsRef.current = false;
+        }
+    }, [inView]);
 
     const uploadMutation = useUploadSpotImage();
     const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle(

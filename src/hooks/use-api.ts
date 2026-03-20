@@ -358,8 +358,11 @@ export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage: any) => {
-            if (!lastPage.pagination.hasMore) return undefined;
-            return lastPage.pagination.skip + lastPage.pagination.take;
+            const { skip, take, total, hasMore } = lastPage.pagination || {};
+            if (!hasMore) return undefined;
+            const nextSkip = skip + take;
+            if (nextSkip >= total) return undefined;
+            return nextSkip;
         },
         enabled: !!spotId,
     });
@@ -577,10 +580,11 @@ export function useTipComments(tipId: string) {
             return data;
         },
         getNextPageParam: (lastPage: any) => {
-            if (lastPage?.pagination?.hasMore) {
-                return lastPage.pagination.skip + lastPage.pagination.take;
-            }
-            return undefined;
+            const { skip, take, total, hasMore } = lastPage?.pagination || {};
+            if (!hasMore) return undefined;
+            const nextSkip = skip + take;
+            if (nextSkip >= total) return undefined;
+            return nextSkip;
         },
         initialPageParam: 0,
         enabled: !!tipId,
@@ -597,10 +601,11 @@ export function useScamComments(scamAlertId: string) {
             return data;
         },
         getNextPageParam: (lastPage) => {
-            if (lastPage?.pagination?.hasMore) {
-                return lastPage.pagination.skip + lastPage.pagination.take;
-            }
-            return undefined;
+            const { skip, take, total, hasMore } = lastPage?.pagination || {};
+            if (!hasMore) return undefined;
+            const nextSkip = skip + take;
+            if (nextSkip >= total) return undefined;
+            return nextSkip;
         },
         initialPageParam: 0,
         enabled: !!scamAlertId,

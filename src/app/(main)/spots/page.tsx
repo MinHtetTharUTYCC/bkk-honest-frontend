@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
 import SpotCard from '@/components/spots/spot-card';
 import { SearchInput } from '@/components/ui/search-input';
@@ -93,11 +93,20 @@ export default function DiscoveryPage() {
         sort: sort,
     });
 
+    const hasFetchedRef = useRef(false);
+
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
+        if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
             fetchNextPage();
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    useEffect(() => {
+        if (!inView) {
+            hasFetchedRef.current = false;
+        }
+    }, [inView]);
 
     if (!isClient) return null;
 

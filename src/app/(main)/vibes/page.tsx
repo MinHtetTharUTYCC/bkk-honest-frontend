@@ -63,11 +63,20 @@ export default function VibesPage() {
 
     // Intersection Observer for Infinite Scroll
     const { ref: observerTarget, inView } = useInView({ threshold: 0.1 });
+    const hasFetchedRef = useRef(false);
+
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
+        if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
             fetchNextPage();
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    useEffect(() => {
+        if (!inView) {
+            hasFetchedRef.current = false;
+        }
+    }, [inView]);
 
     return (
         <div className="space-y-8 pb-24">

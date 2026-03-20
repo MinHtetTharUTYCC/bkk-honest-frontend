@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { X, MessageSquare, Send, Loader2, User, MoreVertical, Edit2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -49,12 +49,20 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
   const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
 
   const { ref, inView } = useInView();
+  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  useEffect(() => {
+    if (!inView) {
+      hasFetchedRef.current = false;
+    }
+  }, [inView]);
 
   const handleSendComment = async (e: React.FormEvent) => {
     e.preventDefault();
