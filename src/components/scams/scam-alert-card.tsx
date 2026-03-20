@@ -228,14 +228,14 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
                         <Camera size={24} strokeWidth={1.5} />
-                        <span className="text-[8px] font-black uppercase tracking-widest">
+                        <span className="text-[10px] font-black uppercase tracking-widest">
                             No Photo
                         </span>
                     </div>
                 )}
                 {/* Category pill moved into image */}
                 <div className="absolute top-3 left-3">
-                    <span className="bg-red-500/80 backdrop-blur-md text-white px-2.5 py-0.5 rounded-full text-[8px] font-bold tracking-widest uppercase flex items-center gap-1 shadow-lg border border-red-400/20">
+                    <span className="bg-red-500/80 backdrop-blur-md text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-1 shadow-lg border border-red-400/20">
                         <AlertTriangle size={8} />
                         {alert.category?.name || 'Scam'}
                     </span>
@@ -265,7 +265,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                 {alert.user?.name || 'Local'}
                             </span>
                             {alert.user?.level && (
-                                <span className="text-[8px] font-bold text-amber-400 uppercase tracking-tighter leading-none">
+                                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-tighter leading-none">
                                     {alert.user.level.replace('_', ' ')}
                                 </span>
                             )}

@@ -165,7 +165,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                             {img.user?.name || 'Local'}
                                                         </Link>
                                                         {img.user?.level && (
-                                                            <span className="bg-amber-400/10 text-amber-400 px-1.5 py-0.5 rounded-md text-[7px] font-bold uppercase tracking-tighter">
+                                                            <span className="bg-amber-400/10 text-amber-400 px-1.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tighter">
                                                                 Lvl{' '}
                                                                 {img.user.level === 'LOCAL_GURU'
                                                                     ? '3'

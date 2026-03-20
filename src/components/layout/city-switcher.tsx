@@ -33,7 +33,7 @@ export default function CitySwitcher() {
                     <MapPin size={14} fill="currentColor" className="text-amber-400" />
                 </div>
                 <div className="flex flex-col items-start leading-none pr-1">
-                    <span className="hidden md:inline-block text-[7px] md:text-[8px] font-black text-amber-400/60 uppercase tracking-widest">
+                    <span className="hidden md:inline-block text-[10px] font-black text-amber-400/60 uppercase tracking-widest">
                         In Town
                     </span>
                     <div className="flex items-center gap-1">

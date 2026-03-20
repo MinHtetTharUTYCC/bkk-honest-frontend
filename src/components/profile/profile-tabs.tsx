@@ -160,7 +160,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                 <ImageIcon size={24} strokeWidth={1.5} />
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
                                             </div>
                                         )}
                                     </div>
@@ -209,7 +209,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                     <ImageIcon size={24} strokeWidth={1.5} />
-                                                    <span className="text-[8px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
                                                 </div>
                                             )}
                                         </div>
@@ -259,7 +259,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                     <ImageIcon size={24} strokeWidth={1.5} />
-                                                    <span className="text-[8px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
+                                                    <span className="text-[10px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
                                                 </div>
                                             )}
                                         </div>
@@ -312,7 +312,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                 <ImageIcon size={24} strokeWidth={1.5} />
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-center px-1">No Photo</span>
                                             </div>
                                         )}
                                     </div>

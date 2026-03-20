@@ -875,7 +875,7 @@ export default function SpotDetailPage() {
                                             by {img.user?.name || 'local'}
                                         </span>
                                         {img.user?.level && (
-                                            <span className="bg-cyan-400 text-white px-1.5 py-0.5 rounded-md text-[6px] font-semibold tracking-tighter mt-1">
+                                            <span className="bg-cyan-400 text-white px-1.5 py-0.5 rounded-md text-[8px] font-bold tracking-tighter mt-1">
                                                 Lvl{' '}
                                                 {img.user.level === 'LOCAL_GURU'
                                                     ? '3'
