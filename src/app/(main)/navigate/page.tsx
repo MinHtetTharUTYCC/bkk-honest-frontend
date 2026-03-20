@@ -188,6 +188,23 @@ export default function NavigatePage() {
         return `${km} km`;
     };
 
+    const getExternalMapUrl = (destLat: number, destLng: number, startLat?: number, startLng?: number) => {
+        if (typeof window === 'undefined') return '';
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        if (isIOS) {
+            // Apple Maps link
+            const origin = startLat && startLng ? `&saddr=${startLat},${startLng}` : '';
+            return `maps://?daddr=${destLat},${destLng}${origin}`;
+        }
+        
+        // Google Maps Universal Link
+        const origin = startLat && startLng ? `&origin=${startLat},${startLng}` : '';
+        return `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}${origin}`;
+    };
+
+    const isIOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
     return (
         <div className="relative w-full h-screen bg-gray-900 overflow-hidden">
             {MAPBOX_TOKEN ? (
@@ -360,14 +377,28 @@ export default function NavigatePage() {
             )}
 
             {!showDirections && route && !isLoading && (
-                <motion.button
-                    onClick={() => setShowDirections(true)}
-                    className="absolute bottom-6 left-6 right-6 bg-amber-400 text-black px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-amber-300 transition-all active:scale-95 shadow-xl z-20"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                >
-                    View Turn-by-Turn Directions
-                </motion.button>
+                <div className="absolute bottom-8 left-6 right-6 flex gap-3 z-20">
+                    <motion.button
+                        onClick={() => setShowDirections(true)}
+                        className="flex-1 bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        Directions
+                    </motion.button>
+                    
+                    <motion.button
+                        onClick={() => {
+                            const url = getExternalMapUrl(destLat, destLng, userLocation?.lat, userLocation?.lng);
+                            window.open(url, '_blank');
+                        }}
+                        className="flex-1 bg-amber-400 text-black px-6 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-amber-300 transition-all shadow-xl shadow-amber-400/20"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                    >
+                        {isIOS ? 'Apple Maps' : 'Google Maps'}
+                    </motion.button>
+                </div>
             )}
 
             <AnimatePresence>

@@ -66,6 +66,8 @@ export default function ManualLocationModal({
         }
     };
 
+    const isIOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -151,14 +153,28 @@ export default function ManualLocationModal({
                 </div>
 
                 <div className="p-6 border-t border-white/5 bg-zinc-900/50 backdrop-blur space-y-4">
-                    {selectedLocation && (
+                    <div className="flex flex-col gap-3">
+                        {selectedLocation && (
+                            <button
+                                onClick={handleConfirm}
+                                className="w-full bg-amber-400 text-black py-4 rounded-2xl font-bold text-sm hover:bg-amber-300 transition-all active:scale-[0.98] shadow-xl shadow-amber-400/20"
+                            >
+                                Navigate from This Point
+                            </button>
+                        )}
                         <button
-                            onClick={handleConfirm}
-                            className="w-full bg-amber-400 text-black py-4 rounded-2xl font-bold text-sm hover:bg-amber-300 transition-all active:scale-[0.98] shadow-xl shadow-amber-400/20"
+                            onClick={() => {
+                                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                                const url = isIOS 
+                                    ? `maps://?daddr=${destLat},${destLng}` 
+                                    : `https://www.google.com/maps/dir/?api=1&destination=${destLat},${destLng}`;
+                                window.open(url, '_blank');
+                            }}
+                            className="w-full bg-white/5 text-white/70 py-4 rounded-2xl font-bold text-sm hover:bg-white/10 hover:text-white transition-all active:scale-[0.98] border border-white/10"
                         >
-                            Navigate from This Point
+                            Open in {isIOS ? 'Apple Maps' : 'Google Maps'}
                         </button>
-                    )}
+                    </div>
                 </div>
             </motion.div>
         </motion.div>
