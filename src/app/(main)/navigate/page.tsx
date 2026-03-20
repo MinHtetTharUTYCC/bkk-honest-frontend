@@ -62,6 +62,11 @@ export default function NavigatePage() {
 
     useEffect(() => {
         checkGeolocationPermission();
+        // Lock body scroll while navigation page is mounted
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = '';
+        };
     }, [destLat, destLng]);
 
     const checkGeolocationPermission = async () => {
@@ -206,7 +211,7 @@ export default function NavigatePage() {
     const isIOS = typeof window !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     return (
-        <div className="relative w-full h-screen bg-gray-900 overflow-hidden">
+        <div className="fixed top-16 md:top-20 left-0 md:left-20 right-0 bottom-0 overflow-hidden bg-black">
             {MAPBOX_TOKEN ? (
                 <Map
                     ref={mapRef}
@@ -320,7 +325,7 @@ export default function NavigatePage() {
                         animate={{ y: 0 }}
                         exit={{ y: '100%' }}
                         transition={{ type: 'spring', damping: 30 }}
-                        className="absolute bottom-0 left-0 right-0 bg-card rounded-3xl rounded-b-none max-h-[60vh] overflow-hidden z-30 border-t border-border"
+                        className="absolute bottom-20 md:bottom-0 left-0 right-0 bg-card rounded-3xl rounded-b-none md:rounded-b-none max-h-[60vh] overflow-hidden z-30 border-t border-border"
                     >
                         <div
                             className="p-4 border-b border-border/50 cursor-pointer flex items-center justify-between"
@@ -377,7 +382,7 @@ export default function NavigatePage() {
             )}
 
             {!showDirections && route && !isLoading && (
-                <div className="absolute bottom-8 left-6 right-6 flex gap-3 z-20">
+                <div className="absolute bottom-24 md:bottom-8 left-6 right-6 flex gap-3 z-20">
                     <motion.button
                         onClick={() => setShowDirections(true)}
                         className="flex-1 bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 hover:bg-white/20 transition-all border border-white/10"
