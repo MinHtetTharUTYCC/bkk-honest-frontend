@@ -43,8 +43,8 @@ export default function NavigatePage() {
     const destName = searchParams.get('name') || 'Destination';
 
     const [viewState, setViewState] = useState({
-        latitude: DEFAULT_CENTER.lat,
-        longitude: DEFAULT_CENTER.lng,
+        latitude: destLat !== 0 ? destLat : DEFAULT_CENTER.lat,
+        longitude: destLng !== 0 ? destLng : DEFAULT_CENTER.lng,
         zoom: 14,
         bearing: 0,
         pitch: 0,

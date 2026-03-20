@@ -28,8 +28,8 @@ export default function ManualLocationModal({
         null,
     );
     const [viewState, setViewState] = useState({
-        latitude: 13.7563,
-        longitude: 100.5018,
+        latitude: destLat !== 0 ? destLat : 13.7563,
+        longitude: destLng !== 0 ? destLng : 100.5018,
         zoom: 13,
         bearing: 0,
         pitch: 0,
@@ -151,38 +151,13 @@ export default function ManualLocationModal({
                 </div>
 
                 <div className="p-6 border-t border-white/5 bg-zinc-900/50 backdrop-blur space-y-4">
-                    {selectedLocation ? (
-                        <div className="space-y-4">
-                            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between">
-                                <div>
-                                    <p className="text-white/50 text-[10px] uppercase font-bold tracking-widest mb-1">
-                                        Marked Point
-                                    </p>
-                                    <p className="text-white text-sm font-mono font-medium tracking-tight">
-                                        {selectedLocation.lat.toFixed(6)},{' '}
-                                        {selectedLocation.lng.toFixed(6)}
-                                    </p>
-                                </div>
-                                <div className="w-8 h-8 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400">
-                                    <MapPin size={16} />
-                                </div>
-                            </div>
-                            <button
-                                onClick={handleConfirm}
-                                className="w-full bg-amber-400 text-black py-4 rounded-2xl font-bold text-sm hover:bg-amber-300 transition-all active:scale-[0.98] shadow-xl shadow-amber-400/20"
-                            >
-                                Navigate from This Point
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="py-4 text-center">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
-                                <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                                <p className="text-white/60 text-[11px] font-bold uppercase tracking-wider">
-                                    Select a spot on the map
-                                </p>
-                            </div>
-                        </div>
+                    {selectedLocation && (
+                        <button
+                            onClick={handleConfirm}
+                            className="w-full bg-amber-400 text-black py-4 rounded-2xl font-bold text-sm hover:bg-amber-300 transition-all active:scale-[0.98] shadow-xl shadow-amber-400/20"
+                        >
+                            Navigate from This Point
+                        </button>
                     )}
                 </div>
             </motion.div>
