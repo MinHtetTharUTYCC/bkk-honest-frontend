@@ -253,10 +253,9 @@ export default function ScamAlertDetailPage() {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Main Content - Now everything scrolls together */}
-            <ScrollArea className="h-screen w-full">
-                <div className="mx-auto max-w-2xl px-4 py-6 space-y-6 overflow-hidden">
-                    {/* Header inside ScrollArea */}
+            {/* Main Content - Now using native page scroll */}
+            <div className="mx-auto max-w-2xl px-4 py-6 space-y-6 overflow-hidden">
+                {/* Header inside ScrollArea */}
                     <div className="flex items-center gap-4 mb-2 w-full">
                         <button onClick={() => router.back()} className="p-2 hover:bg-white/5 rounded-xl transition-colors shrink-0">
                             <ArrowLeft size={20} />
@@ -650,9 +649,8 @@ export default function ScamAlertDetailPage() {
                                 ) : null}
                             </div>
                         </div>
-                    </div>
                 </div>
-            </ScrollArea>
+            </div>
 
             {/* Edit Modal */}
             {isEditModalOpen && (
