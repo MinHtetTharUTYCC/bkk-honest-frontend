@@ -426,7 +426,7 @@ export default function SpotDetailPage() {
                         {/* Mobile Info Overlay (Hidden on Desktop) */}
                         <div className="absolute bottom-6 left-6 right-6 flex flex-col justify-between gap-6 md:hidden">
                             <div className="space-y-3">
-                                <h1 className="text-4xl font-display font-bold text-white tracking-tight drop-shadow-sm">
+                                <h1 className="text-4xl font-display font-bold text-white tracking-tight drop-shadow-sm line-clamp-2 break-words">
                                     {spot.name}
                                 </h1>
                                 <div className="space-y-1">
@@ -520,7 +520,7 @@ export default function SpotDetailPage() {
                         <div className="space-y-6">
                             <div className="flex justify-between items-start gap-4">
                                 <div className="space-y-4">
-                                    <h1 className="text-5xl lg:text-6xl font-display font-bold text-white tracking-tight leading-none">
+                                    <h1 className="text-5xl lg:text-6xl font-display font-bold text-white tracking-tight leading-none line-clamp-2 break-words">
                                         {spot.name}
                                     </h1>
                                     <div className="space-y-2">

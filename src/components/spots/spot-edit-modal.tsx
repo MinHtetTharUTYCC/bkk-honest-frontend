@@ -60,6 +60,11 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
 
     const handleUpdateSpot = async () => {
         try {
+            if (editName.length > 100) {
+                toast.error('Spot name cannot exceed 100 characters');
+                return;
+            }
+
             await updateSpotMutation.mutateAsync({
                 id: spot.id,
                 payload: {
@@ -74,9 +79,10 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
             });
             toast.success('Spot updated successfully');
             onClose();
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            toast.error('Failed to update spot');
+            const errorMessage = err.response?.data?.message || err.message || 'Failed to update spot';
+            toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to update spot');
         }
     };
 
@@ -155,14 +161,27 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-semibold tracking-wide text-white/50 ml-1">
-                            Spot Name
-                        </label>
+                        <div className="flex justify-between items-center ml-1">
+                            <label className="text-[10px] font-semibold tracking-wide text-white/50">
+                                Spot Name
+                            </label>
+                            <span className={cn(
+                                "text-[10px] font-semibold tracking-wide",
+                                editName.length > 100 ? "text-red-400" : "text-white/30"
+                            )}>
+                                {editName.length}/100
+                            </span>
+                        </div>
                         <input
                             type="text"
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
-                            className="w-full bg-white/5 border border-border rounded-xl px-5 py-3 text-lg font-semibold text-white focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all"
+                            className={cn(
+                                "w-full bg-white/5 border rounded-xl px-5 py-3 text-lg font-semibold text-white focus:outline-none focus:ring-2 transition-all",
+                                editName.length > 100 
+                                    ? "border-red-400 focus:border-red-400 focus:ring-red-400/20" 
+                                    : "border-border focus:border-amber-400 focus:ring-amber-400/20"
+                            )}
                             placeholder="Spot name"
                         />
                     </div>
