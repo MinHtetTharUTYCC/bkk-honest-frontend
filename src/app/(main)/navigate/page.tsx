@@ -142,7 +142,11 @@ export default function NavigatePage() {
 
             const data = await response.json();
             if (data.routes && data.routes.length > 0) {
-                setRoute(data.routes[0]);
+                const mainRoute = data.routes[0];
+                setRoute({
+                    ...mainRoute,
+                    steps: mainRoute.legs?.[0]?.steps || [],
+                });
             } else {
                 setError('No route found');
             }
@@ -312,7 +316,7 @@ export default function NavigatePage() {
                         </div>
 
                         <div className="overflow-y-auto max-h-[55vh] p-4 space-y-3">
-                            {route.steps &&
+                            {route.steps && route.steps.length > 0 ? (
                                 route.steps.map((step, idx) => (
                                     <div key={idx} className="flex gap-3 text-sm">
                                         <div className="shrink-0 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center text-black font-semibold text-xs">
@@ -328,7 +332,13 @@ export default function NavigatePage() {
                                             </p>
                                         </div>
                                     </div>
-                                ))}
+                                ))
+                            ) : (
+                                <div className="py-10 text-center space-y-2">
+                                    <p className="text-white font-medium">No detailed instructions</p>
+                                    <p className="text-white/40 text-xs">Follow the path on the map for this short route.</p>
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 )}
