@@ -75,7 +75,7 @@ export default function CreateVibeForm({
               onChange={(e) => setCrowdLevel(Number(e.target.value))}
               className="w-full accent-amber-400"
             />
-            <div className="flex justify-between text-[10px] text-white/30 mt-1">
+            <div className="flex justify-between text-xs font-semibold text-white/30 mt-1 uppercase tracking-widest">
               <span>Empty</span>
               <span>Moderate</span>
               <span>Packed</span>

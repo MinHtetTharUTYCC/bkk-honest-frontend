@@ -831,7 +831,7 @@ export default function SpotDetailPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     {galleryList.length === 0 ? (
                         <div className="col-span-full py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/20">
-                            <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                            <p className="text-sm font-semibold text-white/40 tracking-wide">
                                 No vibe photos yet
                             </p>
                         </div>
@@ -937,16 +937,16 @@ export default function SpotDetailPage() {
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-border">
-                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                    <th className="px-8 py-6 text-xs font-semibold tracking-wide text-white/50">
                                         Item Name
                                     </th>
-                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                    <th className="px-8 py-6 text-xs font-semibold tracking-wide text-white/50">
                                         Price
                                     </th>
-                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                    <th className="px-8 py-6 text-xs font-semibold tracking-wide text-white/50">
                                         Status
                                     </th>
-                                    <th className="px-8 py-6 text-[10px] font-semibold tracking-wide text-white/50">
+                                    <th className="px-8 py-6 text-xs font-semibold tracking-wide text-white/50">
                                         Date
                                     </th>
                                 </tr>
@@ -956,7 +956,7 @@ export default function SpotDetailPage() {
                                     <tr>
                                         <td
                                             colSpan={4}
-                                            className="px-8 py-20 text-center text-xs font-medium text-white/40"
+                                            className="px-8 py-20 text-center text-sm font-medium text-white/40"
                                         >
                                             No reports yet
                                         </td>
@@ -1205,7 +1205,7 @@ export default function SpotDetailPage() {
                     ) : (
                         <div className="py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
                             <Zap size={32} className="text-white/10 mx-auto mb-3" />
-                            <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
+                            <p className="text-sm font-bold text-white/40 uppercase tracking-widest">
                                 No vibes yet. Be the first to check in!
                             </p>
                         </div>
