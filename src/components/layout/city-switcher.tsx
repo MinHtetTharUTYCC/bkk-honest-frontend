@@ -32,22 +32,17 @@ export default function CitySwitcher() {
                 <div className="w-7 h-7 md:w-8 md:h-8 rounded-xl bg-amber-400/10 flex items-center justify-center text-amber-400 transition-transform group-hover:scale-110">
                     <MapPin size={14} fill="currentColor" className="text-amber-400" />
                 </div>
-                <div className="flex flex-col items-start leading-none pr-1">
-                    <span className="hidden md:inline-block text-[10px] font-black text-amber-400/60 uppercase tracking-widest">
-                        In Town
+                <div className="flex items-center gap-1 pr-1">
+                    <span className="text-[10px] md:text-xs font-black text-foreground uppercase italic tracking-tighter truncate max-w-20 md:max-w-none">
+                        {selectedCity?.name || 'Loading...'}
                     </span>
-                    <div className="flex items-center gap-1">
-                        <span className="text-[10px] md:text-xs font-black text-foreground uppercase italic tracking-tighter truncate max-w-20 md:max-w-none">
-                            {selectedCity?.name || 'Loading...'}
-                        </span>
-                        <ChevronDown
-                            size={12}
-                            className={cn(
-                                'text-white/20 transition-transform',
-                                isOpen && 'rotate-180',
-                            )}
-                        />
-                    </div>
+                    <ChevronDown
+                        size={12}
+                        className={cn(
+                            'text-white/20 transition-transform',
+                            isOpen && 'rotate-180',
+                        )}
+                    />
                 </div>
             </button>
 
