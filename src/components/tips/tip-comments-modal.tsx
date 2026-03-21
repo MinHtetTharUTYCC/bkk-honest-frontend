@@ -182,17 +182,23 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
             <div className="space-y-6">
               {user ? (
                 <form onSubmit={handleSendComment} className="relative group">
-                  <input 
-                    type="text" 
+                  <textarea 
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts..."
-                    className="w-full bg-black/20 border border-white/20 rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30"
+                    rows={2}
+                    className="w-full bg-black/20 border border-white/20 rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 resize-none min-h-[44px]"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendComment(e as any);
+                      }
+                    }}
                   />
                   <button 
                     type="submit"
                     disabled={createCommentMutation.isPending || !newComment.trim()}
-                    className="absolute right-2 top-2 p-1.5 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition-all active:scale-95 disabled:opacity-50 disabled:bg-white/10 disabled:text-white/30"
+                    className="absolute right-2 bottom-3 p-1.5 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition-all active:scale-95 disabled:opacity-50 disabled:bg-white/10 disabled:text-white/30"
                   >
                     {createCommentMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
                   </button>
@@ -260,11 +266,17 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                         
                         {editingCommentId === comment.id ? (
                            <div className="mt-2 space-y-2">
-                             <input 
-                               type="text" 
+                             <textarea 
                                value={editContent}
                                onChange={(e) => setEditContent(e.target.value)}
-                               className="w-full bg-black/40 border border-white/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+                               rows={2}
+                               className="w-full bg-black/40 border border-white/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 resize-none"
+                               onKeyDown={(e) => {
+                                 if (e.key === 'Enter' && !e.shiftKey) {
+                                   e.preventDefault();
+                                   handleEditSubmit(comment.id);
+                                 }
+                               }}
                              />
                              <div className="flex gap-2 justify-end mt-1">
                                <button onClick={() => setEditingCommentId(null)} className="text-xs px-2 py-1 font-semibold text-white/50 hover:text-white transition-colors">Cancel</button>
@@ -276,11 +288,11 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                         ) : (
                           <div className="space-y-2">
                             <div className="bg-white/5 border border-border rounded-xl rounded-tl-none p-3">
-                              <p className="text-xs text-white/80 leading-relaxed">
+                              <p className="text-xs text-white/80 leading-relaxed whitespace-pre-wrap">
                                 {comment.content || comment.text}
                               </p>
                             </div>
-                            <div className="flex items-center gap-2 px-3">
+                            <div className="flex items-center justify-between px-1">
                               <ReactionButton 
                                 commentId={comment.id}
                                 initialCount={comment.reactionCount || 0}
