@@ -16,6 +16,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { LikeButton } from '@/components/ui/like-button';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ScamAlertCardProps {
     alert: any;
@@ -165,7 +166,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                         </div>
                     </div>
 
-                    <textarea
+                    <Textarea
                         value={editDesc}
                         onChange={(e) => setEditDesc(e.target.value)}
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-foreground/70 focus:outline-none focus:border-amber-400 transition-all min-h-[80px] resize-none"

@@ -20,6 +20,7 @@ import { useCity } from '@/components/providers/city-provider';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useEffect } from 'react';
 import LoginRequired from '@/components/auth/login-required';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function ReportPage() {
     const { user, loading: authLoading } = useAuth();
@@ -379,7 +380,7 @@ export default function ReportPage() {
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Description
                             </label>
-                            <textarea
+                            <Textarea
                                 value={scamDescription}
                                 onChange={(e) => setScamDescription(e.target.value)}
                                 required
@@ -404,7 +405,7 @@ export default function ReportPage() {
                             <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                 Prevention Tip
                             </label>
-                            <textarea
+                            <Textarea
                                 value={scamPreventionTip}
                                 onChange={(e) => setScamPreventionTip(e.target.value)}
                                 required

@@ -40,6 +40,7 @@ import ScamEditModal from '@/components/scams/scam-edit-modal';
 import { LikeButton } from '@/components/ui/like-button';
 import { toast } from 'sonner';
 import { ShareButton } from '@/components/ui/share-button';
+import { Textarea } from '@/components/ui/textarea';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -455,7 +456,7 @@ export default function ScamAlertDetailPage() {
                         {/* Comment Input */}
                         {user ? (
                             <form onSubmit={handleSendComment} className="relative group">
-                                <textarea
+                                <Textarea
                                     placeholder="Share your experience or ask a question..."
                                     value={newComment}
                                     onChange={(e) => setNewComment(e.target.value)}
@@ -587,7 +588,7 @@ export default function ScamAlertDetailPage() {
 
                                         {editingCommentId === comment.id ? (
                                             <div className="space-y-3">
-                                                <textarea
+                                                <Textarea
                                                     value={editContent}
                                                     onChange={(e) => setEditContent(e.target.value)}
                                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 min-h-20 resize-none"

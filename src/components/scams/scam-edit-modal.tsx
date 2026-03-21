@@ -10,6 +10,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ScamEditModalProps {
     alert: any;
@@ -134,7 +135,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                             </div>
                         </div>
 
-                        <textarea
+                        <Textarea
                             value={editDesc}
                             onChange={(e) => setEditDesc(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm font-medium text-foreground/70 focus:outline-none focus:border-amber-400 transition-all min-h-[120px] resize-none"

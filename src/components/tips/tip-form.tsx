@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
 
 interface TipFormProps {
   initialData?: Partial<TipFormValues>;
@@ -127,7 +128,7 @@ export default function TipForm({
                 Details
               </FormLabel>
               <FormControl>
-                <textarea
+                <Textarea
                   rows={4}
                   placeholder="What should locals and tourists know?"
                   className={cn(

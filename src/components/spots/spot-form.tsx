@@ -204,7 +204,7 @@ export default function SpotForm({
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <textarea 
+                  <Textarea 
                     placeholder="e.g. 25 Mangkon Rd, Bangkok" 
                     disabled={isLoading || isFetchingAddress} 
                     {...field} 

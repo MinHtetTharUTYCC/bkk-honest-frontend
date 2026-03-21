@@ -5,6 +5,7 @@ import { Flag, X, Loader2 } from 'lucide-react';
 import { useReport } from '@/hooks/use-report';
 import { toast } from 'sonner';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
 
 interface ReportModalProps {
   targetId: string;
@@ -100,7 +101,7 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
             <label className="text-xs font-semibold text-white/60 uppercase tracking-widest">
               Additional Details (optional)
             </label>
-            <textarea
+            <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Help us understand why you're reporting this..."

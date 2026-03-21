@@ -3,6 +3,7 @@
 import { MapPin, Clock, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import { Textarea } from '@/components/ui/textarea';
 import api from '@/lib/api';
 
 export default function ContactPage() {
@@ -171,7 +172,7 @@ export default function ContactPage() {
                                         >
                                             Message
                                         </label>
-                                        <textarea
+                                        <Textarea
                                             id="message"
                                             name="message"
                                             value={formData.message}

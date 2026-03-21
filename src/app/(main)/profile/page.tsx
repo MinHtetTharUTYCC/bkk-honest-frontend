@@ -33,6 +33,7 @@ import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ProfileTabs } from '@/components/profile/profile-tabs';
 import LoginRequired from '@/components/auth/login-required';
+import { Textarea } from '@/components/ui/textarea';
 
 export default function ProfilePage() {
     const { user, loading: authLoading } = useAuth();
@@ -281,7 +282,7 @@ export default function ProfilePage() {
                                 <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-1">
                                     Your Bio
                                 </label>
-                                <textarea
+                                <Textarea
                                     value={editBio}
                                     onChange={(e) => setEditBio(e.target.value)}
                                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm font-medium text-white/70 focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all placeholder:text-white/20 min-h-30 resize-none"
