@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import ManualLocationModal from './ManualLocationModal';
 import TransitOverlay from '@/components/map/transit-overlay';
+import { useMapStore } from '@/store/use-map-store';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 const DEFAULT_CENTER = { lat: 13.7563, lng: 100.5018 };
@@ -57,7 +58,7 @@ export default function NavigatePage() {
     const [showDirections, setShowDirections] = useState(false);
     const [showManualLocation, setShowManualLocation] = useState(false);
     const [permissionError, setPermissionError] = useState<PermissionErrorType | null>(null);
-    const [transitVisible, setTransitVisible] = useState(false);
+    const { transitVisible, toggleTransitVisible } = useMapStore();
     const mapRef = useRef<any>(null);
 
     useEffect(() => {
@@ -296,7 +297,7 @@ export default function NavigatePage() {
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
-                                    onClick={() => setTransitVisible(!transitVisible)}
+                                    onClick={toggleTransitVisible}
                                     title={transitVisible ? 'Hide transit lines' : 'Show transit lines'}
                                     aria-label={
                                         transitVisible

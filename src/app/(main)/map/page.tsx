@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSpotUrl } from '@/lib/slug';
 import TransitOverlay from '@/components/map/transit-overlay';
+import { useMapStore } from '@/store/use-map-store';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -69,7 +70,7 @@ export default function MapPage() {
   const [nearMeActive, setNearMeActive] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
-  const [transitVisible, setTransitVisible] = useState(false);
+  const { transitVisible, toggleTransitVisible } = useMapStore();
   // Skip geolocation if we already have a position from URL (returning user)
   const [hasRequestedLocation, setHasRequestedLocation] = useState(hasUrlPosition);
   // Flag: set when user switches category so next spot load triggers auto-fit if needed
@@ -348,7 +349,7 @@ export default function MapPage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            onClick={() => setTransitVisible(!transitVisible)}
+            onClick={toggleTransitVisible}
             title={transitVisible ? "Hide transit lines" : "Show transit lines"}
             aria-label={transitVisible ? "Hide Bangkok BTS/MRT transit overlay" : "Show Bangkok BTS/MRT transit overlay"}
             aria-pressed={transitVisible}
