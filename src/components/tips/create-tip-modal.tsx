@@ -1,22 +1,10 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { Zap, X } from 'lucide-react';
 import { useCreateCommunityTip } from '@/hooks/use-api';
-import { X, Zap, Loader2, AlertTriangle, CheckCircle2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { tipSchema, TipFormValues } from '@/lib/validations/tip';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import TipForm from './tip-form';
+import { TipFormValues } from '@/lib/validations/tip';
 
 interface CreateTipModalProps {
   spotId: string;
@@ -25,18 +13,6 @@ interface CreateTipModalProps {
 
 export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps) {
   const createMutation = useCreateCommunityTip();
-
-  const form = useForm<TipFormValues>({
-    resolver: zodResolver(tipSchema),
-    defaultValues: {
-      type: 'TRY',
-      title: '',
-      description: '',
-    },
-  });
-
-  const { control, handleSubmit, setValue, watch } = form;
-  const currentType = watch('type');
 
   const onFormSubmit = async (values: TipFormValues) => {
     try {
@@ -83,105 +59,13 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
           </button>
         </header>
 
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onFormSubmit)} className="p-8 space-y-8">
-            <FormField
-              control={control}
-              name="type"
-              render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
-                    Tip Type
-                  </FormLabel>
-                  <FormControl>
-                    <div className="flex gap-4">
-                      <button
-                        type="button"
-                        onClick={() => field.onChange('TRY')}
-                        className={cn(
-                          'flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center justify-center gap-2',
-                          field.value === 'TRY'
-                            ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20 shadow-sm'
-                            : 'bg-white/5 text-white/40 border-white/10',
-                        )}
-                      >
-                        <CheckCircle2 size={14} />
-                        To Try
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => field.onChange('AVOID')}
-                        className={cn(
-                          'flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center justify-center gap-2',
-                          field.value === 'AVOID'
-                            ? 'bg-red-400/10 text-red-400 border-red-400/20 shadow-sm'
-                            : 'bg-white/5 text-white/40 border-white/10',
-                        )}
-                      >
-                        <AlertTriangle size={14} />
-                        To Avoid
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+        <div className="p-8">
+            <TipForm
+                onSubmit={onFormSubmit}
+                isLoading={createMutation.isPending}
+                submitLabel="Publish Tip"
             />
-
-            <FormField
-              control={control}
-              name="title"
-              render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel className="text-[10px] font-bold text-white/40 uppercase tracking-widest block">
-                    The Headline
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="E.g. Best time for photos, Hidden menu item..."
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="description"
-              render={({ field }) => (
-                <FormItem className="space-y-4">
-                  <FormLabel className="text-[10px] font-bold text-white/40 uppercase tracking-widest block">
-                    Details
-                  </FormLabel>
-                  <FormControl>
-                    <Textarea
-                      rows={4}
-                      placeholder="What should locals and tourists know?"
-                      className="resize-none"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <button
-              type="submit"
-              disabled={createMutation.isPending}
-              className="w-full py-5 bg-amber-400 text-black rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all shadow-2xl shadow-amber-400/20 active:scale-95 flex items-center justify-center gap-3 disabled:opacity-50"
-            >
-              {createMutation.isPending ? (
-                <Loader2 size={16} className="animate-spin text-black" />
-              ) : (
-                <Zap size={16} fill="currentColor" className="text-black" />
-              )}
-              {createMutation.isPending ? 'Publishing...' : 'Publish Tip'}
-            </button>
-          </form>
-        </Form>
+        </div>
       </div>
     </div>
   );

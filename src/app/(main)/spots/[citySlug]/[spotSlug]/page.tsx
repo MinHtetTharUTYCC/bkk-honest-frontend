@@ -105,8 +105,6 @@ export default function SpotDetailPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedTip, setSelectedTip] = useState<any>(null);
     const [editingTip, setEditingTip] = useState<any>(null);
-    const [editingTipTitle, setEditingTipTitle] = useState('');
-    const [editingTipDescription, setEditingTipDescription] = useState('');
     const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -216,23 +214,18 @@ export default function SpotDetailPage() {
 
     const handleEditTip = (tip: any) => {
         setEditingTip(tip);
-        setEditingTipTitle(tip.title);
-        setEditingTipDescription(tip.description);
     };
 
-    const handleSaveEditedTip = async () => {
-        if (!editingTip || !editingTipTitle.trim() || !editingTipDescription.trim()) return;
+    const handleSaveEditedTip = async (values: TipFormValues) => {
+        if (!editingTip) return;
 
         try {
             await updateTipMutation.mutateAsync({
                 id: editingTip.id,
                 spotId: spot?.id || '',
-                title: editingTipTitle,
-                description: editingTipDescription,
+                ...values,
             });
             setEditingTip(null);
-            setEditingTipTitle('');
-            setEditingTipDescription('');
             toast.success('Tip updated');
         } catch (error) {
             console.error('Failed to update tip:', error);
@@ -290,17 +283,9 @@ export default function SpotDetailPage() {
             {editingTip && (
                 <EditTipModal
                     tip={editingTip}
-                    title={editingTipTitle}
-                    description={editingTipDescription}
-                    onTitleChange={setEditingTipTitle}
-                    onDescriptionChange={setEditingTipDescription}
                     onSave={handleSaveEditedTip}
-                    onClose={() => {
-                        setEditingTip(null);
-                        setEditingTipTitle('');
-                        setEditingTipDescription('');
-                    }}
-                    isSaving={updateTipMutation.isPending}
+                    onClose={() => setEditingTip(null)}
+                    isLoading={updateTipMutation.isPending}
                 />
             )}
             {selectedTip && (
