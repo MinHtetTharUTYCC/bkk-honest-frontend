@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
 import ReportButton from '@/components/report/report-button';
 import ReactionButton from '@/components/reactions/reaction-button';
 import Link from 'next/link';
@@ -182,18 +183,11 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
             <div className="space-y-6">
               {user ? (
                 <form onSubmit={handleSendComment} className="relative group">
-                  <textarea 
+                  <Textarea 
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts..."
-                    rows={2}
                     className="w-full bg-black/20 border border-white/20 rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 resize-none min-h-[44px]"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendComment(e as any);
-                      }
-                    }}
                   />
                   <button 
                     type="submit"
@@ -266,17 +260,10 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                         
                         {editingCommentId === comment.id ? (
                            <div className="mt-2 space-y-2">
-                             <textarea 
+                             <Textarea 
                                value={editContent}
                                onChange={(e) => setEditContent(e.target.value)}
-                               rows={2}
                                className="w-full bg-black/40 border border-white/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 resize-none"
-                               onKeyDown={(e) => {
-                                 if (e.key === 'Enter' && !e.shiftKey) {
-                                   e.preventDefault();
-                                   handleEditSubmit(comment.id);
-                                 }
-                               }}
                              />
                              <div className="flex gap-2 justify-end mt-1">
                                <button onClick={() => setEditingCommentId(null)} className="text-xs px-2 py-1 font-semibold text-white/50 hover:text-white transition-colors">Cancel</button>
