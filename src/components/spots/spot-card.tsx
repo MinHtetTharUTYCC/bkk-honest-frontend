@@ -31,10 +31,10 @@ export default function SpotCard({ spot }: { spot: any }) {
     return (
         <div 
             onClick={() => router.push(getSpotUrl(spot.city?.slug || 'bangkok', spot.slug || ''))}
-            className="shrink-0 w-full bg-card rounded-2xl p-5 border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500 cursor-pointer"
+            className="shrink-0 w-full bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500 cursor-pointer overflow-hidden"
         >
             {/* Image Section */}
-            <div className="relative w-full aspect-square mb-5 rounded-xl overflow-hidden bg-white/5 border border-white/8">
+            <div className="relative w-full aspect-square overflow-hidden bg-white/5 border-b border-white/8">
                 {displayImage ? (
                     <img
                         src={displayImage}
@@ -80,32 +80,34 @@ export default function SpotCard({ spot }: { spot: any }) {
                 </div>
             </div>
 
-            <div className="space-y-1 mb-5">
-                <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
-                    {name}
-                </h3>
-                <p className="text-white/60 font-medium text-[12px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
-                    <MapPin size={11} className="text-amber-400 shrink-0" />
-                    {address?.split(',')[0]}
-                </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-                <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
-                    <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
-                        Avg Price
-                    </span>
-                    <span className="text-sm font-bold text-foreground tracking-tight">
-                        {(priceStats as any)?.avg ? `${(priceStats as any).avg} THB` : '--'}
-                    </span>
+            <div className="p-5">
+                <div className="space-y-1 mb-5">
+                    <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
+                        {name}
+                    </h3>
+                    <p className="text-white/60 font-medium text-[12px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
+                        <MapPin size={11} className="text-amber-400 shrink-0" />
+                        {address?.split(',')[0]}
+                    </p>
                 </div>
-                <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
-                    <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
-                        Pulse
-                    </span>
-                    <span className="text-sm font-bold text-foreground tracking-tight">
-                        {(priceStats as any)?.count || 0} Reports
-                    </span>
+
+                <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
+                        <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
+                            Avg Price
+                        </span>
+                        <span className="text-sm font-bold text-foreground tracking-tight">
+                            {(priceStats as any)?.avg ? `${(priceStats as any).avg} THB` : '--'}
+                        </span>
+                    </div>
+                    <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
+                        <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
+                            Pulse
+                        </span>
+                        <span className="text-sm font-bold text-foreground tracking-tight">
+                            {(priceStats as any)?.count || 0} Reports
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
