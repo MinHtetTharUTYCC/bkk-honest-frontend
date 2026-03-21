@@ -23,9 +23,12 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
 
     const uploadMutation = useUploadSpotImage();
     const { toggleVote, isPending: votePending } = useVoteToggle('image', spotId);
+    const [votingImageId, setVotingImageId] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const images = data?.pages.flatMap((page) => page.data || page) || [];
+    const rawImages = data?.pages.flatMap((page) => page.data || page) || [];
+    // Remove duplicates that can occur with offset pagination when new items are added
+    const images = Array.from(new Map(rawImages.map((img: any) => [img.id, img])).values());
     const totalImages = data?.pages[0]?.pagination?.total || data?.pages[0]?.total;
 
     // Infinite scroll trigger
@@ -206,9 +209,16 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                     <LikeButton
                                                         count={img._count?.votes || 0}
                                                         isVoted={img.hasVoted}
-                                                        onVote={async () => { await toggleVote(img); }}
-                                                        isPending={votePending}
-                                                        disabled={votePending}
+                                                        onVote={async () => {
+                                                            setVotingImageId(img.id);
+                                                            try {
+                                                                await toggleVote(img);
+                                                            } finally {
+                                                                setVotingImageId(null);
+                                                            }
+                                                        }}
+                                                        isPending={votePending && votingImageId === img.id}
+                                                        disabled={votePending && votingImageId === img.id}
                                                         variant="overlay"
                                                         size="sm"
                                                         className="text-[10px] font-semibold gap-1.5 px-3 py-1.5 rounded-md bg-white/0 hover:bg-white/10"
