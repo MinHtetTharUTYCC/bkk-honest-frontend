@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams, useRouter, usePathname } from 'next/navigation';
+import { useParams, useRouter, usePathname, useSearchParams } from 'next/navigation';
 import {
     useSpot,
     useSpotBySlug,
@@ -86,6 +86,7 @@ export default function SpotDetailPage() {
     const { user: authUser, loading: authLoading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
     
     // Price Reports
@@ -127,7 +128,24 @@ export default function SpotDetailPage() {
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedTip, setSelectedTip] = useState<any>(null);
     const [editingTip, setEditingTip] = useState<any>(null);
-    const [activeTab, setActiveTab] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>('tips');
+    
+    const urlTab = searchParams.get('tabs') as 'gallery' | 'prices' | 'tips' | 'vibes' | null;
+    const initialTab = (urlTab && ['gallery', 'prices', 'tips', 'vibes'].includes(urlTab)) ? urlTab : 'tips';
+    const [activeTab, setActiveTabState] = useState<'gallery' | 'prices' | 'tips' | 'vibes'>(initialTab);
+
+    useEffect(() => {
+        if (urlTab && ['gallery', 'prices', 'tips', 'vibes'].includes(urlTab) && urlTab !== activeTab) {
+            setActiveTabState(urlTab);
+        }
+    }, [urlTab, activeTab]);
+
+    const setActiveTab = (tab: 'gallery' | 'prices' | 'tips' | 'vibes') => {
+        setActiveTabState(tab);
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('tabs', tab);
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    };
+
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const [isEditing, setIsEditing] = useState(false);
