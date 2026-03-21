@@ -823,7 +823,15 @@ export default function SpotDetailPage() {
                     </div>
                     <div className="flex items-center gap-6">
                         <button
-                            onClick={() => fileInputRef.current?.click()}
+                            onClick={() => {
+                                if (!authUser) {
+                                    router.push(
+                                        `/login?redirectTo=${encodeURIComponent(pathname)}`,
+                                    );
+                                    return;
+                                }
+                                fileInputRef.current?.click();
+                            }}
                             disabled={uploadMutation.isPending}
                             className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
                         >
@@ -839,7 +847,7 @@ export default function SpotDetailPage() {
                                 />
                             )}
                             <span className="hidden md:inline">
-                                {uploadMutation.isPending ? 'Uploading...' : 'Upload Vibe'}
+                                {uploadMutation.isPending ? 'Uploading...' : 'Upload Photo'}
                             </span>
                             <span className="md:hidden">
                                 {uploadMutation.isPending ? '...' : 'Upload'}
