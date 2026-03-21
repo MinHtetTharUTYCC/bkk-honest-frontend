@@ -78,6 +78,7 @@ import {
 import SpotEditModal from '@/components/spots/spot-edit-modal';
 import { useInView } from 'react-intersection-observer';
 import { ShareButton } from '@/components/ui/share-button';
+import { TipFormValues } from '@/lib/validations/tip';
 
 export default function SpotDetailPage() {
     const { citySlug, spotSlug } = useParams() as { citySlug: string; spotSlug: string };

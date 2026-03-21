@@ -9,12 +9,8 @@ export const spotSchema = z.object({
     .max(200, "Address cannot exceed 200 characters"),
   categoryId: z.string().min(1, "Please select a category"),
   cityId: z.string().min(1, "Please select a city"),
-  latitude: z.number({
-    required_error: "Please select a location on the map",
-  }),
-  longitude: z.number({
-    required_error: "Please select a location on the map",
-  }),
+  latitude: z.number(),
+  longitude: z.number(),
   image: z.any().optional(),
 });
 

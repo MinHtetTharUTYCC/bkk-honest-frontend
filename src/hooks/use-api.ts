@@ -988,7 +988,7 @@ export function useCreateReport() {
             reason,
             description,
         }: {
-            reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT';
+            reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
             targetId: string;
             reason: string;
             description?: string;

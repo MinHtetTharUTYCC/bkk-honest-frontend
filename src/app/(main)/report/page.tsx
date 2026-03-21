@@ -13,7 +13,7 @@ import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
 import SpotForm, { SpotFormData } from '@/components/spots/spot-form';
 import { Dropdown } from '@/components/ui/dropdown';
-import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
+import { Upload, X, Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from 'next/navigation';
 import { useCity } from '@/components/providers/city-provider';

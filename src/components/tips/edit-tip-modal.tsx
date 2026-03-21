@@ -1,6 +1,7 @@
 'use client';
 
 import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import TipForm from './tip-form';
 import { TipFormValues } from '@/lib/validations/tip';
 
