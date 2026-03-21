@@ -194,7 +194,12 @@ export default function SpotDetailPage() {
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        await uploadMutation.mutateAsync({ spotId: spot?.id || '', file });
+        
+        try {
+            await uploadMutation.mutateAsync({ spotId: spot?.id || '', file });
+        } finally {
+            if (e.target) e.target.value = '';
+        }
     };
 
     if (!isClient || spotLoading) {

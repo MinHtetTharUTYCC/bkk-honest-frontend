@@ -330,12 +330,12 @@ export function useInfiniteSpotTips(
     });
 }
 
-export function useSpotGallery(spotId: string, limit: number = 12) {
+export function useSpotGallery(spotId: string, limit: number = 12, sort: 'newest' | 'popular' = 'newest') {
     return useQuery({
-        queryKey: ['gallery', spotId, limit],
+        queryKey: ['gallery', spotId, limit, sort],
         queryFn: async () => {
             const { data } = await api.get<PaginatedGallery>(
-                `/gallery/spot/${spotId}?take=${limit}`,
+                `/gallery/spot/${spotId}?take=${limit}&sort=${sort}`,
             );
             return data;
         },
@@ -343,7 +343,7 @@ export function useSpotGallery(spotId: string, limit: number = 12) {
     });
 }
 
-export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular' = 'popular') {
+export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular' = 'newest') {
     return useInfiniteQuery({
         queryKey: ['gallery-infinite', spotId, sort],
         queryFn: async ({ pageParam = 0 }) => {

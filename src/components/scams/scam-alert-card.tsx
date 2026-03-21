@@ -305,9 +305,11 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
 
                 {/* Footer */}
                 <div className="mt-auto flex items-center justify-end gap-2 pt-2 border-t border-white/8">
-                    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-black uppercase tracking-widest transition-all border border-white/10 text-white/30">
-                        <MessageCircle size={12} />
-                        {alert._count?.comments || 0}
+                    <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-full bg-white/5 text-xs transition-all duration-200">
+                        <MessageCircle size={14} className="text-white/70" />
+                        <span className="font-medium text-white/70">
+                            {alert._count?.comments || 0}
+                        </span>
                     </div>
                     <div onClick={(e) => e.stopPropagation()}>
                         <LikeButton
@@ -341,7 +343,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             disabled={votePending}
                             variant="default"
                             size="sm"
-                            className="text-[12px] font-black uppercase tracking-widest gap-1.5 px-3 py-1.5 rounded-full border transition-all bg-white/0 hover:bg-white/0"
+                            className="bg-white/5"
                             title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
                         />
                     </div>

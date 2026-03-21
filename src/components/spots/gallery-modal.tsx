@@ -6,6 +6,7 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { X, Camera, Loader2, TrendingUp, Calendar, User, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LikeButton } from '@/components/ui/like-button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
 
@@ -16,7 +17,7 @@ interface GalleryModalProps {
 }
 
 export default function GalleryModal({ spotId, spotName, onClose }: GalleryModalProps) {
-    const [sort, setSort] = useState<'popular' | 'newest'>('popular');
+    const [sort, setSort] = useState<'popular' | 'newest'>('newest');
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
         useInfiniteSpotGallery(spotId, sort);
 
@@ -28,6 +29,14 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });
+
+    // Lock body scroll
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
 
     useEffect(() => {
         if (inView && hasNextPage && !isFetchingNextPage) {
@@ -89,8 +98,9 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                 </header>
 
                 {/* Content */}
-                <div className="flex-1 overflow-y-auto p-8 no-scrollbar bg-background">
-                    {isLoading ? (
+                <ScrollArea className="flex-1 min-h-0 bg-background">
+                    <div className="p-8 h-full">
+                        {isLoading ? (
                         <div className="h-full flex flex-col items-center justify-center space-y-4">
                             <Loader2 size={40} className="text-amber-400 animate-spin" />
                             <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">
@@ -200,14 +210,15 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                 ) : hasNextPage ? (
                                     <div className="h-4 w-4" />
                                 ) : (
-                                    <p className="text-[10px] font-medium text-white/20 uppercase tracking-widest">
-                                        End of the pulse
+                                    <p className="text-[10px] font-medium text-white/50 uppercase tracking-widest">
+                                        End of gallery
                                     </p>
                                 )}
                             </div>
                         </>
                     )}
-                </div>
+                    </div>
+                </ScrollArea>
             </div>
         </div>
     );

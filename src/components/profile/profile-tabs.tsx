@@ -82,7 +82,13 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
         }
     }, [inView, activeTab, hasNextScams, hasNextTips, hasNextReports, hasNextSpots, isFetchingScams, isFetchingTips, isFetchingReports, isFetchingSpots, fetchNextScams, fetchNextTips, fetchNextReports, fetchNextSpots]);
 
-    // Reset fetch tracker when switching tabs
+    // Reset fetch tracker when switching tabs or when loader goes out of view
+    useEffect(() => {
+        if (!inView) {
+            lastFetchTabRef.current = null;
+        }
+    }, [inView]);
+
     useEffect(() => {
         lastFetchTabRef.current = null;
     }, [activeTab]);
