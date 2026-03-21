@@ -290,7 +290,8 @@ export default function NavigatePage() {
                         {/* Transit Toggle - Only in BKK */}
                         <AnimatePresence>
                             {(viewState.latitude >= 13.4 && viewState.latitude <= 14.2 && 
-                              viewState.longitude >= 100.2 && viewState.longitude <= 101.0) && (
+                              viewState.longitude >= 100.2 && viewState.longitude <= 101.0 &&
+                              viewState.zoom >= 10) && (
                                 <motion.button
                                     initial={{ opacity: 0, scale: 0.8 }}
                                     animate={{ opacity: 1, scale: 1 }}
