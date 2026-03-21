@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Upload, X, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { LocationPicker } from '@/components/ui/location-picker';
+import LocationPicker from '@/components/spots/location-picker';
 import { Dropdown } from '@/components/ui/dropdown';
 import { spotSchema, SpotFormValues } from '@/lib/validations/spot';
 import {
@@ -178,14 +178,10 @@ export default function SpotForm({
                 Pick Location on Map <span className="text-amber-400">*</span>
               </FormLabel>
               <FormControl>
-                <div className="rounded-2xl overflow-hidden h-80 md:h-[500px] border border-white/10">
+                <div className="rounded-2xl overflow-hidden h-125 border border-white/10 shadow-lg">
                     <LocationPicker
-                    onLocationSelect={handleLocationSelect}
-                    initialLocation={location || undefined}
-                    label=""
-                    required={true}
-                    isLoading={isFetchingAddress}
-                    height="h-full"
+                        onLocationSelected={handleLocationSelect}
+                        initialLocation={location || undefined}
                     />
                 </div>
               </FormControl>
