@@ -39,6 +39,7 @@ export default function ReportPage() {
 
     // Price State
     const [priceSpotId, setPriceSpotId] = useState('');
+    const [itemName, setItemName] = useState('');
 
     // Scam State
     const [scamName, setScamName] = useState('');
@@ -92,16 +93,22 @@ export default function ReportPage() {
         setError(null);
         if (!priceSpotId) return setError('Please select a spot');
 
+        if (itemName.length > 100) {
+            setError('Item name cannot exceed 100 characters');
+            return;
+        }
+
         try {
             const formData = new FormData(e.currentTarget);
             await createPrice.mutateAsync({
                 spotId: priceSpotId,
-                itemName: formData.get('itemName') as string,
+                itemName: itemName,
                 priceThb: Number(formData.get('priceThb')),
             });
             setSubmitted(true);
         } catch (err: any) {
-            setError(err?.response?.data?.message || 'Failed to publish price report');
+            const message = err?.response?.data?.message || 'Failed to publish price report';
+            setError(Array.isArray(message) ? message.join(', ') : message);
         }
     };
 
@@ -109,6 +116,21 @@ export default function ReportPage() {
         e.preventDefault();
         setError(null);
         if (!scamCity) return setError('Please select a city');
+
+        if (scamName.length > 100) {
+            setError('Scam name cannot exceed 100 characters');
+            return;
+        }
+
+        if (scamDescription.length > 500) {
+            setError('Description cannot exceed 500 characters');
+            return;
+        }
+
+        if (scamPreventionTip.length > 300) {
+            setError('Prevention tip cannot exceed 300 characters');
+            return;
+        }
 
         try {
             await createScam.mutateAsync({
@@ -121,7 +143,8 @@ export default function ReportPage() {
             });
             setSubmitted(true);
         } catch (err: any) {
-            setError(err?.response?.data?.message || 'Failed to publish scam alert');
+            const message = err?.response?.data?.message || 'Failed to publish scam alert';
+            setError(Array.isArray(message) ? message.join(', ') : message);
         }
     };
 
@@ -204,6 +227,16 @@ export default function ReportPage() {
             return;
         }
 
+        if (spotAddress.length > 200) {
+            setError('Address cannot exceed 200 characters');
+            return;
+        }
+
+        if (spotName.length > 100) {
+            setError('Spot name cannot exceed 100 characters');
+            return;
+        }
+
         try {
             // Create spot with image in one request
             await createSpot.mutateAsync({
@@ -219,7 +252,8 @@ export default function ReportPage() {
             setSubmitted(true);
         } catch (err: any) {
             console.error('Failed to create spot:', err);
-            setError(err?.response?.data?.message || 'Failed to create spot');
+            const message = err?.response?.data?.message || 'Failed to create spot';
+            setError(Array.isArray(message) ? message.join(', ') : message);
         }
     };
 
@@ -330,18 +364,31 @@ export default function ReportPage() {
                             onSelect={(id) => setPriceSpotId(id)}
                         />
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-4">
-                                <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                    Item Name
-                                </label>
-                                <input
-                                    name="itemName"
-                                    required
-                                    placeholder="e.g. Pad Thai"
-                                    className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
-                                />
-                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-4">
+                                    <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                                        Item Name
+                                    </label>
+                                    <input
+                                        name="itemName"
+                                        required
+                                        value={itemName}
+                                        onChange={(e) => setItemName(e.target.value)}
+                                        placeholder="e.g. Pad Thai"
+                                        className={cn(
+                                            "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
+                                            (itemName?.length || 0) > 100 && "border-red-500/50 ring-1 ring-red-500/20"
+                                        )}
+                                    />
+                                    <div className="flex justify-end">
+                                        <span className={cn(
+                                            "text-[9px] font-bold tracking-normal transition-colors",
+                                            (itemName?.length || 0) > 100 ? "text-red-400" : "text-white/30"
+                                        )}>
+                                            {itemName?.length || 0}/100
+                                        </span>
+                                    </div>
+                                </div>
                             <div className="space-y-4">
                                 <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                                     Price (THB)
@@ -358,7 +405,7 @@ export default function ReportPage() {
                         </div>
 
                         <button
-                            disabled={createPrice.isPending || !priceSpotId}
+                            disabled={createPrice.isPending || !priceSpotId || itemName.length > 100}
                             className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
                             <Send size={16} />
@@ -378,8 +425,19 @@ export default function ReportPage() {
                                 onChange={(e) => setScamName(e.target.value)}
                                 required
                                 placeholder="e.g. Broken Meter Taxi"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                className={cn(
+                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
+                                    scamName.length > 100 && "border-red-500/50 ring-1 ring-red-500/20"
+                                )}
                             />
+                            <div className="flex justify-end">
+                                <span className={cn(
+                                    "text-[9px] font-bold tracking-normal transition-colors",
+                                    scamName.length > 100 ? "text-red-400" : "text-white/30"
+                                )}>
+                                    {scamName.length}/100
+                                </span>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -409,8 +467,19 @@ export default function ReportPage() {
                                 required
                                 rows={4}
                                 placeholder="What happened? Be specific."
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
+                                className={cn(
+                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none",
+                                    scamDescription.length > 500 && "border-red-500/50 ring-1 ring-red-500/20"
+                                )}
                             />
+                            <div className="flex justify-end">
+                                <span className={cn(
+                                    "text-[9px] font-bold tracking-normal transition-colors",
+                                    scamDescription.length > 500 ? "text-red-400" : "text-white/30"
+                                )}>
+                                    {scamDescription.length}/500
+                                </span>
+                            </div>
                         </div>
 
                         <div className="space-y-4">
@@ -423,8 +492,19 @@ export default function ReportPage() {
                                 required
                                 rows={3}
                                 placeholder="How can others avoid this?"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
+                                className={cn(
+                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none",
+                                    scamPreventionTip.length > 300 && "border-red-500/50 ring-1 ring-red-500/20"
+                                )}
                             />
+                            <div className="flex justify-end">
+                                <span className={cn(
+                                    "text-[9px] font-bold tracking-normal transition-colors",
+                                    scamPreventionTip.length > 300 ? "text-red-400" : "text-white/30"
+                                )}>
+                                    {scamPreventionTip.length}/300
+                                </span>
+                            </div>
                         </div>
 
                         <div className="space-y-4">
@@ -489,7 +569,10 @@ export default function ReportPage() {
                                 !scamName ||
                                 !scamDescription ||
                                 !scamCategory ||
-                                !scamCity
+                                !scamCity ||
+                                scamName.length > 100 ||
+                                scamDescription.length > 500 ||
+                                scamPreventionTip.length > 300
                             }
                             className="w-full bg-red-500 text-white py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-red-600 transition-all flex items-center justify-center gap-3 shadow-xl shadow-red-400/20 active:scale-[0.98] disabled:opacity-50"
                         >
@@ -518,8 +601,19 @@ export default function ReportPage() {
                                 onChange={(e) => setSpotName(e.target.value)}
                                 required
                                 placeholder="e.g. Jek Pui Curry"
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none"
+                                className={cn(
+                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
+                                    spotName.length > 100 && "border-red-500/50 ring-1 ring-red-500/20"
+                                )}
                             />
+                            <div className="flex justify-end">
+                                <span className={cn(
+                                    "text-[9px] font-bold tracking-normal transition-colors",
+                                    spotName.length > 100 ? "text-red-400" : "text-white/30"
+                                )}>
+                                    {spotName.length}/100
+                                </span>
+                            </div>
                         </div>
 
                         <div className="space-y-4">
@@ -551,8 +645,19 @@ export default function ReportPage() {
                                 required
                                 placeholder="e.g. 25 Mangkon Rd, Bangkok"
                                 rows={3}
-                                className="w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none"
+                                className={cn(
+                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none",
+                                    spotAddress.length > 200 && "border-red-500/50 ring-1 ring-red-500/20"
+                                )}
                             />
+                            <div className="flex justify-end">
+                                <span className={cn(
+                                    "text-[9px] font-bold tracking-normal transition-colors",
+                                    spotAddress.length > 200 ? "text-red-400" : "text-white/30"
+                                )}>
+                                    {spotAddress.length}/200
+                                </span>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -636,7 +741,9 @@ export default function ReportPage() {
                                 !spotName ||
                                 !spotAddress ||
                                 !spotCategory ||
-                                !spotCity
+                                !spotCity ||
+                                spotAddress.length > 200 ||
+                                spotName.length > 100
                             }
                             className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
                         >

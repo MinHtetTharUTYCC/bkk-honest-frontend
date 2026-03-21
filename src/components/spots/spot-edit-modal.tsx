@@ -36,7 +36,8 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
             onClose();
         } catch (err: any) {
             console.error(err);
-            const errorMessage = err.response?.data?.message || err.message || 'Failed to update spot';
+            const message = err.response?.data?.message || err.message || 'Failed to update spot';
+            const errorMessage = Array.isArray(message) ? message.join(', ') : message;
             toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to update spot');
         }
     };

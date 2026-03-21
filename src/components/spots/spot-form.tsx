@@ -144,8 +144,23 @@ export default function SpotForm({
                 Spot Name <span className="text-amber-400">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="e.g., Jazz Bar Downtown" disabled={isLoading} {...field} />
+                <Input 
+                  placeholder="e.g., Jazz Bar Downtown" 
+                  disabled={isLoading} 
+                  {...field} 
+                  className={cn(
+                    (field.value?.length || 0) > 100 && "border-red-500 focus-visible:ring-red-500/20"
+                  )}
+                />
               </FormControl>
+              <div className="flex justify-end">
+                <span className={cn(
+                  "text-[10px] font-bold tracking-normal transition-colors mt-1",
+                  (field.value?.length || 0) > 100 ? "text-red-400" : "text-white/30"
+                )}>
+                  {field.value?.length || 0}/100
+                </span>
+              </div>
               <FormMessage />
             </FormItem>
           )}
@@ -186,7 +201,14 @@ export default function SpotForm({
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input placeholder="Street address" disabled={isLoading || isFetchingAddress} {...field} />
+                  <Input 
+                    placeholder="Street address" 
+                    disabled={isLoading || isFetchingAddress} 
+                    {...field} 
+                    className={cn(
+                      (field.value?.length || 0) > 200 && "border-red-500 focus-visible:ring-red-500/20"
+                    )}
+                  />
                   {isFetchingAddress && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
                       <Loader2 size={16} className="text-amber-400 animate-spin" />
@@ -194,9 +216,17 @@ export default function SpotForm({
                   )}
                 </div>
               </FormControl>
-              <FormDescription className="text-xs text-white/50">
-                {mode === 'edit' ? 'Edit the address as needed' : 'Auto-populated from map location'}
-              </FormDescription>
+              <div className="flex justify-between items-start">
+                <FormDescription className="text-xs text-white/50">
+                  {mode === 'edit' ? 'Edit the address as needed' : 'Auto-populated from map location'}
+                </FormDescription>
+                <span className={cn(
+                  "text-[10px] font-bold tracking-normal transition-colors mt-1",
+                  (field.value?.length || 0) > 200 ? "text-red-400" : "text-white/30"
+                )}>
+                  {field.value?.length || 0}/200
+                </span>
+              </div>
               <FormMessage />
             </FormItem>
           )}
