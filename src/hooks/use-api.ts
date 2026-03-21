@@ -306,8 +306,8 @@ export function useInfiniteSpotPriceReports(spotId: string) {
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage: any) => {
-            const { skip, take, total, hasMore } = lastPage.pagination || {};
-            if (hasMore === false) return undefined;
+            const { skip, take, total } = lastPage.pagination || lastPage;
+            if (skip === undefined || take === undefined || total === undefined) return undefined;
             const nextSkip = skip + take;
             if (nextSkip >= total) return undefined;
             return nextSkip;
