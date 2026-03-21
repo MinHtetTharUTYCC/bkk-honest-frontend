@@ -136,66 +136,70 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                 alt="Spot vibe"
                                                 loading="lazy"
                                             />
-                                            <div className="absolute top-4 right-4 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
-                                                <LikeButton
-                                                    count={img._count?.votes || 0}
-                                                    isVoted={img.hasVoted}
-                                                    onVote={async () => { await toggleVote(img); }}
-                                                    isPending={votePending}
-                                                    disabled={votePending}
-                                                    variant="overlay"
-                                                    size="sm"
-                                                    className="text-xs font-semibold gap-1.5 px-4 py-2 rounded-md bg-white/0 hover:bg-white/0"
-                                                    title={img.hasVoted ? 'Unlike this image' : 'Like this image'}
-                                                />
-                                            </div>
                                         </div>
 
-                                        <div className="p-5 space-y-4">
-                                            <div className="flex items-center gap-3">
-                                                <Link 
-                                                    href={`/profile/${img.userId}`}
-                                                    className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 transition-colors"
-                                                >
-                                                    {img.user?.avatarUrl ? (
-                                                        <img
-                                                            src={img.user.avatarUrl}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        <User size={14} />
-                                                    )}
-                                                </Link>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex items-center gap-2">
-                                                        <Link 
-                                                            href={`/profile/${img.userId}`}
-                                                            className="text-[10px] font-bold text-foreground uppercase truncate hover:text-amber-400 transition-colors"
-                                                        >
-                                                            {img.user?.name || 'Local'}
-                                                        </Link>
-                                                        {img.user?.level && (
-                                                            <span className="bg-amber-400/10 text-amber-400 px-1.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tighter">
-                                                                Lvl{' '}
-                                                                {img.user.level === 'LOCAL_GURU'
-                                                                    ? '3'
-                                                                    : img.user.level === 'EXPLORER'
-                                                                      ? '2'
-                                                                      : '1'}
+                                        <div className="p-5 flex flex-col justify-between">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <Link 
+                                                        href={`/profile/${img.userId}`}
+                                                        className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 transition-colors shrink-0"
+                                                    >
+                                                        {img.user?.avatarUrl ? (
+                                                            <img
+                                                                src={img.user.avatarUrl}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <User size={14} />
+                                                        )}
+                                                    </Link>
+                                                    <div className="flex-1 min-w-0 flex flex-col">
+                                                        <div className="flex items-center gap-2">
+                                                            <Link 
+                                                                href={`/profile/${img.userId}`}
+                                                                className="text-[10px] font-bold text-foreground uppercase truncate hover:text-amber-400 transition-colors"
+                                                            >
+                                                                {img.user?.name || 'Local'}
+                                                            </Link>
+                                                            {img.user?.level && (
+                                                                <span className="bg-amber-400/10 text-amber-400 px-1.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-tighter shrink-0">
+                                                                    Lvl{' '}
+                                                                    {img.user.level === 'LOCAL_GURU'
+                                                                        ? '3'
+                                                                        : img.user.level === 'EXPLORER'
+                                                                          ? '2'
+                                                                          : '1'}
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                        <p className="text-[8px] font-medium text-white/50 uppercase flex items-center gap-1 mt-0.5">
+                                                            <Calendar size={10} className="shrink-0" />
+                                                            <span className="truncate">
+                                                                {new Date(img.createdAt).toLocaleDateString(
+                                                                    undefined,
+                                                                    {
+                                                                        month: 'short',
+                                                                        day: 'numeric',
+                                                                        year: 'numeric',
+                                                                    },
+                                                                )}
                                                             </span>
-                                                        )}
+                                                        </p>
                                                     </div>
-                                                    <p className="text-[8px] font-medium text-white/30 uppercase flex items-center gap-1">
-                                                        <Calendar size={10} />
-                                                        {new Date(img.createdAt).toLocaleDateString(
-                                                            undefined,
-                                                            {
-                                                                month: 'short',
-                                                                day: 'numeric',
-                                                                year: 'numeric',
-                                                            },
-                                                        )}
-                                                    </p>
+                                                </div>
+                                                <div className="flex bg-white/10 rounded-lg border border-border shadow-sm shrink-0">
+                                                    <LikeButton
+                                                        count={img._count?.votes || 0}
+                                                        isVoted={img.hasVoted}
+                                                        onVote={async () => { await toggleVote(img); }}
+                                                        isPending={votePending}
+                                                        disabled={votePending}
+                                                        variant="overlay"
+                                                        size="sm"
+                                                        className="text-[10px] font-semibold gap-1.5 px-3 py-1.5 rounded-md bg-white/0 hover:bg-white/10"
+                                                        title={img.hasVoted ? 'Unlike this image' : 'Like this image'}
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
