@@ -58,6 +58,7 @@ export default function NavigatePage() {
     const [showDirections, setShowDirections] = useState(false);
     const [showManualLocation, setShowManualLocation] = useState(false);
     const [permissionError, setPermissionError] = useState<PermissionErrorType | null>(null);
+    const [mapLoaded, setMapLoaded] = useState(false);
     const { transitVisible, toggleTransitVisible, hasHydrated } = useMapTransitVisible();
 
     const mapRef = useRef<any>(null);
@@ -219,6 +220,7 @@ export default function NavigatePage() {
                     ref={mapRef}
                     {...viewState}
                     onMove={(evt) => setViewState(evt.viewState)}
+                    onLoad={() => setMapLoaded(true)}
                     mapboxAccessToken={MAPBOX_TOKEN}
                     style={{ width: '100%', height: '100%' }}
                     mapStyle="mapbox://styles/mapbox/dark-v11"
@@ -258,7 +260,7 @@ export default function NavigatePage() {
                     )}
 
                     {/* Transit Overlay */}
-                    <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />
+                    {mapLoaded && <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />}
                 </Map>
             ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-900">

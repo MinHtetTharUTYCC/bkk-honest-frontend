@@ -70,6 +70,7 @@ export default function MapPage() {
   const [nearMeActive, setNearMeActive] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
+  const [mapLoaded, setMapLoaded] = useState(false);
   const { transitVisible, toggleTransitVisible, hasHydrated } = useMapTransitVisible();
   
   const [transitLoading, setTransitLoading] = useState(false);
@@ -268,6 +269,7 @@ export default function MapPage() {
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onMoveEnd={handleMoveEnd}
+        onLoad={() => setMapLoaded(true)}
         mapStyle="mapbox://styles/mapbox/dark-v11"
         mapboxAccessToken={MAPBOX_TOKEN}
         style={{ width: '100%', height: '100%' }}
@@ -326,12 +328,14 @@ export default function MapPage() {
         })}
         
         {/* Transit Overlay */}
-        <TransitOverlay 
-          visible={transitVisible} 
-          zoom={viewState.zoom} 
-          onLoading={setTransitLoading}
-          onError={setTransitError}
-        />
+        {mapLoaded && (
+          <TransitOverlay 
+            visible={transitVisible} 
+            zoom={viewState.zoom} 
+            onLoading={setTransitLoading}
+            onError={setTransitError}
+          />
+        )}
       </Map>
 
       {/* Transit Loading/Error UI Overlay (not inside Map tree) */}
