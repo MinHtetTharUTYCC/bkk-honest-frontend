@@ -277,8 +277,8 @@ export default function NavigatePage() {
                         <ArrowLeft size={20} />
                     </button>
 
-                    <div className="text-center flex-1">
-                        <h2 className="text-white font-semibold truncate px-4">{destName}</h2>
+                    <div className="text-center flex-1 min-w-0">
+                        <h2 className="text-white font-semibold truncate px-2">{destName}</h2>
                         {route && !isLoading && (
                             <div className="text-white/60 text-xs mt-1">
                                 {calculateDistance()} • {calculateETA()}
