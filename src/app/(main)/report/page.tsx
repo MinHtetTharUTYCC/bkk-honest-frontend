@@ -608,7 +608,7 @@ export default function ReportPage() {
                             />
                             <div className="flex justify-end">
                                 <span className={cn(
-                                    "text-[9px] font-bold tracking-normal transition-colors",
+                                    "text-xs font-bold tracking-normal transition-colors",
                                     spotName.length > 100 ? "text-red-400" : "text-white/30"
                                 )}>
                                     {spotName.length}/100

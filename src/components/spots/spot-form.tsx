@@ -221,7 +221,7 @@ export default function SpotForm({
                   {mode === 'edit' ? 'Edit the address as needed' : 'Auto-populated from map location'}
                 </FormDescription>
                 <span className={cn(
-                  "text-[10px] font-bold tracking-normal transition-colors mt-1",
+                  "text-xs font-bold tracking-normal transition-colors mt-1",
                   (field.value?.length || 0) > 200 ? "text-red-400" : "text-white/30"
                 )}>
                   {field.value?.length || 0}/200
