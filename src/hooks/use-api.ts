@@ -292,6 +292,30 @@ export function useSpotPriceReports(spotId: string) {
     });
 }
 
+export function useInfiniteSpotPriceReports(spotId: string) {
+    return useInfiniteQuery({
+        queryKey: ['price-reports-infinite', spotId],
+        queryFn: async ({ pageParam = 0 }) => {
+            const { data } = await api.get(`/price-reports/spot/${spotId}`, {
+                params: {
+                    skip: pageParam,
+                    take: 10,
+                },
+            });
+            return data;
+        },
+        initialPageParam: 0,
+        getNextPageParam: (lastPage: any) => {
+            const { skip, take, total, hasMore } = lastPage.pagination || {};
+            if (hasMore === false) return undefined;
+            const nextSkip = skip + take;
+            if (nextSkip >= total) return undefined;
+            return nextSkip;
+        },
+        enabled: !!spotId,
+    });
+}
+
 export function useSpotTips(spotId: string) {
     return useQuery({
         queryKey: ['tips', spotId],
@@ -748,8 +772,10 @@ export function useCreatePriceReport() {
             const { data } = await api.post('/price-reports', payload);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['spots'] });
+            queryClient.invalidateQueries({ queryKey: ['price-reports', variables.spotId] });
+            queryClient.invalidateQueries({ queryKey: ['price-reports-infinite', variables.spotId] });
         },
     });
 }

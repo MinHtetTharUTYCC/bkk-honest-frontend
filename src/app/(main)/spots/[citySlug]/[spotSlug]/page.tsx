@@ -4,7 +4,7 @@ import { useParams, useRouter, usePathname } from 'next/navigation';
 import {
     useSpot,
     useSpotBySlug,
-    useSpotPriceReports,
+    useInfiniteSpotPriceReports,
     useInfiniteSpotTips,
     useSpotGallery,
     useUploadSpotImage,
@@ -13,7 +13,7 @@ import {
     useUpdateSpot,
     useCategories,
     useCities,
-    useLiveVibes,
+    useInfiniteLiveVibes,
     useCreateLiveVibe,
     useUpdateCommunityTip,
     useDeleteCommunityTip,
@@ -55,7 +55,8 @@ import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
 import { TipCard } from '@/components/tips/tip-card';
 import ReportButton from '@/components/report/report-button';
-import CreateVibeForm from '@/components/vibes/create-vibe-form';
+import CreateVibeModal from '@/components/vibes/create-vibe-modal';
+import CreatePriceModal from '@/components/prices/create-price-modal';
 import { Dropdown } from '@/components/ui/dropdown';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -86,11 +87,29 @@ export default function SpotDetailPage() {
     const router = useRouter();
     const pathname = usePathname();
     const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
-    const { data: reports } = useSpotPriceReports(spot?.id || '');
+    
+    // Price Reports
+    const {
+        data: reportsData,
+        fetchNextPage: fetchNextReports,
+        hasNextPage: hasNextReports,
+        isFetchingNextPage: isFetchingNextReports,
+    } = useInfiniteSpotPriceReports(spot?.id || '');
+    const reports = reportsData?.pages.flatMap((page) => page.data || page) || [];
+
     const { data: galleryResponse } = useSpotGallery(spot?.id || '', 6);
     const { data: missionsData } = useMissions();
     const addMission = useAddMission();
-    const { data: spotVibes, isLoading: vibesLoading } = useLiveVibes({ spotId: spot?.id || '' });
+    
+    // Live Vibes
+    const {
+        data: vibesData,
+        fetchNextPage: fetchNextVibes,
+        hasNextPage: hasNextVibes,
+        isFetchingNextPage: isFetchingNextVibes,
+        isLoading: vibesLoading,
+    } = useInfiniteLiveVibes({ spotId: spot?.id || '' });
+    const spotVibes = vibesData?.pages.flatMap((page) => page.data || page) || [];
 
     const missionsList = missionsData?.pages.flatMap((page) => page.data || []) || [];
     const isInMissions = missionsList.some((m: any) => m.spot?.id === spot?.id);
@@ -103,6 +122,8 @@ export default function SpotDetailPage() {
     const [showGalleryModal, setShowGalleryModal] = useState(false);
     const [showImageViewer, setShowImageViewer] = useState(false);
     const [showTipModal, setShowTipModal] = useState(false);
+    const [showPriceModal, setShowPriceModal] = useState(false);
+    const [showVibeModal, setShowVibeModal] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [selectedTip, setSelectedTip] = useState<any>(null);
     const [editingTip, setEditingTip] = useState<any>(null);
@@ -124,9 +145,15 @@ export default function SpotDetailPage() {
 
     const tips = tipsData?.pages.flatMap((page) => page.data) || [];
 
-    // Infinite scroll trigger
+    // Infinite scroll triggers
     const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: '200px' });
     const hasFetchedTipsRef = useRef(false);
+
+    const { ref: pricesObserverTarget, inView: inViewPrices } = useInView({ threshold: 0.1, rootMargin: '200px' });
+    const hasFetchedPricesRef = useRef(false);
+
+    const { ref: vibesObserverTarget, inView: inViewVibes } = useInView({ threshold: 0.1, rootMargin: '200px' });
+    const hasFetchedVibesRef = useRef(false);
 
     useEffect(() => {
         if (inView && hasNextTips && !isFetchingNextTips && !hasFetchedTipsRef.current) {
@@ -136,10 +163,30 @@ export default function SpotDetailPage() {
     }, [inView, hasNextTips, isFetchingNextTips, fetchNextTips]);
 
     useEffect(() => {
-        if (!inView) {
-            hasFetchedTipsRef.current = false;
-        }
+        if (!inView) hasFetchedTipsRef.current = false;
     }, [inView]);
+
+    useEffect(() => {
+        if (inViewPrices && hasNextReports && !isFetchingNextReports && !hasFetchedPricesRef.current) {
+            hasFetchedPricesRef.current = true;
+            fetchNextReports();
+        }
+    }, [inViewPrices, hasNextReports, isFetchingNextReports, fetchNextReports]);
+
+    useEffect(() => {
+        if (!inViewPrices) hasFetchedPricesRef.current = false;
+    }, [inViewPrices]);
+
+    useEffect(() => {
+        if (inViewVibes && hasNextVibes && !isFetchingNextVibes && !hasFetchedVibesRef.current) {
+            hasFetchedVibesRef.current = true;
+            fetchNextVibes();
+        }
+    }, [inViewVibes, hasNextVibes, isFetchingNextVibes, fetchNextVibes]);
+
+    useEffect(() => {
+        if (!inViewVibes) hasFetchedVibesRef.current = false;
+    }, [inViewVibes]);
 
     const uploadMutation = useUploadSpotImage();
     const { toggleVote: toggleTipVote, isPending: tipVotePending } = useVoteToggle(
@@ -285,6 +332,12 @@ export default function SpotDetailPage() {
             )}
             {showTipModal && (
                 <CreateTipModal spotId={spot?.id || ''} onClose={() => setShowTipModal(false)} />
+            )}
+            {showPriceModal && (
+                <CreatePriceModal spotId={spot?.id || ''} onClose={() => setShowPriceModal(false)} />
+            )}
+            {showVibeModal && (
+                <CreateVibeModal spotId={spot?.id || ''} onClose={() => setShowVibeModal(false)} />
             )}
             {editingTip && (
                 <EditTipModal
@@ -465,15 +518,15 @@ export default function SpotDetailPage() {
                                     )}
                                 >
                                     {addMission.isPending ? (
-                                        <Loader2 size={16} className="animate-spin" />
+                                        <Loader2 size={16} className="animate-spin shrink-0" />
                                     ) : isInMissions ? (
                                         <>
-                                            <CheckCircle2 size={16} />
+                                            <CheckCircle2 size={16} className="shrink-0" />
                                             <span>Accepted</span>
                                         </>
                                     ) : (
                                         <>
-                                            <Target size={16} />
+                                            <Target size={16} className="shrink-0" />
                                             <span>Accept</span>
                                         </>
                                     )}
@@ -607,15 +660,15 @@ export default function SpotDetailPage() {
                                 )}
                             >
                                 {addMission.isPending ? (
-                                    <Loader2 size={18} className="animate-spin" />
+                                    <Loader2 size={18} className="animate-spin shrink-0" />
                                 ) : isInMissions ? (
                                     <>
-                                        <CheckCircle2 size={18} />
+                                        <CheckCircle2 size={18} className="shrink-0" />
                                         <span>Mission Accepted</span>
                                     </>
                                 ) : (
                                     <>
-                                        <Target size={18} />
+                                        <Target size={18} className="shrink-0" />
                                         <span>Accept Mission</span>
                                     </>
                                 )}
@@ -706,16 +759,16 @@ export default function SpotDetailPage() {
                 </div>
             </div>
 
-            {/* Mobile Tabs Switcher */}
-            <div className="md:hidden sticky top-0 bg-card/80 backdrop-blur-md z-30 -mx-4 px-4 py-3 border-b border-border">
+            {/* Tabs Switcher */}
+            <div className="sticky top-0 bg-card/80 backdrop-blur-md z-30 -mx-4 px-4 py-3 border-b border-border md:mx-0 md:px-0 md:rounded-t-2xl md:bg-transparent md:border-none md:static md:z-auto">
                 <div className="flex bg-white/5 p-1 rounded-2xl">
                     <button
                         onClick={() => setActiveTab('gallery')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'gallery'
-                                ? 'bg-white text-amber-400 shadow-sm'
-                                : 'text-white/50',
+                                ? 'bg-amber-400 text-black shadow-sm'
+                                : 'text-white/50 hover:text-white/70',
                         )}
                     >
                         Gallery
@@ -723,10 +776,10 @@ export default function SpotDetailPage() {
                     <button
                         onClick={() => setActiveTab('prices')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'prices'
-                                ? 'bg-white text-amber-400 shadow-sm'
-                                : 'text-white/50',
+                                ? 'bg-amber-400 text-black shadow-sm'
+                                : 'text-white/50 hover:text-white/70',
                         )}
                     >
                         Prices
@@ -734,10 +787,10 @@ export default function SpotDetailPage() {
                     <button
                         onClick={() => setActiveTab('tips')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'tips'
-                                ? 'bg-white text-amber-400 shadow-sm'
-                                : 'text-white/50',
+                                ? 'bg-amber-400 text-black shadow-sm'
+                                : 'text-white/50 hover:text-white/70',
                         )}
                     >
                         Tips
@@ -745,10 +798,10 @@ export default function SpotDetailPage() {
                     <button
                         onClick={() => setActiveTab('vibes')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] font-semibold tracking-wide transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'vibes'
-                                ? 'bg-white text-amber-400 shadow-sm'
-                                : 'text-white/50',
+                                ? 'bg-amber-400 text-black shadow-sm'
+                                : 'text-white/50 hover:text-white/70',
                         )}
                     >
                         Vibes
@@ -758,7 +811,7 @@ export default function SpotDetailPage() {
 
             {/* 3. Image Gallery */}
             <section
-                className={cn('space-y-8 md:block', activeTab === 'gallery' ? 'block' : 'hidden')}
+                className={cn('space-y-8', activeTab === 'gallery' ? 'block' : 'hidden')}
             >
                 <header className="flex items-center justify-between px-2">
                     <div className="flex items-center gap-3">
@@ -914,15 +967,36 @@ export default function SpotDetailPage() {
                 {/* Price History Table */}
                 <section
                     className={cn(
-                        'space-y-8 md:block',
+                        'space-y-8',
                         activeTab === 'prices' ? 'block' : 'hidden',
                     )}
                 >
-                    <header className="flex items-center justify-between px-2">
-                        <h3 className="text-2xl font-display font-bold text-white">
-                            Recent Price Reports
-                        </h3>
-                        <Info size={16} className="text-white/40" />
+                    <header className="flex flex-col gap-6 px-2">
+                        <div className="flex items-center justify-between gap-4">
+                            <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                                Recent Price Reports
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    if (!authUser) {
+                                        router.push(
+                                            `/login?redirectTo=${encodeURIComponent(pathname)}`,
+                                        );
+                                        return;
+                                    }
+                                    setShowPriceModal(true);
+                                }}
+                                className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                                <Zap
+                                    size={14}
+                                    fill="currentColor"
+                                    className="text-black group-hover:text-white transition-colors"
+                                />
+                                <span className="hidden sm:inline">Report Price</span>
+                                <span className="sm:hidden">Report Price</span>
+                            </button>
+                        </div>
                     </header>
                     <div className="bg-card rounded-2xl border border-border shadow-xl shadow-black/20 overflow-hidden">
                         <table className="w-full text-left border-collapse">
@@ -998,11 +1072,23 @@ export default function SpotDetailPage() {
                             </tbody>
                         </table>
                     </div>
+                    {/* Infinite scroll target for prices */}
+                    <div ref={pricesObserverTarget} className="py-6 flex justify-center">
+                        {isFetchingNextReports ? (
+                            <Loader2 size={20} className="text-amber-400 animate-spin" />
+                        ) : hasNextReports ? (
+                            <div className="h-4 w-4" />
+                        ) : (
+                            <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                                End of reports
+                            </p>
+                        )}
+                    </div>
                 </section>
 
                 {/* Community Tips (Avoid/Try) */}
                 <section
-                    className={cn('space-y-8 md:block', activeTab === 'tips' ? 'block' : 'hidden')}
+                    className={cn('space-y-8', activeTab === 'tips' ? 'block' : 'hidden')}
                 >
                     <header className="flex flex-col gap-6 px-2">
                         <div className="flex items-center justify-between gap-4">
@@ -1093,9 +1179,8 @@ export default function SpotDetailPage() {
                                 Be the first to share a {tipType.toLowerCase()} tip
                             </div>
                         ) : (
-                            <ScrollArea className="h-150 pr-4">
-                                <div className="space-y-2.5 pb-8">
-                                    {tips?.map((tip: any) => (
+                            <div className="space-y-2.5 pb-8">
+                                {tips?.map((tip: any) => (
                                         <TipCard
                                             key={tip.id}
                                             tip={tip}
@@ -1123,24 +1208,42 @@ export default function SpotDetailPage() {
                                         )}
                                     </div>
                                 </div>
-                            </ScrollArea>
                         )}
                     </div>
                 </section>
 
                 {/* Live Vibes Section */}
                 <section
-                    className={cn('space-y-8 md:block', activeTab === 'vibes' ? 'block' : 'hidden')}
+                    className={cn('space-y-8', activeTab === 'vibes' ? 'block' : 'hidden')}
                 >
-                    <header className="flex items-center justify-between px-2">
-                        <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
-                            <Zap size={20} className="text-amber-400" />
-                            Live Vibes
-                        </h3>
+                    <header className="flex flex-col gap-6 px-2">
+                        <div className="flex items-center justify-between gap-4">
+                            <h3 className="text-2xl font-display font-bold text-white flex items-center gap-2">
+                                <Zap size={20} className="text-amber-400" />
+                                Live Vibes
+                            </h3>
+                            <button
+                                onClick={() => {
+                                    if (!authUser) {
+                                        router.push(
+                                            `/login?redirectTo=${encodeURIComponent(pathname)}`,
+                                        );
+                                        return;
+                                    }
+                                    setShowVibeModal(true);
+                                }}
+                                className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
+                            >
+                                <Zap
+                                    size={14}
+                                    fill="currentColor"
+                                    className="text-black group-hover:text-white transition-colors"
+                                />
+                                <span className="hidden sm:inline">Check-in Vibe</span>
+                                <span className="sm:hidden">Check-in</span>
+                            </button>
+                        </div>
                     </header>
-
-                    {/* Check-in Form */}
-                    {authUser && <CreateVibeForm spotId={spot?.id || ''} onSuccess={() => {}} />}
 
                     {/* Vibe List */}
                     {vibesLoading ? (
@@ -1201,6 +1304,19 @@ export default function SpotDetailPage() {
                             </p>
                         </div>
                     )}
+
+                    {/* Infinite scroll target for vibes */}
+                    <div ref={vibesObserverTarget} className="py-6 flex justify-center">
+                        {isFetchingNextVibes ? (
+                            <Loader2 size={20} className="text-amber-400 animate-spin" />
+                        ) : hasNextVibes ? (
+                            <div className="h-4 w-4" />
+                        ) : (
+                            <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                                End of vibes
+                            </p>
+                        )}
+                    </div>
                 </section>
             </div>
 
