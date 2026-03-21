@@ -25,10 +25,12 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     const { toggleVote, isPending: votePending } = useVoteToggle('image', spotId);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const images = data?.pages.flatMap((page) => page.data) || [];
+    const images = data?.pages.flatMap((page) => page.data || page) || [];
+    const totalImages = data?.pages[0]?.pagination?.total || data?.pages[0]?.total;
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });
+    const hasFetchedRef = useRef(false);
 
     // Lock body scroll
     useEffect(() => {
@@ -39,10 +41,17 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     }, []);
 
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
+        if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
             fetchNextPage();
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    useEffect(() => {
+        if (!inView) {
+            hasFetchedRef.current = false;
+        }
+    }, [inView]);
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -56,8 +65,13 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                 {/* Header */}
                 <header className="p-8 border-b border-white/8 flex items-center justify-between bg-card z-10">
                     <div className="space-y-1">
-                        <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">
+                        <h2 className="font-display text-2xl font-bold text-foreground tracking-tight flex items-center gap-3">
                             {spotName} Gallery
+                            {totalImages !== undefined && (
+                                <span className="text-sm font-bold text-white/40 bg-white/5 px-2.5 py-0.5 rounded-lg border border-white/10 tracking-widest">
+                                    {totalImages}
+                                </span>
+                            )}
                         </h2>
                         <div className="flex items-center gap-4">
                             <div className="flex bg-white/8 p-1 rounded-xl">
