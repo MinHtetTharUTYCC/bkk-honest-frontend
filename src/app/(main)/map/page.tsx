@@ -340,21 +340,29 @@ export default function MapPage() {
       </button>
 
       {/* TRANSIT TOGGLE — below Near Me */}
-      <button
-        onClick={() => setTransitVisible(!transitVisible)}
-        title={transitVisible ? "Hide transit lines" : "Show transit lines"}
-        aria-label={transitVisible ? "Hide Bangkok BTS/MRT transit overlay" : "Show Bangkok BTS/MRT transit overlay"}
-        aria-pressed={transitVisible}
-        className={cn(
-          "absolute top-16 right-4 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black",
-          transitVisible
-            ? "bg-amber-500 text-black shadow-amber-500/40"
-            : "bg-black/60 backdrop-blur-md border border-white/10 text-white/60 hover:text-amber-400 hover:border-amber-400/40"
+      <AnimatePresence>
+        {(viewState.latitude >= 13.4 && viewState.latitude <= 14.2 && 
+          viewState.longitude >= 100.2 && viewState.longitude <= 101.0) && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={() => setTransitVisible(!transitVisible)}
+            title={transitVisible ? "Hide transit lines" : "Show transit lines"}
+            aria-label={transitVisible ? "Hide Bangkok BTS/MRT transit overlay" : "Show Bangkok BTS/MRT transit overlay"}
+            aria-pressed={transitVisible}
+            className={cn(
+              "absolute top-16 right-4 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black",
+              transitVisible
+                ? "bg-amber-500 text-black shadow-amber-500/40"
+                : "bg-black/60 backdrop-blur-md border border-white/10 text-white/60 hover:text-amber-400 hover:border-amber-400/40"
+            )}
+          >
+            <Train size={14} />
+            Transit
+          </motion.button>
         )}
-      >
-        <Train size={14} />
-        Transit
-      </button>
+      </AnimatePresence>
 
       {/* TOP FILTER BAR */}
       <div className="absolute top-4 left-0 right-28 z-40 px-4">

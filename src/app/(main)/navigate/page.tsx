@@ -287,25 +287,33 @@ export default function NavigatePage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                        {/* Transit Toggle */}
-                        <button
-                            onClick={() => setTransitVisible(!transitVisible)}
-                            title={transitVisible ? 'Hide transit lines' : 'Show transit lines'}
-                            aria-label={
-                                transitVisible
-                                    ? 'Hide Bangkok BTS/MRT transit overlay'
-                                    : 'Show Bangkok BTS/MRT transit overlay'
-                            }
-                            aria-pressed={transitVisible}
-                            className={cn(
-                                'p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black',
-                                transitVisible
-                                    ? 'bg-amber-500/20 text-amber-400'
-                                    : 'hover:bg-white/10 text-white/60 hover:text-amber-400',
+                        {/* Transit Toggle - Only in BKK */}
+                        <AnimatePresence>
+                            {(viewState.latitude >= 13.4 && viewState.latitude <= 14.2 && 
+                              viewState.longitude >= 100.2 && viewState.longitude <= 101.0) && (
+                                <motion.button
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    onClick={() => setTransitVisible(!transitVisible)}
+                                    title={transitVisible ? 'Hide transit lines' : 'Show transit lines'}
+                                    aria-label={
+                                        transitVisible
+                                            ? 'Hide Bangkok BTS/MRT transit overlay'
+                                            : 'Show Bangkok BTS/MRT transit overlay'
+                                    }
+                                    aria-pressed={transitVisible}
+                                    className={cn(
+                                        'p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black',
+                                        transitVisible
+                                            ? 'bg-amber-500/20 text-amber-400'
+                                            : 'hover:bg-white/10 text-white/60 hover:text-amber-400',
+                                    )}
+                                >
+                                    <Train size={18} />
+                                </motion.button>
                             )}
-                        >
-                            <Train size={18} />
-                        </button>
+                        </AnimatePresence>
 
                         <button
                             onClick={() => router.back()}
