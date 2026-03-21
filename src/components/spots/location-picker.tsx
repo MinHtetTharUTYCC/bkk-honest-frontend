@@ -242,6 +242,7 @@ export default function LocationPicker({
           >
             {/* Confirm Button */}
             <button
+              type="button"
               onClick={handleConfirm}
               onKeyDown={handleKeyDown}
               disabled={isConfirming}
