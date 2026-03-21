@@ -8,13 +8,12 @@ import {
     useCreateScamAlert,
     useCreateSpot,
     useCities,
-    useUploadSpotImage,
 } from '@/hooks/use-api';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import CreateVibeForm from '@/components/vibes/create-vibe-form';
-import LocationPicker from '@/components/spots/location-picker';
+import SpotForm, { SpotFormData } from '@/components/spots/spot-form';
 import { Dropdown } from '@/components/ui/dropdown';
-import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin, Upload, X } from 'lucide-react';
+import { Zap, AlertCircle, DollarSign, Send, CheckCircle2, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from 'next/navigation';
 import { useCity } from '@/components/providers/city-provider';
@@ -48,24 +47,12 @@ export default function ReportPage() {
     const [scamCategory, setScamCategory] = useState('');
     const [scamCity, setScamCity] = useState(selectedCityId || '');
 
-    // Spot State
-    const [spotName, setSpotName] = useState('');
-    const [spotAddress, setSpotAddress] = useState('');
-    const [spotCity, setSpotCity] = useState(selectedCityId || '');
-    const [spotCategory, setSpotCategory] = useState('');
-    const [spotLocation, setSpotLocation] = useState<{
-        latitude: number;
-        longitude: number;
-    } | null>(null);
-    const [spotImageFile, setSpotImageFile] = useState<File | null>(null);
-    const [spotImagePreview, setSpotImagePreview] = useState<string>('');
     const [scamImageFile, setScamImageFile] = useState<File | null>(null);
     const [scamImagePreview, setScamImagePreview] = useState<string>('');
 
     // Sync cities when selectedCityId changes
     useEffect(() => {
         if (selectedCityId) {
-            setSpotCity(selectedCityId);
             setScamCity(selectedCityId);
         }
     }, [selectedCityId]);
@@ -86,7 +73,26 @@ export default function ReportPage() {
     const createPrice = useCreatePriceReport();
     const createScam = useCreateScamAlert();
     const createSpot = useCreateSpot();
-    const uploadImage = useUploadSpotImage();
+
+    const handleSpotSubmit = async (formData: SpotFormData) => {
+        setError(null);
+        try {
+            await createSpot.mutateAsync({
+                name: formData.name,
+                address: formData.address,
+                categoryId: formData.categoryId,
+                cityId: formData.cityId,
+                latitude: formData.latitude,
+                longitude: formData.longitude,
+                image: formData.imageFile || undefined,
+            });
+            setSubmitted(true);
+        } catch (err: any) {
+            console.error('Failed to create spot:', err);
+            const message = err?.response?.data?.message || 'Failed to create spot';
+            setError(Array.isArray(message) ? message.join(', ') : message);
+        }
+    };
 
     const handlePriceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -167,94 +173,6 @@ export default function ReportPage() {
             URL.revokeObjectURL(scamImagePreview);
         }
         setScamImagePreview('');
-    };
-
-    const fetchAddressFromLocation = async (latitude: number, longitude: number) => {
-        try {
-            // Try to use backend reverse geocoding endpoint
-            const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-            if (!apiUrl) {
-                console.error('API URL not configured');
-                setSpotAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-                return;
-            }
-
-            const response = await fetch(`${apiUrl}/spots/reverse-geocode`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ latitude, longitude }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                if (data.address) {
-                    setSpotAddress(data.address);
-                }
-            }
-        } catch (error) {
-            console.error('Failed to fetch address:', error);
-            // Fallback: just show coordinates
-            setSpotAddress(`${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
-        }
-    };
-
-    const handleSpotImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Image size must be less than 5MB');
-                return;
-            }
-            setSpotImageFile(file);
-            const preview = URL.createObjectURL(file);
-            setSpotImagePreview(preview);
-        }
-    };
-
-    const handleRemoveSpotImage = () => {
-        setSpotImageFile(null);
-        if (spotImagePreview && spotImagePreview.startsWith('blob:')) {
-            URL.revokeObjectURL(spotImagePreview);
-        }
-        setSpotImagePreview('');
-    };
-
-    const handleSpotSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setError(null);
-        if (!spotLocation) {
-            setError('Please select a location on the map');
-            return;
-        }
-
-        if (spotAddress.length > 200) {
-            setError('Address cannot exceed 200 characters');
-            return;
-        }
-
-        if (spotName.length > 100) {
-            setError('Spot name cannot exceed 100 characters');
-            return;
-        }
-
-        try {
-            // Create spot with image in one request
-            await createSpot.mutateAsync({
-                name: spotName,
-                address: spotAddress,
-                categoryId: spotCategory,
-                cityId: spotCity,
-                latitude: spotLocation.latitude,
-                longitude: spotLocation.longitude,
-                image: spotImageFile || undefined,
-            });
-
-            setSubmitted(true);
-        } catch (err: any) {
-            console.error('Failed to create spot:', err);
-            const message = err?.response?.data?.message || 'Failed to create spot';
-            setError(Array.isArray(message) ? message.join(', ') : message);
-        }
     };
 
     if (!isClient || authLoading) {
@@ -591,166 +509,16 @@ export default function ReportPage() {
                 )}
 
                 {activeTab === 'spot' && (
-                    <form onSubmit={handleSpotSubmit} className="space-y-6">
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Spot Name
-                            </label>
-                            <input
-                                value={spotName}
-                                onChange={(e) => setSpotName(e.target.value)}
-                                required
-                                placeholder="e.g. Jek Pui Curry"
-                                className={cn(
-                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
-                                    spotName.length > 100 && "border-red-500/50 ring-1 ring-red-500/20"
-                                )}
-                            />
-                            <div className="flex justify-end">
-                                <span className={cn(
-                                    "text-xs font-bold tracking-normal transition-colors",
-                                    spotName.length > 100 ? "text-red-400" : "text-white/30"
-                                )}>
-                                    {spotName.length}/100
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Pick Location on Map
-                            </label>
-                            <div className="rounded-2xl overflow-hidden h-125 border border-white/10">
-                                <LocationPicker
-                                    onLocationSelected={(loc) => {
-                                        setSpotLocation(loc);
-                                        // Auto-fetch address from location
-                                        fetchAddressFromLocation(loc.latitude, loc.longitude);
-                                    }}
-                                    initialLocation={spotLocation || undefined}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Address
-                                <span className="text-white/60 text-[12px] ml-2">
-                                    (Auto-populated, editable)
-                                </span>
-                            </label>
-                            <textarea
-                                value={spotAddress}
-                                onChange={(e) => setSpotAddress(e.target.value)}
-                                required
-                                placeholder="e.g. 25 Mangkon Rd, Bangkok"
-                                rows={3}
-                                className={cn(
-                                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none",
-                                    spotAddress.length > 200 && "border-red-500/50 ring-1 ring-red-500/20"
-                                )}
-                            />
-                            <div className="flex justify-end">
-                                <span className={cn(
-                                    "text-[9px] font-bold tracking-normal transition-colors",
-                                    spotAddress.length > 200 ? "text-red-400" : "text-white/30"
-                                )}>
-                                    {spotAddress.length}/200
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <Dropdown
-                                label="City"
-                                options={cities || []}
-                                value={spotCity}
-                                onChange={setSpotCity}
-                                placeholder="Select city..."
-                            />
-                            <Dropdown
-                                label="Category"
-                                options={categories || []}
-                                value={spotCategory}
-                                onChange={setSpotCategory}
-                                placeholder="Select category..."
-                            />
-                        </div>
-
-                        <div className="space-y-4">
-                            <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                                Image <span className="text-white/50">(Optional)</span>
-                            </label>
-
-                            {spotImagePreview ? (
-                                <div className="relative rounded-xl overflow-hidden border border-white/10 bg-white/5">
-                                    <img
-                                        src={spotImagePreview}
-                                        alt="Spot preview"
-                                        className="w-full h-64 object-cover"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleRemoveSpotImage}
-                                        disabled={createSpot.isPending}
-                                        className="absolute top-2 right-2 bg-red-500/80 hover:bg-red-600 text-white p-2 rounded-lg transition-colors disabled:opacity-50"
-                                        aria-label="Remove image"
-                                    >
-                                        <X size={16} />
-                                    </button>
-                                </div>
-                            ) : (
-                                <label className="block cursor-pointer group">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleSpotImageChange}
-                                        disabled={createSpot.isPending}
-                                        className="hidden"
-                                        aria-label="Upload spot image"
-                                    />
-                                    <div
-                                        className={cn(
-                                            'border-2 border-dashed rounded-xl p-8 text-center transition-all',
-                                            'hover:bg-white/5 hover:border-amber-400/50',
-                                            createSpot.isPending
-                                                ? 'opacity-50 cursor-not-allowed'
-                                                : 'cursor-pointer',
-                                        )}
-                                    >
-                                        <Upload
-                                            size={24}
-                                            className="text-white/50 group-hover:text-amber-400 mx-auto mb-2 transition-colors"
-                                        />
-                                        <p className="text-sm text-white/70">
-                                            Click to upload or drag and drop
-                                        </p>
-                                        <p className="text-xs text-white/50 mt-1">
-                                            PNG, JPG, GIF up to 5MB
-                                        </p>
-                                    </div>
-                                </label>
-                            )}
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={
-                                createSpot.isPending ||
-                                !spotLocation ||
-                                !spotName ||
-                                !spotAddress ||
-                                !spotCategory ||
-                                !spotCity ||
-                                spotAddress.length > 200 ||
-                                spotName.length > 100
-                            }
-                            className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
-                        >
-                            <MapPin size={16} />
-                            {createSpot.isPending ? 'Creating...' : 'Create New Spot'}
-                        </button>
-                    </form>
+                    <SpotForm
+                        mode="create"
+                        onSubmit={handleSpotSubmit}
+                        isLoading={createSpot.isPending}
+                        categories={categories}
+                        cities={cities}
+                        initialData={{
+                            cityId: selectedCityId || '',
+                        }}
+                    />
                 )}
             </div>
         </div>

@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Upload, X } from 'lucide-react';
+import { Loader2, Upload, X, MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LocationPicker } from '@/components/ui/location-picker';
 import { Dropdown } from '@/components/ui/dropdown';
@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 
 export interface SpotFormData extends SpotFormValues {
   imageUrl?: string;
@@ -133,29 +134,30 @@ export default function SpotForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-8">
         {/* Spot Name */}
         <FormField
           control={control}
           name="name"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-semibold text-white/70 uppercase tracking-widest">
+            <FormItem className="space-y-4">
+              <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                 Spot Name <span className="text-amber-400">*</span>
               </FormLabel>
               <FormControl>
-                <Input 
+                <input 
                   placeholder="e.g., Jazz Bar Downtown" 
                   disabled={isLoading} 
                   {...field} 
                   className={cn(
-                    (field.value?.length || 0) > 100 && "border-red-500 focus-visible:ring-red-500/20"
+                    "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
+                    (field.value?.length || 0) > 100 && "border-red-500/50 ring-1 ring-red-500/20"
                   )}
                 />
               </FormControl>
               <div className="flex justify-end">
                 <span className={cn(
-                  "text-[10px] font-bold tracking-normal transition-colors mt-1",
+                  "text-xs font-bold tracking-normal transition-colors",
                   (field.value?.length || 0) > 100 ? "text-red-400" : "text-white/30"
                 )}>
                   {field.value?.length || 0}/100
@@ -171,19 +173,21 @@ export default function SpotForm({
           control={control}
           name="latitude"
           render={() => (
-            <FormItem>
-              <FormLabel className="text-xs font-semibold text-white/70 uppercase tracking-widest">
-                Location <span className="text-amber-400">*</span>
+            <FormItem className="space-y-4">
+              <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                Pick Location on Map <span className="text-amber-400">*</span>
               </FormLabel>
               <FormControl>
-                <LocationPicker
-                  onLocationSelect={handleLocationSelect}
-                  initialLocation={location || undefined}
-                  label="Location"
-                  required={true}
-                  isLoading={isFetchingAddress}
-                  height="h-80 md:h-[600px] lg:h-screen"
-                />
+                <div className="rounded-2xl overflow-hidden h-80 md:h-[500px] border border-white/10">
+                    <LocationPicker
+                    onLocationSelect={handleLocationSelect}
+                    initialLocation={location || undefined}
+                    label=""
+                    required={true}
+                    isLoading={isFetchingAddress}
+                    height="h-full"
+                    />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -195,33 +199,35 @@ export default function SpotForm({
           control={control}
           name="address"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-semibold text-white/70 uppercase tracking-widest">
-                Address <span className="text-amber-400">*</span>
+            <FormItem className="space-y-4">
+              <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                Address
+                <span className="text-white/60 text-[12px] ml-2">
+                    (Auto-populated, editable) <span className="text-amber-400">*</span>
+                </span>
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Input 
-                    placeholder="Street address" 
+                  <textarea 
+                    placeholder="e.g. 25 Mangkon Rd, Bangkok" 
                     disabled={isLoading || isFetchingAddress} 
                     {...field} 
+                    rows={3}
                     className={cn(
-                      (field.value?.length || 0) > 200 && "border-red-500 focus-visible:ring-red-500/20"
+                      "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none",
+                      (field.value?.length || 0) > 200 && "border-red-500/50 ring-1 ring-red-500/20"
                     )}
                   />
                   {isFetchingAddress && (
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="absolute right-3 top-4">
                       <Loader2 size={16} className="text-amber-400 animate-spin" />
                     </div>
                   )}
                 </div>
               </FormControl>
-              <div className="flex justify-between items-start">
-                <FormDescription className="text-xs text-white/50">
-                  {mode === 'edit' ? 'Edit the address as needed' : 'Auto-populated from map location'}
-                </FormDescription>
+              <div className="flex justify-end">
                 <span className={cn(
-                  "text-xs font-bold tracking-normal transition-colors mt-1",
+                  "text-xs font-bold tracking-normal transition-colors",
                   (field.value?.length || 0) > 200 ? "text-red-400" : "text-white/30"
                 )}>
                   {field.value?.length || 0}/200
@@ -232,62 +238,65 @@ export default function SpotForm({
           )}
         />
 
-        {/* Category Selector */}
-        <FormField
-          control={control}
-          name="categoryId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-semibold text-white/70 uppercase tracking-widest">
-                Category <span className="text-amber-400">*</span>
-              </FormLabel>
-              <FormControl>
-                <Dropdown
-                  options={categories}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Select category"
-                  name="category"
-                  disabled={isLoading}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Grid for Category and City */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Category Selector */}
+            <FormField
+            control={control}
+            name="categoryId"
+            render={({ field }) => (
+                <FormItem className="space-y-4">
+                <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                    Category <span className="text-amber-400">*</span>
+                </FormLabel>
+                <FormControl>
+                    <Dropdown
+                    options={categories}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Select category..."
+                    name="category"
+                    disabled={isLoading}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
 
-        {/* City Selector */}
-        <FormField
-          control={control}
-          name="cityId"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs font-semibold text-white/70 uppercase tracking-widest">
-                City <span className="text-amber-400">*</span>
-              </FormLabel>
-              <FormControl>
-                <Dropdown
-                  options={cities}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Select city"
-                  name="city"
-                  disabled={isLoading}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+            {/* City Selector */}
+            <FormField
+            control={control}
+            name="cityId"
+            render={({ field }) => (
+                <FormItem className="space-y-4">
+                <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
+                    City <span className="text-amber-400">*</span>
+                </FormLabel>
+                <FormControl>
+                    <Dropdown
+                    options={cities}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Select city..."
+                    name="city"
+                    disabled={isLoading}
+                    />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
+        </div>
 
         {/* Image Upload */}
-        <div className="space-y-2">
-          <label className="block text-xs font-semibold text-white/70 uppercase tracking-widest">
+        <div className="space-y-4">
+          <label className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
             Image <span className="text-white/50">(Optional)</span>
           </label>
 
           {imagePreview ? (
-            <div className="relative rounded-xl overflow-hidden border border-white/10 bg-white/5">
+            <div className="relative rounded-2xl overflow-hidden border border-white/8 bg-white/5">
               <img
                 src={imagePreview}
                 alt="Preview"
@@ -314,7 +323,7 @@ export default function SpotForm({
                 aria-label="Upload image"
               />
               <div className={cn(
-                "border-2 border-dashed rounded-xl p-8 text-center transition-all",
+                "border-2 border-dashed rounded-2xl p-8 text-center transition-all",
                 "hover:bg-white/5 hover:border-amber-400/50",
                 isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
               )}>
@@ -334,11 +343,10 @@ export default function SpotForm({
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading || isFetchingAddress}
+          disabled={isLoading || isFetchingAddress || (watch('name')?.length || 0) > 100 || (watch('address')?.length || 0) > 200}
           className={cn(
-            "w-full bg-amber-500 hover:bg-amber-400 text-black py-3 rounded-xl text-sm font-semibold tracking-wide",
-            "transition-all flex items-center justify-center gap-2",
-            "disabled:opacity-50 disabled:cursor-not-allowed"
+            "w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50",
+            "disabled:cursor-not-allowed"
           )}
         >
           {isLoading ? (
@@ -347,7 +355,10 @@ export default function SpotForm({
               {mode === 'create' ? 'Creating Spot...' : 'Updating Spot...'}
             </>
           ) : (
-            mode === 'create' ? 'Create Spot' : 'Update Spot'
+            <>
+                <MapPin size={16} />
+                {mode === 'create' ? 'Create Spot' : 'Update Spot'}
+            </>
           )}
         </button>
       </form>
