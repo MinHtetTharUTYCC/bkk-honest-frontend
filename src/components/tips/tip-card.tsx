@@ -105,7 +105,7 @@ export function TipCard({
         </AlertDialogContent>
       </AlertDialog>
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 relative z-10">
+      <div className="flex items-start justify-between gap-4 relative z-20">
         <div className="flex gap-4 flex-1 min-w-0">
           <Link
             href={`/profile/${tip.userId}`}

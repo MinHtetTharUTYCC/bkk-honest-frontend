@@ -26,7 +26,7 @@ export default function ReportPage() {
     const router = useRouter();
     const pathname = usePathname();
     const { selectedCityId, selectedCity } = useCity();
-    const [activeTab, setActiveTab] = useState<'price' | 'scam' | 'vibe' | 'spot'>('price');
+    const [activeTab, setActiveTab] = useState<'price' | 'scam' | 'vibe' | 'spot'>('spot');
     const [error, setError] = useState<string | null>(null);
     const [isClient, setIsClient] = useState(false);
 
