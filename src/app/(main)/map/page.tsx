@@ -70,7 +70,14 @@ export default function MapPage() {
   const [nearMeActive, setNearMeActive] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
-  const { transitVisible, toggleTransitVisible } = useMapStore();
+  const [hasHydrated, setHasHydrated] = useState(false);
+  const transitVisible = useMapStore(state => state.transitVisible);
+  const toggleTransitVisible = useMapStore(state => state.toggleTransitVisible);
+
+  useEffect(() => {
+    setHasHydrated(true);
+  }, []);
+
   // Skip geolocation if we already have a position from URL (returning user)
   const [hasRequestedLocation, setHasRequestedLocation] = useState(hasUrlPosition);
   // Flag: set when user switches category so next spot load triggers auto-fit if needed
@@ -151,8 +158,8 @@ export default function MapPage() {
     const anyVisible = spots.some((s: any) => bounds?.contains([s.longitude, s.latitude]));
 
     if (!anyVisible) {
-      const lngs = spots.map((s: any) => s.longitude as number);
-      const lats = spots.map((s: any) => s.latitude as number);
+      const lngs = (spots || []).map((s: any) => s.longitude as number);
+      const lats = (spots || []).map((s: any) => s.latitude as number);
       mapRef.current.fitBounds(
         [[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]],
         { padding: 80, maxZoom: 15, duration: 900 }
@@ -322,7 +329,7 @@ export default function MapPage() {
         })}
         
         {/* Transit Overlay */}
-        <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />
+        {hasHydrated && <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />}
       </Map>
 
       {/* NEAR ME TOGGLE — top right */}
@@ -350,12 +357,12 @@ export default function MapPage() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={toggleTransitVisible}
-            title={transitVisible ? "Hide transit lines" : "Show transit lines"}
-            aria-label={transitVisible ? "Hide Bangkok BTS/MRT transit overlay" : "Show Bangkok BTS/MRT transit overlay"}
-            aria-pressed={transitVisible}
+            title={(hasHydrated && transitVisible) ? "Hide transit lines" : "Show transit lines"}
+            aria-label={(hasHydrated && transitVisible) ? "Hide Bangkok BTS/MRT transit overlay" : "Show Bangkok BTS/MRT transit overlay"}
+            aria-pressed={hasHydrated && transitVisible}
             className={cn(
               "absolute top-16 right-4 z-50 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black",
-              transitVisible
+              (hasHydrated && transitVisible)
                 ? "bg-amber-500 text-black shadow-amber-500/40"
                 : "bg-black/60 backdrop-blur-md border border-white/10 text-white/60 hover:text-amber-400 hover:border-amber-400/40"
             )}

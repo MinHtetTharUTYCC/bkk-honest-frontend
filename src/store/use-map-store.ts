@@ -16,7 +16,13 @@ export const useMapStore = create<MapState>()(
     }),
     {
       name: 'bkk-honest-map-storage',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => 
+        typeof window !== 'undefined' ? window.localStorage : {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        }
+      ),
     }
   )
 );

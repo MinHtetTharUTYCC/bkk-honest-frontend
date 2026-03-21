@@ -116,7 +116,7 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
       </div>
 
       {/* Transit Lines - visible at zoom 10+ */}
-      {shouldShowLines && (
+      {shouldShowLines && transitData && (
         <>
           <TransitLines id="bts" data={transitData.btsLines} />
           <TransitLines id="mrt" data={transitData.mrtLines} />
@@ -125,7 +125,7 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
       )}
       
       {/* Transit Stations - visible at zoom 13+ */}
-      {shouldShowStations && (
+      {shouldShowStations && transitData && (
         <TransitStations id="stations" data={transitData.stations} />
       )}
     </>

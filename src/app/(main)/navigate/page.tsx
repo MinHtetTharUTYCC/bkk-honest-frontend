@@ -58,7 +58,14 @@ export default function NavigatePage() {
     const [showDirections, setShowDirections] = useState(false);
     const [showManualLocation, setShowManualLocation] = useState(false);
     const [permissionError, setPermissionError] = useState<PermissionErrorType | null>(null);
-    const { transitVisible, toggleTransitVisible } = useMapStore();
+    const [hasHydrated, setHasHydrated] = useState(false);
+    const transitVisible = useMapStore(state => state.transitVisible);
+    const toggleTransitVisible = useMapStore(state => state.toggleTransitVisible);
+
+    useEffect(() => {
+        setHasHydrated(true);
+    }, []);
+
     const mapRef = useRef<any>(null);
 
     useEffect(() => {
@@ -257,7 +264,7 @@ export default function NavigatePage() {
                     )}
 
                     {/* Transit Overlay */}
-                    <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />
+                    {hasHydrated && <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />}
                 </Map>
             ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-900">
@@ -298,16 +305,16 @@ export default function NavigatePage() {
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.8 }}
                                     onClick={toggleTransitVisible}
-                                    title={transitVisible ? 'Hide transit lines' : 'Show transit lines'}
+                                    title={(hasHydrated && transitVisible) ? 'Hide transit lines' : 'Show transit lines'}
                                     aria-label={
-                                        transitVisible
+                                        (hasHydrated && transitVisible)
                                             ? 'Hide Bangkok BTS/MRT transit overlay'
                                             : 'Show Bangkok BTS/MRT transit overlay'
                                     }
-                                    aria-pressed={transitVisible}
+                                    aria-pressed={hasHydrated && transitVisible}
                                     className={cn(
                                         'p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-black',
-                                        transitVisible
+                                        (hasHydrated && transitVisible)
                                             ? 'bg-amber-500/20 text-amber-400'
                                             : 'hover:bg-white/10 text-white/60 hover:text-amber-400',
                                     )}
