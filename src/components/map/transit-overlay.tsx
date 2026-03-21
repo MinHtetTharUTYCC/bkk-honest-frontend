@@ -7,6 +7,8 @@ import TransitStations from './transit-stations';
 interface TransitOverlayProps {
   visible?: boolean;
   zoom: number;
+  onLoading?: (loading: boolean) => void;
+  onError?: (error: string | null) => void;
 }
 
 interface TransitData {
@@ -16,38 +18,39 @@ interface TransitData {
   stations: any;
 }
 
-export default function TransitOverlay({ visible = false, zoom }: TransitOverlayProps) {
+export default function TransitOverlay({ 
+  visible = false, 
+  zoom,
+  onLoading,
+  onError
+}: TransitOverlayProps) {
   const [transitData, setTransitData] = useState<TransitData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   // Load transit data when component becomes visible
   useEffect(() => {
-    if (!visible || transitData) return;
+    if (!visible || transitData || loading) return;
 
     const loadTransitData = async () => {
       setLoading(true);
-      setError(null);
+      onLoading?.(true);
+      onError?.(null);
       
       try {
-        // Load all transit GeoJSON files from public directory (prefixing with basePath)
         const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/bkk-honest';
-        const [btsResponse, mrtResponse, arlResponse, stationsResponse] = await Promise.all([
-          fetch(`${basePath}/data/transit/bts-lines.geojson`),
-          fetch(`${basePath}/data/transit/mrt-lines.geojson`),
-          fetch(`${basePath}/data/transit/arl-lines.geojson`),
-          fetch(`${basePath}/data/transit/stations.geojson`)
-        ]);
-
-        if (!btsResponse.ok || !mrtResponse.ok || !arlResponse.ok || !stationsResponse.ok) {
-          throw new Error('Failed to load transit data');
-        }
+        
+        // Helper to fetch and check response
+        const fetchGeoJSON = async (path: string) => {
+          const res = await fetch(`${basePath}${path}`);
+          if (!res.ok) throw new Error(`Failed to load ${path}: ${res.statusText}`);
+          return res.json();
+        };
 
         const [btsLines, mrtLines, arlLines, stations] = await Promise.all([
-          btsResponse.json(),
-          mrtResponse.json(),
-          arlResponse.json(),
-          stationsResponse.json()
+          fetchGeoJSON('/data/transit/bts-lines.geojson'),
+          fetchGeoJSON('/data/transit/mrt-lines.geojson'),
+          fetchGeoJSON('/data/transit/arl-lines.geojson'),
+          fetchGeoJSON('/data/transit/stations.geojson')
         ]);
 
         setTransitData({
@@ -58,40 +61,18 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
         });
       } catch (err) {
         console.error('Error loading transit data:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load transit data');
+        onError?.(err instanceof Error ? err.message : 'Failed to load transit data');
       } finally {
         setLoading(false);
+        onLoading?.(false);
       }
     };
 
     loadTransitData();
-  }, [visible, transitData]);
+  }, [visible, transitData, loading, onLoading, onError]);
 
-  // Don't render anything if not visible
-  if (!visible) {
-    return null;
-  }
-
-  // Show loading state
-  if (loading && !transitData) {
-    return (
-      <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-2 rounded-lg text-sm z-10">
-        Loading transit data...
-      </div>
-    );
-  }
-
-  // Show error state
-  if (error && !transitData) {
-    return (
-      <div className="absolute top-4 left-4 bg-red-500/90 text-white px-3 py-2 rounded-lg text-sm z-10">
-        Error: {error}
-      </div>
-    );
-  }
-
-  // Don't render if no data loaded yet
-  if (!transitData) {
+  // Don't render anything if not visible or no data yet
+  if (!visible || !transitData) {
     return null;
   }
 
@@ -100,23 +81,8 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
 
   return (
     <>
-      {/* Screen reader context for transit overlay */}
-      <div 
-        className="sr-only" 
-        role="status" 
-        aria-live="polite"
-        aria-label="Transit overlay information"
-      >
-        {shouldShowLines && (
-          <span>
-            Transit lines are now visible on the map. 
-            {shouldShowStations && ' Station names and icons are also displayed.'}
-          </span>
-        )}
-      </div>
-
       {/* Transit Lines - visible at zoom 10+ */}
-      {shouldShowLines && transitData && (
+      {shouldShowLines && (
         <>
           <TransitLines id="bts" data={transitData.btsLines} />
           <TransitLines id="mrt" data={transitData.mrtLines} />
@@ -125,7 +91,7 @@ export default function TransitOverlay({ visible = false, zoom }: TransitOverlay
       )}
       
       {/* Transit Stations - visible at zoom 13+ */}
-      {shouldShowStations && transitData && (
+      {shouldShowStations && (
         <TransitStations id="stations" data={transitData.stations} />
       )}
     </>

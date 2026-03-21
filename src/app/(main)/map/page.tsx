@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSpotUrl } from '@/lib/slug';
 import TransitOverlay from '@/components/map/transit-overlay';
-import { useMapStore } from '@/store/use-map-store';
+import { useMapTransitVisible } from '@/hooks/use-map-transit';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -70,13 +70,10 @@ export default function MapPage() {
   const [nearMeActive, setNearMeActive] = useState(false);
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(urlCat);
   const [selectedSpot, setSelectedSpot] = useState<any>(null);
-  const [hasHydrated, setHasHydrated] = useState(false);
-  const transitVisible = useMapStore(state => state.transitVisible);
-  const toggleTransitVisible = useMapStore(state => state.toggleTransitVisible);
-
-  useEffect(() => {
-    setHasHydrated(true);
-  }, []);
+  const { transitVisible, toggleTransitVisible, hasHydrated } = useMapTransitVisible();
+  
+  const [transitLoading, setTransitLoading] = useState(false);
+  const [transitError, setTransitError] = useState<string | null>(null);
 
   // Skip geolocation if we already have a position from URL (returning user)
   const [hasRequestedLocation, setHasRequestedLocation] = useState(hasUrlPosition);
@@ -329,8 +326,39 @@ export default function MapPage() {
         })}
         
         {/* Transit Overlay */}
-        {hasHydrated && <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />}
+        <TransitOverlay 
+          visible={transitVisible} 
+          zoom={viewState.zoom} 
+          onLoading={setTransitLoading}
+          onError={setTransitError}
+        />
       </Map>
+
+      {/* Transit Loading/Error UI Overlay (not inside Map tree) */}
+      <AnimatePresence>
+        {transitLoading && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute top-20 left-1/2 -translate-x-1/2 z-50 bg-black/60 backdrop-blur-md border border-white/10 text-white px-4 py-2 rounded-full text-xs font-semibold shadow-2xl flex items-center gap-2"
+          >
+            <Loader2 size={14} className="animate-spin text-amber-400" />
+            Loading Transit Data...
+          </motion.div>
+        )}
+        {transitError && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute top-20 left-1/2 -translate-x-1/2 z-50 bg-red-950/80 backdrop-blur-md border border-red-500/30 text-red-200 px-4 py-2 rounded-full text-xs font-semibold shadow-2xl flex items-center gap-2"
+          >
+            <AlertTriangle size={14} />
+            {transitError}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* NEAR ME TOGGLE — top right */}
       <button

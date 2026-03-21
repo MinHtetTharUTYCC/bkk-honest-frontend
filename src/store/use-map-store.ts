@@ -23,6 +23,9 @@ export const useMapStore = create<MapState>()(
           removeItem: () => {},
         }
       ),
+      // Prevent automatic hydration on mount to avoid Next.js hydration mismatch.
+      // We will handle hydration manually or via a hook.
+      skipHydration: true,
     }
   )
 );

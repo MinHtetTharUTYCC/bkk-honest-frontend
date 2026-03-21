@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import ManualLocationModal from './ManualLocationModal';
 import TransitOverlay from '@/components/map/transit-overlay';
-import { useMapStore } from '@/store/use-map-store';
+import { useMapTransitVisible } from '@/hooks/use-map-transit';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 const DEFAULT_CENTER = { lat: 13.7563, lng: 100.5018 };
@@ -58,13 +58,7 @@ export default function NavigatePage() {
     const [showDirections, setShowDirections] = useState(false);
     const [showManualLocation, setShowManualLocation] = useState(false);
     const [permissionError, setPermissionError] = useState<PermissionErrorType | null>(null);
-    const [hasHydrated, setHasHydrated] = useState(false);
-    const transitVisible = useMapStore(state => state.transitVisible);
-    const toggleTransitVisible = useMapStore(state => state.toggleTransitVisible);
-
-    useEffect(() => {
-        setHasHydrated(true);
-    }, []);
+    const { transitVisible, toggleTransitVisible, hasHydrated } = useMapTransitVisible();
 
     const mapRef = useRef<any>(null);
 
@@ -264,7 +258,7 @@ export default function NavigatePage() {
                     )}
 
                     {/* Transit Overlay */}
-                    {hasHydrated && <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />}
+                    <TransitOverlay visible={transitVisible} zoom={viewState.zoom} />
                 </Map>
             ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-900">
