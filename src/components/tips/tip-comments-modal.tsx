@@ -178,7 +178,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
           </div>
         </div>
 
-        <ScrollArea className="flex-1 min-h-0">
+        <ScrollArea className="flex-1 min-h-0 h-full">
           <div className="p-6 md:p-8 space-y-8">
             <div className="space-y-6">
               {user ? (
