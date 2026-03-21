@@ -149,14 +149,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
 
       <div className="absolute inset-0" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }} />
 
-      <div 
-        className={cn(
-          "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain",
-          "h-[80vh] md:h-auto md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
-          "rounded-t-[24px] md:rounded-b-[24px]"
-        )}
-        onClick={(e) => e.stopPropagation()}
-      >
+        <div 
+          className={cn(
+            "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain",
+            "h-[80vh] md:h-[85vh] md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
+            "rounded-t-[24px] md:rounded-b-[24px]"
+          )}
+          onClick={(e) => e.stopPropagation()}
+        >
         <div className="md:hidden flex justify-center py-4">
           <div className="w-12 h-1.5 bg-white/10 rounded-full" />
         </div>
@@ -302,16 +302,16 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                   </div>
                 )}
 
-                {/* Infinite Scroll Trigger */}
-                {hasNextPage && (
-                  <div ref={ref} className="py-4 flex justify-center">
-                    {isFetchingNextPage ? (
-                      <Loader2 size={24} className="animate-spin text-amber-400" />
-                    ) : (
-                      <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Scroll for more</span>
-                    )}
-                  </div>
-                )}
+                {/* Infinite Scroll Trigger + End State */}
+                <div ref={hasNextPage ? ref : undefined} className="py-4 flex justify-center">
+                  {isFetchingNextPage ? (
+                    <Loader2 size={24} className="animate-spin text-amber-400" />
+                  ) : hasNextPage ? (
+                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Scroll for more</span>
+                  ) : comments.length > 0 ? (
+                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">End of comments</span>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

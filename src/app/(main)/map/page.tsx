@@ -327,7 +327,7 @@ export default function MapPage() {
 
                 {/* Spot Markers */}
                 {spots?.map((spot: any) => {
-                    const config = getCategoryConfig(spot.category_name);
+                    const config = getCategoryConfig(spot.category?.name);
                     const isSelected = selectedSpot?.id === spot.id;
 
                     return (
@@ -586,11 +586,11 @@ export default function MapPage() {
                                         <span
                                             className={cn(
                                                 'text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-sm',
-                                                getCategoryConfig(selectedSpot.category_name)
+                                                getCategoryConfig(selectedSpot.category?.name)
                                                     .colors,
                                             )}
                                         >
-                                            {selectedSpot.category_name}
+                                            {selectedSpot.category?.name || 'Category'}
                                         </span>
                                     </div>
                                     <h3 className="text-xl font-bold text-white leading-tight">

@@ -6,7 +6,7 @@ export const spotSchema = z.object({
     .max(100, "Spot name cannot exceed 100 characters"),
   address: z.string()
     .min(5, "Address must be at least 5 characters")
-    .max(255, "Address cannot exceed 255 characters"),
+    .max(200, "Address cannot exceed 200 characters"),
   categoryId: z.string().min(1, "Please select a category"),
   cityId: z.string().min(1, "Please select a city"),
   latitude: z.number({
