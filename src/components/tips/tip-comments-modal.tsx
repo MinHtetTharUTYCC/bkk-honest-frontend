@@ -178,7 +178,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto min-h-0 custom-scrollbar">
+        <ScrollArea className="flex-1 min-h-0">
           <div className="p-6 md:p-8 space-y-8">
             <div className="space-y-6">
               {user ? (
@@ -315,7 +315,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
               </div>
             </div>
           </div>
-        </div>
+        </ScrollArea>
 
         <div className="md:hidden p-4 border-t border-border bg-background/80 backdrop-blur-md">
           <button 
