@@ -25,7 +25,7 @@ import {
     Flag,
     Share2,
 } from 'lucide-react';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInView } from 'react-intersection-observer';
 import ReactionButton from '@/components/reactions/reaction-button';
