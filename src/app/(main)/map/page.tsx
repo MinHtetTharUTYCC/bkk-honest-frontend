@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -59,7 +60,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
     default: <MapPin size={14} />,
 };
 
-export default function MapPage() {
+function MapPageContent() {
     const router = useRouter();
     const urlParams = useSearchParams();
     const mapRef = useRef<MapRef>(null);
@@ -622,4 +623,13 @@ export default function MapPage() {
             </AnimatePresence>
         </div>
     );
+}
+
+
+export default function MapPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <MapPageContent  />
+    </Suspense>
+  );
 }

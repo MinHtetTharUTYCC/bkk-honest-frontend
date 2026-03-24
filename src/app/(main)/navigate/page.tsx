@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
@@ -35,7 +36,7 @@ interface Route {
     };
 }
 
-export default function NavigatePage() {
+function NavigatePageContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -433,4 +434,13 @@ export default function NavigatePage() {
             </AnimatePresence>
         </div>
     );
+}
+
+
+export default function NavigatePage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <NavigatePageContent  />
+    </Suspense>
+  );
 }

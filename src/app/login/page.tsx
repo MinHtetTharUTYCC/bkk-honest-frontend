@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -8,7 +9,7 @@ import Image from 'next/image';
 import logoImg from '../../../public/logo-bh-linked-1-trans.png';
 import { Loader2, ShieldAlert } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginPageContent() {
     const [googleLoading, setGoogleLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const searchParams = useSearchParams();
@@ -182,4 +183,13 @@ export default function LoginPage() {
             </section>
         </main>
     );
+}
+
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <LoginPageContent  />
+    </Suspense>
+  );
 }

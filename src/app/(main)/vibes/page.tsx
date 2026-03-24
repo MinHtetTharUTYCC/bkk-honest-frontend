@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Zap, MapPin, Loader2, ArrowLeft, Filter, Search } from 'lucide-react';
@@ -12,7 +13,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
 
-export default function VibesPage() {
+function VibesPageContent() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -194,4 +195,13 @@ export default function VibesPage() {
             </div>
         </div>
     );
+}
+
+
+export default function VibesPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <VibesPageContent  />
+    </Suspense>
+  );
 }

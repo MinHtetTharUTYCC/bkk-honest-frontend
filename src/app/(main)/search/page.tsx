@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -11,7 +12,7 @@ import { useCity } from '@/components/providers/city-provider';
 import { MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function SearchPage() {
+function SearchPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { selectedCityId, selectedCity } = useCity();
@@ -230,5 +231,14 @@ export default function SearchPage() {
         </div>
       )}
     </div>
+  );
+}
+
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <SearchPageContent  />
+    </Suspense>
   );
 }

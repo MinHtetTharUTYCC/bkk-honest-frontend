@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useMissions, useMissionStats, useUpdateMission, useDeleteMission } from '@/hooks/use-api';
 import {
@@ -37,7 +38,7 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export default function MissionsPage() {
+function MissionsPageContent() {
     const { user, loading: authLoading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
@@ -401,4 +402,13 @@ export default function MissionsPage() {
             </div>
         </div>
     );
+}
+
+
+export default function MissionsPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <MissionsPageContent  />
+    </Suspense>
+  );
 }

@@ -41,6 +41,12 @@ export async function generateMetadata({ searchParams }: ScamAlertsPageProps): P
   };
 }
 
+import { Suspense } from 'react';
+
 export default function ScamAlertsPage() {
-  return <ScamAlertsPageClient />;
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <ScamAlertsPageClient />
+    </Suspense>
+  );
 }
