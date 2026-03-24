@@ -1,7 +1,5 @@
 'use client';
-import { Suspense } from 'react';
-
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { Zap, MapPin, Loader2, ArrowLeft, Filter, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useInfiniteLiveVibes, useCategories } from '@/hooks/use-api';
