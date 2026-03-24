@@ -12,17 +12,33 @@ function ScrollArea({
 }: React.ComponentProps<typeof ScrollAreaPrimitive.Root>) {
   const viewportRef = React.useRef<HTMLDivElement>(null);
 
-  const handleWheel = (e: React.WheelEvent) => {
+  React.useEffect(() => {
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    // Check if the scroll area is actually horizontal
-    // We can't easily check orientation prop here as it's for scrollbars
-    // But we can check if it has horizontal scrollable content
-    if (viewport.scrollWidth > viewport.clientWidth) {
-      viewport.scrollLeft += e.deltaY;
-    }
-  };
+    const onWheel = (e: WheelEvent) => {
+      // Determine if it's primarily a horizontal scroll area (like a category bar)
+      const isHorizontalOnly = viewport.scrollHeight <= viewport.clientHeight + 1; // +1 for pixel rounding
+      const hasHorizontalOverflow = viewport.scrollWidth > viewport.clientWidth;
+
+      if (isHorizontalOnly && hasHorizontalOverflow) {
+        // If scrolling primarily vertically, hijack to horizontal
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+          // Check if we can scroll any more in the requested direction
+          const canScrollLeft = viewport.scrollLeft > 0 && e.deltaY < 0;
+          const canScrollRight = viewport.scrollLeft < viewport.scrollWidth - viewport.clientWidth - 1 && e.deltaY > 0;
+
+          if (canScrollLeft || canScrollRight) {
+            e.preventDefault();
+            viewport.scrollLeft += e.deltaY;
+          }
+        }
+      }
+    };
+
+    viewport.addEventListener('wheel', onWheel, { passive: false });
+    return () => viewport.removeEventListener('wheel', onWheel);
+  }, []);
 
   return (
     <ScrollAreaPrimitive.Root
@@ -32,7 +48,6 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         ref={viewportRef}
-        onWheel={handleWheel}
         data-slot="scroll-area-viewport"
         className="size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1"
       >

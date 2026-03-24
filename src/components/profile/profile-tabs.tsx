@@ -25,6 +25,7 @@ import { useMemo, useEffect, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 interface ProfileTabsProps {
     userId: string;
@@ -144,23 +145,26 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                     {!isPublic ? 'My Pulse' : 'Contribution Pulse'}
                 </h2>
 
-                <div className="flex bg-white/8 p-1 rounded-2xl md:p-1.5 overflow-x-auto no-scrollbar">
-                    {visibleTabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => onTabChange(tab.id as any)}
-                            onMouseEnter={() => prefetchTab(tab.id)}
-                            className={cn(
-                                'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
-                                activeTab === tab.id
-                                    ? tab.color.split(' active:')[0] + ' shadow-sm'
-                                    : 'text-white/40 hover:text-white/70',
-                            )}
-                        >
-                            {tab.label} ({tab.count})
-                        </button>
-                    ))}
-                </div>
+                <ScrollArea className="w-full whitespace-nowrap">
+                    <div className="flex bg-white/8 p-1 rounded-2xl md:p-1.5 no-scrollbar">
+                        {visibleTabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => onTabChange(tab.id as any)}
+                                onMouseEnter={() => prefetchTab(tab.id)}
+                                className={cn(
+                                    'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
+                                    activeTab === tab.id
+                                        ? tab.color.split(' active:')[0] + ' shadow-sm'
+                                        : 'text-white/40 hover:text-white/70',
+                                )}
+                            >
+                                {tab.label} ({tab.count})
+                            </button>
+                        ))}
+                    </div>
+                    <ScrollBar orientation="horizontal" className="hidden" />
+                </ScrollArea>
             </header>
 
             <div className="space-y-6">

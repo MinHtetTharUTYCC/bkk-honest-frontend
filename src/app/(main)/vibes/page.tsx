@@ -100,33 +100,35 @@ export default function VibesPage() {
             </header>
 
             {/* Filters */}
-            <div className="flex items-center gap-4 bg-card p-2 rounded-2xl border border-white/8 overflow-x-auto no-scrollbar shadow-xl">
-                <button
-                    onClick={() => handleCategoryChange('')}
-                    className={cn(
-                        "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
-                        selectedCategory === '' 
-                            ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
-                            : "text-white/40 hover:text-white/70 hover:bg-white/5"
-                    )}
-                >
-                    All Vibes
-                </button>
-                {Array.isArray(categories) && categories.map((cat: any) => (
+            <ScrollArea className="w-full whitespace-nowrap">
+                <div className="flex items-center gap-4 bg-card p-2 rounded-2xl border border-white/8 no-scrollbar shadow-xl">
                     <button
-                        key={cat.id}
-                        onClick={() => handleCategoryChange(cat.id)}
+                        onClick={() => handleCategoryChange('')}
                         className={cn(
                             "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
-                            selectedCategory === cat.id 
+                            selectedCategory === '' 
                                 ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
                                 : "text-white/40 hover:text-white/70 hover:bg-white/5"
                         )}
                     >
-                        {cat.name}
+                        All Vibes
                     </button>
-                ))}
-            </div>
+                    {Array.isArray(categories) && categories.map((cat: any) => (
+                        <button
+                            key={cat.id}
+                            onClick={() => handleCategoryChange(cat.id)}
+                            className={cn(
+                                "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
+                                selectedCategory === cat.id 
+                                    ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
+                                    : "text-white/40 hover:text-white/70 hover:bg-white/5"
+                            )}
+                        >
+                            {cat.name}
+                        </button>
+                    ))}
+                </div>
+            </ScrollArea>
 
             {/* Vibes List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
