@@ -1,6 +1,6 @@
 'use client';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
 import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
 import { useQueryClient } from '@tanstack/react-query';
 import SpotCard from '@/components/spots/spot-card';
@@ -13,7 +13,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
 
-export default function DiscoveryPage() {
+function DiscoveryPageContent() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -246,4 +246,13 @@ export default function DiscoveryPage() {
             </div>
         </div>
     );
+}
+
+
+export default function DiscoveryPage() {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <DiscoveryPageContent  />
+    </Suspense>
+  );
 }

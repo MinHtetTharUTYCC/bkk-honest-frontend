@@ -1,4 +1,5 @@
 'use client';
+import { Suspense, useState, useEffect, use } from 'react';
 
 import { useAuth } from '@/components/providers/auth-provider';
 import {
@@ -11,14 +12,13 @@ import { Zap, MapPin, Calendar, ArrowRight, Loader2, AlertTriangle, Target, More
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect, use } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ProfileTabs } from '@/components/profile/profile-tabs';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ReportButton from '@/components/report/report-button';
 
-export default function UserProfilePage({ params }: { params: Promise<{ userId: string }> }) {
+function UserProfilePageContent({ params }: { params: Promise<{ userId: string }> }) {
     const { userId } = use(params);
     const { user: currentUser, loading: authLoading } = useAuth();
     const router = useRouter();
@@ -194,4 +194,13 @@ export default function UserProfilePage({ params }: { params: Promise<{ userId: 
             </div>
         </div>
     );
+}
+
+
+export default function UserProfilePage({ params }: { params: Promise<{ userId: string }> }) {
+  return (
+    <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+      <UserProfilePageContent params={params} />
+    </Suspense>
+  );
 }

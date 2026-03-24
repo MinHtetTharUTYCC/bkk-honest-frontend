@@ -1,4 +1,5 @@
 'use client';
+import { Suspense, useState, useEffect, useMemo, useRef } from 'react';
 
 import { useAuth } from '@/components/providers/auth-provider';
 import {
@@ -26,7 +27,6 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { useState, useEffect, useMemo, useRef } from 'react';
 import api from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
@@ -35,7 +35,7 @@ import { ProfileTabs } from '@/components/profile/profile-tabs';
 import LoginRequired from '@/components/auth/login-required';
 import { Textarea } from '@/components/ui/textarea';
 
-export default function ProfilePage() {
+function ProfilePageContent() {
     const { user, loading: authLoading } = useAuth();
     const supabase = createClient();
     const router = useRouter();
@@ -498,5 +498,13 @@ export default function ProfilePage() {
                 isPublic={false}
             />
         </div>
+    );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
+            <ProfilePageContent />
+        </Suspense>
     );
 }
