@@ -1,6 +1,6 @@
 import NavDock from '@/components/layout/nav-dock';
 import TopBar from '@/components/layout/top-bar';
-import Sidebar from '@/components/layout/sidebar';
+import { ConditionalSidebar } from '@/components/layout/conditional-sidebar';
 import { ConditionalFooter } from '@/components/layout/conditional-footer';
 import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
@@ -17,7 +17,7 @@ export default async function MainLayout({
                 <TopBar />
                 <div className="flex flex-1 w-full max-w-360 mx-auto px-4 md:px-8 py-10 lg:gap-12">
                     <main className="flex-1 min-w-0 pb-32 md:pb-12">{children}</main>
-                    <Sidebar />
+                    <ConditionalSidebar />
                 </div>
                 <ConditionalFooter />
             </div>
