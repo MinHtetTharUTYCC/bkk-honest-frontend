@@ -12,11 +12,13 @@ const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 export default async function Head({ params }: ScamAlertHeadProps) {
   const { citySlug, alertSlug } = await params;
-  const path = `/scam-alerts/${citySlug}/${alertSlug}`;
+  const encodedCitySlug = encodeURIComponent(citySlug);
+  const encodedAlertSlug = encodeURIComponent(alertSlug);
+  const path = `/scam-alerts/${encodedCitySlug}/${encodedAlertSlug}`;
   const pageUrl = `${siteUrl}${path}`;
 
   const response = await fetch(
-    `${apiBaseUrl}/api/scam-alerts/${encodeURIComponent(alertSlug)}`,
+    `${apiBaseUrl}/api/scam-alerts/${encodedAlertSlug}`,
     { next: { revalidate: 3600 } },
   ).catch(() => null);
 

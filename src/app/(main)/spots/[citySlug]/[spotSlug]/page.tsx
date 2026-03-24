@@ -2,7 +2,6 @@
 
 import { useParams, useRouter, usePathname, useSearchParams } from 'next/navigation';
 import {
-    useSpot,
     useSpotBySlug,
     useInfiniteSpotPriceReports,
     useInfiniteSpotTips,
@@ -10,11 +9,7 @@ import {
     useUploadSpotImage,
     useMissions,
     useAddMission,
-    useUpdateSpot,
-    useCategories,
-    useCities,
     useInfiniteLiveVibes,
-    useCreateLiveVibe,
     useUpdateCommunityTip,
     useDeleteCommunityTip,
 } from '@/hooks/use-api';
@@ -22,11 +17,9 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
     MapPin,
     Zap,
-    Info,
     ArrowLeft,
     TrendingDown,
     TrendingUp,
-    AlertTriangle,
     CheckCircle2,
     Camera,
     Maximize2,
@@ -36,11 +29,11 @@ import {
     Trash2,
     Target,
     Edit2,
-    Save,
-    X,
-    MessageSquare,
     Navigation,
     ImageIcon,
+    MoreVertical,
+    Flag,
+    Share2,
 } from 'lucide-react';
 import { LikeButton } from '@/components/ui/like-button';
 import { ImageViewer } from '@/components/ui/image-viewer';
@@ -49,7 +42,6 @@ import { cn } from '@/lib/utils';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import GalleryModal from '@/components/spots/gallery-modal';
-import LocationPicker from '@/components/spots/location-picker';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
@@ -57,12 +49,9 @@ import { TipCard } from '@/components/tips/tip-card';
 import ReportButton from '@/components/report/report-button';
 import CreateVibeModal from '@/components/vibes/create-vibe-modal';
 import CreatePriceModal from '@/components/prices/create-price-modal';
-import { Dropdown } from '@/components/ui/dropdown';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
-import { MoreVertical, Flag, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
