@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/components/providers/auth-provider';
 import {
-    useProfile,
+    useMyProfile,
     useInfiniteUserPriceReports,
     useInfiniteUserScamAlerts,
     useInfiniteUserCommunityTips,
@@ -59,12 +59,12 @@ export default function ProfilePage() {
         router.replace(`/profile?${params.toString()}`, { scroll: false });
     };
 
-    // Use 'me' for authenticated user data to leverage backend's current user context
+    // Use the dedicated 'me' hook for the authenticated user
     const {
         data: profileResponse,
         isLoading: profileLoading,
         error: profileError,
-    } = useProfile(user ? 'me' : '');
+    } = useMyProfile();
     const profile = profileResponse?.data || profileResponse;
     const { data: missionStats } = useMissionStats();
 
@@ -416,13 +416,13 @@ export default function ProfilePage() {
                                 </span>
                             </div>
 
-                            <div className="flex items-center gap-2 bg-white/8 border border-white/10 px-6 py-3 rounded-2xl">
+                            <Link href="/missions" className="flex items-center gap-2 bg-white/8 border border-white/10 px-6 py-3 rounded-2xl hover:border-amber-400 hover:bg-amber-400/5 transition-all">
                                 <Target size={18} className="text-white/40" />
                                 <span className="text-sm font-bold uppercase tracking-widest text-foreground">
                                     {missionStats?.completed || 0}/{missionStats?.total || 0}{' '}
                                     Missions
                                 </span>
-                            </div>
+                            </Link>
 
                             <button
                                 onClick={handleSignOut}

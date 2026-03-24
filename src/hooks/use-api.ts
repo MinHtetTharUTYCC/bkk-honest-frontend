@@ -10,6 +10,20 @@ type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto
 
 // --- Profiles ---
 
+export function useMyProfile() {
+    const { user } = useAuth();
+    return useQuery({
+        queryKey: ['profile', 'me'],
+        queryFn: async () => {
+            const response = await api.get<any>('/profiles/me');
+            const data = response.data;
+            return data?.data || data;
+        },
+        enabled: !!user,
+        retry: false,
+    });
+}
+
 export function useLeaderboard(take = 5) {
     return useQuery({
         queryKey: ['leaderboard', take],
@@ -204,6 +218,7 @@ export function useSpots(params?: {
             // The backend returns { data: [...] }
             return data?.data || (Array.isArray(data) ? data : []);
         },
+        staleTime: 2 * 60 * 1000, // 2 minutes
     });
 }
 
@@ -240,6 +255,7 @@ export function useInfiniteSpots(params?: {
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
         },
+        staleTime: 2 * 60 * 1000, // 2 minutes
     });
 }
 
@@ -419,6 +435,7 @@ export function useCategories() {
             const { data } = await api.get<any>('/categories');
             return Array.isArray(data) ? data : (data as any)?.data || [];
         },
+        staleTime: 60 * 60 * 1000, // 1 hour
     });
 }
 
@@ -429,6 +446,7 @@ export function useCities() {
             const { data } = await api.get<any[]>('/cities');
             return Array.isArray(data) ? data : (data as any)?.data || [];
         },
+        staleTime: 60 * 60 * 1000, // 1 hour
     });
 }
 
@@ -518,6 +536,7 @@ export function useScamAlerts(params?: {
             });
             return data?.data || (Array.isArray(data) ? data : []);
         },
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
 }
 
@@ -554,6 +573,7 @@ export function useInfiniteScamAlerts(params?: {
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
         },
+        staleTime: 5 * 60 * 1000, // 5 minutes
     });
 }
 
@@ -569,6 +589,7 @@ export function useLiveVibes(params?: { spotId?: string; cityId?: string; take?:
             const { data } = await api.get<any>(`/live-vibes${qs ? `?${qs}` : ''}`);
             return data?.data || (Array.isArray(data) ? data : []);
         },
+        staleTime: 60 * 1000, // 1 minute
     });
 }
 
@@ -591,6 +612,7 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
         },
+        staleTime: 60 * 1000, // 1 minute
     });
 }
 
