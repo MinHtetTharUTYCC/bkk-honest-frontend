@@ -11,8 +11,6 @@ import {
 } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
-    X,
-    AlertTriangle,
     MessageSquare,
     Edit2,
     Trash2,
@@ -27,19 +25,17 @@ import {
     Flag,
     Share2,
 } from 'lucide-react';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInView } from 'react-intersection-observer';
 import ReactionButton from '@/components/reactions/reaction-button';
 import ReportButton from '@/components/report/report-button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { ImageViewer } from '@/components/ui/image-viewer';
 import Image from 'next/image';
 import ScamEditModal from '@/components/scams/scam-edit-modal';
 import { LikeButton } from '@/components/ui/like-button';
 import { toast } from 'sonner';
-import { ShareButton } from '@/components/ui/share-button';
 import { Textarea } from '@/components/ui/textarea';
 import {
     AlertDialog,

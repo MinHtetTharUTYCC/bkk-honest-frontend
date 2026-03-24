@@ -13,12 +13,14 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
   try {
     const { citySlug, alertSlug } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    const path = `/scam-alerts/${citySlug}/${alertSlug}`;
+    const encodedCitySlug = encodeURIComponent(citySlug);
+    const encodedAlertSlug = encodeURIComponent(alertSlug);
+    const path = `/scam-alerts/${encodedCitySlug}/${encodedAlertSlug}`;
     const canonicalUrl = `${siteUrl}${path}`;
     
     // Fetch alert data for dynamic metadata
     const response = await fetch(
-      `${baseUrl}/api/scam-alerts/${encodeURIComponent(alertSlug)}`,
+      `${baseUrl}/api/scam-alerts/${encodedAlertSlug}`,
       { next: { revalidate: 3600 } }
     ).catch(() => null);
 
