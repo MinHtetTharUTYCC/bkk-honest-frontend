@@ -1,7 +1,6 @@
 'use client';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 
-import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchInput } from '@/components/ui/search-input';
 import { SearchFilters } from '@/components/search/search-filters';

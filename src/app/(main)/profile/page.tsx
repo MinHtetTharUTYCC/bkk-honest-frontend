@@ -1,5 +1,5 @@
 'use client';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect, useMemo, useRef } from 'react';
 
 import { useAuth } from '@/components/providers/auth-provider';
 import {
@@ -27,7 +27,6 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { useState, useEffect, useMemo, useRef } from 'react';
 import api from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';

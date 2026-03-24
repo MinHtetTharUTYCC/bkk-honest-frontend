@@ -1,5 +1,5 @@
 'use client';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect, use } from 'react';
 
 import { useAuth } from '@/components/providers/auth-provider';
 import {
@@ -12,7 +12,6 @@ import { Zap, MapPin, Calendar, ArrowRight, Loader2, AlertTriangle, Target, More
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect, use } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ProfileTabs } from '@/components/profile/profile-tabs';

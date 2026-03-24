@@ -1,8 +1,7 @@
 'use client';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
 import Map, { Marker, Source, Layer } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, ArrowLeft, Loader2, X, ChevronDown, Train } from 'lucide-react';

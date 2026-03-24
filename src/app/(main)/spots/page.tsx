@@ -1,7 +1,6 @@
 'use client';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
 import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
 import { useQueryClient } from '@tanstack/react-query';
 import SpotCard from '@/components/spots/spot-card';
