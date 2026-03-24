@@ -904,7 +904,7 @@ export function useCreateVote() {
             type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             let endpoint = '';
-            let payload: any = {};
+            const payload: any = {};
 
             if (type === 'tip') {
                 endpoint = '/votes/tip';

@@ -1,4 +1,7 @@
-import { generateBreadcrumbSchema, generateScamAlertSchema } from '@/lib/schema-generator';
+import {
+  generateBreadcrumbSchema,
+  generateScamAlertSchema,
+} from "@/lib/schema-generator";
 
 interface ScamAlertHeadProps {
   params: Promise<{
@@ -7,8 +10,8 @@ interface ScamAlertHeadProps {
   }>;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default async function Head({ params }: ScamAlertHeadProps) {
   const { citySlug, alertSlug } = await params;
@@ -29,10 +32,10 @@ export default async function Head({ params }: ScamAlertHeadProps) {
 
   const scamSchema = generateScamAlertSchema(alert, pageUrl);
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: 'Home', item: `${siteUrl}/` },
-    { name: 'Scam Alerts', item: `${siteUrl}/scam-alerts` },
+    { name: "Home", item: `${siteUrl}/` },
+    { name: "Scam Alerts", item: `${siteUrl}/scam-alerts` },
     { name: alert?.city?.name || citySlug, item: `${siteUrl}/scam-alerts` },
-    { name: alert?.scamName || 'Scam Alert', item: pageUrl },
+    { name: alert?.scamName || "Scam Alert", item: pageUrl },
   ]);
 
   return (
