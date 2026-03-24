@@ -198,7 +198,7 @@ export default function VibesPage() {
                         <h3 className="text-xl font-display font-bold text-white/40 uppercase tracking-widest">
                             No vibes found
                         </h3>
-                        <p className="text-xs text-white/20 mt-2 font-medium">Try selecting a different category</p>
+                        <p className="text-xs text-white/60 mt-2 font-bold uppercase tracking-wide">Try selecting a different category</p>
                     </div>
                 )}
             </div>

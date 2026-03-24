@@ -272,7 +272,7 @@ export default function DiscoveryPage() {
                             <h4 className="font-display text-xl font-bold text-foreground tracking-tight">
                                 No spots found
                             </h4>
-                            <p className="text-xs text-white/40 font-medium uppercase tracking-widest">
+                            <p className="text-xs text-white/60 font-bold uppercase tracking-wide">
                                 Try changing your filters or searching for something else
                             </p>
                         </div>
