@@ -27,6 +27,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getSpotUrl } from '@/lib/slug';
 import TransitOverlay from '@/components/map/transit-overlay';
 import { useMapTransitVisible } from '@/hooks/use-map-transit';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
