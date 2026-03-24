@@ -21,11 +21,9 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
     MapPin,
     Zap,
-    Info,
     ArrowLeft,
     TrendingDown,
     TrendingUp,
-    AlertTriangle,
     CheckCircle2,
     Camera,
     Maximize2,
