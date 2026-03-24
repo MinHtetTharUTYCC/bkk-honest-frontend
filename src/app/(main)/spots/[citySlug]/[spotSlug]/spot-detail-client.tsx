@@ -16,7 +16,6 @@ import {
     useInfiniteLiveVibes,
     useCreateLiveVibe,
     useUpdateCommunityTip,
-    useDeleteCommunityTip,
 } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
