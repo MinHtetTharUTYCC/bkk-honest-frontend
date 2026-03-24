@@ -88,7 +88,8 @@ export default function SpotDetailPage() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const { data: spot, isLoading: spotLoading } = useSpotBySlug(citySlug, spotSlug);
-    
+    const queryClient = useQueryClient();
+
     // Price Reports
     const {
         data: reportsData,
@@ -96,6 +97,31 @@ export default function SpotDetailPage() {
         hasNextPage: hasNextReports,
         isFetchingNextPage: isFetchingNextReports,
     } = useInfiniteSpotPriceReports(spot?.id || '');
+
+    const prefetchTab = (tab: 'gallery' | 'prices' | 'tips' | 'vibes') => {
+        if (!spot?.id) return;
+        
+        const prefetchMap: Record<string, () => void> = {
+            gallery: () => queryClient.prefetchQuery({ 
+                queryKey: ['gallery', spot.id, 6, 'newest'] 
+            }),
+            prices: () => queryClient.prefetchInfiniteQuery({ 
+                queryKey: ['price-reports-infinite', spot.id],
+                initialPageParam: 0 
+            } as any),
+            tips: () => queryClient.prefetchInfiniteQuery({ 
+                queryKey: ['tips-infinite', spot.id, tipType, tipSort],
+                initialPageParam: 0 
+            } as any),
+            vibes: () => queryClient.prefetchInfiniteQuery({ 
+                queryKey: ['live-vibes-infinite', { spotId: spot.id }],
+                initialPageParam: 0 
+            } as any),
+        };
+
+        prefetchMap[tab]?.();
+    };
+
     const reports = reportsData?.pages.flatMap((page) => page.data || page) || [];
 
     const { data: galleryResponse } = useSpotGallery(spot?.id || '', 6);
@@ -143,7 +169,7 @@ export default function SpotDetailPage() {
         setActiveTabState(tab);
         const params = new URLSearchParams(searchParams.toString());
         params.set('tabs', tab);
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        window.history.replaceState(null, '', `?${params.toString()}`);
     };
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -782,6 +808,7 @@ export default function SpotDetailPage() {
                 <div className="flex bg-white/5 p-1 rounded-2xl">
                     <button
                         onClick={() => setActiveTab('gallery')}
+                        onMouseEnter={() => prefetchTab('gallery')}
                         className={cn(
                             'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'gallery'
@@ -793,6 +820,7 @@ export default function SpotDetailPage() {
                     </button>
                     <button
                         onClick={() => setActiveTab('prices')}
+                        onMouseEnter={() => prefetchTab('prices')}
                         className={cn(
                             'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'prices'
@@ -804,6 +832,7 @@ export default function SpotDetailPage() {
                     </button>
                     <button
                         onClick={() => setActiveTab('tips')}
+                        onMouseEnter={() => prefetchTab('tips')}
                         className={cn(
                             'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'tips'
@@ -815,6 +844,7 @@ export default function SpotDetailPage() {
                     </button>
                     <button
                         onClick={() => setActiveTab('vibes')}
+                        onMouseEnter={() => prefetchTab('vibes')}
                         className={cn(
                             'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
                             activeTab === 'vibes'

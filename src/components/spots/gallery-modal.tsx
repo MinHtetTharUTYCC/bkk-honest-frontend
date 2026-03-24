@@ -29,7 +29,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     const rawImages = data?.pages.flatMap((page) => page.data || page) || [];
     // Remove duplicates that can occur with offset pagination when new items are added
     const images = Array.from(new Map(rawImages.map((img: any) => [img.id, img])).values());
-    const totalImages = data?.pages[0]?.pagination?.total || data?.pages[0]?.total;
+    const totalImages = (data?.pages[0] as any)?.pagination?.total || (data?.pages[0] as any)?.total;
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });

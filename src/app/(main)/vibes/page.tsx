@@ -93,7 +93,7 @@ export default function VibesPage() {
                         </h1>
                         <p className="text-white/40 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
                             <Zap size={14} strokeWidth={3} className="text-amber-400" />
-                            What's happening in {selectedCity?.name || 'the city'} right now
+                            What is the vibe in {selectedCity?.name || 'the city'} right now
                         </p>
                     </div>
                 </div>

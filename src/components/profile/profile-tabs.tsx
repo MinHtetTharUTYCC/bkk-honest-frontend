@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useMemo, useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 
@@ -35,6 +36,24 @@ interface ProfileTabsProps {
 export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }: ProfileTabsProps) {
     const { ref, inView } = useInView({ threshold: 0.1 });
     const lastFetchTabRef = useRef<string | null>(null);
+    const queryClient = useQueryClient();
+
+    const prefetchTab = (tab: string) => {
+        const queryKeyMap: Record<string, string> = {
+            scams: 'user-scam-alerts-infinite',
+            tips: 'user-community-tips-infinite',
+            reports: 'user-price-reports-infinite',
+            spots: 'user-spots-infinite',
+        };
+
+        const key = queryKeyMap[tab];
+        if (key) {
+            queryClient.prefetchInfiniteQuery({
+                queryKey: [key, userId],
+                initialPageParam: 0,
+            } as any);
+        }
+    };
 
     const {
         data: reportsData,
@@ -130,6 +149,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                         <button
                             key={tab.id}
                             onClick={() => onTabChange(tab.id as any)}
+                            onMouseEnter={() => prefetchTab(tab.id)}
                             className={cn(
                                 'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
                                 activeTab === tab.id

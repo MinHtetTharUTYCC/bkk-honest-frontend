@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
+import { useQueryClient } from '@tanstack/react-query';
 import SpotCard from '@/components/spots/spot-card';
 import { SearchInput } from '@/components/ui/search-input';
 import { Filter, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
@@ -28,6 +29,19 @@ export default function DiscoveryPage() {
 
     const { selectedCityId, selectedCity } = useCity();
     const [isClient, setIsClient] = useState(false);
+    const queryClient = useQueryClient();
+
+    const prefetchCategory = (catId: string | undefined) => {
+        queryClient.prefetchInfiniteQuery({
+            queryKey: ['spots-infinite', {
+                cityId: selectedCityId,
+                categoryId: catId,
+                search: search,
+                sort: sort,
+            }],
+            initialPageParam: 0,
+        } as any);
+    };
 
     // Function to update URL params
     const createQueryString = useCallback(
@@ -170,6 +184,7 @@ export default function DiscoveryPage() {
                 <div className="flex gap-2 pb-2">
                     <button
                         onClick={() => handleCategoryChange(undefined)}
+                        onMouseEnter={() => prefetchCategory(undefined)}
                         className={cn(
                             'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
                             !selectedCategory
@@ -183,6 +198,7 @@ export default function DiscoveryPage() {
                         <button
                             key={cat.id}
                             onClick={() => handleCategoryChange(cat.id)}
+                            onMouseEnter={() => prefetchCategory(cat.id)}
                             className={cn(
                                 'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
                                 selectedCategory === cat.id

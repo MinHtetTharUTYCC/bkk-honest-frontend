@@ -15,7 +15,7 @@ async function fetchApi(path: string, params?: Record<string, string | number | 
         });
     }
 
-    const response = await fetch(url.toString(), { next: { revalidate: 300 } });
+    const response = await fetch(url.toString(), { next: { revalidate: 3600 } }); // Increased revalidate to 1 hour for metadata
     if (!response.ok) {
         throw new Error(`Failed to fetch ${path}`);
     }
@@ -25,12 +25,14 @@ async function fetchApi(path: string, params?: Record<string, string | number | 
 async function HomeFeedPrefetched() {
     const queryClient = new QueryClient();
 
+    // Prefetch metadata with 24 hour staleTime match
     await queryClient.prefetchQuery({
         queryKey: ['cities'],
         queryFn: async () => {
             const data = await fetchApi('/cities');
             return Array.isArray(data) ? data : data?.data || [];
         },
+        staleTime: 24 * 60 * 60 * 1000,
     });
 
     const cities = (queryClient.getQueryData(['cities']) as any[]) || [];
@@ -46,6 +48,7 @@ async function HomeFeedPrefetched() {
                 const data = await fetchApi('/categories');
                 return Array.isArray(data) ? data : data?.data || [];
             },
+            staleTime: 24 * 60 * 60 * 1000,
         }),
         queryClient.prefetchQuery({
             queryKey: ['leaderboard', 5],
@@ -53,6 +56,7 @@ async function HomeFeedPrefetched() {
                 const data = await fetchApi('/profiles/leaderboard/top', { take: 5 });
                 return data?.data || data;
             },
+            staleTime: 5 * 60 * 1000,
         }),
         selectedCityId
             ? queryClient.prefetchQuery({
@@ -61,6 +65,7 @@ async function HomeFeedPrefetched() {
                       const data = await fetchApi('/spots', { cityId: selectedCityId, sort: 'popular' });
                       return data?.data || (Array.isArray(data) ? data : []);
                   },
+                  staleTime: 5 * 60 * 1000,
               })
             : Promise.resolve(),
         selectedCityId
@@ -70,6 +75,7 @@ async function HomeFeedPrefetched() {
                       const data = await fetchApi('/scam-alerts', { cityId: selectedCityId, take: 5 });
                       return data?.data || (Array.isArray(data) ? data : []);
                   },
+                  staleTime: 5 * 60 * 1000,
               })
             : Promise.resolve(),
         selectedCityId
@@ -79,6 +85,7 @@ async function HomeFeedPrefetched() {
                       const query = await fetchApi('/live-vibes', { cityId: selectedCityId, take: 5 });
                       return query?.data || (Array.isArray(query) ? query : []);
                   },
+                  staleTime: 1 * 60 * 1000,
               })
             : Promise.resolve(),
     ]);

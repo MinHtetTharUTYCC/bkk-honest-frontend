@@ -8,10 +8,35 @@ import { cn } from '@/lib/utils';
 import { getSpotUrl } from '@/lib/slug';
 import { LikeButton } from '@/components/ui/like-button';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function SpotCard({ spot }: { spot: any }) {
     const router = useRouter();
-    const { name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
+    const queryClient = useQueryClient();
+    const { id, slug, city, name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
+
+    const prefetchSpot = () => {
+        const citySlug = city?.slug || 'bangkok';
+        const spotSlug = slug || '';
+        if (!citySlug || !spotSlug) return;
+
+        // Prefetch Spot Detail
+        queryClient.prefetchQuery({
+            queryKey: ['spot', citySlug, spotSlug],
+        });
+
+        // Prefetch Gallery (First 6)
+        queryClient.prefetchQuery({
+            queryKey: ['gallery', id, 6, 'newest'],
+        });
+
+        // Prefetch Tips (Initial popular try tips)
+        queryClient.prefetchInfiniteQuery({
+            queryKey: ['tips-infinite', id, 'TRY', 'popular'],
+            initialPageParam: 0,
+        } as any);
+    };
+
     const { user } = useAuth();
     const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
@@ -31,6 +56,7 @@ export default function SpotCard({ spot }: { spot: any }) {
     return (
         <div 
             onClick={() => router.push(getSpotUrl(spot.city?.slug || 'bangkok', spot.slug || ''))}
+            onMouseEnter={prefetchSpot}
             className="shrink-0 w-full bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500 cursor-pointer overflow-hidden"
         >
             {/* Image Section */}

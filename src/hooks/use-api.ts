@@ -218,7 +218,7 @@ export function useSpots(params?: {
             // The backend returns { data: [...] }
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        staleTime: 2 * 60 * 1000, // 2 minutes
+        staleTime: 5 * 60 * 1000, // Increased to 5 minutes
     });
 }
 
@@ -255,7 +255,7 @@ export function useInfiniteSpots(params?: {
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
         },
-        staleTime: 2 * 60 * 1000, // 2 minutes
+        staleTime: 5 * 60 * 1000, // Increased to 5 minutes
     });
 }
 
@@ -435,7 +435,8 @@ export function useCategories() {
             const { data } = await api.get<any>('/categories');
             return Array.isArray(data) ? data : (data as any)?.data || [];
         },
-        staleTime: 60 * 60 * 1000, // 1 hour
+        staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
+        gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
     });
 }
 
@@ -446,7 +447,8 @@ export function useCities() {
             const { data } = await api.get<any[]>('/cities');
             return Array.isArray(data) ? data : (data as any)?.data || [];
         },
-        staleTime: 60 * 60 * 1000, // 1 hour
+        staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
+        gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
     });
 }
 
