@@ -38,6 +38,9 @@ import {
     MessageSquare,
     Navigation,
     ImageIcon,
+    MoreVertical,
+    Flag,
+    Share2,
 } from 'lucide-react';
 import { LikeButton } from '@/components/ui/like-button';
 import { ImageViewer } from '@/components/ui/image-viewer';
@@ -59,7 +62,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
-import { MoreVertical, Flag, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
