@@ -153,7 +153,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                                 onClick={() => onTabChange(tab.id as any)}
                                 onMouseEnter={() => prefetchTab(tab.id)}
                                 className={cn(
-                                    'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap',
+                                    'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer',
                                     activeTab === tab.id
                                         ? tab.color.split(' active:')[0] + ' shadow-sm'
                                         : 'text-white/40 hover:text-white/70',

@@ -105,7 +105,7 @@ export default function VibesPage() {
                     <button
                         onClick={() => handleCategoryChange('')}
                         className={cn(
-                            "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
+                            "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer",
                             selectedCategory === '' 
                                 ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
                                 : "text-white/40 hover:text-white/70 hover:bg-white/5"
@@ -118,7 +118,7 @@ export default function VibesPage() {
                             key={cat.id}
                             onClick={() => handleCategoryChange(cat.id)}
                             className={cn(
-                                "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap",
+                                "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer",
                                 selectedCategory === cat.id 
                                     ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
                                     : "text-white/40 hover:text-white/70 hover:bg-white/5"

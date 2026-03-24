@@ -810,7 +810,7 @@ export default function SpotDetailPage() {
                         onClick={() => setActiveTab('gallery')}
                         onMouseEnter={() => prefetchTab('gallery')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all cursor-pointer',
                             activeTab === 'gallery'
                                 ? 'bg-amber-400 text-black shadow-sm'
                                 : 'text-white/50 hover:text-white/70',
@@ -822,7 +822,7 @@ export default function SpotDetailPage() {
                         onClick={() => setActiveTab('prices')}
                         onMouseEnter={() => prefetchTab('prices')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all cursor-pointer',
                             activeTab === 'prices'
                                 ? 'bg-amber-400 text-black shadow-sm'
                                 : 'text-white/50 hover:text-white/70',
@@ -834,7 +834,7 @@ export default function SpotDetailPage() {
                         onClick={() => setActiveTab('tips')}
                         onMouseEnter={() => prefetchTab('tips')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all cursor-pointer',
                             activeTab === 'tips'
                                 ? 'bg-amber-400 text-black shadow-sm'
                                 : 'text-white/50 hover:text-white/70',
@@ -846,7 +846,7 @@ export default function SpotDetailPage() {
                         onClick={() => setActiveTab('vibes')}
                         onMouseEnter={() => prefetchTab('vibes')}
                         className={cn(
-                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all',
+                            'flex-1 py-2.5 rounded-xl text-[10px] md:text-xs font-bold uppercase tracking-widest transition-all cursor-pointer',
                             activeTab === 'vibes'
                                 ? 'bg-amber-400 text-black shadow-sm'
                                 : 'text-white/50 hover:text-white/70',

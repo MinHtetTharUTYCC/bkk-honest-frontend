@@ -153,7 +153,7 @@ export default function DiscoveryPage() {
                         <button
                             onClick={() => handleSortChange('newest')}
                             className={cn(
-                                'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all',
+                                'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer',
                                 sort === 'newest'
                                     ? 'bg-white/10 text-foreground shadow-sm'
                                     : 'text-white/40 hover:text-white/70',
@@ -165,7 +165,7 @@ export default function DiscoveryPage() {
                         <button
                             onClick={() => handleSortChange('popular')}
                             className={cn(
-                                'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all',
+                                'flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer',
                                 sort === 'popular'
                                     ? 'bg-white/10 text-foreground shadow-sm'
                                     : 'text-white/40 hover:text-white/70',
@@ -192,7 +192,7 @@ export default function DiscoveryPage() {
                         onClick={() => handleCategoryChange(undefined)}
                         onMouseEnter={() => prefetchCategory(undefined)}
                         className={cn(
-                            'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all',
+                            'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer',
                             !selectedCategory
                                 ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
                                 : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
@@ -206,7 +206,7 @@ export default function DiscoveryPage() {
                             onClick={() => handleCategoryChange(cat.id)}
                             onMouseEnter={() => prefetchCategory(cat.id)}
                             className={cn(
-                                'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2',
+                                'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer',
                                 selectedCategory === cat.id
                                     ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
                                     : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
