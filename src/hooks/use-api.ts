@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useAuth } from '@/components/providers/auth-provider';
 import api from '@/lib/api';
 import { components } from '@/types/api';
 

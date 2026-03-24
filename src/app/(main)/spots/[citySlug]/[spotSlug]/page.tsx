@@ -263,7 +263,6 @@ export default function SpotDetailPage() {
         });
     };
 
-    const queryClient = useQueryClient();
     const deleteSpotMutation = useMutation({
         mutationFn: async () => {
             await api.delete(`/spots/${spot?.id || ''}`);
