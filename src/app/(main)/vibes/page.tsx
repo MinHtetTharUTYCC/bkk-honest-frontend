@@ -10,6 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { getSpotUrl } from '@/lib/slug';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
+import { CategorySelector } from '@/components/ui/category-selector';
 
 export default function VibesPage() {
     const router = useRouter();
@@ -103,35 +104,12 @@ export default function VibesPage() {
             </header>
 
             {/* Filters */}
-            <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex items-center gap-4 bg-card p-2 rounded-2xl border border-white/8 no-scrollbar shadow-xl">
-                    <button
-                        onClick={() => handleCategoryChange('')}
-                        className={cn(
-                            "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer",
-                            selectedCategory === '' 
-                                ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
-                                : "text-white/40 hover:text-white/70 hover:bg-white/5"
-                        )}
-                    >
-                        All Vibes
-                    </button>
-                    {Array.isArray(categories) && categories.map((cat: any) => (
-                        <button
-                            key={cat.id}
-                            onClick={() => handleCategoryChange(cat.id)}
-                            className={cn(
-                                "px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer",
-                                selectedCategory === cat.id 
-                                    ? "bg-amber-400 text-black shadow-lg shadow-amber-400/20" 
-                                    : "text-white/40 hover:text-white/70 hover:bg-white/5"
-                            )}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
-                </div>
-            </ScrollArea>
+            <CategorySelector 
+                categories={categories}
+                selectedId={selectedCategory}
+                onSelect={(id) => handleCategoryChange(id || '')}
+                allLabel="All Vibes"
+            />
 
             {/* Vibes List */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

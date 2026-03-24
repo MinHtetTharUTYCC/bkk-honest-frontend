@@ -11,6 +11,7 @@ import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
+import { CategorySelector } from '@/components/ui/category-selector';
 
 export default function DiscoveryPage() {
     const router = useRouter();
@@ -186,50 +187,14 @@ export default function DiscoveryPage() {
             </header>
 
             {/* Category Pills */}
-            <ScrollArea className="w-full whitespace-nowrap -mx-2 px-2">
-                <div className="flex gap-2 pb-2">
-                    <button
-                        onClick={() => handleCategoryChange(undefined)}
-                        onMouseEnter={() => prefetchCategory(undefined)}
-                        className={cn(
-                            'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all cursor-pointer',
-                            !selectedCategory
-                                ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
-                                : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
-                        )}
-                    >
-                        All Pulse
-                    </button>
-                    {categories?.map((cat: any) => (
-                        <button
-                            key={cat.id}
-                            onClick={() => handleCategoryChange(cat.id)}
-                            onMouseEnter={() => prefetchCategory(cat.id)}
-                            className={cn(
-                                'shrink-0 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer',
-                                selectedCategory === cat.id
-                                    ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
-                                    : 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8',
-                            )}
-                        >
-                            {cat.name}
-                            {cat._count?.spots > 0 && (
-                                <span
-                                    className={cn(
-                                        'px-1.5 py-0.5 rounded-md text-[12px]',
-                                        selectedCategory === cat.id
-                                            ? 'bg-white/20 text-black'
-                                            : 'bg-white/8 text-white/40',
-                                    )}
-                                >
-                                    {cat._count.spots}
-                                </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
-                <ScrollBar orientation="horizontal" className="hidden" />
-            </ScrollArea>
+            <CategorySelector 
+                categories={categories}
+                selectedId={selectedCategory}
+                onSelect={handleCategoryChange}
+                onHover={prefetchCategory}
+                countKey="spots"
+                className="-mx-2 px-2"
+            />
 
             {/* Grid of Spots */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 pt-2">

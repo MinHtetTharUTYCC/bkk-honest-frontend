@@ -28,6 +28,7 @@ import { getSpotUrl } from '@/lib/slug';
 import TransitOverlay from '@/components/map/transit-overlay';
 import { useMapTransitVisible } from '@/hooks/use-map-transit';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { CategorySelector } from '@/components/ui/category-selector';
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -464,73 +465,24 @@ export default function MapPage() {
 
             {/* TOP FILTER BAR */}
             <div className="absolute top-4 left-0 right-28 z-40 px-4">
-                <ScrollArea className="w-full whitespace-nowrap">
-                    <div className="flex gap-2 pb-4 no-scrollbar snap-x">
-                        <button
-                            onClick={() => {
-                                setActiveCategoryId(undefined);
-                                shouldAutoFit.current = true;
-                                syncUrl(
-                                    searchParams.latitude,
-                                    searchParams.longitude,
-                                    searchParams.zoom,
-                                    undefined,
-                                );
-                            }}
-                            className={cn(
-                                'whitespace-nowrap px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-xl snap-center flex items-center gap-2 cursor-pointer',
-                                !activeCategoryId
-                                    ? 'bg-white text-black shadow-white/20 scale-105'
-                                    : 'bg-black/60 backdrop-blur-md border border-white/10 text-white/70 hover:bg-white/10',
-                            )}
-                        >
-                            All Spots
-                            {spotsFetching && !activeCategoryId && (
-                                <Loader2 size={12} className="animate-spin" />
-                            )}
-                        </button>
-
-                        {categories?.map((cat: any) => {
-                            const isSelected = activeCategoryId === cat.id;
-                            const config = getCategoryConfig(cat.name);
-
-                            return (
-                                <button
-                                    key={cat.id}
-                                    onClick={() => {
-                                        setActiveCategoryId(cat.id);
-                                        shouldAutoFit.current = true;
-                                        syncUrl(
-                                            searchParams.latitude,
-                                            searchParams.longitude,
-                                            searchParams.zoom,
-                                            cat.id,
-                                        );
-                                    }}
-                                    className={cn(
-                                        'whitespace-nowrap px-5 py-2.5 rounded-full text-xs font-bold transition-all shadow-xl snap-center flex items-center gap-2 cursor-pointer',
-                                        isSelected
-                                            ? `bg-white text-black scale-105`
-                                            : 'bg-black/60 backdrop-blur-md border border-white/10 text-white/70 hover:bg-white/10',
-                                    )}
-                                >
-                                    <span
-                                        className={
-                                            isSelected ? 'text-black' : config.colors.split(' ')[0]
-                                        }
-                                    >
-                                        {config.icon}
-                                    </span>
-                                    {cat.name}
-                                    {spotsFetching && isSelected && (
-                                        <Loader2 size={12} className="animate-spin" />
-                                    )}
-                                </button>
-                            );
-                        })}
-                    </div>
-                    <ScrollBar orientation="horizontal" className="hidden" />
-                </ScrollArea>
+                <CategorySelector 
+                    categories={categories || []}
+                    selectedId={activeCategoryId}
+                    onSelect={(id) => {
+                        setActiveCategoryId(id);
+                        shouldAutoFit.current = true;
+                        syncUrl(
+                            searchParams.latitude,
+                            searchParams.longitude,
+                            searchParams.zoom,
+                            id,
+                        );
+                    }}
+                    allLabel="All Spots"
+                    variant="badge"
+                    isLoadingId={spotsFetching ? activeCategoryId : undefined}
+                    isAllLoading={spotsFetching && !activeCategoryId}
+                />
             </div>
 
             {/* ZOOM WARNING */}
