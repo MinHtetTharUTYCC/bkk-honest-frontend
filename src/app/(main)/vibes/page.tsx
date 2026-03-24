@@ -22,7 +22,7 @@ export default function VibesPage() {
     
     // Initialize from URL
     const [selectedCategory, setSelectedCategory] = useState<string>(
-        searchParams.get('category') || ''
+        searchParams.get('categoryId') || searchParams.get('category') || ''
     );
 
     // Function to update URL params
@@ -45,7 +45,10 @@ export default function VibesPage() {
 
     const handleCategoryChange = (catId: string) => {
         setSelectedCategory(catId);
-        router.push(pathname + '?' + createQueryString({ category: catId || null }), { scroll: false });
+        router.push(pathname + '?' + createQueryString({ 
+            categoryId: catId || null,
+            category: null // Cleanup old param
+        }), { scroll: false });
     };
 
     const {
