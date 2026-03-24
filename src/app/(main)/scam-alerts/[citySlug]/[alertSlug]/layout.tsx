@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
     
     // Fetch alert data for dynamic metadata
     const response = await fetch(
-      `${baseUrl}/scam-alerts/by-slug/${citySlug}/${alertSlug}`,
+      `${baseUrl}/scam-alerts/by-slug/${encodeURIComponent(citySlug)}/${encodeURIComponent(alertSlug)}`,
       { next: { revalidate: 3600 } }
     ).catch(() => null);
 
