@@ -11,8 +11,6 @@ import {
 } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
-    X,
-    AlertTriangle,
     MessageSquare,
     Edit2,
     Trash2,
