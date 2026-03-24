@@ -250,7 +250,7 @@ export default function ScamAlertsPageClient() {
                             <h4 className="font-display text-xl font-bold text-foreground tracking-tight">
                                 Zero alerts reported
                             </h4>
-                            <p className="text-xs text-white/60 font-bold uppercase tracking-wide">
+                            <p className="text-xs text-white/50 font-medium">
                                 It's quiet for now. Stay vigilant regardless!
                             </p>
                         </div>
