@@ -33,7 +33,7 @@ export default function CitySwitcher() {
                     <MapPin size={14} fill="currentColor" className="text-amber-400" />
                 </div>
                 <div className="flex items-center gap-1 pr-1">
-                    <span className="text-[10px] md:text-xs font-black text-foreground uppercase italic tracking-tighter truncate max-w-20 md:max-w-none">
+                    <span className="text-[10px] md:text-xs font-black text-foreground italic tracking-tighter truncate max-w-20 md:max-w-none">
                         {selectedCity?.name || 'Loading...'}
                     </span>
                     <ChevronDown
@@ -49,7 +49,7 @@ export default function CitySwitcher() {
             {isOpen && (
                 <div className="absolute top-full mt-2 left-0 w-48 bg-[#0A0A0B] rounded-[24px] border border-white/10 shadow-2xl shadow-black/50 p-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 backdrop-blur-xl">
                     <div className="px-3 py-2 border-b border-white/10 mb-1">
-                        <span className="text-[12px] font-black text-white/50 uppercase tracking-widest">
+                        <span className="text-[12px] font-black text-white/50 tracking-widest">
                             Switch City
                         </span>
                     </div>
@@ -62,7 +62,7 @@ export default function CitySwitcher() {
                                     setIsOpen(false);
                                 }}
                                 className={cn(
-                                    'w-full text-left px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all',
+                                    'w-full text-left px-4 py-2.5 rounded-xl text-xs font-black tracking-widest transition-all',
                                     selectedCityId === city.id
                                         ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20'
                                         : 'text-white/40 hover:bg-white/5 hover:text-foreground',

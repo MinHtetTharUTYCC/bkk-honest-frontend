@@ -2,7 +2,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  basePath: '/bkk-honest',
+  basePath: process.env.NODE_ENV === 'production' ? undefined : '/bkk-honest',
   // assetPrefix: '/bkk-honest/',
   trailingSlash: true,
   images: {
