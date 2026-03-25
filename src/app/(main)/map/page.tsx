@@ -20,6 +20,7 @@ import {
   Ticket,
   Train,
   AlertTriangle,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -119,6 +120,25 @@ function MapPageContent() {
 
   const [transitLoading, setTransitLoading] = useState(false);
   const [transitError, setTransitError] = useState<string | null>(null);
+
+  const getPulseLabel = (spot: MapSpot) => {
+    const timestamp = spot.activityStats?.lastActivity;
+    if (!timestamp) return null;
+    const date = new Date(timestamp);
+    const now = Date.now();
+    const seconds = Math.floor((now - date.getTime()) / 1000);
+    if (seconds < 60) return "Just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    return `${days}d ago`;
+  };
+
+  const getPulseTotal = (spot: MapSpot) => {
+    return (spot._count?.priceReports || 0) + (spot._count?.vibeChecks || 0) + (spot._count?.communityTips || 0);
+  };
 
   // Skip geolocation if we already have a position from URL (returning user)
   const hasRequestedLocationRef = useRef(hasUrlPosition);
@@ -628,12 +648,12 @@ function MapPageContent() {
                   </span>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-white/5">
-                  <MapPin size={16} className="text-cyan-400 mb-1" />
+                  <Activity size={16} className="text-cyan-400 mb-1" />
                   <span className="text-[10px] text-white/50 uppercase font-semibold">
-                    Reports
+                    Pulse
                   </span>
                   <span className="text-sm font-bold text-white">
-                    {selectedSpot._count?.priceReports || 0}
+                    {getPulseLabel(selectedSpot) || `${getPulseTotal(selectedSpot)} Updates`}
                   </span>
                 </div>
               </div>

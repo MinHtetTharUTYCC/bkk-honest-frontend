@@ -84,7 +84,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
 
     
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
             <div className="relative w-full max-w-6xl h-full bg-card rounded-2xl shadow-2xl overflow-hidden flex flex-col">
                 {/* Header */}
                 <header className="p-8 border-b border-white/8 flex items-center justify-between bg-card z-10">
