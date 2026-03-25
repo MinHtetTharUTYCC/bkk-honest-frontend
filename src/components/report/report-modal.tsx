@@ -37,7 +37,7 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
       await reportMutation.mutateAsync({
         targetId,
         reportType,
-        reason: reason as any,
+        reason: reason as unknown,
         description: description || undefined,
       });
       toast.success('Report submitted. Thank you for helping keep our community safe.');

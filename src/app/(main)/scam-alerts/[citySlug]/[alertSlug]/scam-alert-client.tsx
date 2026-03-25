@@ -59,7 +59,7 @@ export default function ScamAlertClient() {
     citySlug === "thailand" ? "" : citySlug,
     alertSlug,
   );
-  const [localAlert, setLocalAlert] = useState<any>(alert);
+  const [localAlert, setLocalAlert] = useState<unknown>(alert);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showImageViewer, setShowImageViewer] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
@@ -174,7 +174,7 @@ export default function ScamAlertClient() {
 
     const wasVoted = Boolean(localAlert.hasVoted);
 
-    setLocalAlert((prev: any) => ({
+    setLocalAlert((prev: unknown) => ({
       ...prev,
       hasVoted: !wasVoted,
       voteId: wasVoted ? null : "temp-id",
@@ -186,7 +186,7 @@ export default function ScamAlertClient() {
 
     const result = await toggleVote(localAlert);
 
-    setLocalAlert((prev: any) => ({
+    setLocalAlert((prev: unknown) => ({
       ...prev,
       hasVoted: Boolean(result.voteId),
       voteId: result.voteId,
@@ -518,7 +518,7 @@ export default function ScamAlertClient() {
                 No one's talking yet.
               </div>
             ) : (
-              comments.map((comment: any) => (
+              comments.map((comment: unknown) => (
                 <div
                   key={comment.id}
                   className="p-5 bg-white/5 border border-white/8 rounded-2xl space-y-3"
@@ -630,7 +630,7 @@ export default function ScamAlertClient() {
                   ) : (
                     <div className="space-y-3">
                       <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">
-                        {comment.content || (comment as any).text}
+                        {comment.content || (comment as unknown).text}
                       </p>
                       <div className="flex items-center gap-2 pt-1">
                         <ReactionButton

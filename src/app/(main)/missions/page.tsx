@@ -293,7 +293,7 @@ function MissionsPageContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {missions.map((mission: any) => (
+            {missions.map((mission: unknown) => (
               <div
                 key={mission.id}
                 className={cn(

@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { useInfiniteSpotGallery, useUploadSpotImage } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { X, Camera, Loader2, TrendingUp, Calendar, User, Upload } from 'lucide-react';
+import { X, Camera, Loader2, Calendar, User, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LikeButton } from '@/components/ui/like-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
+import {   User } from '@/types';
+
 
 interface GalleryModalProps {
     spotId: string;
@@ -24,12 +26,11 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     const uploadMutation = useUploadSpotImage();
     const { toggleVote, isPending: votePending } = useVoteToggle('image', spotId);
     const [votingImageId, setVotingImageId] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
+    
     const rawImages = data?.pages.flatMap((page) => page.data || page) || [];
     // Remove duplicates that can occur with offset pagination when new items are added
-    const images = Array.from(new Map(rawImages.map((img: any) => [img.id, img])).values());
-    const totalImages = (data?.pages[0] as any)?.pagination?.total || (data?.pages[0] as any)?.total;
+    const images = Array.from(new Map(rawImages.map((img: unknown) => [img.id, img])).values());
+    const totalImages = (data?.pages[0] as unknown)?.pagination?.total || (data?.pages[0] as unknown)?.total;
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });
@@ -56,12 +57,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
         }
     }, [inView]);
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        await uploadMutation.mutateAsync({ spotId, file });
-    };
-
+    
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
             <div className="relative w-full max-w-6xl h-full bg-card rounded-2xl shadow-2xl overflow-hidden flex flex-col">
@@ -141,16 +137,15 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                     ) : (
                         <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {images.map((img: any) => (
+                                {images.map((img: unknown) => (
                                     <div
                                         key={img.id}
                                         className="bg-card rounded-2xl overflow-hidden border border-white/8 shadow-xl shadow-black/30 group"
                                     >
                                         <div className="aspect-[4/5] relative overflow-hidden">
-                                            <img
-                                                src={img.url}
+                                            <img alt="" src={img.url}
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                alt="Spot vibe"
+                                                alt=" vibe"
                                                 loading="lazy"
                                             />
                                         </div>
@@ -163,8 +158,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                         className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 transition-colors shrink-0"
                                                     >
                                                         {img.user?.avatarUrl ? (
-                                                            <img
-                                                                src={img.user.avatarUrl}
+                                                            <img alt="" src={img.user.avatarUrl}
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         ) : (
@@ -198,8 +192,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                                     {
                                                                         month: 'short',
                                                                         day: 'numeric',
-                                                                        year: 'numeric',
-                                                                    },
+                                                                        year: 'numeric' },
                                                                 )}
                                                             </span>
                                                         </p>

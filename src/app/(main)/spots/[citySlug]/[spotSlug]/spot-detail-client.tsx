@@ -4,8 +4,7 @@ import {
   useParams,
   useRouter,
   usePathname,
-  useSearchParams,
-} from "next/navigation";
+  useSearchParams } from "next/navigation";
 import {
   useSpotBySlug,
   useInfiniteSpotPriceReports,
@@ -16,8 +15,7 @@ import {
   useAddMission,
   useInfiniteLiveVibes,
   useUpdateCommunityTip,
-  useDeleteCommunityTip,
-} from "@/hooks/use-api";
+  useDeleteCommunityTip } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import {
   MapPin,
@@ -30,7 +28,7 @@ import {
   Maximize2,
   Upload,
   Loader2,
-  User,
+  
   Trash2,
   Target,
   Edit2,
@@ -38,14 +36,14 @@ import {
   ImageIcon,
   MoreVertical,
   Flag,
-  Share2,
-} from "lucide-react";
+  Share2 } from "lucide-react";
 import { LikeButton } from "@/components/ui/like-button";
 import { ImageViewer } from "@/components/ui/image-viewer";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
+import { Tip } from "@/types";
 import GalleryModal from "@/components/spots/gallery-modal";
 import CreateTipModal from "@/components/tips/create-tip-modal";
 import TipCommentsModal from "@/components/tips/tip-comments-modal";
@@ -67,8 +65,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 import SpotEditModal from "@/components/spots/spot-edit-modal";
 import { useInView } from "react-intersection-observer";
@@ -94,8 +91,7 @@ export default function SpotDetailClient() {
     data: reportsData,
     fetchNextPage: fetchNextReports,
     hasNextPage: hasNextReports,
-    isFetchingNextPage: isFetchingNextReports,
-  } = useInfiniteSpotPriceReports(spot?.id || "");
+    isFetchingNextPage: isFetchingNextReports } = useInfiniteSpotPriceReports(spot?.id || "");
 
   const prefetchTab = (tab: "gallery" | "prices" | "tips" | "vibes") => {
     if (!spot?.id) return;
@@ -103,24 +99,19 @@ export default function SpotDetailClient() {
     const prefetchMap: Record<string, () => void> = {
       gallery: () =>
         queryClient.prefetchQuery({
-          queryKey: ["gallery", spot.id, 6, "newest"],
-        }),
+          queryKey: ["gallery", spot.id, 6, "newest"] }),
       prices: () =>
         queryClient.prefetchInfiniteQuery({
           queryKey: ["price-reports-infinite", spot.id],
-          initialPageParam: 0,
-        } as any),
+          initialPageParam: 0 } as unknown),
       tips: () =>
         queryClient.prefetchInfiniteQuery({
           queryKey: ["tips-infinite", spot.id, tipType, tipSort],
-          initialPageParam: 0,
-        } as any),
+          initialPageParam: 0 } as unknown),
       vibes: () =>
         queryClient.prefetchInfiniteQuery({
           queryKey: ["live-vibes-infinite", { spotId: spot.id }],
-          initialPageParam: 0,
-        } as any),
-    };
+          initialPageParam: 0 } as unknown) };
 
     prefetchMap[tab]?.();
   };
@@ -137,14 +128,13 @@ export default function SpotDetailClient() {
     fetchNextPage: fetchNextVibes,
     hasNextPage: hasNextVibes,
     isFetchingNextPage: isFetchingNextVibes,
-    isLoading: vibesLoading,
-  } = useInfiniteLiveVibes({ spotId: spot?.id || "" });
+    isLoading: vibesLoading } = useInfiniteLiveVibes({ spotId: spot?.id || "" });
   const spotVibes = vibesData?.pages.flatMap((page) => page.data || page) || [];
 
   const missionsList =
     missionsData?.pages.flatMap((page) => page.data || []) || [];
-  const isInMissions = missionsList.some((m: any) => m.spot?.id === spot?.id);
-  const currentMission = missionsList.find((m: any) => m.spot?.id === spot?.id);
+  const isInMissions = missionsList.some((m: unknown) => m.spot?.id === spot?.id);
+  const currentMission = missionsList.find((m: unknown) => m.spot?.id === spot?.id);
   const gallery = galleryResponse?.data || [];
 
   const isOwner = authUser?.id === spot?.userId;
@@ -155,8 +145,8 @@ export default function SpotDetailClient() {
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [showVibeModal, setShowVibeModal] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [selectedTip, setSelectedTip] = useState<any>(null);
-  const [editingTip, setEditingTip] = useState<any>(null);
+  const [selectedTip, setSelectedTip] = useState<Tip | null>(null);
+  const [editingTip, setEditingTip] = useState<Tip | null>(null);
 
   const urlTab = searchParams.get("tabs") as
     | "gallery"
@@ -201,28 +191,24 @@ export default function SpotDetailClient() {
     fetchNextPage: fetchNextTips,
     hasNextPage: hasNextTips,
     isFetchingNextPage: isFetchingNextTips,
-    isLoading: tipsLoading,
-  } = useInfiniteSpotTips(spot?.id || "", tipType, tipSort);
+    isLoading: tipsLoading } = useInfiniteSpotTips(spot?.id || "", tipType, tipSort);
 
   const tips = tipsData?.pages.flatMap((page) => page.data) || [];
 
   // Infinite scroll triggers
   const { ref: observerTarget, inView } = useInView({
     threshold: 0.1,
-    rootMargin: "200px",
-  });
+    rootMargin: "200px" });
   const hasFetchedTipsRef = useRef(false);
 
   const { ref: pricesObserverTarget, inView: inViewPrices } = useInView({
     threshold: 0.1,
-    rootMargin: "200px",
-  });
+    rootMargin: "200px" });
   const hasFetchedPricesRef = useRef(false);
 
   const { ref: vibesObserverTarget, inView: inViewVibes } = useInView({
     threshold: 0.1,
-    rootMargin: "200px",
-  });
+    rootMargin: "200px" });
   const hasFetchedVibesRef = useRef(false);
 
   useEffect(() => {
@@ -274,7 +260,7 @@ export default function SpotDetailClient() {
   }, [inViewVibes]);
 
   const uploadMutation = useUploadSpotImage();
-  const { toggleVote: toggleTipVote, isPending: tipVotePending } =
+  const { toggleVote: toggleTipVote } =
     useVoteToggle("tip", spot?.id || "");
   const { toggleVote: toggleImageVote, isPending: imageVotePending } =
     useVoteToggle("image", spot?.id || "");
@@ -288,16 +274,14 @@ export default function SpotDetailClient() {
     await toggleSpotVote({
       id: spot?.id || "",
       hasVoted: spot?.hasVoted,
-      voteId: spot?.voteId,
-    });
+      voteId: spot?.voteId });
   };
 
   const handleSpotVoteClick = async () => {
     await toggleSpotVote({
       id: spot?.id || "",
       hasVoted: spot?.hasVoted,
-      voteId: spot?.voteId,
-    });
+      voteId: spot?.voteId });
   };
 
   const deleteSpotMutation = useMutation({
@@ -311,8 +295,7 @@ export default function SpotDetailClient() {
     },
     onError: () => {
       toast.error("Failed to delete spot");
-    },
-  });
+    } });
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -341,7 +324,7 @@ export default function SpotDetailClient() {
 
   const galleryList = Array.isArray(gallery) ? gallery : [];
 
-  const handleEditTip = (tip: any) => {
+  const handleEditTip = (tip: unknown) => {
     setEditingTip(tip);
   };
 
@@ -352,8 +335,7 @@ export default function SpotDetailClient() {
       await updateTipMutation.mutateAsync({
         id: editingTip.id,
         spotId: spot?.id || "",
-        ...values,
-      });
+        ...values });
       setEditingTip(null);
       toast.success("Tip updated");
     } catch (error) {
@@ -366,8 +348,7 @@ export default function SpotDetailClient() {
     try {
       await deleteTipMutation.mutateAsync({
         id: tipId,
-        spotId: spot?.id || "",
-      });
+        spotId: spot?.id || "" });
       toast.success("Tip deleted");
     } catch (error) {
       console.error("Failed to delete tip:", error);
@@ -494,12 +475,12 @@ export default function SpotDetailClient() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <span className="bg-black/40 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
-                  {(spot.category as any)?.name}
+                  {(spot.category as unknown)?.name}
                 </span>
                 <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
                   <Zap size={10} fill="currentColor" />
-                  {(spot.vibeStats as any)?.avgCrowdLevel
-                    ? `Busy: ${(spot.vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
+                  {(spot.vibeStats as unknown)?.avgCrowdLevel
+                    ? `Busy: ${(spot.vibeStats as unknown).avgCrowdLevel.toFixed(1)}/5`
                     : "New Spot"}
                 </div>
               </div>
@@ -522,8 +503,7 @@ export default function SpotDetailClient() {
                         navigator.share({
                           title: spot.name,
                           text: `Check out ${spot.name} on BKK Honest! ⚡`,
-                          url: window.location.href,
-                        });
+                          url: window.location.href });
                       }
                     }}
                     className="gap-3 py-3"
@@ -722,8 +702,7 @@ export default function SpotDetailClient() {
                         navigator.share({
                           title: spot.name,
                           text: `Check out ${spot.name} on BKK Honest! ⚡`,
-                          url: window.location.href,
-                        });
+                          url: window.location.href });
                       }
                     }}
                     className="gap-3 py-3"
@@ -828,12 +807,12 @@ export default function SpotDetailClient() {
             Avg Price (THB)
           </span>
           <div className="text-2xl md:text-4xl font-display font-bold text-white">
-            {(spot.priceStats as any)?.avg
-              ? `${(spot.priceStats as any).avg.toFixed(0)}`
+            {(spot.priceStats as unknown)?.avg
+              ? `${(spot.priceStats as unknown).avg.toFixed(0)}`
               : "--"}
           </div>
           <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
-            Across {(spot.priceStats as any)?.count || 0} Reports
+            Across {(spot.priceStats as unknown)?.count || 0} Reports
           </div>
         </div>
         <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
@@ -842,11 +821,11 @@ export default function SpotDetailClient() {
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white flex items-center gap-1 md:gap-2">
             <span className="text-emerald-500 italic">
-              {(spot.priceStats as any)?.min || "--"}
+              {(spot.priceStats as unknown)?.min || "--"}
             </span>
             <span className="text-white/20">-</span>
             <span className="text-red-500 italic">
-              {(spot.priceStats as any)?.max || "--"}
+              {(spot.priceStats as unknown)?.max || "--"}
             </span>
           </div>
           <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest italic">
@@ -858,8 +837,8 @@ export default function SpotDetailClient() {
             Live Vibe
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white">
-            {(spot.vibeStats as any)?.avgCrowdLevel
-              ? `${(spot.vibeStats as any).avgCrowdLevel.toFixed(1)} / 5`
+            {(spot.vibeStats as unknown)?.avgCrowdLevel
+              ? `${(spot.vibeStats as unknown).avgCrowdLevel.toFixed(1)} / 5`
               : "No Data"}
           </div>
           <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
@@ -987,7 +966,7 @@ export default function SpotDetailClient() {
               accept="image/*"
               onChange={handleFileUpload}
             />
-            {((galleryResponse as any)?.pagination?.total ||
+            {((galleryResponse as unknown)?.pagination?.total ||
               galleryList.length) > 0 && (
               <button
                 onClick={() => setShowGalleryModal(true)}
@@ -995,13 +974,13 @@ export default function SpotDetailClient() {
               >
                 <span className="hidden md:inline">
                   View All{" "}
-                  {(galleryResponse as any)?.pagination?.total ||
+                  {(galleryResponse as unknown)?.pagination?.total ||
                     galleryList.length}{" "}
                   Photos
                 </span>
                 <span className="md:hidden">
                   All (
-                  {(galleryResponse as any)?.pagination?.total ||
+                  {(galleryResponse as unknown)?.pagination?.total ||
                     galleryList.length}
                   )
                 </span>
@@ -1020,7 +999,7 @@ export default function SpotDetailClient() {
             </div>
           ) : (
             <>
-              {galleryList.slice(0, 5).map((img: any) => (
+              {galleryList.slice(0, 5).map((img: unknown) => (
                 <div
                   key={img.id}
                   className="aspect-square rounded-2xl overflow-hidden shadow-lg shadow-black/20 group relative border border-border"
@@ -1068,14 +1047,14 @@ export default function SpotDetailClient() {
                   </div>
                 </div>
               ))}
-              {(galleryResponse as any)?.pagination?.total &&
-              (galleryResponse as any).pagination.total > 5 ? (
+              {(galleryResponse as unknown)?.pagination?.total &&
+              (galleryResponse as unknown).pagination.total > 5 ? (
                 <button
                   onClick={() => setShowGalleryModal(true)}
                   className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform"
                 >
                   <span className="text-xl font-display font-bold">
-                    +{(galleryResponse as any).pagination.total - 5}
+                    +{(galleryResponse as unknown).pagination.total - 5}
                   </span>
                   <span className="text-[8px] font-semibold tracking-wide">
                     More Vibes
@@ -1164,7 +1143,7 @@ export default function SpotDetailClient() {
                     </td>
                   </tr>
                 ) : (
-                  reports.map((r: any) => (
+                  reports.map((r: unknown) => (
                     <tr
                       key={r.id}
                       className="hover:bg-white/5 transition-colors"
@@ -1179,18 +1158,18 @@ export default function SpotDetailClient() {
                         <div
                           className={cn(
                             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold tracking-tighter",
-                            Number(r.priceThb) <= (spot.priceStats as any).avg
+                            Number(r.priceThb) <= (spot.priceStats as unknown).avg
                               ? "bg-emerald-50 text-emerald-500"
                               : "bg-red-50 text-red-500",
                           )}
                         >
                           {Number(r.priceThb) <=
-                          (spot.priceStats as any).avg ? (
+                          (spot.priceStats as unknown).avg ? (
                             <TrendingDown size={10} />
                           ) : (
                             <TrendingUp size={10} />
                           )}
-                          {Number(r.priceThb) <= (spot.priceStats as any).avg
+                          {Number(r.priceThb) <= (spot.priceStats as unknown).avg
                             ? "Fair Price"
                             : "Expensive"}
                         </div>
@@ -1317,7 +1296,7 @@ export default function SpotDetailClient() {
               </div>
             ) : (
               <div className="space-y-2.5 pb-8">
-                {tips?.map((tip: any) => (
+                {tips?.map((tip: unknown) => (
                   <TipCard
                     key={tip.id}
                     tip={tip}
@@ -1397,7 +1376,7 @@ export default function SpotDetailClient() {
             </div>
           ) : Array.isArray(spotVibes) && spotVibes.length > 0 ? (
             <div className="space-y-3">
-              {spotVibes.map((vibe: any) => (
+              {spotVibes.map((vibe: unknown) => (
                 <div
                   key={vibe.id}
                   className="bg-white/5 rounded-2xl p-5 border border-white/8 flex items-center justify-between gap-4"
@@ -1430,8 +1409,7 @@ export default function SpotDetailClient() {
                   <p className="text-[10px] text-white/30 whitespace-nowrap">
                     {new Date(vibe.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                      minute: "2-digit" })}
                   </p>
                 </div>
               ))}

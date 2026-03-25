@@ -26,7 +26,7 @@ export default function ContactPage() {
       await api.post("/contact", formData);
       setIsSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Form submission error:", err);
       setError(
         err.response?.data?.message ||

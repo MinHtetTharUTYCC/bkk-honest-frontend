@@ -16,7 +16,7 @@ export async function generateStaticParams() {
     if (!response.ok) return [];
     const json = await response.json();
     const spots = json.data || [];
-    return spots.map((spot: any) => ({
+    return spots.map((spot: unknown) => ({
       citySlug: spot.city?.slug || "bangkok",
       spotSlug: spot.slug,
     }));

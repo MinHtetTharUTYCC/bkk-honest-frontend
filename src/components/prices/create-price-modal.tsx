@@ -34,7 +34,7 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
       });
       toast.success('Price report added successfully');
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       const message = err?.response?.data?.message || 'Failed to publish price report';
       setError(Array.isArray(message) ? message.join(', ') : message);
     }

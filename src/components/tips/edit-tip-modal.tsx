@@ -5,8 +5,9 @@ import { cn } from '@/lib/utils';
 import TipForm from './tip-form';
 import { TipFormValues } from '@/lib/validations/tip';
 
+
 interface EditTipModalProps {
-  tip: any;
+  tip: unknown;
   onSave: (values: TipFormValues) => Promise<void>;
   onClose: () => void;
   isLoading?: boolean;
@@ -16,8 +17,7 @@ export default function EditTipModal({
   tip,
   onSave,
   onClose,
-  isLoading = false,
-}: EditTipModalProps) {
+  isLoading = false }: EditTipModalProps) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
       <div
@@ -40,7 +40,7 @@ export default function EditTipModal({
             </div>
             <div>
               <h3 className="font-display text-xl font-bold text-foreground tracking-tight">
-                Edit Tip
+                Edit 
               </h3>
               <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
                 Update your insight
@@ -60,8 +60,7 @@ export default function EditTipModal({
                 initialData={{
                     type: tip.type,
                     title: tip.title,
-                    description: tip.description,
-                }}
+                    description: tip.description }}
                 onSubmit={onSave}
                 isLoading={isLoading}
                 submitLabel="Save Changes"

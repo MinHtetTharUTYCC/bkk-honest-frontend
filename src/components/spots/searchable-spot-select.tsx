@@ -5,12 +5,13 @@ import { useSpotSearch } from '@/hooks/use-api';
 import { MapPin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
+
 interface SearchableSpotSelectProps {
     name: string;
     required?: boolean;
     placeholder?: string;
     cityId?: string;
-    onSelect?: (spotId: string, spot?: any) => void;
+    onSelect?: (spotId: string, spot?: unknown) => void;
 }
 
 export default function SearchableSpotSelect({
@@ -18,10 +19,9 @@ export default function SearchableSpotSelect({
     required = false,
     placeholder = 'Search spots...',
     cityId,
-    onSelect,
-}: SearchableSpotSelectProps) {
+    onSelect }: SearchableSpotSelectProps) {
     const [inputValue, setInputValue] = useState('');
-    const [selectedSpot, setSelectedSpot] = useState<any>(null);
+    const [selectedSpot, setSelectedSpot] = useState<unknown>(null);
     const [isOpen, setIsOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ export default function SearchableSpotSelect({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleSelect = (spot: any) => {
+    const handleSelect = (spot: unknown) => {
         setSelectedSpot(spot);
         setInputValue(spot.name);
         setIsOpen(false);
@@ -96,7 +96,7 @@ export default function SearchableSpotSelect({
                     <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-white/10 rounded-2xl shadow-2xl shadow-black/50 z-50 max-h-64 overflow-y-auto">
                         {spots.length > 0 ? (
                             <ul className="py-2">
-                                {spots.map((spot: any) => (
+                                {spots.map((spot: unknown) => (
                                     <li key={spot.id}>
                                         <button
                                             type="button"

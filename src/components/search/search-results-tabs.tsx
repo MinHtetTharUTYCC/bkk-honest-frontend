@@ -30,9 +30,9 @@ export function SearchResultsTabs({
 
   useEffect(() => {
     if (activeTab && activeTab !== tab) {
-      setTab(activeTab);
+      setTimeout(() => setTab(activeTab), 0);
     }
-  }, [activeTab]);
+  }, [activeTab, tab]);
 
   // Fetch spots
   const {
@@ -90,8 +90,8 @@ export function SearchResultsTabs({
   };
 
   // Flatten paginated data
-  const spots = spotsData?.pages?.flatMap((page: any) => page.data || []) || [];
-  const scams = scamsData?.pages?.flatMap((page: any) => page.data || []) || [];
+  const spots = spotsData?.pages?.flatMap((page: unknown) => page.data || []) || [];
+  const scams = scamsData?.pages?.flatMap((page: unknown) => page.data || []) || [];
 
   const spotsCount = spotsData?.pages?.[0]?.pagination?.total || spots.length;
   const scamsCount = scamsData?.pages?.[0]?.pagination?.total || scams.length;
@@ -130,7 +130,7 @@ export function SearchResultsTabs({
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {spots.map((spot: any) => (
+                {spots.map((spot: unknown) => (
                   <SpotCard key={spot.id} spot={spot} />
                 ))}
               </div>
@@ -159,7 +159,7 @@ export function SearchResultsTabs({
           ) : (
             <>
               <div className="flex flex-col gap-4">
-                {scams.map((scam: any) => (
+                {scams.map((scam: unknown) => (
                   <ScamAlertCard key={scam.id} alert={scam} />
                 ))}
               </div>

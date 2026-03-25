@@ -41,13 +41,13 @@ describe('LikeButton', () => {
 
   describe('States', () => {
     it('shows voted styling when isVoted is true', () => {
-      const { container } = render(<LikeButton isVoted={true} count={10} />);
+       render(<LikeButton isVoted={true} count={10} />);
       const heartIcon = container.querySelector('svg');
       expect(heartIcon).toHaveClass('fill-amber-400');
     });
 
     it('shows not voted styling when isVoted is false', () => {
-      const { container } = render(<LikeButton isVoted={false} count={10} />);
+       render(<LikeButton isVoted={false} count={10} />);
       const heartIcon = container.querySelector('svg');
       expect(heartIcon).not.toHaveClass('fill-amber-400');
     });
@@ -72,37 +72,37 @@ describe('LikeButton', () => {
 
   describe('Variants', () => {
     it('renders default variant', () => {
-      const { container } = render(<LikeButton variant="default" />);
+       render(<LikeButton variant="default" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-full');
     });
 
     it('renders compact variant', () => {
-      const { container } = render(<LikeButton variant="compact" />);
+       render(<LikeButton variant="compact" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-md');
     });
 
     it('renders overlay variant', () => {
-      const { container } = render(<LikeButton variant="overlay" />);
+       render(<LikeButton variant="overlay" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-md');
     });
 
     it('applies sm size variant', () => {
-      const { container } = render(<LikeButton size="sm" />);
+       render(<LikeButton size="sm" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-xs');
     });
 
     it('applies md size variant', () => {
-      const { container } = render(<LikeButton size="md" />);
+       render(<LikeButton size="md" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-sm');
     });
 
     it('applies lg size variant', () => {
-      const { container } = render(<LikeButton size="lg" />);
+       render(<LikeButton size="lg" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-base');
     });
@@ -208,13 +208,13 @@ describe('LikeButton', () => {
     });
 
     it('applies custom className', () => {
-      const { container } = render(<LikeButton className="custom-class" />);
+       render(<LikeButton className="custom-class" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('custom-class');
     });
 
     it('transitions colors smoothly', () => {
-      const { container } = render(<LikeButton isVoted={false} />);
+       render(<LikeButton isVoted={false} />);
       const heartIcon = container.querySelector('svg');
       expect(heartIcon).toHaveClass('transition-all');
       expect(heartIcon).toHaveClass('duration-200');
@@ -223,7 +223,7 @@ describe('LikeButton', () => {
 
   describe('Color Consistency', () => {
     it('uses amber color when voted', () => {
-      const { container } = render(<LikeButton isVoted={true} count={5} />);
+       render(<LikeButton isVoted={true} count={5} />);
       const heartIcon = container.querySelector('svg');
       const countText = screen.getByText('5');
       
@@ -232,14 +232,14 @@ describe('LikeButton', () => {
     });
 
     it('uses white/70 when not voted', () => {
-      const { container } = render(<LikeButton isVoted={false} count={5} />);
+       render(<LikeButton isVoted={false} count={5} />);
       const countText = screen.getByText('5');
       
       expect(countText).toHaveClass('text-white/70');
     });
 
     it('uses amber on hover when not voted', () => {
-      const { container } = render(<LikeButton isVoted={false} />);
+       render(<LikeButton isVoted={false} />);
       const heartIcon = container.querySelector('svg');
       
       expect(heartIcon).toHaveClass('group-hover:text-amber-400');

@@ -15,15 +15,16 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Loader2 } from 'lucide-react';
+import {   User } from '@/types';
+
 
 interface TipCardProps {
-  tip: any;
-  authUser?: any;
+  tip: unknown;
+  authUser?: unknown;
   onCommentClick: () => void;
-  onVoteClick: (tip: any) => Promise<any>;
+  onVoteClick: (tip: unknown) => Promise<unknown>;
   onEditClick: () => void;
   onDeleteClick: () => Promise<void>;
   isVotePending?: boolean;
@@ -36,8 +37,7 @@ export function TipCard({
   onVoteClick,
   onEditClick,
   onDeleteClick,
-  isVotePending = false,
-}: TipCardProps) {
+  isVotePending = false }: TipCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isOwner = authUser?.id === tip.userId;
@@ -82,7 +82,7 @@ export function TipCard({
               {isDeleting ? (
                 <Loader2 size={16} className="animate-spin mr-2" />
               ) : null}
-              Delete Tip
+              Delete 
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

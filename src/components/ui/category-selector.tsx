@@ -4,8 +4,9 @@ import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Loader2 } from 'lucide-react';
 
+
 interface CategorySelectorProps {
-    categories: any[];
+    categories: unknown[];
     selectedId?: string;
     onSelect: (id: string | undefined) => void;
     onHover?: (id: string | undefined) => void;
@@ -29,8 +30,7 @@ export function CategorySelector({
     isAllLoading,
     className,
     containerClassName,
-    variant = 'pill',
-}: CategorySelectorProps) {
+    variant = 'pill' }: CategorySelectorProps) {
     const isPill = variant === 'pill';
 
     return (

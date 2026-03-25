@@ -10,7 +10,8 @@ import { LikeButton } from '@/components/ui/like-button';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 
-export default function SpotCard({ spot }: { spot: any }) {
+
+export default function SpotCard({ spot }: { spot: unknown }) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const { id, slug, city, name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
@@ -20,28 +21,24 @@ export default function SpotCard({ spot }: { spot: any }) {
         const spotSlug = slug || '';
         if (!citySlug || !spotSlug) return;
 
-        // Prefetch Spot Detail
+        // Prefetch  Detail
         queryClient.prefetchQuery({
-            queryKey: ['spot', citySlug, spotSlug],
-        });
+            queryKey: ['spot', citySlug, spotSlug] });
 
         // Prefetch Gallery (First 6)
         queryClient.prefetchQuery({
-            queryKey: ['gallery', id, 6, 'newest'],
-        });
+            queryKey: ['gallery', id, 6, 'newest'] });
 
         // Prefetch Tips (Initial popular try tips)
         queryClient.prefetchInfiniteQuery({
             queryKey: ['tips-infinite', id, 'TRY', 'popular'],
-            initialPageParam: 0,
-        } as any);
+            initialPageParam: 0 } as unknown);
     };
 
-    const { user } = useAuth();
-    const { toggleVote, isPending: votePending } = useVoteToggle('spot');
+        const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
     // Format category name
-    const categoryName = (category as any)?.name || 'Category';
+    const categoryName = (category as unknown)?.name || 'Category';
 
     // Get the display image
     const displayImage = imageUrl || (images && images.length > 0 ? images[0].url : null);
@@ -83,8 +80,8 @@ export default function SpotCard({ spot }: { spot: any }) {
                     </span>
                     <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
                         <Zap size={10} fill="currentColor" />
-                        {(vibeStats as any)?.avgCrowdLevel
-                            ? `Busy: ${(vibeStats as any).avgCrowdLevel.toFixed(1)}/5`
+                        {(vibeStats as unknown)?.avgCrowdLevel
+                            ? `Busy: ${(vibeStats as unknown).avgCrowdLevel.toFixed(1)}/5`
                             : 'New'}
                     </div>
                 </div>
@@ -123,7 +120,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                             Avg Price
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
-                            {(priceStats as any)?.avg ? `${(priceStats as any).avg} THB` : '--'}
+                            {(priceStats as unknown)?.avg ? `${(priceStats as unknown).avg} THB` : '--'}
                         </span>
                     </div>
                     <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
@@ -131,7 +128,7 @@ export default function SpotCard({ spot }: { spot: any }) {
                             Pulse
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
-                            {(priceStats as any)?.count || 0} Reports
+                            {(priceStats as unknown)?.count || 0} Reports
                         </span>
                     </div>
                 </div>

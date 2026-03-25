@@ -16,7 +16,7 @@ const LEVEL_COLORS = [
 /** Horizontal scroll card list for mobile */
 export function LeaderboardList({ take = 5 }: { take?: number }) {
     const { data, isLoading } = useLeaderboard(take);
-    const list: any[] = Array.isArray(data) ? data : [];
+    const list: unknown[] = Array.isArray(data) ? data : [];
 
     if (isLoading) {
         return (
@@ -39,7 +39,7 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
     return (
         <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
             <div className="flex gap-4 pb-4">
-                {list.map((c: any, idx: number) => (
+                {list.map((c: unknown, idx: number) => (
                     <Link
                         key={c.id}
                         href={`/profile/${c.id}`}
@@ -79,7 +79,7 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
 /** Vertical stacked list for sidebar */
 export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
     const { data, isLoading } = useLeaderboard(take);
-    const list: any[] = Array.isArray(data) ? data : [];
+    const list: unknown[] = Array.isArray(data) ? data : [];
 
     if (isLoading) {
         return (
@@ -95,7 +95,7 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
 
     return (
         <div className="space-y-4">
-            {list.map((c: any, idx: number) => (
+            {list.map((c: unknown, idx: number) => (
                 <Link
                     key={c.id}
                     href={`/profile/${c.id}`}

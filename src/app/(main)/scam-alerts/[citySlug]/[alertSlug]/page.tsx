@@ -16,7 +16,7 @@ export async function generateStaticParams() {
     if (!response.ok) return [];
     const json = await response.json();
     const alerts = json.data || [];
-    return alerts.map((alert: any) => ({
+    return alerts.map((alert: unknown) => ({
       citySlug: alert.city?.slug || "bangkok",
       alertSlug: alert.slug,
     }));

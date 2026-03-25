@@ -63,12 +63,12 @@ export function estimateWalkingTime(distance: number): number {
  * @param stationsGeoJSON GeoJSON FeatureCollection
  * @returns Array of Station objects
  */
-export function parseStationsFromGeoJSON(stationsGeoJSON: any): Station[] {
+export function parseStationsFromGeoJSON(stationsGeoJSON: unknown): Station[] {
   if (!stationsGeoJSON?.features) {
     return [];
   }
 
-  return stationsGeoJSON.features.map((feature: any) => ({
+  return stationsGeoJSON.features.map((feature: unknown) => ({
     id: feature.properties.id || feature.properties.name,
     name: feature.properties.name,
     name_th: feature.properties.name_th,
@@ -76,8 +76,7 @@ export function parseStationsFromGeoJSON(stationsGeoJSON: any): Station[] {
     line: feature.properties.line,
     system: feature.properties.system,
     color: feature.properties.color,
-    interchange: feature.properties.interchange || [],
-  }));
+    interchange: feature.properties.interchange || [] }));
 }
 
 /**
@@ -120,8 +119,7 @@ export function findNearestStation(
   return {
     station: nearestStation,
     distance: minDistance,
-    walkingTime: estimateWalkingTime(minDistance),
-  };
+    walkingTime: estimateWalkingTime(minDistance) };
 }
 
 /**
@@ -153,8 +151,7 @@ export function findNearestStations(
     return {
       station,
       distance,
-      walkingTime: estimateWalkingTime(distance),
-    };
+      walkingTime: estimateWalkingTime(distance) };
   });
 
   // Sort by distance and return the nearest N stations

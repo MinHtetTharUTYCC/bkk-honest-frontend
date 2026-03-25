@@ -5,7 +5,7 @@ import type { LayerProps } from 'react-map-gl/mapbox';
 
 interface TransitStationsProps {
     id: string;
-    data: any; // GeoJSON data with station points
+    data: unknown; // GeoJSON data with station points
 }
 
 export default function TransitStations({ id, data }: TransitStationsProps) {

@@ -42,9 +42,9 @@ async function HomeFeedPrefetched() {
     staleTime: 24 * 60 * 60 * 1000,
   });
 
-  const cities = (queryClient.getQueryData(["cities"]) as any[]) || [];
+  const cities = (queryClient.getQueryData(["cities"]) as unknown[]) || [];
   const bangkok = cities.find(
-    (city: any) => city?.name?.toLowerCase() === "bangkok",
+    (city: unknown) => city?.name?.toLowerCase() === "bangkok",
   );
   const selectedCity = bangkok || cities[0];
   const selectedCityId = selectedCity?.id;

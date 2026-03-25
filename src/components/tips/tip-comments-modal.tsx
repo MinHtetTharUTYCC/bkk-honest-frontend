@@ -1,8 +1,9 @@
 'use client';
+import {   User } from "@/types";
 
 import { useState, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { X, MessageSquare, Send, Loader2, User, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { X, MessageSquare, Send, Loader2, User, Edit2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -20,11 +21,10 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 interface TipCommentsModalProps {
-  tip: any;
+  tip: unknown;
   onClose: () => void;
 }
 
@@ -87,8 +87,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
       await updateCommentMutation.mutateAsync({
         id: commentId,
         content: editContent.trim(),
-        communityTipId: tip.id,
-      });
+        communityTipId: tip.id });
       setEditingCommentId(null);
     } catch (err) {
       console.error(err);
@@ -141,7 +140,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
               {deleteCommentMutation.isPending ? (
                 <Loader2 size={16} className="animate-spin mr-2" />
               ) : null}
-              Delete Comment
+              Delete 
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -209,14 +208,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     <Loader2 size={24} className="animate-spin text-amber-400" />
                   </div>
                 ) : comments?.length > 0 ? (
-                  comments.map((comment: any) => (
+                  comments.map((comment: unknown) => (
                     <div key={comment.id} className="flex gap-3 items-start group">
                       <Link 
                         href={`/profile/${comment.userId}`}
                         className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
                       >
                          {comment.user?.avatarUrl ? (
-                            <img src={comment.user.avatarUrl} className="w-full h-full object-cover" />
+                            <img alt="" src={comment.user.avatarUrl} className="w-full h-full object-cover" />
                           ) : (
                             <User size={16} />
                           )}

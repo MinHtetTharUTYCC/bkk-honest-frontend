@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import TipForm from './tip-form';
 import { TipFormValues } from '@/lib/validations/tip';
 
+
 interface CreateTipModalProps {
   spotId: string;
   onClose: () => void;
@@ -18,11 +19,10 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
     try {
       await createMutation.mutateAsync({
         spotId,
-        ...values,
-      });
-      toast.success('Tip shared with the community!');
+        ...values });
+      toast.success(' shared with the community!');
       onClose();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to share tip';
       toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to share tip');
@@ -44,7 +44,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
             </div>
             <div>
               <h3 className="font-display text-xl font-bold text-foreground tracking-tight">
-                Share a Tip
+                Share a 
               </h3>
               <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
                 Help the community pulse
@@ -63,7 +63,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
             <TipForm
                 onSubmit={onFormSubmit}
                 isLoading={createMutation.isPending}
-                submitLabel="Publish Tip"
+                submitLabel="Publish "
             />
         </div>
       </div>

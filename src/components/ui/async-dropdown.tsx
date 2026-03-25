@@ -43,7 +43,7 @@ export function AsyncDropdown({
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
+                setTimeout(() => setIsOpen(false), 0);
             }
         }
 
@@ -56,7 +56,7 @@ export function AsyncDropdown({
     // Close dropdown when no longer loading
     useEffect(() => {
         if (!isLoading && isOpen && options.length === 0) {
-            setIsOpen(false);
+            setTimeout(() => setIsOpen(false), 0);
         }
     }, [isLoading, isOpen, options.length]);
 
@@ -72,7 +72,7 @@ export function AsyncDropdown({
                 break;
             case 'Escape':
                 e.preventDefault();
-                setIsOpen(false);
+                setTimeout(() => setIsOpen(false), 0);
                 break;
             case 'ArrowDown':
                 e.preventDefault();
@@ -90,11 +90,11 @@ export function AsyncDropdown({
             case 'Enter':
                 e.preventDefault();
                 onChange(optionId);
-                setIsOpen(false);
+                setTimeout(() => setIsOpen(false), 0);
                 break;
             case 'Escape':
                 e.preventDefault();
-                setIsOpen(false);
+                setTimeout(() => setIsOpen(false), 0);
                 break;
             case 'ArrowDown':
                 e.preventDefault();
@@ -183,7 +183,7 @@ export function AsyncDropdown({
                                             data-option-id={option.id}
                                             onClick={() => {
                                                 onChange(option.id);
-                                                setIsOpen(false);
+                                                setTimeout(() => setIsOpen(false), 0);
                                             }}
                                             onKeyDown={(e) => handleOptionKeyDown(e, option.id)}
                                             role="option"

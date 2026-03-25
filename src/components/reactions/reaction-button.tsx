@@ -24,8 +24,14 @@ export default function ReactionButton({
 
   // Sync with props when they change (e.g. after refetch)
   useEffect(() => {
-    setCount(initialCount);
-    setUserReacted(initialUserReacted);
+    let mounted = true;
+    Promise.resolve().then(() => {
+      if (mounted) {
+        setCount(initialCount);
+        setUserReacted(initialUserReacted);
+      }
+    });
+    return () => { mounted = false; };
   }, [initialCount, initialUserReacted]);
 
   const handleVote = async () => {

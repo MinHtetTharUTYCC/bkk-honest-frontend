@@ -6,7 +6,7 @@ import { useCities } from '@/hooks/use-api';
 interface CityContextType {
   selectedCityId: string | undefined;
   setSelectedCityId: (id: string | undefined) => void;
-  selectedCity: any | undefined;
+  selectedCity: unknown | undefined;
 }
 
 const CityContext = createContext<CityContextType | undefined>(undefined);
@@ -35,10 +35,10 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
   // Try to pick a default if none selected (e.g. Bangkok) or if the saved city doesn't exist anymore
   useEffect(() => {
     if (cities && cities.length > 0) {
-      const isValid = selectedCityId && cities.some((c: any) => c.id === selectedCityId);
+      const isValid = selectedCityId && cities.some((c: unknown) => c.id === selectedCityId);
       
       if (!selectedCityId || !isValid) {
-        const bangkok = cities.find((c: any) => c.name.toLowerCase() === 'bangkok');
+        const bangkok = cities.find((c: unknown) => c.name.toLowerCase() === 'bangkok');
         if (bangkok) {
           setSelectedCityId(bangkok.id);
         } else {
@@ -48,7 +48,7 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cities, selectedCityId]);
 
-  const selectedCity = cities?.find((c: any) => c.id === selectedCityId);
+  const selectedCity = cities?.find((c: unknown) => c.id === selectedCityId);
 
   return (
     <CityContext.Provider value={{ selectedCityId, setSelectedCityId, selectedCity }}>

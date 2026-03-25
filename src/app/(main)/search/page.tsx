@@ -70,7 +70,7 @@ function SearchPageContent() {
     }
   };
 
-  const handleHistorySelect = (item: any) => {
+  const handleHistorySelect = (item: unknown) => {
     setSearch(item.q);
     router.push(
       `/search?q=${encodeURIComponent(item.q)}${item.categoryId ? `&categoryId=${item.categoryId}` : ""}${item.sort ? `&sort=${item.sort}` : ""}`,

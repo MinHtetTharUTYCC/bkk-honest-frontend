@@ -19,7 +19,7 @@ import { LikeButton } from '@/components/ui/like-button';
 import { Textarea } from '@/components/ui/textarea';
 
 interface ScamAlertCardProps {
-    alert: any;
+    alert: unknown;
 }
 
 export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProps) {
@@ -45,9 +45,13 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (!isEditing) {
-            setAlert(initialAlert);
-        }
+        let mounted = true;
+        Promise.resolve().then(() => {
+            if (!isEditing && mounted) {
+                setAlert(initialAlert);
+            }
+        });
+        return () => { mounted = false; };
     }, [initialAlert, isEditing]);
 
     const handleUpdate = async () => {
@@ -112,8 +116,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             className="w-24 h-24 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                         >
                             {editPreview || alert.imageUrl ? (
-                                <img
-                                    src={editPreview || alert.imageUrl}
+                                <img alt="" src={editPreview || alert.imageUrl}
                                     className="w-full h-full object-cover group-hover:opacity-50"
                                 />
                             ) : (
@@ -145,7 +148,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                     onChange={(e) => setEditCategory(e.target.value)}
                                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                 >
-                                    {categories?.map((cat: any) => (
+                                    {categories?.map((cat: unknown) => (
                                         <option key={cat.id} value={cat.id}>
                                             {cat.name}
                                         </option>
@@ -156,7 +159,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                     onChange={(e) => setEditCity(e.target.value)}
                                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                 >
-                                    {cities?.map((city: any) => (
+                                    {cities?.map((city: unknown) => (
                                         <option key={city.id} value={city.id}>
                                             {city.name}
                                         </option>
@@ -221,8 +224,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
             {/* Photo — left */}
             <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8">
                 {alert.imageUrl ? (
-                    <img
-                        src={alert.imageUrl}
+                    <img alt="" src={alert.imageUrl}
                         alt={alert.scamName}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -253,8 +255,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
                             {alert.user?.avatarUrl ? (
-                                <img
-                                    src={alert.user.avatarUrl}
+                                <img alt="" src={alert.user.avatarUrl}
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
@@ -318,7 +319,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             onVote={async () => {
                                 const wasVoted = Boolean(alert.hasVoted);
 
-                                setAlert((prev: any) => ({
+                                setAlert((prev: unknown) => ({
                                     ...prev,
                                     hasVoted: !wasVoted,
                                     voteId: wasVoted ? null : 'temp-id',
@@ -333,7 +334,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
 
                                 const result = await toggleVote(alert);
 
-                                setAlert((prev: any) => ({
+                                setAlert((prev: unknown) => ({
                                     ...prev,
                                     hasVoted: Boolean(result.voteId),
                                     voteId: result.voteId,

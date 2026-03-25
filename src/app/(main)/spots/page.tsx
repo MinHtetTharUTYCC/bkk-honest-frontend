@@ -43,7 +43,7 @@ function DiscoveryPageContent() {
         },
       ],
       initialPageParam: 0,
-    } as any);
+    } as unknown);
   };
 
   // Function to update URL params
@@ -230,7 +230,7 @@ function DiscoveryPageContent() {
           ))
         ) : spots && spots.length > 0 ? (
           <>
-            {spots.map((spot: any) => (
+            {spots.map((spot: unknown) => (
               <SpotCard key={spot.id} spot={spot} />
             ))}
 

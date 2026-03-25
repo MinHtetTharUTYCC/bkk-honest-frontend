@@ -5,8 +5,9 @@ import { useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
 import SpotForm, { SpotFormData } from '@/components/spots/spot-form';
 import { toast } from 'sonner';
 
+
 interface SpotEditModalProps {
-    spot: any;
+    spot: unknown;
     onClose: () => void;
 }
 
@@ -29,12 +30,10 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                     cityId: formData.cityId,
                     latitude: formData.latitude,
                     longitude: formData.longitude,
-                    image: formData.imageFile || undefined,
-                },
-            });
-            toast.success('Spot updated successfully');
+                    image: formData.imageFile || undefined } });
+            toast.success(' updated successfully');
             onClose();
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             const message = err.response?.data?.message || err.message || 'Failed to update spot';
             const errorMessage = Array.isArray(message) ? message.join(', ') : message;
@@ -54,7 +53,7 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
 
                 <div className="flex flex-col gap-1 mb-8">
                     <h3 className="font-display text-3xl font-bold text-foreground tracking-tight">
-                        Edit Spot
+                        Edit 
                     </h3>
                     <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
                         Keep the pulse updated for {spot.name}
@@ -66,12 +65,11 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                     initialData={{
                         name: spot.name,
                         address: spot.address,
-                        categoryId: spot.categoryId || (spot.category as any)?.id,
-                        cityId: spot.cityId || (spot.city as any)?.id,
+                        categoryId: spot.categoryId || (spot.category as unknown)?.id,
+                        cityId: spot.cityId || (spot.city as unknown)?.id,
                         latitude: spot.latitude,
                         longitude: spot.longitude,
-                        imageUrl: spot.imageUrl,
-                    }}
+                        imageUrl: spot.imageUrl }}
                     categories={categories}
                     cities={cities}
                     isLoading={updateSpotMutation.isPending}

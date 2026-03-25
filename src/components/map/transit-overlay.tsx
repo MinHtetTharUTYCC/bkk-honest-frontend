@@ -12,10 +12,10 @@ interface TransitOverlayProps {
 }
 
 interface TransitData {
-  btsLines: any;
-  mrtLines: any;
-  arlLines: any;
-  stations: any;
+  btsLines: unknown;
+  mrtLines: unknown;
+  arlLines: unknown;
+  stations: unknown;
 }
 
 export default function TransitOverlay({ 

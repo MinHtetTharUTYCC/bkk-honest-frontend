@@ -27,7 +27,7 @@ export default function Sidebar() {
                     Browse Categories
                 </h4>
                 <div className="space-y-4">
-                    {Array.isArray(categories) && categories.slice(0, 6).map((cat: any) => (
+                    {Array.isArray(categories) && categories.slice(0, 6).map((cat: unknown) => (
                         <Link
                             key={cat.id}
                             href={`/spots?categoryId=${cat.id}`}

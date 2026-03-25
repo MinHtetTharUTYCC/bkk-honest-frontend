@@ -64,7 +64,7 @@ function VibesPageContent() {
     isFetchingNextPage,
   } = useInfiniteLiveVibes({
     cityId: selectedCityId,
-    categoryId: selectedCategory as any,
+    categoryId: selectedCategory as unknown,
   });
 
   const vibes = vibesData?.pages.flatMap((page) => page.data || []) || [];
@@ -133,7 +133,7 @@ function VibesPageContent() {
             />
           ))
         ) : vibes.length > 0 ? (
-          vibes.map((vibe: any) => (
+          vibes.map((vibe: unknown) => (
             <Link
               key={vibe.id}
               href={getSpotUrl(

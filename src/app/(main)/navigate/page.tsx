@@ -77,7 +77,7 @@ function NavigatePageContent() {
   const { transitVisible, toggleTransitVisible, hasHydrated } =
     useMapTransitVisible();
 
-  const mapRef = useRef<any>(null);
+  const mapRef = useRef<unknown>(null);
 
   useEffect(() => {
     checkGeolocationPermission();

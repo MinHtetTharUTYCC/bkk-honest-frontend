@@ -52,7 +52,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
             queryClient.prefetchInfiniteQuery({
                 queryKey: [key, userId],
                 initialPageParam: 0,
-            } as any);
+            } as unknown);
         }
     };
 
@@ -150,7 +150,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                         {visibleTabs.map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => onTabChange(tab.id as any)}
+                                onClick={() => onTabChange(tab.id as unknown)}
                                 onMouseEnter={() => prefetchTab(tab.id)}
                                 className={cn(
                                     'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer',
@@ -182,7 +182,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'scams' && (
                     <div className="flex flex-col gap-6">
                         {scamsList.length > 0 ? (
-                            scamsList.map((scam: any) => (
+                            scamsList.map((scam: unknown) => (
                                 <div key={scam.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                     <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                         {scam.imageUrl ? (
@@ -229,7 +229,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'tips' && (
                     <div className="flex flex-col gap-6">
                         {tipsList.length > 0 ? (
-                            tipsList.map((tip: any) => {
+                            tipsList.map((tip: unknown) => {
                                 const displayImg = tip.imageUrl || tip.spot?.imageUrl;
                                 return (
                                     <div key={tip.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
@@ -279,7 +279,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'reports' && (
                     <div className="flex flex-col gap-6">
                         {reportsList.length > 0 ? (
-                            reportsList.map((report: any) => {
+                            reportsList.map((report: unknown) => {
                                 const displayImg = report.imageUrl || report.spot?.imageUrl;
                                 return (
                                     <div key={report.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
@@ -334,7 +334,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'spots' && (
                     <div className="flex flex-col gap-6">
                         {spotsList.length > 0 ? (
-                            spotsList.map((spot: any) => (
+                            spotsList.map((spot: unknown) => (
                                 <div key={spot.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                     <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                         {spot.imageUrl ? (

@@ -5,6 +5,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import api from '@/lib/api';
 import { components } from '@/types/api';
 
+
 type PaginatedSpots = components['schemas']['PaginatedSpotsWithStatsResponseDto'];
 type PaginatedScamAlerts = components['schemas']['PaginatedScamAlertsResponseDto'];
 type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto'];
@@ -16,13 +17,12 @@ export function useMyProfile() {
     return useQuery({
         queryKey: ['profile', 'me'],
         queryFn: async () => {
-            const response = await api.get<any>('/profiles/me');
+            const response = await api.get<unknown>('/profiles/me');
             const data = response.data;
             return data?.data || data;
         },
         enabled: !!user,
-        retry: false,
-    });
+        retry: false });
 }
 
 export function useLeaderboard(take = 5) {
@@ -32,8 +32,7 @@ export function useLeaderboard(take = 5) {
             const { data } = await api.get(`/profiles/leaderboard/top?take=${take}`);
             return data?.data || data;
         },
-        staleTime: 5 * 60 * 1000,
-    });
+        staleTime: 5 * 60 * 1000 });
 }
 
 export function useProfile(id: string) {
@@ -41,13 +40,12 @@ export function useProfile(id: string) {
         queryKey: ['profile', id],
         queryFn: async () => {
             const endpoint = id === 'me' ? '/profiles/me' : `/profiles/${id}`;
-            const response = await api.get<any>(endpoint);
+            const response = await api.get<unknown>(endpoint);
             const data = response.data;
             return data?.data || data;
         },
         enabled: !!id,
-        retry: false,
-    });
+        retry: false });
 }
 
 export function useUserPriceReports(userId: string) {
@@ -58,8 +56,7 @@ export function useUserPriceReports(userId: string) {
             const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useUserScamAlerts(userId: string) {
@@ -70,8 +67,7 @@ export function useUserScamAlerts(userId: string) {
             const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useUserCommunityTips(userId: string) {
@@ -82,8 +78,7 @@ export function useUserCommunityTips(userId: string) {
             const { data } = await api.get(endpoint);
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useInfiniteUserPriceReports(userId: string) {
@@ -97,12 +92,11 @@ export function useInfiniteUserPriceReports(userId: string) {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             return skip + take < total ? skip + take : undefined;
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useInfiniteUserScamAlerts(userId: string) {
@@ -116,12 +110,11 @@ export function useInfiniteUserScamAlerts(userId: string) {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             return skip + take < total ? skip + take : undefined;
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useInfiniteUserCommunityTips(userId: string) {
@@ -135,12 +128,11 @@ export function useInfiniteUserCommunityTips(userId: string) {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             return skip + take < total ? skip + take : undefined;
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useInfiniteUserSpots(userId: string) {
@@ -154,47 +146,43 @@ export function useInfiniteUserSpots(userId: string) {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             return skip + take < total ? skip + take : undefined;
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 // --- Spots ---
 
-export function useSpot(id: string) {
+export function useSpot(_: string) {
     return useQuery({
         queryKey: ['spot', id],
         queryFn: async () => {
-            const { data } = await api.get<any>(`/spots/${id}`);
+            const { data } = await api.get<unknown>(`/spots/${id}`);
             return data?.data || data;
         },
-        enabled: !!id,
-    });
+        enabled: !!id });
 }
 
 export function useSpotBySlug(citySlug: string, spotSlug: string) {
     return useQuery({
         queryKey: ['spot', citySlug, spotSlug],
         queryFn: async () => {
-            const { data } = await api.get<any>(`/spots/by-slug/${citySlug}/${spotSlug}`);
+            const { data } = await api.get<unknown>(`/spots/by-slug/${citySlug}/${spotSlug}`);
             return data?.data || data;
         },
-        enabled: !!citySlug && !!spotSlug,
-    });
+        enabled: !!citySlug && !!spotSlug });
 }
 
 export function useScamAlertBySlug(citySlug: string, alertSlug: string) {
     return useQuery({
         queryKey: ['scam-alert', citySlug, alertSlug],
         queryFn: async () => {
-            const { data } = await api.get<any>(`/scam-alerts/by-slug/${citySlug}/${alertSlug}`);
+            const { data } = await api.get<unknown>(`/scam-alerts/by-slug/${citySlug}/${alertSlug}`);
             return data?.data || data;
         },
-        enabled: !!citySlug && !!alertSlug,
-    });
+        enabled: !!citySlug && !!alertSlug });
 }
 
 export function useSpots(params?: {
@@ -204,7 +192,7 @@ export function useSpots(params?: {
     sort?: 'newest' | 'popular';
 }) {
     // Clean up undefined parameters
-    const cleanParams: any = {};
+    const cleanParams: unknown = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -230,7 +218,7 @@ export function useInfiniteSpots(params?: {
     sort?: 'newest' | 'popular';
     take?: number;
 }) {
-    const cleanParams: any = {};
+    const cleanParams: unknown = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -245,13 +233,11 @@ export function useInfiniteSpots(params?: {
                 params: {
                     ...cleanParams,
                     skip: pageParam,
-                    take: params?.take || 10,
-                },
-            });
+                    take: params?.take || 10 } });
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
@@ -268,9 +254,8 @@ export function useNearbySpots(params: { latitude: number; longitude: number; di
             return data?.data || (Array.isArray(data) ? data : []);
         },
         enabled: enabled && !!params.latitude && !!params.longitude,
-        placeholderData: (prev: any) => prev,
-        staleTime: 60_000,
-    });
+        placeholderData: (prev: unknown) => prev,
+        staleTime: 60_000 });
 }
 
 export function usePopularArea() {
@@ -279,8 +264,7 @@ export function usePopularArea() {
         queryFn: async () => {
             const { data } = await api.get<{ latitude: number; longitude: number; cityName: string; spotCount: number }>('/spots/popular-area');
             return data;
-        },
-    });
+        } });
 }
 
 export function useSpotSearch(query: string, cityId?: string, limit: number = 20) {
@@ -294,8 +278,7 @@ export function useSpotSearch(query: string, cityId?: string, limit: number = 20
             const { data } = await api.get(`/spots/search${params.toString() ? `?${params}` : ''}`);
             return Array.isArray(data) ? data : data?.data || [];
         },
-        enabled: query.trim().length >= 1,
-    });
+        enabled: query.trim().length >= 1 });
 }
 
 export function useSpotPriceReports(spotId: string) {
@@ -305,8 +288,7 @@ export function useSpotPriceReports(spotId: string) {
             const { data } = await api.get(`/price-reports/spot/${spotId}`);
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!spotId,
-    });
+        enabled: !!spotId });
 }
 
 export function useInfiniteSpotPriceReports(spotId: string) {
@@ -316,21 +298,18 @@ export function useInfiniteSpotPriceReports(spotId: string) {
             const { data } = await api.get(`/price-reports/spot/${spotId}`, {
                 params: {
                     skip: pageParam,
-                    take: 10,
-                },
-            });
+                    take: 10 } });
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             if (skip === undefined || take === undefined || total === undefined) return undefined;
             const nextSkip = skip + take;
             if (nextSkip >= total) return undefined;
             return nextSkip;
         },
-        enabled: !!spotId,
-    });
+        enabled: !!spotId });
 }
 
 export function useSpotTips(spotId: string) {
@@ -340,8 +319,7 @@ export function useSpotTips(spotId: string) {
             const { data } = await api.get(`/community-tips/spot/${spotId}`);
             return data?.data || (Array.isArray(data) ? data : []);
         },
-        enabled: !!spotId,
-    });
+        enabled: !!spotId });
 }
 
 export function useInfiniteSpotTips(
@@ -357,18 +335,15 @@ export function useInfiniteSpotTips(
                     skip: pageParam,
                     take: 10,
                     type,
-                    sort,
-                },
-            });
+                    sort } });
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             if (!lastPage.pagination?.hasMore) return undefined;
             return lastPage.pagination.skip + lastPage.pagination.take;
         },
-        enabled: !!spotId,
-    });
+        enabled: !!spotId });
 }
 
 export function useSpotGallery(spotId: string, limit: number = 12, sort: 'newest' | 'popular' = 'newest') {
@@ -380,8 +355,7 @@ export function useSpotGallery(spotId: string, limit: number = 12, sort: 'newest
             );
             return data;
         },
-        enabled: !!spotId,
-    });
+        enabled: !!spotId });
 }
 
 export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular' = 'newest') {
@@ -392,21 +366,18 @@ export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular
                 params: {
                     skip: pageParam,
                     take: 12,
-                    sort,
-                },
-            });
+                    sort } });
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total, hasMore } = lastPage.pagination || {};
             if (!hasMore) return undefined;
             const nextSkip = skip + take;
             if (nextSkip >= total) return undefined;
             return nextSkip;
         },
-        enabled: !!spotId,
-    });
+        enabled: !!spotId });
 }
 
 export function useUploadSpotImage() {
@@ -416,15 +387,13 @@ export function useUploadSpotImage() {
             const formData = new FormData();
             formData.append('image', file);
             const { data } = await api.post(`/gallery/upload/${spotId}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+                headers: { 'Content-Type': 'multipart/form-data' } });
             return data;
         },
         onSuccess: (_, { spotId }) => {
             queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
             queryClient.invalidateQueries({ queryKey: ['gallery-infinite', spotId] });
-        },
-    });
+        } });
 }
 
 // --- Metadata ---
@@ -433,8 +402,8 @@ export function useCategories() {
     return useQuery({
         queryKey: ['categories'],
         queryFn: async () => {
-            const { data } = await api.get<any>('/categories');
-            return Array.isArray(data) ? data : (data as any)?.data || [];
+            const { data } = await api.get<unknown>('/categories');
+            return Array.isArray(data) ? data : (data as unknown)?.data || [];
         },
         staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
         gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
@@ -445,8 +414,8 @@ export function useCities() {
     return useQuery({
         queryKey: ['cities'],
         queryFn: async () => {
-            const { data } = await api.get<any[]>('/cities');
-            return Array.isArray(data) ? data : (data as any)?.data || [];
+            const { data } = await api.get<unknown[]>('/cities');
+            return Array.isArray(data) ? data : (data as unknown)?.data || [];
         },
         staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
         gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
@@ -480,21 +449,19 @@ export function useCreateSpot() {
             }
 
             const { data } = await api.post('/spots', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+                headers: { 'Content-Type': 'multipart/form-data' } });
             return data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['spots'] });
             queryClient.invalidateQueries({ queryKey: ['spots-nearby'] });
-        },
-    });
+        } });
 }
 
 export function useUpdateSpot() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: any }) => {
+        mutationFn: async ({ id, payload }: { id: string; payload: unknown }) => {
             const formData = new FormData();
             Object.keys(payload).forEach(key => {
                 if (payload[key] !== undefined) {
@@ -502,16 +469,14 @@ export function useUpdateSpot() {
                 }
             });
             const { data } = await api.patch(`/spots/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+                headers: { 'Content-Type': 'multipart/form-data' } });
             return data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['spot'] });
             queryClient.invalidateQueries({ queryKey: ['spots'] });
             queryClient.invalidateQueries({ queryKey: ['user-spots-infinite'] });
-        },
-    });
+        } });
 }
 
 export function useScamAlerts(params?: {
@@ -522,7 +487,7 @@ export function useScamAlerts(params?: {
     take?: number;
 }) {
     // Clean up undefined parameters
-    const cleanParams: any = {};
+    const cleanParams: unknown = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -535,8 +500,7 @@ export function useScamAlerts(params?: {
         queryKey: ['scam-alerts', cleanParams],
         queryFn: async () => {
             const { data } = await api.get<PaginatedScamAlerts>('/scam-alerts', {
-                params: cleanParams,
-            });
+                params: cleanParams });
             return data?.data || (Array.isArray(data) ? data : []);
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
@@ -550,7 +514,7 @@ export function useInfiniteScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: any = {};
+    const cleanParams: unknown = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -565,13 +529,11 @@ export function useInfiniteScamAlerts(params?: {
                 params: {
                     ...cleanParams,
                     skip: pageParam,
-                    take: params?.take || 10,
-                },
-            });
+                    take: params?.take || 10 } });
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
@@ -589,7 +551,7 @@ export function useLiveVibes(params?: { spotId?: string; cityId?: string; take?:
     return useQuery({
         queryKey: ['live-vibes', params],
         queryFn: async () => {
-            const { data } = await api.get<any>(`/live-vibes${qs ? `?${qs}` : ''}`);
+            const { data } = await api.get<unknown>(`/live-vibes${qs ? `?${qs}` : ''}`);
             return data?.data || (Array.isArray(data) ? data : []);
         },
         staleTime: 60 * 1000, // 1 minute
@@ -600,17 +562,15 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
     return useInfiniteQuery({
         queryKey: ['live-vibes-infinite', params],
         queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get<any>('/live-vibes', {
+            const { data } = await api.get<unknown>('/live-vibes', {
                 params: {
                     ...params,
                     skip: pageParam,
-                    take: params?.take || 10,
-                },
-            });
+                    take: params?.take || 10 } });
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             const nextSkip = skip + take;
             return nextSkip < total ? nextSkip : undefined;
@@ -628,7 +588,7 @@ export function useTipComments(tipId: string) {
             const { data } = await api.get(`/comments/tip/${tipId}?skip=${pageParam}&take=10`);
             return data;
         },
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total, hasMore } = lastPage?.pagination || {};
             if (!hasMore) return undefined;
             const nextSkip = skip + take;
@@ -636,8 +596,7 @@ export function useTipComments(tipId: string) {
             return nextSkip;
         },
         initialPageParam: 0,
-        enabled: !!tipId,
-    });
+        enabled: !!tipId });
 }
 
 
@@ -657,8 +616,7 @@ export function useScamComments(scamAlertId: string) {
             return nextSkip;
         },
         initialPageParam: 0,
-        enabled: !!scamAlertId,
-    });
+        enabled: !!scamAlertId });
 }
 export function useCreateComment() {
     const queryClient = useQueryClient();
@@ -668,9 +626,8 @@ export function useCreateComment() {
             communityTipId?: string;
             content: string;
         }) => {
-            const apiPayload: any = {
-                text: payload.content,
-            };
+            const apiPayload: unknown = {
+                text: payload.content };
             
             if (payload.scamAlertId) {
                 apiPayload.targetType = 'SCAM_ALERT';
@@ -692,8 +649,7 @@ export function useCreateComment() {
                 queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
                 queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
             }
-        },
-    });
+        } });
 }
 
 export function useUpdateComment() {
@@ -749,8 +705,7 @@ export function useCreateCommunityTip() {
         onSuccess: (_, { spotId }) => {
             queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
             queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
-        },
-    });
+        } });
 }
 
 export function useUpdateCommunityTip() {
@@ -770,8 +725,7 @@ export function useUpdateCommunityTip() {
         onSuccess: (_, { spotId }) => {
             queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
             queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
-        },
-    });
+        } });
 }
 
 export function useDeleteCommunityTip() {
@@ -784,8 +738,7 @@ export function useDeleteCommunityTip() {
         onSuccess: (_, { spotId }) => {
             queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
             queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
-        },
-    });
+        } });
 }
 
 // --- Mutations ---
@@ -801,8 +754,7 @@ export function useCreatePriceReport() {
             queryClient.invalidateQueries({ queryKey: ['spots'] });
             queryClient.invalidateQueries({ queryKey: ['price-reports', variables.spotId] });
             queryClient.invalidateQueries({ queryKey: ['price-reports-infinite', variables.spotId] });
-        },
-    });
+        } });
 }
 
 export function useCreateScamAlert() {
@@ -828,20 +780,18 @@ export function useCreateScamAlert() {
             }
 
             const { data } = await api.post('/scam-alerts', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+                headers: { 'Content-Type': 'multipart/form-data' } });
             return data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
-        },
-    });
+        } });
 }
 
 export function useUpdateScamAlert() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: any }) => {
+        mutationFn: async ({ id, payload }: { id: string; payload: unknown }) => {
             const formData = new FormData();
             Object.keys(payload).forEach(key => {
                 if (payload[key] !== undefined) {
@@ -849,29 +799,26 @@ export function useUpdateScamAlert() {
                 }
             });
             const { data } = await api.patch(`/scam-alerts/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+                headers: { 'Content-Type': 'multipart/form-data' } });
             return data;
         },
         onSuccess: (_, { id }) => {
             queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
             queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
-        },
-    });
+        } });
 }
 
 export function useDeleteScamAlert() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (id: string) => {
+        mutationFn: async (_: string) => {
             const { data } = await api.delete(`/scam-alerts/${id}`);
             return data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
             queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
-        },
-    });
+        } });
 }
 
 export function useCreateLiveVibe() {
@@ -888,8 +835,7 @@ export function useCreateLiveVibe() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['live-vibes'] });
             queryClient.invalidateQueries({ queryKey: ['spots'] });
-        },
-    });
+        } });
 }
 
 // --- Votes ---
@@ -898,13 +844,12 @@ export function useCreateVote() {
     return useMutation({
         mutationFn: async ({
             targetId,
-            type,
-        }: {
+            type }: {
             targetId: string;
             type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             let endpoint = '';
-            const payload: any = {};
+            const payload: unknown = {};
 
             if (type === 'tip') {
                 endpoint = '/votes/tip';
@@ -922,23 +867,20 @@ export function useCreateVote() {
 
             const { data } = await api.post(endpoint, payload);
             return data;
-        },
-    });
+        } });
 }
 
 export function useDeleteVote() {
     return useMutation({
         mutationFn: async ({
             voteId,
-            type,
-        }: {
+            type }: {
             voteId: string;
             type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             const { data } = await api.delete(`/votes/${type}/${voteId}`);
             return data;
-        },
-    });
+        } });
 }
 
 // --- Missions (Checklist) ---
@@ -947,7 +889,7 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
     return useInfiniteQuery({
         queryKey: ['missions-infinite', userId, status, sort],
         queryFn: async ({ pageParam = 0 }) => {
-            const params: any = { skip: pageParam, take: 10, sort };
+            const params: unknown = { skip: pageParam, take: 10, sort };
             if (status !== 'all') {
                 params.status = status;
             }
@@ -955,12 +897,11 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: any) => {
+        getNextPageParam: (lastPage: unknown) => {
             const { skip, take, total } = lastPage.pagination || lastPage;
             return skip + take < total ? skip + take : undefined;
         },
-        enabled: !!userId,
-    });
+        enabled: !!userId });
 }
 
 export function useMissionStats() {
@@ -969,8 +910,7 @@ export function useMissionStats() {
         queryFn: async () => {
             const { data } = await api.get('/checklist/stats');
             return data;
-        },
-    });
+        } });
 }
 
 export function useAddMission() {
@@ -985,8 +925,7 @@ export function useAddMission() {
             queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
             queryClient.invalidateQueries({ queryKey: ['spot'] });
             queryClient.invalidateQueries({ queryKey: ['spots'] });
-        },
-    });
+        } });
 }
 
 export function useUpdateMission() {
@@ -1002,22 +941,20 @@ export function useUpdateMission() {
             queryClient.invalidateQueries({ queryKey: ['profile'] });
             queryClient.invalidateQueries({ queryKey: ['spot'] });
             queryClient.invalidateQueries({ queryKey: ['spots'] });
-        },
-    });
+        } });
 }
 
 export function useDeleteMission() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (id: string) => {
+        mutationFn: async (_: string) => {
             const { data } = await api.delete(`/checklist/${id}`);
             return data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
             queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
-        },
-    });
+        } });
 }
 
 export function useReverseGeocode() {
@@ -1025,8 +962,7 @@ export function useReverseGeocode() {
         mutationFn: async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
             const { data } = await api.post('/spots/reverse-geocode', { latitude, longitude });
             return data?.address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-        },
-    });
+        } });
 }
 
 // --- Reports ---
@@ -1037,8 +973,7 @@ export function useCreateReport() {
             reportType,
             targetId,
             reason,
-            description,
-        }: {
+            description }: {
             reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
             targetId: string;
             reason: string;
@@ -1048,11 +983,9 @@ export function useCreateReport() {
                 reportType,
                 targetId,
                 reason,
-                description,
-            });
+                description });
             return data;
-        },
-    });
+        } });
 }
 
 export function useGetReports(status?: string) {
@@ -1062,11 +995,10 @@ export function useGetReports(status?: string) {
             const params = status ? { status } : {};
             const { data } = await api.get('/reports', { params });
             return data?.data || [];
-        },
-    });
+        } });
 }
 
-// --- Comment Reactions ---
+// ---  Reactions ---
 
 export function useToggleCommentReaction() {
     const queryClient = useQueryClient();
@@ -1077,12 +1009,12 @@ export function useToggleCommentReaction() {
         },
         onSuccess: (data, commentId) => {
             // updateInfiniteQueryData is a helper or we can do it inline
-            const updatePage = (page: any) => ({
+            const updatePage = (page: unknown) => ({
                 ...page,
-                data: page.data?.map((c: any) => c.id === commentId ? { ...c, ...data } : c)
+                data: page.data?.map((c: unknown) => c.id === commentId ? { ...c, ...data } : c)
             });
 
-            queryClient.setQueriesData({ queryKey: ['tip-comments'] }, (old: any) => {
+            queryClient.setQueriesData({ queryKey: ['tip-comments'] }, (old: unknown) => {
                 if (!old) return old;
                 return {
                     ...old,
@@ -1090,15 +1022,14 @@ export function useToggleCommentReaction() {
                 };
             });
 
-            queryClient.setQueriesData({ queryKey: ['scam-comments'] }, (old: any) => {
+            queryClient.setQueriesData({ queryKey: ['scam-comments'] }, (old: unknown) => {
                 if (!old) return old;
                 return {
                     ...old,
                     pages: old.pages.map(updatePage)
                 };
             });
-        },
-    });
+        } });
 }
 
 export function useGetCommentReaction(commentId: string) {
@@ -1108,6 +1039,5 @@ export function useGetCommentReaction(commentId: string) {
             const { data } = await api.get(`/comments/${commentId}/reactions`);
             return data?.data || { reactionCount: 0, userHasReacted: false };
         },
-        enabled: !!commentId,
-    });
+        enabled: !!commentId });
 }

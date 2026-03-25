@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 
 interface ScamEditModalProps {
-    alert: any;
+    alert: unknown;
     onClose: () => void;
 }
 
@@ -81,8 +81,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                 className="w-32 h-32 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                             >
                                 {editPreview || alert.imageUrl ? (
-                                    <img
-                                        src={editPreview || alert.imageUrl}
+                                    <img alt="" src={editPreview || alert.imageUrl}
                                         className="w-full h-full object-cover group-hover:opacity-50"
                                     />
                                 ) : (
@@ -114,7 +113,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                         onChange={(e) => setEditCategory(e.target.value)}
                                         className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                     >
-                                        {categories?.map((cat: any) => (
+                                        {categories?.map((cat: unknown) => (
                                             <option key={cat.id} value={cat.id}>
                                                 {cat.name}
                                             </option>
@@ -125,7 +124,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                         onChange={(e) => setEditCity(e.target.value)}
                                         className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                     >
-                                        {cities?.map((city: any) => (
+                                        {cities?.map((city: unknown) => (
                                             <option key={city.id} value={city.id}>
                                                 {city.name}
                                             </option>

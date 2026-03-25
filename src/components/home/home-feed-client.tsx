@@ -81,7 +81,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     />
                                 ))
                             ) : Array.isArray(nearbySpots) && nearbySpots.length > 0 ? (
-                                nearbySpots.map((spot: any) => (
+                                nearbySpots.map((spot: unknown) => (
                                     <div key={spot.id} className="w-72 shrink-0">
                                         <SpotCard spot={spot} />
                                     </div>
@@ -156,7 +156,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                 />
                             ))
                         ) : Array.isArray(spots) && spots.length > 0 ? (
-                            spots.map((spot: any) => (
+                            spots.map((spot: unknown) => (
                                 <div key={spot.id} className="w-72 shrink-0">
                                     <SpotCard spot={spot} />
                                 </div>
@@ -209,7 +209,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     />
                                 ))
                             ) : Array.isArray(scamAlerts) && scamAlerts.length > 0 ? (
-                                scamAlerts.map((alert: any) => (
+                                scamAlerts.map((alert: unknown) => (
                                     <ScamAlertCard key={alert.id} alert={alert} />
                                 ))
                             ) : (
@@ -246,7 +246,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     />
                                 ))
                             ) : Array.isArray(vibes) && vibes.length > 0 ? (
-                                vibes.map((vibe: any) => (
+                                vibes.map((vibe: unknown) => (
                                     <Link
                                         key={vibe.id}
                                         href={getSpotUrl(
@@ -325,7 +325,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                     <ScrollArea className="w-full whitespace-nowrap -mx-8">
                         <div className="flex gap-4 pb-4 px-8">
                             {Array.isArray(categories) &&
-                                categories.map((cat: any) => (
+                                categories.map((cat: unknown) => (
                                     <Link
                                         key={cat.id}
                                         href={`/spots?categoryId=${cat.id}`}

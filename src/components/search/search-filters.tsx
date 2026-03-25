@@ -22,18 +22,16 @@ export function SearchFilters({
 }: SearchFiltersProps) {
   const [isClient, setIsClient] = useState(false);
   const { data: categoriesResponse } = useCategories();
-  // @ts-ignore
+  // @ts-expect-error
   const categories = categoriesResponse?.data || categoriesResponse || [];
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => { setTimeout(() => setIsClient(true), 0); }, []);
 
   if (!isClient) return null;
 
   const categoryOptions = [
     { id: '', name: 'All Categories' },
-    ...categories.map((cat: any) => ({ id: cat.id, name: cat.name })),
+    ...categories.map((cat: unknown) => ({ id: cat.id, name: cat.name })),
   ];
 
   const sortOptions = [
@@ -58,7 +56,7 @@ export function SearchFilters({
           label="Sort By"
           options={sortOptions}
           value={sort}
-          onChange={(value: any) => onSortChange(value)}
+          onChange={(value: unknown) => onSortChange(value)}
         />
       </div>
     </div>

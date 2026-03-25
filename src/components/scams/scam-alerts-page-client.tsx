@@ -76,9 +76,7 @@ export default function ScamAlertsPageClient() {
         return () => clearTimeout(timer);
     }, [search, pathname, createQueryString, searchParams]);
 
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
+    useEffect(() => { setTimeout(() => setIsClient(true), 0); }, []);
 
     const { data: categoriesResponse } = useCategories();
     const categories = categoriesResponse?.data || categoriesResponse || [];
@@ -191,7 +189,7 @@ export default function ScamAlertsPageClient() {
                     ))
                 ) : alerts && alerts.length > 0 ? (
                     <>
-                        {alerts.map((alert: any) => (
+                        {alerts.map((alert: unknown) => (
                             <ScamAlertCard key={alert.id} alert={alert} />
                         ))}
 

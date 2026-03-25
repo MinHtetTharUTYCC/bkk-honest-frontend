@@ -94,7 +94,7 @@ function MapPageContent() {
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(
     urlCat,
   );
-  const [selectedSpot, setSelectedSpot] = useState<any>(null);
+  const [selectedSpot, setSelectedSpot] = useState<unknown>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const { transitVisible, toggleTransitVisible, hasHydrated } =
     useMapTransitVisible();
@@ -155,7 +155,7 @@ function MapPageContent() {
   };
 
   // Sync searchParams when map move ends — always update, snapping coords to ~1km grid
-  const handleMoveEnd = (evt: any) => {
+  const handleMoveEnd = (evt: unknown) => {
     const lat = snapCoord(evt.viewState.latitude);
     const lng = snapCoord(evt.viewState.longitude);
     const zoom = evt.viewState.zoom;
@@ -186,13 +186,13 @@ function MapPageContent() {
     if (spots.length === 0) return;
 
     const bounds = mapRef.current.getBounds();
-    const anyVisible = spots.some((s: any) =>
+    const unknownVisible = spots.some((s: unknown) =>
       bounds?.contains([s.longitude, s.latitude]),
     );
 
-    if (!anyVisible) {
-      const lngs = (spots || []).map((s: any) => s.longitude as number);
-      const lats = (spots || []).map((s: any) => s.latitude as number);
+    if (!unknownVisible) {
+      const lngs = (spots || []).map((s: unknown) => s.longitude as number);
+      const lats = (spots || []).map((s: unknown) => s.latitude as number);
       mapRef.current.fitBounds(
         [
           [Math.min(...lngs), Math.min(...lats)],
@@ -356,7 +356,7 @@ function MapPageContent() {
         )}
 
         {/* Spot Markers */}
-        {spots?.map((spot: any) => {
+        {spots?.map((spot: unknown) => {
           const config = getCategoryConfig(spot.category?.name);
           const isSelected = selectedSpot?.id === spot.id;
 

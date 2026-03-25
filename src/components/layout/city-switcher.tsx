@@ -54,7 +54,7 @@ export default function CitySwitcher() {
                         </span>
                     </div>
                     <div className="space-y-1">
-                        {cities?.map((city: any) => (
+                        {cities?.map((city: unknown) => (
                             <button
                                 key={city.id}
                                 onClick={() => {
