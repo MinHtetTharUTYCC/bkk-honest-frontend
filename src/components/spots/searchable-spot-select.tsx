@@ -34,7 +34,8 @@ export default function SearchableSpotSelect({
     const containerRef = useRef<HTMLDivElement>(null);
 
     const { data: spotsData = [] } = useSpotSearch(inputValue, cityId, 15);
-    const spots = spotsData as SpotSearchItem[];
+    const spots = (Array.isArray(spotsData) ? spotsData : [])
+        .filter((item): item is SpotSearchItem => !!(item && typeof item === 'object' && 'id' in item && 'name' in item));
 
     // Close dropdown when clicking outside
     useEffect(() => {

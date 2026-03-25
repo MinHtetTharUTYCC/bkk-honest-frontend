@@ -108,9 +108,10 @@ function MapPageContent() {
     lng: number;
   } | null>(null);
   const [nearMeActive, setNearMeActive] = useState(false);
-  const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(
-    urlCat,
-  );
+  
+  // Derived from URL (prevents stale state on navigation)
+  const activeCategoryId = urlParams.get("cat") || undefined;
+  
   const [selectedSpot, setSelectedSpot] = useState<MapSpot | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const { transitVisible, toggleTransitVisible, hasHydrated } =
@@ -120,8 +121,7 @@ function MapPageContent() {
   const [transitError, setTransitError] = useState<string | null>(null);
 
   // Skip geolocation if we already have a position from URL (returning user)
-  const [hasRequestedLocation, setHasRequestedLocation] =
-    useState(hasUrlPosition);
+  const hasRequestedLocationRef = useRef(hasUrlPosition);
   // Flag: set when user switches category so next spot load triggers auto-fit if needed
   const shouldAutoFit = useRef(false);
 
@@ -222,9 +222,9 @@ function MapPageContent() {
 
   // Handle Initial Location
   useEffect(() => {
-    if (hasRequestedLocation) return;
+    if (hasRequestedLocationRef.current) return;
 
-    setHasRequestedLocation(true);
+    hasRequestedLocationRef.current = true;
 
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -279,7 +279,7 @@ function MapPageContent() {
         activeCategoryId,
       );
     }
-  }, [hasRequestedLocation, popularArea]);
+  }, [popularArea, activeCategoryId]);
 
   const handleNavigate = () => {
     if (!selectedSpot) return;
@@ -514,7 +514,6 @@ function MapPageContent() {
           categories={categories || []}
           selectedId={activeCategoryId}
           onSelect={(id) => {
-            setActiveCategoryId(id);
             shouldAutoFit.current = true;
             syncUrl(
               searchParams.latitude,
@@ -602,6 +601,7 @@ function MapPageContent() {
                 </div>
                 <button
                   onClick={() => setSelectedSpot(null)}
+                  aria-label="Close"
                   className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 transition-colors shrink-0"
                 >
                   <X size={16} />

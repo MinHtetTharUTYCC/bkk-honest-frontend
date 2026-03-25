@@ -18,10 +18,8 @@ export default function ScamAlertsPageClient() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
-    // Initialize from URL
-    const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-        searchParams.get('categoryId') || searchParams.get('category') || undefined,
-    );
+    // Derived from URL
+    const selectedCategory = searchParams.get('categoryId') || searchParams.get('category') || undefined;
     const [search, setSearch] = useState(searchParams.get('q') || '');
     const [sort, setSort] = useState<'newest' | 'popular'>(
         (searchParams.get('sort') as 'newest' | 'popular') || 'newest',
@@ -51,7 +49,6 @@ export default function ScamAlertsPageClient() {
 
     // Sync URL when filters change (except search which is handled by debounce)
     const handleCategoryChange = (catId: string | undefined) => {
-        setSelectedCategory(catId);
         router.push(pathname + '?' + createQueryString({ 
             categoryId: catId || null,
             category: null // Cleanup old param

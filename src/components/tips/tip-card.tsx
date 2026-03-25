@@ -41,7 +41,7 @@ interface TipCardProps {
   tip: TipCardItem;
   authUser?: { id?: string | null } | null;
   onCommentClick: () => void;
-  onVoteClick: (tip: TipCardItem) => Promise<unknown>;
+  onVoteClick: () => Promise<unknown>;
   onEditClick: () => void;
   onDeleteClick: () => Promise<void>;
   isVotePending?: boolean;
@@ -62,7 +62,7 @@ export function TipCard({
     ? new Date(tip.createdAt).toLocaleDateString()
     : '';
   const handleVote = async () => {
-    await onVoteClick(tip);
+    await onVoteClick();
   };
 
   const handleConfirmDelete = async () => {
@@ -105,7 +105,7 @@ export function TipCard({
               {isDeleting ? (
                 <Loader2 size={16} className="animate-spin mr-2" />
               ) : null}
-              Delete 
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -101,10 +101,6 @@ function MissionsPageContent() {
 
   const { ref: observerTarget, inView } = useInView({ threshold: 0.1 });
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
   // Helper to manually remove item from local list on delete success
   const handleConfirmDelete = () => {
     if (missionToDelete) {
@@ -284,7 +280,13 @@ function MissionsPageContent() {
           </div>
         </header>
 
-        {missions.length === 0 ? (
+        {missionsLoading ? (
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse" />
+            ))}
+          </div>
+        ) : missions.length === 0 ? (
           <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10">
             <div className="flex flex-col items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-white/8 flex items-center justify-center text-white/20">

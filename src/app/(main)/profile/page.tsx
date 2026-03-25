@@ -105,8 +105,11 @@ function ProfilePageContent() {
   const isProfileNotFound =
     (profileError as ApiError)?.response?.status === 404;
 
+  const hasAttemptedAutoCreate = useRef(false);
+
   useEffect(() => {
-    if (isProfileNotFound && user) {
+    if (isProfileNotFound && user && !hasAttemptedAutoCreate.current) {
+      hasAttemptedAutoCreate.current = true;
       const createProfile = async () => {
         try {
           await api.post("/profiles", {
@@ -116,9 +119,10 @@ function ProfilePageContent() {
               "Pulse Scout",
             avatarUrl: user.user_metadata?.avatar_url || "",
           });
-          queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
         } catch (err) {
           console.error("Failed to auto-create profile:", err);
+        } finally {
+          queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
         }
       };
       createProfile();

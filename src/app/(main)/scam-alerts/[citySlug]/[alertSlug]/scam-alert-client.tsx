@@ -67,9 +67,11 @@ interface AlertCounts {
 interface LocalAlert {
   id: string;
   userId?: string;
+  categoryId?: string;
+  cityId?: string;
   city?: AlertCity;
   user?: AlertUser;
-  scamName: string;
+  scamName?: string;
   slug?: string;
   imageUrl?: string;
   description?: string;
@@ -98,6 +100,11 @@ function unwrapAlertData(payload: unknown): LocalAlert | null {
       : payload;
 
   if (!unwrapped || typeof unwrapped !== "object") {
+    return null;
+  }
+
+  const alert = unwrapped as Record<string, unknown>;
+  if (typeof alert.id !== "string" || !alert.createdAt) {
     return null;
   }
 
@@ -251,7 +258,7 @@ export default function ScamAlertClient() {
 
     const result = await toggleVote({
       id: localAlert.id,
-      hasVoted: localAlert.hasVoted,
+      hasVoted: wasVoted,
       voteId: localAlert.voteId,
       _count: {
         votes: localAlert._count?.votes ?? 0,
@@ -591,7 +598,7 @@ export default function ScamAlertClient() {
               </div>
             ) : comments.length === 0 ? (
               <div className="text-center py-12 bg-white/5 rounded-2xl border border-dashed border-white/10 text-[10px] font-black uppercase tracking-widest text-white/30">
-                No one's talking yet.
+                No one&apos;s talking yet.
               </div>
             ) : (
               comments.map((comment) => (

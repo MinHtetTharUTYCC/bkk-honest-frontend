@@ -18,6 +18,7 @@ const CityContext = createContext<CityContextType | undefined>(undefined);
 
 export function CityProvider({ children }: { children: React.ReactNode }) {
   const [selectedCityId, setSelectedCityId] = useState<string | undefined>(undefined);
+  const [isHydrated, setIsHydrated] = useState(false);
   const { data: cities } = useCities();
 
   // Load from localStorage on mount
@@ -26,19 +27,24 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
     if (saved) {
       setSelectedCityId(saved);
     }
+    setIsHydrated(true);
   }, []);
 
   // Save to localStorage when changed
   useEffect(() => {
+    if (!isHydrated) return;
+    
     if (selectedCityId) {
       localStorage.setItem('selectedCityId', selectedCityId);
     } else {
       localStorage.removeItem('selectedCityId');
     }
-  }, [selectedCityId]);
+  }, [selectedCityId, isHydrated]);
 
   // Try to pick a default if none selected (e.g. Bangkok) or if the saved city doesn't exist anymore
   useEffect(() => {
+    if (!isHydrated) return;
+
     if (cities && cities.length > 0) {
       const isValid = selectedCityId && (cities as City[]).some((c) => c.id === selectedCityId);
       
@@ -51,7 +57,7 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
         }
       }
     }
-  }, [cities, selectedCityId]);
+  }, [cities, selectedCityId, isHydrated]);
 
   const selectedCity = (cities as City[] | undefined)?.find((c) => c.id === selectedCityId);
 

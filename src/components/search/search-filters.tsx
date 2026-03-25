@@ -60,7 +60,11 @@ export function SearchFilters({
           label="Sort By"
           options={sortOptions}
           value={sort}
-          onChange={(value) => onSortChange(value as 'newest' | 'popular')}
+          onChange={(value) => {
+            if (value === 'newest' || value === 'popular') {
+              onSortChange(value);
+            }
+          }}
         />
       </div>
     </div>

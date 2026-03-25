@@ -232,10 +232,12 @@ describe('LikeButton', () => {
     });
 
     it('uses white/70 when not voted', () => {
-       render(<LikeButton isVoted={false} count={5} />);
+       const { container } = render(<LikeButton isVoted={false} count={5} />);
       const countText = screen.getByText('5');
+      const heartIcon = container.querySelector('svg');
       
       expect(countText).toHaveClass('text-white/70');
+      expect(heartIcon).toHaveClass('text-white/70');
     });
 
     it('uses amber on hover when not voted', () => {

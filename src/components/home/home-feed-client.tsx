@@ -17,18 +17,16 @@ import { useCity } from '@/components/providers/city-provider';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { getSpotUrl } from '@/lib/slug';
+import type { SpotCardData } from '@/components/spots/spot-card';
+import type { ScamAlertData } from '@/components/scams/scam-alert-card';
 
 interface HomeFeedClientProps {
     fallbackCityName?: string;
 }
 
-interface HomeSpotItem {
-    id: string;
-}
+type HomeSpotItem = SpotCardData;
 
-interface HomeScamAlertItem {
-    id: string;
-}
+type HomeScamAlertItem = ScamAlertData;
 
 interface HomeVibeItem {
     id: string;

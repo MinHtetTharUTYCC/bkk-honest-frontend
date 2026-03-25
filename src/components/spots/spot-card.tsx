@@ -37,11 +37,21 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
 
         // Prefetch  Detail
         queryClient.prefetchQuery({
-            queryKey: ['spot', citySlug, spotSlug] });
+            queryKey: ['spot', citySlug, spotSlug],
+            queryFn: async () => {
+                const { data } = await api.get(`/spots/by-slug/${citySlug}/${spotSlug}`);
+                return data;
+            }
+        });
 
         // Prefetch Gallery (First 6)
         queryClient.prefetchQuery({
-            queryKey: ['gallery', id, 6, 'newest'] });
+            queryKey: ['gallery', id, 6, 'newest'],
+            queryFn: async () => {
+                const { data } = await api.get(`/gallery/spot/${id}?take=6&sort=newest`);
+                return data;
+            }
+        });
 
         // Prefetch Tips (Initial popular try tips)
         queryClient.prefetchInfiniteQuery({

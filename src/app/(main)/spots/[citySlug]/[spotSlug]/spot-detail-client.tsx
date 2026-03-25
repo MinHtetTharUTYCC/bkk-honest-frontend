@@ -41,7 +41,7 @@ import { LikeButton } from "@/components/ui/like-button";
 import { ImageViewer } from "@/components/ui/image-viewer";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useState, useEffect, useRef } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import GalleryModal from "@/components/spots/gallery-modal";
 import CreateTipModal from "@/components/tips/create-tip-modal";
@@ -150,8 +150,9 @@ interface SpotData {
   };
   category?: { id?: string; name?: string };
   city?: { id?: string; name?: string };
-  vibeStats?: unknown;
-  priceStats?: unknown;
+  vibeStats?: { avgCrowdLevel?: number; count?: number };
+  priceStats?: { avg?: number; count?: number; min?: number; max?: number };
+  activityStats?: { totalContributors: number; lastActivity: string | null };
 }
 
 function unwrapSpotData(payload: unknown): SpotData | null {
@@ -274,12 +275,27 @@ export default function SpotDetailClient() {
     prefetchMap[tab]?.();
   };
 
-  const reports: PriceReportRow[] =
-    reportsData?.pages.flatMap(
+  const reports: PriceReportRow[] = useMemo(() => {
+    const rawReports = reportsData?.pages.flatMap(
       (page) =>
         (page as { data?: PriceReportRow[] })?.data ||
         (Array.isArray(page) ? (page as PriceReportRow[]) : []),
     ) || [];
+
+    // Sort to keep newest reports on top
+    return [...rawReports].sort((a, b) => {
+      const dateA = a.timestamp || a.reportedAt ? new Date(a.timestamp || a.reportedAt!).getTime() : 0;
+      const dateB = b.timestamp || b.reportedAt ? new Date(b.timestamp || b.reportedAt!).getTime() : 0;
+      
+      // Always force newest reports to top for 12 hours
+      const isNewA = (Date.now() - dateA) < 43200000;
+      const isNewB = (Date.now() - dateB) < 43200000;
+      if (isNewA && !isNewB) return -1;
+      if (!isNewA && isNewB) return 1;
+      
+      return dateB - dateA;
+    });
+  }, [reportsData]);
 
   const { data: galleryResponse } = useSpotGallery(spotId, 6);
   const { data: missionsData } = useMissions();
@@ -292,12 +308,27 @@ export default function SpotDetailClient() {
     hasNextPage: hasNextVibes,
     isFetchingNextPage: isFetchingNextVibes,
     isLoading: vibesLoading } = useInfiniteLiveVibes({ spotId });
-  const spotVibes: VibeRow[] =
-    vibesData?.pages.flatMap(
+  const spotVibes: VibeRow[] = useMemo(() => {
+    const rawVibes = vibesData?.pages.flatMap(
       (page) =>
         (page as { data?: VibeRow[] })?.data ||
         (Array.isArray(page) ? (page as VibeRow[]) : []),
     ) || [];
+
+    // Sort to keep newest vibes on top
+    return [...rawVibes].sort((a, b) => {
+      const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+      const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+      
+      // Always force newest check-ins to top for 24 hours
+      const isNewA = (Date.now() - dateA) < 86400000;
+      const isNewB = (Date.now() - dateB) < 86400000;
+      if (isNewA && !isNewB) return -1;
+      if (!isNewA && isNewB) return 1;
+      
+      return dateB - dateA;
+    });
+  }, [vibesData]);
 
   const missionsList: MissionRow[] =
     missionsData?.pages.flatMap(
@@ -363,10 +394,15 @@ export default function SpotDetailClient() {
     isFetchingNextPage: isFetchingNextTips,
     isLoading: tipsLoading } = useInfiniteSpotTips(spotId, tipType, tipSort);
 
-  const tips: SpotTip[] =
-    tipsData?.pages.flatMap(
+  const tips: SpotTip[] = useMemo(() => {
+    const rawTips = tipsData?.pages.flatMap(
       (page) => (page as { data?: SpotTip[] })?.data || [],
     ) || [];
+    
+    // Sort logic removed: we now rely on manual cache updates for immediate feedback
+    // and the API's natural sort order for everything else.
+    return rawTips;
+  }, [tipsData]);
 
   // Infinite scroll triggers
   const { ref: observerTarget, inView } = useInView({
@@ -432,6 +468,99 @@ export default function SpotDetailClient() {
     if (!inViewVibes) hasFetchedVibesRef.current = false;
   }, [inViewVibes]);
 
+  const lastPulseDate = useMemo(() => {
+    // Priority 1: Use the optimized lastActivity from the backend
+    if (spot?.activityStats?.lastActivity) {
+      return new Date(spot.activityStats.lastActivity).getTime();
+    }
+
+    // Fallback: Client-side calculation (useful for immediate updates after unshift)
+    const dates = [
+      reports[0]?.timestamp || reports[0]?.reportedAt,
+      tips[0]?.createdAt,
+      spotVibes[0]?.timestamp,
+    ]
+      .filter(Boolean)
+      .map((d) => new Date(d!).getTime());
+
+    if (dates.length === 0) return null;
+    return Math.max(...dates);
+  }, [spot?.activityStats?.lastActivity, reports, tips, spotVibes]);
+
+  const timeAgo = (timestamp: number | null) => {
+    if (!timestamp) return "No Data";
+    const seconds = Math.floor((Date.now() - timestamp) / 1000);
+    if (seconds < 60) return "Just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 30) return `${days}d ago`;
+    return new Date(timestamp).toLocaleDateString();
+  };
+
+  const handleAcceptMission = () => {
+    if (!authUser) {
+      toast.error("Join us to accept missions!", {
+        description: "Login to track this spot in your profile.",
+      });
+      return;
+    }
+    if (!isInMissions) {
+      addMission.mutate(spotId);
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+    const shareData = {
+      title: spot?.name || "Spot",
+      text: `Check out ${spot?.name} on BKK Honest! ⚡`,
+      url: url,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        throw new Error("Native share unavailable");
+      }
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
+
+      console.warn("Native share failed, trying clipboard:", err);
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+          toast.success("Link copied to clipboard!");
+        } else {
+          // Legacy fallback for non-secure contexts or missing clipboard API
+          const textArea = document.createElement("textarea");
+          textArea.value = url;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textArea);
+
+          if (successful) {
+            toast.success("Link copied to clipboard!");
+          } else {
+            throw new Error("Copy command failed");
+          }
+        }
+      } catch (clipErr) {
+        console.error("All sharing methods failed:", clipErr);
+        toast.error("Failed to copy link");
+      }
+    }
+  };
+
   const uploadMutation = useUploadSpotImage();
   const { toggleVote: toggleTipVote } =
     useVoteToggle("tip", spotId);
@@ -444,6 +573,12 @@ export default function SpotDetailClient() {
   const handleSpotVote = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!authUser) {
+      toast.error("Join us to like spots!", {
+        description: "Login to save your favorites.",
+      });
+      return;
+    }
     await toggleSpotVote({
       id: spotId,
       hasVoted: spot?.hasVoted,
@@ -451,6 +586,12 @@ export default function SpotDetailClient() {
   };
 
   const handleSpotVoteClick = async () => {
+    if (!authUser) {
+      toast.error("Join us to like spots!", {
+        description: "Login to save your favorites.",
+      });
+      return;
+    }
     await toggleSpotVote({
       id: spotId,
       hasVoted: spot?.hasVoted,
@@ -662,7 +803,7 @@ export default function SpotDetailClient() {
                   {spotCategory?.name}
                 </span>
                 <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
-                  <Zap size={10} fill="currentColor" />
+                  <Zap size={10} fill="currentColor" className="shrink-0" />
                   {spotVibeStats?.avgCrowdLevel
                     ? `Busy: ${spotVibeStats.avgCrowdLevel.toFixed(1)}/5`
                     : "New Spot"}
@@ -682,14 +823,7 @@ export default function SpotDetailClient() {
                   }
                 >
                   <DropdownMenuItem
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator.share({
-                          title: spot.name,
-                          text: `Check out ${spot.name} on BKK Honest! ⚡`,
-                          url: window.location.href });
-                      }
-                    }}
+                    onClick={handleShare}
                     className="gap-3 py-3"
                   >
                     <Share2 size={16} className="text-amber-400" />
@@ -776,9 +910,7 @@ export default function SpotDetailClient() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <button
-                  onClick={() =>
-                    !isInMissions && addMission.mutate(spotId)
-                  }
+                  onClick={handleAcceptMission}
                   disabled={addMission.isPending || isInMissions}
                   className={cn(
                     "flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide",
@@ -881,14 +1013,7 @@ export default function SpotDetailClient() {
                   }
                 >
                   <DropdownMenuItem
-                    onClick={() => {
-                      if (navigator.share) {
-                        navigator.share({
-                          title: spot.name,
-                          text: `Check out ${spot.name} on BKK Honest! ⚡`,
-                          url: window.location.href });
-                      }
-                    }}
+                    onClick={handleShare}
                     className="gap-3 py-3"
                   >
                     <Share2 size={16} className="text-amber-400" />
@@ -931,9 +1056,7 @@ export default function SpotDetailClient() {
             {/* Bottom Section: Actions */}
             <div className="flex items-center gap-4 mt-8 pt-8 border-t border-border">
               <button
-                onClick={() =>
-                  !isInMissions && addMission.mutate(spotId)
-                }
+                onClick={handleAcceptMission}
                 disabled={addMission.isPending || isInMissions}
                 className={cn(
                   "flex-1 bg-white/5 hover:bg-white/10 text-white px-6 py-4 rounded-2xl transition-all active:scale-95 border border-border shadow-sm flex items-center justify-center gap-3 text-xs font-bold tracking-widest uppercase",
@@ -988,15 +1111,13 @@ export default function SpotDetailClient() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
         <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
           <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">
-            Avg Price (THB)
+            Last Pulse
           </span>
           <div className="text-2xl md:text-4xl font-display font-bold text-white">
-            {spotPriceStats?.avg
-              ? `${spotPriceStats.avg.toFixed(0)}`
-              : "--"}
+            {lastPulseDate ? timeAgo(lastPulseDate) : "New Spot"}
           </div>
           <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
-            Across {spotPriceStats?.count || 0} Reports
+            Latest Community Entry
           </div>
         </div>
         <div className="bg-card p-6 md:p-8 rounded-2xl border border-border shadow-xl shadow-black/20">
@@ -1033,11 +1154,11 @@ export default function SpotDetailClient() {
           <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-2 md:mb-4">
             Verified by
           </span>
-          <div className="text-lg md:text-xl font-display font-bold text-white">
-            {reports?.length || 0} Locals
+          <div className="text-2xl md:text-4xl font-display font-bold text-white">
+            {spot.activityStats?.totalContributors ?? reports?.length ?? 0}
           </div>
           <div className="mt-1 md:mt-2 text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest">
-            Community Score
+            Unique Locals
           </div>
         </div>
       </div>
@@ -1490,16 +1611,22 @@ export default function SpotDetailClient() {
                     tip={tip}
                     authUser={authUser}
                     onCommentClick={() => setSelectedTip(tip)}
-                    onVoteClick={async () =>
-                      toggleTipVote({
+                    onVoteClick={async () => {
+                      if (!authUser) {
+                        toast.error("Join us to like tips!", {
+                          description: "Login to help the community.",
+                        });
+                        return;
+                      }
+                      return toggleTipVote({
                         id: tip.id,
                         hasVoted: tip.hasVoted,
                         voteId: tip.voteId,
                         _count: {
                           votes: tip._count?.votes ?? 0,
                         },
-                      })
-                    }
+                      });
+                    }}
                     onEditClick={() => handleEditTip(tip)}
                     onDeleteClick={() => handleDeleteTip(tip.id)}
                   />

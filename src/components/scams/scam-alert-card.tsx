@@ -17,6 +17,8 @@ import { useRouter } from 'next/navigation';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { LikeButton } from '@/components/ui/like-button';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/components/providers/auth-provider';
+import { toast } from 'sonner';
 
 interface ScamAlertCardProps {
     alert: ScamAlertData;
@@ -48,7 +50,7 @@ interface NamedOption {
 
 export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProps) {
     const router = useRouter();
-    // const { user } = useAuth();
+    const { user: authUser } = useAuth();
     const [alert, setAlert] = useState<ScamAlertData>(initialAlert);
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const updateScamMutation = useUpdateScamAlert();
@@ -345,6 +347,12 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             count={alert._count?.votes || 0}
                             isVoted={alert.hasVoted}
                             onVote={async () => {
+                                if (!authUser) {
+                                    toast.error("Join us to like alerts!", {
+                                        description: "Login to help others stay safe.",
+                                    });
+                                    return;
+                                }
                                 const wasVoted = Boolean(alert.hasVoted);
 
                                 setAlert((prev) => ({

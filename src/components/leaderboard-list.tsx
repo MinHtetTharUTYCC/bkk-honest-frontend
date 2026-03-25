@@ -72,7 +72,7 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
                                 {c.name || 'Anonymous'}
                             </span>
                             <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
-                                {c.reputation} XP
+                                {c.reputation ?? 0} XP
                             </span>
                         </div>
                     </Link>
@@ -125,7 +125,7 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
                             {c.name || 'Anonymous'}
                         </span>
                         <span className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">
-                            {c.reputation} XP
+                            {c.reputation ?? 0} XP
                         </span>
                     </div>
                 </Link>

@@ -88,6 +88,52 @@ function UserProfilePageContent({
   } = useProfile(userId);
   const profile = unwrapProfileData(profileResponse);
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    const shareData = {
+      title: `${profile?.name}'s Profile`,
+      text: `Check out ${profile?.name}'s pulse on BKK Honest! ⚡`,
+      url: url,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare?.(shareData)) {
+        await navigator.share(shareData);
+      } else {
+        throw new Error("Native share unavailable");
+      }
+    } catch (err) {
+      if ((err as Error).name === "AbortError") return;
+      console.warn("Native share failed, trying clipboard:", err);
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+          toast.success("Link copied to clipboard!");
+        } else {
+          const textArea = document.createElement("textarea");
+          textArea.value = url;
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          const successful = document.execCommand("copy");
+          document.body.removeChild(textArea);
+          if (successful) {
+            toast.success("Link copied to clipboard!");
+          } else {
+            throw new Error("Copy command failed");
+          }
+        }
+      } catch (clipErr) {
+        console.error("All sharing methods failed:", clipErr);
+        toast.error("Failed to copy link");
+      }
+    }
+  };
+
   const isProfileNotFound =
     (profileError as ApiError)?.response?.status === 404;
 
@@ -134,15 +180,7 @@ function UserProfilePageContent({
                 }
               >
                 <DropdownMenuItem
-                  onClick={() => {
-                    if (navigator.share) {
-                      navigator.share({
-                        title: `${profile?.name}'s Profile`,
-                        text: `Check out ${profile?.name}'s pulse on BKK Honest! ⚡`,
-                        url: window.location.href,
-                      });
-                    }
-                  }}
+                  onClick={handleShare}
                   className="gap-3 py-3"
                 >
                   <Share2 size={16} className="text-amber-400" />

@@ -33,10 +33,8 @@ function VibesPageContent() {
   const { data: categoriesResponse } = useCategories();
   const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
-  // Initialize from URL
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    searchParams.get("categoryId") || searchParams.get("category") || "",
-  );
+  // Derived from URL
+  const selectedCategory = searchParams.get("categoryId") || searchParams.get("category") || "";
 
   // Function to update URL params
   const createQueryString = useCallback(
@@ -57,7 +55,6 @@ function VibesPageContent() {
   );
 
   const handleCategoryChange = (catId: string) => {
-    setSelectedCategory(catId);
     router.push(
       pathname +
         "?" +
@@ -102,10 +99,10 @@ function VibesPageContent() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   useEffect(() => {
-    if (!inView) {
+    if (!isFetchingNextPage || hasNextPage) {
       hasFetchedRef.current = false;
     }
-  }, [inView]);
+  }, [isFetchingNextPage, hasNextPage]);
 
   return (
     <div className="space-y-8 pb-24">

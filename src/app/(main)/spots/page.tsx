@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState, useEffect, useCallback, useRef } from "react";
+import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from "react";
 
 import { useInfiniteSpots, useCategories } from "@/hooks/use-api";
 import { useQueryClient } from "@tanstack/react-query";
@@ -12,9 +12,10 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
 import api from "@/lib/api";
+import type { SpotCardData } from "@/components/spots/spot-card";
 
-interface SpotListItem {
-  id: string;
+interface SpotCardDataExtended extends SpotCardData {
+  createdAt?: string;
 }
 
 function DiscoveryPageContent() {
@@ -23,10 +24,8 @@ function DiscoveryPageContent() {
   const searchParams = useSearchParams();
   const { ref, inView } = useInView();
 
-  // Initialize from URL
-  const [selectedCategory, setSelectedCategory] = useState<string | undefined>(
-    searchParams.get("categoryId") || searchParams.get("category") || undefined,
-  );
+  // Derived from URL
+  const selectedCategory = searchParams.get("categoryId") || searchParams.get("category") || undefined;
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [sort, setSort] = useState<"newest" | "popular">(
     (searchParams.get("sort") as "newest" | "popular") || "popular",
@@ -36,24 +35,20 @@ function DiscoveryPageContent() {
   const queryClient = useQueryClient();
 
   const prefetchCategory = (catId: string | undefined) => {
+    const params = {
+      cityId: selectedCityId,
+      categoryId: catId,
+      search: search || undefined,
+      sort: sort,
+    };
+
     queryClient.prefetchInfiniteQuery({
-      queryKey: [
-        "spots-infinite",
-        {
-          cityId: selectedCityId,
-          categoryId: catId,
-          search: search,
-          sort: sort,
-        },
-      ],
+      queryKey: ["spots-infinite", params],
       initialPageParam: 0,
       queryFn: async ({ pageParam = 0 }) => {
         const { data } = await api.get("/spots", {
           params: {
-            cityId: selectedCityId,
-            categoryId: catId,
-            search,
-            sort,
+            ...params,
             skip: pageParam,
             take: 10,
           },
@@ -93,7 +88,6 @@ function DiscoveryPageContent() {
 
   // Sync URL when filters change
   const handleCategoryChange = (catId: string | undefined) => {
-    setSelectedCategory(catId);
     router.push(
       pathname +
         "?" +
@@ -170,10 +164,26 @@ function DiscoveryPageContent() {
     }
   }, [inView]);
 
-  const spots: SpotListItem[] =
-    spotsData?.pages.flatMap(
-      (page) => (page as { data?: SpotListItem[] })?.data || [],
+  const spots: SpotCardData[] = useMemo(() => {
+    const rawSpots = spotsData?.pages.flatMap(
+      (page) => (page as { data?: SpotCardDataExtended[] })?.data || [],
     ) || [];
+
+    // Sort to keep newest spots on top
+    return [...rawSpots].sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      
+      // Always force newest spots to top for 12 hours
+      const isNewA = (Date.now() - dateA) < 43200000;
+      const isNewB = (Date.now() - dateB) < 43200000;
+      if (isNewA && !isNewB) return -1;
+      if (!isNewA && isNewB) return 1;
+
+      if (dateA !== dateB) return dateB - dateA;
+      return b.id.localeCompare(a.id);
+    });
+  }, [spotsData]);
 
   return (
     <div className="space-y-6 pb-24">

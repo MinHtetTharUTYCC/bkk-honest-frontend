@@ -173,7 +173,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
               {deleteCommentMutation.isPending ? (
                 <Loader2 size={16} className="animate-spin mr-2" />
               ) : null}
-              Delete 
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

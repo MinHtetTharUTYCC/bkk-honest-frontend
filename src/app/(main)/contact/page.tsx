@@ -28,13 +28,22 @@ export default function ContactPage() {
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: unknown) {
       const apiError = err as {
-        response?: { data?: { message?: string } };
+        response?: { data?: { message?: string | string[] | object } };
       };
       console.error("Form submission error:", err);
-      setError(
-        apiError.response?.data?.message ||
-          "Failed to send message. Please try again.",
-      );
+      
+      let errorMessage = "Failed to send message. Please try again.";
+      const rawMessage = apiError.response?.data?.message;
+      
+      if (typeof rawMessage === "string") {
+        errorMessage = rawMessage;
+      } else if (Array.isArray(rawMessage)) {
+        errorMessage = rawMessage[0];
+      } else if (rawMessage && typeof rawMessage === "object") {
+        errorMessage = JSON.stringify(rawMessage);
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -60,7 +69,7 @@ export default function ContactPage() {
           <div className="text-center">
             <h1 className="text-5xl font-bold mb-6">Contact Us</h1>
             <p className="text-xl text-amber-100 max-w-3xl mx-auto leading-relaxed">
-              Have a question, suggestion, or need help? We'd love to hear from
+              Have a question, suggestion, or need help? We&apos;d love to hear from
               you!
             </p>
           </div>
@@ -75,7 +84,7 @@ export default function ContactPage() {
               Send Us a Message
             </h2>
             <p className="text-lg text-foreground/70">
-              Use the form below and we'll get back to you as soon as possible
+              Use the form below and we&apos;ll get back to you as soon as possible
             </p>
           </div>
 
@@ -89,7 +98,7 @@ export default function ContactPage() {
                     Message Sent!
                   </h3>
                   <p className="text-foreground/70 mb-6">
-                    Thank you for reaching out. We've received your message and
+                    Thank you for reaching out. We&apos;ve received your message and
                     will get back to you within 48 hours.
                   </p>
                   <button
@@ -217,10 +226,10 @@ export default function ContactPage() {
                   Get in Touch
                 </h3>
                 <p className="text-foreground/70 mb-6">
-                  I'm a solo developer on a mission to make Thailand travel
+                  I&apos;m a solo developer on a mission to make Thailand travel
                   better and more transparent for everyone.I personally read
                   every message and suggestion. If you have any feedback, ideas,
-                  or just want to say hi, please don't hesitate to reach out!
+                  or just want to say hi, please don&apos;t hesitate to reach out!
                   Your input helps shape the future of BKK Honest and makes it a
                   better resource for travelers like you. I look forward to
                   hearing from you! 🙏
@@ -259,9 +268,9 @@ export default function ContactPage() {
                   <li>
                     • I always welcome bugs reports and new feature suggestions
                   </li>
-                  <li>• Be specific about the issue you're experiencing</li>
+                  <li>• Be specific about the issue you&apos;re experiencing</li>
                   <li>
-                    • Include your browser type if it's a technical problem
+                    • Include your browser type if it&apos;s a technical problem
                   </li>
                   <li>• Mention specific locations or content when relevant</li>
                 </ul>
@@ -272,7 +281,7 @@ export default function ContactPage() {
                   Looking to Contribute?
                 </h4>
                 <p className="text-foreground/70 text-sm mb-3">
-                  Want to help make Thailand Honest better? We're always looking
+                  Want to help make Thailand Honest better? We&apos;re always looking
                   for community moderators, local experts, and passionate
                   contributors.
                 </p>
@@ -306,7 +315,7 @@ export default function ContactPage() {
                 How do I report incorrect information?
               </h3>
               <p className="text-foreground/60 text-sm">
-                Use the "Report" button on any review or spot page, or contact
+                Use the &quot;Report&quot; button on any review or spot page, or contact
                 us directly with details about what needs to be corrected.
               </p>
             </div>
@@ -316,7 +325,7 @@ export default function ContactPage() {
                 Can I update my review?
               </h3>
               <p className="text-foreground/60 text-sm">
-                Yes! Go to your profile, find your review, and click "Edit" to
+                Yes! Go to your profile, find your review, and click &quot;Edit&quot; to
                 update your experience or add new information.
               </p>
             </div>

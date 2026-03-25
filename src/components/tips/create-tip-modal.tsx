@@ -5,7 +5,7 @@ import { useCreateCommunityTip } from '@/hooks/use-api';
 import { toast } from 'sonner';
 import TipForm from './tip-form';
 import { TipFormValues } from '@/lib/validations/tip';
-
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CreateTipModalProps {
   spotId: string;
@@ -23,12 +23,52 @@ interface ApiError {
 
 export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps) {
   const createMutation = useCreateCommunityTip();
+  const queryClient = useQueryClient();
 
   const onFormSubmit = async (values: TipFormValues) => {
     try {
-      await createMutation.mutateAsync({
+      const response = await createMutation.mutateAsync({
         spotId,
         ...values });
+      
+      const newTip = response?.data || response;
+
+      // Manually update the infinite query cache to show the new tip at index 0 immediately
+      // This works for both 'newest' and 'popular' sort modes by forcefully prepending
+      const tipTypes = ['TRY', 'AVOID'];
+      const sortTypes = ['popular', 'newest'];
+
+      tipTypes.forEach((type) => {
+        sortTypes.forEach((sort) => {
+          queryClient.setQueryData(
+            ['tips-infinite', spotId, type, sort],
+            (oldData: any) => {
+              if (!oldData || !oldData.pages) {
+                return oldData;
+              }
+
+              // Only prepend if the tip type matches the query filter
+              if (newTip.type !== type) return oldData;
+
+              const newPages = [...oldData.pages];
+              
+              if (newPages.length === 0) {
+                newPages[0] = { data: [newTip] };
+              } else {
+                const firstPage = { ...newPages[0] };
+                firstPage.data = [newTip, ...(firstPage.data || [])];
+                newPages[0] = firstPage;
+              }
+              
+              return {
+                ...oldData,
+                pages: newPages,
+              };
+            }
+          );
+        });
+      });
+
       toast.success('Tip shared with the community!');
       onClose();
     } catch (error: unknown) {

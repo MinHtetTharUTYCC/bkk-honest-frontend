@@ -481,6 +481,7 @@ export function useCreateSpot() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['spots'] });
+            queryClient.invalidateQueries({ queryKey: ['spots-infinite'] });
             queryClient.invalidateQueries({ queryKey: ['spots-nearby'] });
         } });
 }
@@ -594,13 +595,30 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
                     ...params,
                     skip: pageParam,
                     take: params?.take || 10 } });
+            
+            // Inspect the raw data first before unwrapping
+            if (data && typeof data === 'object' && 'data' in data && 'pagination' in data) {
+                return data as PaginatedLiveVibes;
+            }
+            
             const unwrapped = unwrapApiData(data);
             if (unwrapped && typeof unwrapped === 'object' && 'data' in unwrapped) {
                 return unwrapped as PaginatedLiveVibes;
             }
+            
+            const takeCount = params?.take || 10;
+            const items = Array.isArray(unwrapped) ? unwrapped : [];
+            const skip = Number(pageParam) || 0;
+            const hasMore = items.length >= takeCount;
+
             return {
-                data: Array.isArray(unwrapped) ? unwrapped : [],
-                pagination: { skip: Number(pageParam) || 0, take: params?.take || 10, total: Array.isArray(unwrapped) ? unwrapped.length : 0, hasMore: false }
+                data: items,
+                pagination: { 
+                    skip, 
+                    take: takeCount, 
+                    total: hasMore ? skip + takeCount + 1 : skip + items.length, 
+                    hasMore
+                }
             } satisfies PaginatedLiveVibes;
         },
         initialPageParam: 0,
@@ -729,6 +747,7 @@ export function useCreateCommunityTip() {
         onSuccess: (_, { spotId }) => {
             queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
             queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['spot'] });
         } });
 }
 
@@ -776,6 +795,7 @@ export function useCreatePriceReport() {
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['spots'] });
+            queryClient.invalidateQueries({ queryKey: ['spot'] });
             queryClient.invalidateQueries({ queryKey: ['price-reports', variables.spotId] });
             queryClient.invalidateQueries({ queryKey: ['price-reports-infinite', variables.spotId] });
         } });
@@ -826,9 +846,15 @@ export function useUpdateScamAlert() {
                 headers: { 'Content-Type': 'multipart/form-data' } });
             return data;
         },
-        onSuccess: (_, { id }) => {
+        onSuccess: (data, { id }) => {
+            const unwrapped = unwrapApiData(data) as { city?: { slug?: string }; slug?: string };
             queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
             queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
+            
+            // Invalidate the detail cache if we have slugs
+            if (unwrapped?.city?.slug && unwrapped?.slug) {
+                queryClient.invalidateQueries({ queryKey: ['scam-alert', unwrapped.city.slug, unwrapped.slug] });
+            }
         } });
 }
 
@@ -839,9 +865,15 @@ export function useDeleteScamAlert() {
             const { data } = await api.delete(`/scam-alerts/${id}`);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (data) => {
+            const unwrapped = unwrapApiData(data) as { city?: { slug?: string }; slug?: string };
             queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
             queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
+
+            // Invalidate the detail cache if we have slugs
+            if (unwrapped?.city?.slug && unwrapped?.slug) {
+                queryClient.invalidateQueries({ queryKey: ['scam-alert', unwrapped.city.slug, unwrapped.slug] });
+            }
         } });
 }
 
@@ -856,9 +888,11 @@ export function useCreateLiveVibe() {
             const { data } = await api.post('/live-vibes', payload);
             return data;
         },
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ['live-vibes'] });
+            queryClient.invalidateQueries({ queryKey: ['live-vibes-infinite', { spotId: variables.spotId }] });
             queryClient.invalidateQueries({ queryKey: ['spots'] });
+            queryClient.invalidateQueries({ queryKey: ['spot'] });
         } });
 }
 

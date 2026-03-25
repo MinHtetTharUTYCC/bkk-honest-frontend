@@ -9,6 +9,8 @@ import { LikeButton } from '@/components/ui/like-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
+import { useAuth } from '@/components/providers/auth-provider';
+import { toast } from 'sonner';
 
 interface GalleryUser {
     id?: string;
@@ -41,6 +43,7 @@ interface GalleryModalProps {
 }
 
 export default function GalleryModal({ spotId, spotName, onClose }: GalleryModalProps) {
+    const { user: authUser } = useAuth();
     const [sort, setSort] = useState<'popular' | 'newest'>('newest');
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
         useInfiniteSpotGallery(spotId, sort);
@@ -225,6 +228,12 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                         count={img._count?.votes || 0}
                                                         isVoted={img.hasVoted}
                                                         onVote={async () => {
+                                                            if (!authUser) {
+                                                                toast.error("Join us to like photos!", {
+                                                                    description: "Login to save your favorites.",
+                                                                });
+                                                                return;
+                                                            }
                                                             setVotingImageId(img.id);
                                                             try {
                                                                 await toggleVote({

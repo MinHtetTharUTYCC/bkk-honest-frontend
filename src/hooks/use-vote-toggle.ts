@@ -52,7 +52,7 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
       voteId: isRemoving ? null : 'temp-id',
       _count: {
         ...target._count,
-        votes: (target._count?.votes || 0) + (isRemoving ? -1 : 1) } };
+        votes: Math.max(0, (target._count?.votes || 0) + (isRemoving ? -1 : 1)) } };
   };
 
   const applyUpdate = (old: CacheNode | CacheNode[] | undefined, item: VoteableItem) => {
