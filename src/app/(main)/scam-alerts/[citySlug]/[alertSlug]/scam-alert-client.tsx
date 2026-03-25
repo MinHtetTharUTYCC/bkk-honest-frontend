@@ -382,7 +382,7 @@ export default function ScamAlertClient() {
           >
             <Image
               src={localAlert.imageUrl}
-              alt={localAlert.scamName}
+              alt={localAlert.scamName || 'Scam alert image'}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority

@@ -9,7 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { useMemo } from 'react';
 
-interface SpotCardData {
+export interface SpotCardData {
     id: string;
     slug?: string;
     name?: string;

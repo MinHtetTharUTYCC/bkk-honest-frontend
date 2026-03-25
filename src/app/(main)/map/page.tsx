@@ -73,6 +73,10 @@ interface MapSpot {
     vibeChecks?: number;
     priceReports?: number;
   };
+  activityStats?: {
+    totalContributors?: number;
+    lastActivity?: string | null;
+  };
 }
 
 function MapPageContent() {
@@ -125,6 +129,7 @@ function MapPageContent() {
     const timestamp = spot.activityStats?.lastActivity;
     if (!timestamp) return null;
     const date = new Date(timestamp);
+    // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
     const seconds = Math.floor((now - date.getTime()) / 1000);
     if (seconds < 60) return "Just now";

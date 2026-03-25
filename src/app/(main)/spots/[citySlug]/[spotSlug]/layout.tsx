@@ -1,6 +1,11 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import SpotHeader from "@/components/spots/spot-header";
+import { SpotData } from "@/types/spot";
 
 interface SpotDetailLayoutProps {
+  children: React.ReactNode;
   params: Promise<{
     citySlug: string;
     spotSlug: string;
@@ -9,88 +14,83 @@ interface SpotDetailLayoutProps {
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
-export async function generateMetadata({
-  params,
-}: SpotDetailLayoutProps): Promise<Metadata> {
+// Centralized fetcher for the spot layout
+async function getSpot(citySlug: string, spotSlug: string): Promise<SpotData | null> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const endpoint = `${baseUrl}/spots/by-slug/${encodeURIComponent(citySlug)}/${encodeURIComponent(spotSlug)}`;
+  
   try {
-    const { citySlug, spotSlug } = await params;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-    const path = `/spots/${citySlug}/${spotSlug}`;
-    const canonicalUrl = `${siteUrl}${path}`;
-    const endpoint = `${baseUrl}/spots/by-slug/${encodeURIComponent(citySlug)}/${encodeURIComponent(spotSlug)}`;
-
-    const response = await fetch(endpoint, {
+    const res = await fetch(endpoint, {
       next: { revalidate: 3600 },
-    }).catch(() => null);
-    if (!response?.ok) {
-      return {
-        title: "Spot Details - BKK Honest",
-        description:
-          "Explore spot details, prices, vibes, and community tips on BKK Honest",
-        alternates: { canonical: path },
-      };
-    }
-
-    const payload = await response.json();
-    const spot = payload?.data || payload;
-    const spotName = spot?.name || "Spot Details";
-    const spotAddress = spot?.address || "Bangkok";
-    const spotDescription =
-      spot?.description ||
-      `Explore ${spotName} in ${spotAddress}. See prices, vibes, and community tips.`;
-    const imageUrl = spot?.imageUrl;
-
-    return {
-      title: `${spotName} - Spot Details | BKK Honest`,
-      description: spotDescription,
-      keywords: [
-        spotName,
-        spot?.category?.name,
-        spotAddress,
-        "Bangkok",
-        "spot",
-        "prices",
-        "tips",
-      ].filter(Boolean),
-      alternates: {
-        canonical: path,
-      },
-      openGraph: {
-        title: `${spotName} - Spot Details`,
-        description: spotDescription,
-        type: "article",
-        url: canonicalUrl,
-        images: imageUrl
-          ? [
-              {
-                url: imageUrl,
-                width: 1200,
-                height: 630,
-                alt: spotName,
-              },
-            ]
-          : [],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: `${spotName} - Spot Details`,
-        description: spotDescription,
-        images: imageUrl ? [imageUrl] : [],
-      },
-    };
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json?.data || json;
   } catch {
-    return {
-      title: "Spot Details - BKK Honest",
-      description:
-        "Explore spot details, prices, vibes, and community tips on BKK Honest",
-    };
+    return null;
   }
 }
 
-export default function SpotDetailLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return children;
+export async function generateMetadata({ params }: { params: Promise<{ citySlug: string; spotSlug: string }> }): Promise<Metadata> {
+  const { citySlug, spotSlug } = await params;
+  const spot = await getSpot(citySlug, spotSlug);
+  const path = `/spots/${citySlug}/${spotSlug}`;
+  const canonicalUrl = `${siteUrl}${path}`;
+
+  if (!spot) {
+    return {
+      title: "Spot Not Found - BKK Honest",
+      description: "Explore spot details, prices, vibes, and community tips on BKK Honest",
+      alternates: { canonical: path },
+    };
+  }
+
+  const spotName = spot.name;
+  const spotAddress = spot.address;
+  const spotDescription = `Explore ${spotName} in ${spotAddress}. See prices, vibes, and community tips.`;
+  const imageUrl = spot.imageUrl;
+
+  return {
+    title: `${spotName} - Spot Details | BKK Honest`,
+    description: spotDescription,
+    keywords: [spotName, spot.category?.name, spotAddress, "Bangkok", "spot", "prices", "tips"].filter(Boolean) as string[],
+    alternates: { canonical: path },
+    openGraph: {
+      title: `${spotName} - Spot Details`,
+      description: spotDescription,
+      type: "article",
+      url: canonicalUrl,
+      images: imageUrl ? [{ url: imageUrl, width: 1200, height: 630, alt: spotName }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${spotName} - Spot Details`,
+      description: spotDescription,
+      images: imageUrl ? [imageUrl] : [],
+    },
+  };
+}
+
+// Layout wrapper component that provides context to the client headers
+import LayoutClientWrapper from "./layout-client-wrapper";
+
+export default async function SpotDetailLayout({ children, params }: SpotDetailLayoutProps) {
+  const { citySlug, spotSlug } = await params;
+  const spot = await getSpot(citySlug, spotSlug);
+
+  if (!spot) {
+    notFound();
+  }
+
+  const basePath = `/spots/${citySlug}/${spotSlug}`;
+
+  return (
+    <div className="space-y-12 pb-24">
+      {/* We use a thin client wrapper to hold the Edit/Delete/Image modal states if needed, 
+          or we can pass them down to a purely client SpotHeader. */}
+      <LayoutClientWrapper spot={spot} citySlug={citySlug} spotSlug={spotSlug} basePath={basePath}>
+        {children}
+      </LayoutClientWrapper>
+    </div>
+  );
 }

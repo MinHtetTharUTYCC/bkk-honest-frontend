@@ -20,6 +20,7 @@ import Image from "next/image";
 import { ProfileTabs } from "@/components/profile/profile-tabs";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ReportButton from "@/components/report/report-button";
+import { toast } from "sonner";
 
 interface ApiError {
   response?: {
