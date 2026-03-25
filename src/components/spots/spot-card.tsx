@@ -2,12 +2,12 @@
 
 import { MapPin, Zap, ImageIcon } from 'lucide-react';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { cn } from '@/lib/utils';
 import { getSpotUrl } from '@/lib/slug';
 import { LikeButton } from '@/components/ui/like-button';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
+import { useMemo } from 'react';
 
 interface SpotCardData {
     id: string;
@@ -20,15 +20,40 @@ interface SpotCardData {
     category?: { name?: string };
     hasVoted?: boolean;
     voteId?: string | null;
-    _count?: { votes?: number };
-    vibeStats?: { avgCrowdLevel?: number };
+    _count?: { 
+        votes?: number;
+        priceReports?: number;
+        vibeChecks?: number;
+        communityTips?: number;
+    };
+    vibeStats?: { avgCrowdLevel?: number; count?: number };
     priceStats?: { avg?: number; count?: number };
+    activityStats?: { totalContributors?: number; lastActivity?: string | null };
 }
 
 export default function SpotCard({ spot }: { spot: SpotCardData }) {
     const router = useRouter();
     const queryClient = useQueryClient();
-    const { id, slug, city, name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
+    const { id, slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageUrl, images } = spot;
+
+    // Helper for "Pulse" freshness - memoized to avoid recalculating on every render
+    const pulseLabel = useMemo(() => {
+        const timestamp = activityStats?.lastActivity;
+        if (!timestamp) return null;
+        const date = new Date(timestamp);
+        // eslint-disable-next-line react-hooks/purity
+        const now = Date.now();
+        const seconds = Math.floor((now - date.getTime()) / 1000);
+        if (seconds < 60) return "Just now";
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        return `${days}d ago`;
+    }, [activityStats?.lastActivity]);
+
+    const totalPulse = (_count?.priceReports || 0) + (_count?.vibeChecks || 0) + (_count?.communityTips || 0);
 
     const prefetchSpot = () => {
         const citySlug = city?.slug || 'bangkok';
@@ -74,7 +99,7 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
         });
     };
 
-        const { toggleVote, isPending: votePending } = useVoteToggle('spot');
+    const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
     // Format category name
     const categoryName = category?.name || 'Category';
@@ -167,7 +192,7 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                             Pulse
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
-                            {priceStats?.count || 0} Reports
+                            {pulseLabel ? pulseLabel : `${totalPulse} Updates`}
                         </span>
                     </div>
                 </div>
