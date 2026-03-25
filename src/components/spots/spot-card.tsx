@@ -114,10 +114,10 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
 
                 {/* Badge Container - top row */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between pointer-events-none">
-                    <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest shadow-sm border border-white/10">
+                    <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest shadow-sm border border-white/10 text-wrap">
                         {categoryName}
                     </span>
-                    <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest shadow-lg shadow-amber-400/20 border border-amber-300/20">
+                    <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest shadow-lg shadow-amber-400/20 border border-amber-300/20 text-wrap">
                         <Zap size={10} fill="currentColor" />
                         {vibeStats?.avgCrowdLevel
                             ? `Busy: ${vibeStats.avgCrowdLevel.toFixed(1)}/5`
