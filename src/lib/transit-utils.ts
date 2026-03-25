@@ -2,6 +2,27 @@
  * Transit-related utility functions for Bangkok BTS/MRT system
  */
 
+interface StationFeatureProperties {
+  id?: string;
+  name: string;
+  name_th?: string;
+  line: string;
+  system: 'BTS' | 'MRT' | 'ARL';
+  color: string;
+  interchange?: string[];
+}
+
+interface StationFeature {
+  properties: StationFeatureProperties;
+  geometry: {
+    coordinates: [number, number];
+  };
+}
+
+interface StationFeatureCollection {
+  features: StationFeature[];
+}
+
 export interface Station {
   id: string;
   name: string;
@@ -58,17 +79,38 @@ export function estimateWalkingTime(distance: number): number {
   return Math.ceil(distance / walkingSpeedMPerMin);
 }
 
+export function isStationFeatureCollection(value: unknown): value is StationFeatureCollection {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'features' in value &&
+    Array.isArray((value as StationFeatureCollection).features) &&
+    (value as StationFeatureCollection).features.every(
+      (f) =>
+        typeof f === 'object' &&
+        f !== null &&
+        'properties' in f &&
+        typeof (f as StationFeature).properties === 'object' &&
+        (f as StationFeature).properties !== null &&
+        'geometry' in f &&
+        typeof (f as StationFeature).geometry === 'object' &&
+        (f as StationFeature).geometry !== null &&
+        'coordinates' in (f as StationFeature).geometry
+    )
+  );
+}
+
 /**
  * Convert stations GeoJSON to Station objects
  * @param stationsGeoJSON GeoJSON FeatureCollection
  * @returns Array of Station objects
  */
 export function parseStationsFromGeoJSON(stationsGeoJSON: unknown): Station[] {
-  if (!stationsGeoJSON?.features) {
+  if (!isStationFeatureCollection(stationsGeoJSON)) {
     return [];
   }
 
-  return stationsGeoJSON.features.map((feature: unknown) => ({
+  return stationsGeoJSON.features.map((feature: StationFeature) => ({
     id: feature.properties.id || feature.properties.name,
     name: feature.properties.name,
     name_th: feature.properties.name_th,
