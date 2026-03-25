@@ -3,10 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useMapStore } from '@/store/use-map-store';
 
+interface MapStoreState {
+    transitVisible: boolean;
+    toggleTransitVisible: () => void;
+}
+
 export function useMapTransitVisible() {
     const [hasHydrated, setHasHydrated] = useState(false);
-    const transitVisible = useMapStore((state: any) => state.transitVisible);
-    const toggleTransitVisible = useMapStore((state: any) => state.toggleTransitVisible);
+    const transitVisible = useMapStore((state: MapStoreState) => state.transitVisible);
+    const toggleTransitVisible = useMapStore((state: MapStoreState) => state.toggleTransitVisible);
 
     useEffect(() => {
         // Attempt to rehydrate from localStorage
@@ -34,6 +39,5 @@ export function useMapTransitVisible() {
         // Only return actual transitVisible if hydrated; otherwise false to prevent premature render
         transitVisible: hasHydrated ? transitVisible : false,
         toggleTransitVisible,
-        hasHydrated,
-    };
+        hasHydrated };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MessageSquare, User } from 'lucide-react';
+import { MessageSquare, User as UserIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LikeButton } from '@/components/ui/like-button';
 import { TipActionsMenu } from './tip-actions-menu';
@@ -15,15 +15,33 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Loader2 } from 'lucide-react';
 
+interface TipCardUser {
+  id: string;
+  name?: string;
+  level?: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU' | string;
+  avatarUrl?: string | null;
+}
+
+interface TipCardItem {
+  id: string;
+  userId: string;
+  type: 'TRY' | 'AVOID' | string;
+  title: string;
+  description: string;
+  hasVoted?: boolean;
+  _count?: { votes?: number; comments?: number };
+  createdAt?: string;
+  user?: TipCardUser;
+}
+
 interface TipCardProps {
-  tip: any;
-  authUser?: any;
+  tip: TipCardItem;
+  authUser?: { id?: string | null } | null;
   onCommentClick: () => void;
-  onVoteClick: (tip: any) => Promise<any>;
+  onVoteClick: () => Promise<unknown>;
   onEditClick: () => void;
   onDeleteClick: () => Promise<void>;
   isVotePending?: boolean;
@@ -36,11 +54,16 @@ export function TipCard({
   onVoteClick,
   onEditClick,
   onDeleteClick,
-  isVotePending = false,
-}: TipCardProps) {
+  isVotePending = false }: TipCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const isOwner = authUser?.id === tip.userId;
+  const createdAtLabel = tip.createdAt
+    ? new Date(tip.createdAt).toLocaleDateString()
+    : '';
+  const handleVote = async () => {
+    await onVoteClick();
+  };
 
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
@@ -82,7 +105,7 @@ export function TipCard({
               {isDeleting ? (
                 <Loader2 size={16} className="animate-spin mr-2" />
               ) : null}
-              Delete Tip
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -102,7 +125,7 @@ export function TipCard({
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center text-white/40">
-                <User size={20} />
+                <UserIcon size={20} />
               </div>
             )}
           </Link>
@@ -129,7 +152,7 @@ export function TipCard({
               )}
             </div>
             <p className="text-[10px] md:text-xs font-medium text-white/40 mt-1">
-              {new Date(tip.createdAt).toLocaleDateString()}
+              {createdAtLabel}
             </p>
           </div>
         </div>
@@ -168,7 +191,7 @@ export function TipCard({
         <LikeButton
           count={tip._count?.votes || 0}
           isVoted={tip.hasVoted}
-          onVote={() => onVoteClick(tip)}
+          onVote={handleVote}
           isPending={isVotePending || isDeleting}
           disabled={isDeleting}
           variant="default"
@@ -192,7 +215,7 @@ export function TipCard({
           <LikeButton
             count={tip._count?.votes || 0}
             isVoted={tip.hasVoted}
-            onVote={() => onVoteClick(tip)}
+            onVote={handleVote}
             isPending={isVotePending || isDeleting}
             disabled={isDeleting}
             variant="default"

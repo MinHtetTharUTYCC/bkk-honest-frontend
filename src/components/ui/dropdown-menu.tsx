@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
+
 interface DropdownMenuContextType {
   close: () => void;
 }
@@ -81,13 +82,13 @@ export function DropdownMenuItem({ children, onClick, className, danger, asChild
     close();
   };
 
-  if (asChild && React.isValidElement(children)) {
-    return React.cloneElement(children as React.ReactElement, {
+  if (asChild && React.isValidElement<{ onClick?: (e: React.MouseEvent) => void }>(children)) {
+    return React.cloneElement(children, {
       onClick: (e: React.MouseEvent) => {
-        (children.props as any).onClick?.(e);
+        children.props.onClick?.(e);
         handleClick(e);
       }
-    } as any);
+    });
   }
 
   return (

@@ -3,12 +3,38 @@
 import { useState, useEffect, useRef } from 'react';
 import { useInfiniteSpotGallery, useUploadSpotImage } from '@/hooks/use-api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { X, Camera, Loader2, TrendingUp, Calendar, User, Upload } from 'lucide-react';
+import { X, Camera, Loader2, Calendar, User, Upload } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LikeButton } from '@/components/ui/like-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
+import { useAuth } from '@/components/providers/auth-provider';
+import { toast } from 'sonner';
+
+interface GalleryUser {
+    id?: string;
+    name?: string;
+    level?: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU' | string;
+    avatarUrl?: string | null;
+}
+
+interface GalleryImage {
+    id: string;
+    url: string;
+    userId: string;
+    createdAt: string;
+    hasVoted?: boolean;
+    _count?: { votes?: number };
+    user?: GalleryUser;
+}
+
+interface GalleryPage {
+    data?: GalleryImage[];
+    pagination?: { total?: number };
+    total?: number;
+}
+
 
 interface GalleryModalProps {
     spotId: string;
@@ -17,6 +43,7 @@ interface GalleryModalProps {
 }
 
 export default function GalleryModal({ spotId, spotName, onClose }: GalleryModalProps) {
+    const { user: authUser } = useAuth();
     const [sort, setSort] = useState<'popular' | 'newest'>('newest');
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
         useInfiniteSpotGallery(spotId, sort);
@@ -24,12 +51,11 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     const uploadMutation = useUploadSpotImage();
     const { toggleVote, isPending: votePending } = useVoteToggle('image', spotId);
     const [votingImageId, setVotingImageId] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-
-    const rawImages = data?.pages.flatMap((page) => page.data || page) || [];
+    
+    const rawImages = (data?.pages as GalleryPage[] | undefined)?.flatMap((page) => page.data || []) || [];
     // Remove duplicates that can occur with offset pagination when new items are added
-    const images = Array.from(new Map(rawImages.map((img: any) => [img.id, img])).values());
-    const totalImages = (data?.pages[0] as any)?.pagination?.total || (data?.pages[0] as any)?.total;
+    const images = Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
+    const totalImages = (data?.pages?.[0] as GalleryPage | undefined)?.pagination?.total || (data?.pages?.[0] as GalleryPage | undefined)?.total;
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });
@@ -56,14 +82,9 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
         }
     }, [inView]);
 
-    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        await uploadMutation.mutateAsync({ spotId, file });
-    };
-
+    
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-md animate-in fade-in duration-300">
             <div className="relative w-full max-w-6xl h-full bg-card rounded-2xl shadow-2xl overflow-hidden flex flex-col">
                 {/* Header */}
                 <header className="p-8 border-b border-white/8 flex items-center justify-between bg-card z-10">
@@ -141,16 +162,15 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                     ) : (
                         <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {images.map((img: any) => (
+                                {images.map((img) => (
                                     <div
                                         key={img.id}
                                         className="bg-card rounded-2xl overflow-hidden border border-white/8 shadow-xl shadow-black/30 group"
                                     >
                                         <div className="aspect-[4/5] relative overflow-hidden">
-                                            <img
-                                                src={img.url}
+                                            <img src={img.url}
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                alt="Spot vibe"
+                                                alt="vibe"
                                                 loading="lazy"
                                             />
                                         </div>
@@ -163,8 +183,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                         className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 transition-colors shrink-0"
                                                     >
                                                         {img.user?.avatarUrl ? (
-                                                            <img
-                                                                src={img.user.avatarUrl}
+                                                            <img alt="" src={img.user.avatarUrl}
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         ) : (
@@ -198,8 +217,7 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                                     {
                                                                         month: 'short',
                                                                         day: 'numeric',
-                                                                        year: 'numeric',
-                                                                    },
+                                                                        year: 'numeric' },
                                                                 )}
                                                             </span>
                                                         </p>
@@ -210,9 +228,21 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                         count={img._count?.votes || 0}
                                                         isVoted={img.hasVoted}
                                                         onVote={async () => {
+                                                            if (!authUser) {
+                                                                toast.error("Join us to like photos!", {
+                                                                    description: "Login to save your favorites.",
+                                                                });
+                                                                return;
+                                                            }
                                                             setVotingImageId(img.id);
                                                             try {
-                                                                await toggleVote(img);
+                                                                await toggleVote({
+                                                                    id: img.id,
+                                                                    hasVoted: img.hasVoted,
+                                                                    _count: {
+                                                                        votes: img._count?.votes ?? 0,
+                                                                    },
+                                                                });
                                                             } finally {
                                                                 setVotingImageId(null);
                                                             }

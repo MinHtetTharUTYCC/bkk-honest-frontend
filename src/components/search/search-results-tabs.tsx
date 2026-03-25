@@ -7,6 +7,7 @@ import ScamAlertCard from '@/components/scams/scam-alert-card';
 import { CardSkeleton, ScamAlertCardSkeleton } from '@/components/ui/skeleton';
 import { useInfiniteSpots, useInfiniteScamAlerts } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
+import type { ScamAlertData } from '@/components/scams/scam-alert-card';
 
 interface SearchResultsTabsProps {
   query: string;
@@ -15,6 +16,17 @@ interface SearchResultsTabsProps {
   activeTab?: 'spots' | 'scams';
   onTabChange?: (tab: 'spots' | 'scams') => void;
   cityId?: string;
+}
+
+interface SearchSpotItem {
+  id: string;
+}
+
+interface PaginationPage<T> {
+  data?: T[];
+  pagination?: {
+    total?: number;
+  };
 }
 
 export function SearchResultsTabs({
@@ -30,9 +42,9 @@ export function SearchResultsTabs({
 
   useEffect(() => {
     if (activeTab && activeTab !== tab) {
-      setTab(activeTab);
+      setTimeout(() => setTab(activeTab), 0);
     }
-  }, [activeTab]);
+  }, [activeTab, tab]);
 
   // Fetch spots
   const {
@@ -90,11 +102,14 @@ export function SearchResultsTabs({
   };
 
   // Flatten paginated data
-  const spots = spotsData?.pages?.flatMap((page: any) => page.data || []) || [];
-  const scams = scamsData?.pages?.flatMap((page: any) => page.data || []) || [];
+  const spotPages = spotsData?.pages as PaginationPage<SearchSpotItem>[] | undefined;
+  const scamPages = scamsData?.pages as PaginationPage<ScamAlertData>[] | undefined;
 
-  const spotsCount = spotsData?.pages?.[0]?.pagination?.total || spots.length;
-  const scamsCount = scamsData?.pages?.[0]?.pagination?.total || scams.length;
+  const spots = spotPages?.flatMap((page) => page.data || []) || [];
+  const scams = scamPages?.flatMap((page) => page.data || []) || [];
+
+  const spotsCount = spotPages?.[0]?.pagination?.total || spots.length;
+  const scamsCount = scamPages?.[0]?.pagination?.total || scams.length;
 
   return (
     <div className="flex-1">
@@ -130,7 +145,7 @@ export function SearchResultsTabs({
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {spots.map((spot: any) => (
+                {spots.map((spot) => (
                   <SpotCard key={spot.id} spot={spot} />
                 ))}
               </div>
@@ -159,7 +174,7 @@ export function SearchResultsTabs({
           ) : (
             <>
               <div className="flex flex-col gap-4">
-                {scams.map((scam: any) => (
+                {scams.map((scam) => (
                   <ScamAlertCard key={scam.id} alert={scam} />
                 ))}
               </div>

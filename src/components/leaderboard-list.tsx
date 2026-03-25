@@ -13,10 +13,17 @@ const LEVEL_COLORS = [
     'bg-purple-400/15 text-purple-400',
 ];
 
+interface LeaderboardItem {
+    id: string;
+    name?: string;
+    avatarUrl?: string;
+    reputation?: number;
+}
+
 /** Horizontal scroll card list for mobile */
 export function LeaderboardList({ take = 5 }: { take?: number }) {
     const { data, isLoading } = useLeaderboard(take);
-    const list: any[] = Array.isArray(data) ? data : [];
+    const list: LeaderboardItem[] = Array.isArray(data) ? data : [];
 
     if (isLoading) {
         return (
@@ -39,7 +46,7 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
     return (
         <ScrollArea className="w-full whitespace-nowrap -mx-8 px-8">
             <div className="flex gap-4 pb-4">
-                {list.map((c: any, idx: number) => (
+                {list.map((c, idx: number) => (
                     <Link
                         key={c.id}
                         href={`/profile/${c.id}`}
@@ -65,7 +72,7 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
                                 {c.name || 'Anonymous'}
                             </span>
                             <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
-                                {c.reputation} XP
+                                {c.reputation ?? 0} XP
                             </span>
                         </div>
                     </Link>
@@ -79,7 +86,7 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
 /** Vertical stacked list for sidebar */
 export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
     const { data, isLoading } = useLeaderboard(take);
-    const list: any[] = Array.isArray(data) ? data : [];
+    const list: LeaderboardItem[] = Array.isArray(data) ? data : [];
 
     if (isLoading) {
         return (
@@ -95,7 +102,7 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
 
     return (
         <div className="space-y-4">
-            {list.map((c: any, idx: number) => (
+            {list.map((c, idx: number) => (
                 <Link
                     key={c.id}
                     href={`/profile/${c.id}`}
@@ -118,7 +125,7 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
                             {c.name || 'Anonymous'}
                         </span>
                         <span className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">
-                            {c.reputation} XP
+                            {c.reputation ?? 0} XP
                         </span>
                     </div>
                 </Link>

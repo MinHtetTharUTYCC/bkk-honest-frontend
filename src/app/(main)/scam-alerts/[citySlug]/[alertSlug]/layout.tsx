@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import { Metadata } from "next";
 
 interface ScamAlertLayoutProps {
   params: Promise<{
@@ -7,9 +7,11 @@ interface ScamAlertLayoutProps {
   }>;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
-export async function generateMetadata({ params }: ScamAlertLayoutProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ScamAlertLayoutProps): Promise<Metadata> {
   try {
     const { citySlug, alertSlug } = await params;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -17,17 +19,17 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
     const encodedAlertSlug = encodeURIComponent(alertSlug);
     const path = `/scam-alerts/${encodedCitySlug}/${encodedAlertSlug}`;
     const canonicalUrl = `${siteUrl}${path}`;
-    
+
     // Fetch alert data for dynamic metadata
     const response = await fetch(
       `${baseUrl}/scam-alerts/by-slug/${encodeURIComponent(citySlug)}/${encodeURIComponent(alertSlug)}`,
-      { next: { revalidate: 3600 } }
+      { next: { revalidate: 3600 } },
     ).catch(() => null);
 
     if (!response?.ok) {
       return {
-        title: 'Scam Alert - BKK Honest',
-        description: 'View scam alert details and community discussion',
+        title: "Scam Alert - BKK Honest",
+        description: "View scam alert details and community discussion",
         alternates: { canonical: path },
       };
     }
@@ -37,24 +39,38 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
 
     return {
       title: `${alertData.scamName} - Scam Alert | BKK Honest`,
-      description: alertData.description || `Learn about the ${alertData.scamName} scam and how to protect yourself`,
-      keywords: [alertData.scamName, alertData.category?.name, 'scam', 'alert', 'Bangkok'].filter(Boolean),
+      description:
+        alertData.description ||
+        `Learn about the ${alertData.scamName} scam and how to protect yourself`,
+      keywords: [
+        alertData.scamName,
+        alertData.category?.name,
+        "scam",
+        "alert",
+        "Bangkok",
+      ].filter(Boolean),
       openGraph: {
         title: `${alertData.scamName} - Scam Alert`,
-        description: alertData.description || `Learn about the ${alertData.scamName} scam`,
-        type: 'article',
+        description:
+          alertData.description || `Learn about the ${alertData.scamName} scam`,
+        type: "article",
         url: canonicalUrl,
-        images: alertData.imageUrl ? [{
-          url: alertData.imageUrl,
-          width: 1200,
-          height: 630,
-          alt: alertData.scamName,
-        }] : [],
+        images: alertData.imageUrl
+          ? [
+              {
+                url: alertData.imageUrl,
+                width: 1200,
+                height: 630,
+                alt: alertData.scamName,
+              },
+            ]
+          : [],
       },
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: `${alertData.scamName} - Scam Alert`,
-        description: alertData.description || `Learn about the ${alertData.scamName} scam`,
+        description:
+          alertData.description || `Learn about the ${alertData.scamName} scam`,
         images: alertData.imageUrl ? [alertData.imageUrl] : [],
       },
       alternates: {
@@ -63,8 +79,8 @@ export async function generateMetadata({ params }: ScamAlertLayoutProps): Promis
     };
   } catch (error) {
     return {
-      title: 'Scam Alert - BKK Honest',
-      description: 'View scam alert details and community discussion',
+      title: "Scam Alert - BKK Honest",
+      description: "View scam alert details and community discussion",
     };
   }
 }
@@ -76,6 +92,3 @@ export default function ScamAlertDetailLayout({
 }) {
   return children;
 }
-
-
-

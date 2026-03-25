@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import Map, { Marker } from 'react-map-gl/mapbox';
+import type { MapMouseEvent, MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, Navigation, AlertCircle, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
+
 
 interface LocationPickerProps {
   onLocationSelected: (location: { latitude: number; longitude: number }) => void;
@@ -16,16 +18,14 @@ const DEFAULT_ZOOM = 13;
 
 export default function LocationPicker({
   onLocationSelected,
-  initialLocation,
-}: LocationPickerProps) {
-  const mapRef = useRef<any>(null);
+  initialLocation }: LocationPickerProps) {
+  const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: initialLocation?.latitude ?? BANGKOK_CENTER.latitude,
     longitude: initialLocation?.longitude ?? BANGKOK_CENTER.longitude,
     zoom: DEFAULT_ZOOM,
     bearing: 0,
-    pitch: 0,
-  });
+    pitch: 0 });
 
   const [selectedLocation, setSelectedLocation] = useState<{
     latitude: number;
@@ -64,8 +64,7 @@ export default function LocationPicker({
           ...prev,
           latitude,
           longitude,
-          zoom: DEFAULT_ZOOM,
-        }));
+          zoom: DEFAULT_ZOOM }));
         setGeolocationStatus('granted');
       },
       (err) => {
@@ -87,12 +86,11 @@ export default function LocationPicker({
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 0,
-      }
+        maximumAge: 0 }
     );
   };
 
-  const handleMapClick = (event: any) => {
+  const handleMapClick = (event: MapMouseEvent) => {
     const { lngLat } = event;
     setSelectedLocation({ latitude: lngLat.lat, longitude: lngLat.lng });
     setError(null);
@@ -141,7 +139,7 @@ export default function LocationPicker({
             attributionControl={false}
             aria-label="Location selection map"
           >
-            {/* User location marker (blue) */}
+            {/*  location marker (blue) */}
             {userLocation && (
               <Marker latitude={userLocation.latitude} longitude={userLocation.longitude}>
                 <div

@@ -26,6 +26,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import api from '@/lib/api';
 
 interface ProfileTabsProps {
     userId: string;
@@ -34,13 +35,63 @@ interface ProfileTabsProps {
     isPublic?: boolean;
 }
 
+interface PaginationPage {
+    pagination?: {
+        skip?: number;
+        take?: number;
+        total?: number;
+    };
+}
+
+interface ScamItem {
+    id: string;
+    scamName: string;
+    description: string;
+    createdAt: string;
+    imageUrl?: string;
+    slug?: string;
+    city?: { slug?: string };
+}
+
+interface TipItem {
+    id: string;
+    title: string;
+    description: string;
+    createdAt: string;
+    imageUrl?: string;
+    spot?: { slug?: string; imageUrl?: string; city?: { slug?: string } };
+}
+
+interface ReportItem {
+    id: string;
+    itemName: string;
+    priceThb: number;
+    timestamp: string;
+    imageUrl?: string;
+    spot?: { name?: string; slug?: string; imageUrl?: string; city?: { slug?: string } };
+}
+
+interface SpotItem {
+    id: string;
+    name: string;
+    address?: string;
+    createdAt: string;
+    imageUrl?: string;
+    slug?: string;
+    city?: { slug?: string };
+}
+
+interface InfinitePage<T> extends PaginationPage {
+    data?: T[];
+}
+
 export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }: ProfileTabsProps) {
     const { ref, inView } = useInView({ threshold: 0.1 });
     const lastFetchTabRef = useRef<string | null>(null);
     const queryClient = useQueryClient();
 
-    const prefetchTab = (tab: string) => {
-        const queryKeyMap: Record<string, string> = {
+    const prefetchTab = (tab: ProfileTabsProps['activeTab']) => {
+        const queryKeyMap: Record<ProfileTabsProps['activeTab'], string> = {
             scams: 'user-scam-alerts-infinite',
             tips: 'user-community-tips-infinite',
             reports: 'user-price-reports-infinite',
@@ -48,12 +99,31 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
         };
 
         const key = queryKeyMap[tab];
-        if (key) {
-            queryClient.prefetchInfiniteQuery({
-                queryKey: [key, userId],
-                initialPageParam: 0,
-            } as any);
-        }
+        const endpointMap: Record<ProfileTabsProps['activeTab'], string> = {
+            scams: userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`,
+            tips: userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`,
+            reports: userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`,
+            spots: userId === 'me' ? '/spots/mine' : `/spots/user/${userId}`,
+        };
+
+        queryClient.prefetchInfiniteQuery({
+            queryKey: [key, userId],
+            initialPageParam: 0,
+            queryFn: async ({ pageParam = 0 }) => {
+                const { data } = await api.get(endpointMap[tab], {
+                    params: { skip: pageParam, take: 10 },
+                });
+                return data;
+            },
+            getNextPageParam: (lastPage: PaginationPage) => {
+                const { skip, take, total } = lastPage.pagination || {};
+                if (skip === undefined || take === undefined || total === undefined) {
+                    return undefined;
+                }
+                const nextSkip = skip + take;
+                return nextSkip < total ? nextSkip : undefined;
+            },
+        });
     };
 
     const {
@@ -113,15 +183,20 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
         lastFetchTabRef.current = null;
     }, [activeTab]);
 
-    const reportsList = useMemo(() => reportsData?.pages.flatMap((page) => page.data || []) || [], [reportsData]);
-    const scamsList = useMemo(() => scamsData?.pages.flatMap((page) => page.data || []) || [], [scamsData]);
-    const tipsList = useMemo(() => tipsData?.pages.flatMap((page) => page.data || []) || [], [tipsData]);
-    const spotsList = useMemo(() => spotsData?.pages.flatMap((page) => page.data || []) || [], [spotsData]);
+    const reportsPages = reportsData?.pages as InfinitePage<ReportItem>[] | undefined;
+    const scamsPages = scamsData?.pages as InfinitePage<ScamItem>[] | undefined;
+    const tipsPages = tipsData?.pages as InfinitePage<TipItem>[] | undefined;
+    const spotsPages = spotsData?.pages as InfinitePage<SpotItem>[] | undefined;
 
-    const reportsTotal = reportsData?.pages[0]?.pagination?.total || reportsList.length;
-    const scamsTotal = scamsData?.pages[0]?.pagination?.total || scamsList.length;
-    const tipsTotal = tipsData?.pages[0]?.pagination?.total || tipsList.length;
-    const spotsTotal = spotsData?.pages[0]?.pagination?.total || spotsList.length;
+    const reportsList = useMemo(() => reportsPages?.flatMap((page) => page.data || []) || [], [reportsPages]);
+    const scamsList = useMemo(() => scamsPages?.flatMap((page) => page.data || []) || [], [scamsPages]);
+    const tipsList = useMemo(() => tipsPages?.flatMap((page) => page.data || []) || [], [tipsPages]);
+    const spotsList = useMemo(() => spotsPages?.flatMap((page) => page.data || []) || [], [spotsPages]);
+
+    const reportsTotal = reportsPages?.[0]?.pagination?.total || reportsList.length;
+    const scamsTotal = scamsPages?.[0]?.pagination?.total || scamsList.length;
+    const tipsTotal = tipsPages?.[0]?.pagination?.total || tipsList.length;
+    const spotsTotal = spotsPages?.[0]?.pagination?.total || spotsList.length;
 
     const tabs = [
         { id: 'scams', label: 'Scams', count: scamsTotal, color: 'text-red-400 bg-red-500/10 border-red-500/20 active:bg-red-500/20' },
@@ -150,7 +225,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                         {visibleTabs.map((tab) => (
                             <button
                                 key={tab.id}
-                                onClick={() => onTabChange(tab.id as any)}
+                                onClick={() => onTabChange(tab.id)}
                                 onMouseEnter={() => prefetchTab(tab.id)}
                                 className={cn(
                                     'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer',
@@ -182,7 +257,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'scams' && (
                     <div className="flex flex-col gap-6">
                         {scamsList.length > 0 ? (
-                            scamsList.map((scam: any) => (
+                            scamsList.map((scam) => (
                                 <div key={scam.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                     <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                         {scam.imageUrl ? (
@@ -229,7 +304,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'tips' && (
                     <div className="flex flex-col gap-6">
                         {tipsList.length > 0 ? (
-                            tipsList.map((tip: any) => {
+                            tipsList.map((tip) => {
                                 const displayImg = tip.imageUrl || tip.spot?.imageUrl;
                                 return (
                                     <div key={tip.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
@@ -279,7 +354,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'reports' && (
                     <div className="flex flex-col gap-6">
                         {reportsList.length > 0 ? (
-                            reportsList.map((report: any) => {
+                            reportsList.map((report) => {
                                 const displayImg = report.imageUrl || report.spot?.imageUrl;
                                 return (
                                     <div key={report.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
@@ -334,7 +409,7 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                 {!isLoading && activeTab === 'spots' && (
                     <div className="flex flex-col gap-6">
                         {spotsList.length > 0 ? (
-                            spotsList.map((spot: any) => (
+                            spotsList.map((spot) => (
                                 <div key={spot.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                     <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
                                         {spot.imageUrl ? (

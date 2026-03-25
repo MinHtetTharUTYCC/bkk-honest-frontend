@@ -8,6 +8,11 @@ import { useCity } from '@/components/providers/city-provider';
 import { useCategories } from '@/hooks/use-api';
 import { LeaderboardSidebarList } from '@/components/leaderboard-list';
 
+interface SidebarCategory {
+    id: string;
+    name: string;
+}
+
 export default function Sidebar() {
     const pathname = usePathname();
     const { selectedCity } = useCity();
@@ -27,7 +32,7 @@ export default function Sidebar() {
                     Browse Categories
                 </h4>
                 <div className="space-y-4">
-                    {Array.isArray(categories) && categories.slice(0, 6).map((cat: any) => (
+                    {Array.isArray(categories) && categories.slice(0, 6).map((cat: SidebarCategory) => (
                         <Link
                             key={cat.id}
                             href={`/spots?categoryId=${cat.id}`}

@@ -5,9 +5,28 @@ import { useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
 import SpotForm, { SpotFormData } from '@/components/spots/spot-form';
 import { toast } from 'sonner';
 
+
 interface SpotEditModalProps {
-    spot: any;
+    spot: SpotEditData;
     onClose: () => void;
+}
+
+interface SpotEditData {
+    id: string;
+    name?: string;
+    address?: string;
+    categoryId?: string;
+    cityId?: string;
+    latitude?: number;
+    longitude?: number;
+    imageUrl?: string;
+    category?: { id?: string };
+    city?: { id?: string };
+}
+
+interface ApiError {
+    message?: string;
+    response?: { data?: { message?: string | string[] } };
 }
 
 export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
@@ -15,8 +34,8 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
     const { data: categoriesResponse } = useCategories();
     const { data: citiesResponse } = useCities();
 
-    const categories = categoriesResponse?.data || categoriesResponse || [];
-    const cities = citiesResponse?.data || citiesResponse || [];
+    const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
+    const cities = Array.isArray(citiesResponse) ? citiesResponse : [];
 
     const handleUpdateSpot = async (formData: SpotFormData) => {
         try {
@@ -29,14 +48,13 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                     cityId: formData.cityId,
                     latitude: formData.latitude,
                     longitude: formData.longitude,
-                    image: formData.imageFile || undefined,
-                },
-            });
+                    image: formData.imageFile || undefined } });
             toast.success('Spot updated successfully');
             onClose();
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const apiError = err as ApiError;
             console.error(err);
-            const message = err.response?.data?.message || err.message || 'Failed to update spot';
+            const message = apiError.response?.data?.message || apiError.message || 'Failed to update spot';
             const errorMessage = Array.isArray(message) ? message.join(', ') : message;
             toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to update spot');
         }
@@ -57,21 +75,20 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                         Edit Spot
                     </h3>
                     <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
-                        Keep the pulse updated for {spot.name}
+                        Keep the pulse updated for {spot.name || 'this spot'}
                     </p>
                 </div>
 
                 <SpotForm
                     mode="edit"
                     initialData={{
-                        name: spot.name,
-                        address: spot.address,
-                        categoryId: spot.categoryId || (spot.category as any)?.id,
-                        cityId: spot.cityId || (spot.city as any)?.id,
+                        name: spot.name || '',
+                        address: spot.address || '',
+                        categoryId: spot.categoryId || spot.category?.id || '',
+                        cityId: spot.cityId || spot.city?.id || '',
                         latitude: spot.latitude,
                         longitude: spot.longitude,
-                        imageUrl: spot.imageUrl,
-                    }}
+                        imageUrl: spot.imageUrl }}
                     categories={categories}
                     cities={cities}
                     isLoading={updateSpotMutation.isPending}

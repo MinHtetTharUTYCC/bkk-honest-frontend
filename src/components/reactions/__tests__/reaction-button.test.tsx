@@ -338,7 +338,7 @@ describe('ReactionButton Component', () => {
   describe('Optimistic Updates', () => {
     it('should update UI before API call completes', async () => {
       const user = userEvent.setup();
-      let resolveApi: any;
+      let resolveApi: (value: any) => void = () => {};
       mockMutateAsync.mockReturnValueOnce(
         new Promise(resolve => { resolveApi = resolve; })
       );
@@ -352,7 +352,9 @@ describe('ReactionButton Component', () => {
       expect(screen.getByText('4')).toBeInTheDocument();
 
       // Resolve API call
-      resolveApi({ success: true });
+      if (typeof resolveApi === 'function') {
+        resolveApi({ success: true });
+      }
 
       // Should remain updated
       await waitFor(() => {

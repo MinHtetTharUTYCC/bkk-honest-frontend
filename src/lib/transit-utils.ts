@@ -2,6 +2,27 @@
  * Transit-related utility functions for Bangkok BTS/MRT system
  */
 
+interface StationFeatureProperties {
+  id?: string;
+  name: string;
+  name_th?: string;
+  line: string;
+  system: 'BTS' | 'MRT' | 'ARL';
+  color: string;
+  interchange?: string[];
+}
+
+interface StationFeature {
+  properties: StationFeatureProperties;
+  geometry: {
+    coordinates: [number, number];
+  };
+}
+
+interface StationFeatureCollection {
+  features: StationFeature[];
+}
+
 export interface Station {
   id: string;
   name: string;
@@ -17,6 +38,25 @@ export interface NearestStation {
   station: Station;
   distance: number; // distance in meters
   walkingTime: number; // estimated walking time in minutes
+}
+
+interface GeoJsonStationFeature {
+  properties: {
+    id?: string;
+    name: string;
+    name_th?: string;
+    line: string;
+    system: 'BTS' | 'MRT' | 'ARL';
+    color: string;
+    interchange?: string[];
+  };
+  geometry: {
+    coordinates: [number, number];
+  };
+}
+
+interface GeoJsonStationCollection {
+  features?: GeoJsonStationFeature[];
 }
 
 /**
@@ -58,17 +98,38 @@ export function estimateWalkingTime(distance: number): number {
   return Math.ceil(distance / walkingSpeedMPerMin);
 }
 
+export function isStationFeatureCollection(value: unknown): value is StationFeatureCollection {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'features' in value &&
+    Array.isArray((value as StationFeatureCollection).features) &&
+    (value as StationFeatureCollection).features.every(
+      (f) =>
+        typeof f === 'object' &&
+        f !== null &&
+        'properties' in f &&
+        typeof (f as StationFeature).properties === 'object' &&
+        (f as StationFeature).properties !== null &&
+        'geometry' in f &&
+        typeof (f as StationFeature).geometry === 'object' &&
+        (f as StationFeature).geometry !== null &&
+        'coordinates' in (f as StationFeature).geometry
+    )
+  );
+}
+
 /**
  * Convert stations GeoJSON to Station objects
  * @param stationsGeoJSON GeoJSON FeatureCollection
  * @returns Array of Station objects
  */
-export function parseStationsFromGeoJSON(stationsGeoJSON: any): Station[] {
-  if (!stationsGeoJSON?.features) {
+export function parseStationsFromGeoJSON(stationsGeoJSON: unknown): Station[] {
+  if (!isStationFeatureCollection(stationsGeoJSON)) {
     return [];
   }
 
-  return stationsGeoJSON.features.map((feature: any) => ({
+  return stationsGeoJSON.features.map((feature: StationFeature) => ({
     id: feature.properties.id || feature.properties.name,
     name: feature.properties.name,
     name_th: feature.properties.name_th,
@@ -76,8 +137,7 @@ export function parseStationsFromGeoJSON(stationsGeoJSON: any): Station[] {
     line: feature.properties.line,
     system: feature.properties.system,
     color: feature.properties.color,
-    interchange: feature.properties.interchange || [],
-  }));
+    interchange: feature.properties.interchange || [] }));
 }
 
 /**
@@ -120,8 +180,7 @@ export function findNearestStation(
   return {
     station: nearestStation,
     distance: minDistance,
-    walkingTime: estimateWalkingTime(minDistance),
-  };
+    walkingTime: estimateWalkingTime(minDistance) };
 }
 
 /**
@@ -153,8 +212,7 @@ export function findNearestStations(
     return {
       station,
       distance,
-      walkingTime: estimateWalkingTime(distance),
-    };
+      walkingTime: estimateWalkingTime(distance) };
   });
 
   // Sort by distance and return the nearest N stations

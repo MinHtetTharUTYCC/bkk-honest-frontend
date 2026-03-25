@@ -19,7 +19,7 @@ export function useGeolocation() {
 
   useEffect(() => {
     if (!navigator.geolocation) {
-      setState(s => ({ ...s, error: 'Geolocation not supported', isLoading: false }));
+      setTimeout(() => setState(s => ({ ...s, error: 'Geolocation not supported', isLoading: false })), 0);
       return;
     }
 

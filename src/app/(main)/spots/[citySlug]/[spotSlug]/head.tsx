@@ -1,4 +1,7 @@
-import { generateBreadcrumbSchema, generateSpotSchema } from '@/lib/schema-generator';
+import {
+  generateBreadcrumbSchema,
+  generateSpotSchema,
+} from "@/lib/schema-generator";
 
 interface SpotHeadProps {
   params: Promise<{
@@ -7,8 +10,8 @@ interface SpotHeadProps {
   }>;
 }
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default async function Head({ params }: SpotHeadProps) {
   const { citySlug, spotSlug } = await params;
@@ -29,10 +32,10 @@ export default async function Head({ params }: SpotHeadProps) {
 
   const spotSchema = generateSpotSchema(spot, pageUrl);
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: 'Home', item: `${siteUrl}/` },
-    { name: 'Spots', item: `${siteUrl}/spots` },
+    { name: "Home", item: `${siteUrl}/` },
+    { name: "Spots", item: `${siteUrl}/spots` },
     { name: spot?.city?.name || citySlug, item: `${siteUrl}/spots` },
-    { name: spot?.name || 'Spot', item: pageUrl },
+    { name: spot?.name || "Spot", item: pageUrl },
   ]);
 
   return (

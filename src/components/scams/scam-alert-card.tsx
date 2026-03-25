@@ -17,45 +17,77 @@ import { useRouter } from 'next/navigation';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { LikeButton } from '@/components/ui/like-button';
 import { Textarea } from '@/components/ui/textarea';
+import { useAuth } from '@/components/providers/auth-provider';
+import { toast } from 'sonner';
 
 interface ScamAlertCardProps {
-    alert: any;
+    alert: ScamAlertData;
+}
+
+export interface ScamAlertData {
+    id: string;
+    scamName?: string;
+    description?: string;
+    preventionTip?: string;
+    categoryId?: string;
+    cityId?: string;
+    imageUrl?: string;
+    createdAt?: string;
+    slug?: string;
+    hasVoted?: boolean;
+    voteId?: string | null;
+    userId?: string;
+    category?: { name?: string };
+    city?: { slug?: string; name?: string };
+    user?: { id?: string; name?: string; avatarUrl?: string; level?: string };
+    _count?: { comments?: number; votes?: number };
+}
+
+interface NamedOption {
+    id: string;
+    name: string;
 }
 
 export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProps) {
     const router = useRouter();
-    // const { user } = useAuth();
-    const [alert, setAlert] = useState(initialAlert);
+    const { user: authUser } = useAuth();
+    const [alert, setAlert] = useState<ScamAlertData>(initialAlert);
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
     const updateScamMutation = useUpdateScamAlert();
     // const deleteScamMutation = useDeleteScamAlert();
     const { data: categories } = useCategories();
     const { data: cities } = useCities();
+    const categoryOptions = (categories ?? []) as NamedOption[];
+    const cityOptions = (cities ?? []) as NamedOption[];
 
     // const isOwner = user?.id === alert.userId || user?.id === alert.user?.id;
 
     const [isEditing, setIsEditing] = useState(false);
-    const [editName, setEditName] = useState(alert.scamName);
-    const [editDesc, setEditDesc] = useState(alert.description);
-    const [editPrev, setEditPrev] = useState(alert.preventionTip);
-    const [editCategory, setEditCategory] = useState(alert.categoryId);
-    const [editCity, setEditCity] = useState(alert.cityId);
+    const [editName, setEditName] = useState(alert.scamName ?? '');
+    const [editDesc, setEditDesc] = useState(alert.description ?? '');
+    const [editPrev, setEditPrev] = useState(alert.preventionTip ?? '');
+    const [editCategory, setEditCategory] = useState(alert.categoryId ?? '');
+    const [editCity, setEditCity] = useState(alert.cityId ?? '');
     const [editFile, setEditFile] = useState<File | null>(null);
     const [editPreview, setEditPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (!isEditing) {
-            setAlert(initialAlert);
-        }
+        let mounted = true;
+        Promise.resolve().then(() => {
+            if (!isEditing && mounted) {
+                setAlert(initialAlert);
+            }
+        });
+        return () => { mounted = false; };
     }, [initialAlert, isEditing]);
 
     const handleUpdate = async () => {
         try {
-            const result = await updateScamMutation.mutateAsync({
-                id: alert.id,
-                payload: {
-                    scamName: editName,
+                const result = await updateScamMutation.mutateAsync({
+                    id: alert.id,
+                    payload: {
+                        scamName: editName,
                     description: editDesc,
                     preventionTip: editPrev,
                     categoryId: editCategory,
@@ -63,13 +95,14 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     image: editFile || undefined,
                 },
             });
-            setAlert(result.data || result);
-            setIsEditing(false);
-        } catch (err) {
-            console.error(err);
-            alert('Failed to update scam alert');
-        }
-    };
+                const updatedAlert = (result as { data?: ScamAlertData })?.data || (result as ScamAlertData);
+                setAlert(updatedAlert);
+                setIsEditing(false);
+            } catch (err) {
+                console.error(err);
+                window.alert('Failed to update scam alert');
+            }
+        };
 
     // const handleDelete = async () => {
     //     if (confirm('Are you sure you want to delete this scam alert?')) {
@@ -112,8 +145,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             className="w-24 h-24 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                         >
                             {editPreview || alert.imageUrl ? (
-                                <img
-                                    src={editPreview || alert.imageUrl}
+                                <img alt="" src={editPreview || alert.imageUrl}
                                     className="w-full h-full object-cover group-hover:opacity-50"
                                 />
                             ) : (
@@ -145,7 +177,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                     onChange={(e) => setEditCategory(e.target.value)}
                                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                 >
-                                    {categories?.map((cat: any) => (
+                                    {categoryOptions.map((cat) => (
                                         <option key={cat.id} value={cat.id}>
                                             {cat.name}
                                         </option>
@@ -156,7 +188,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                     onChange={(e) => setEditCity(e.target.value)}
                                     className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                 >
-                                    {cities?.map((city: any) => (
+                                    {cityOptions.map((city) => (
                                         <option key={city.id} value={city.id}>
                                             {city.name}
                                         </option>
@@ -213,7 +245,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     alert.city?.slug ||
                     alert.city?.name?.toLowerCase().replace(/\s+/g, '-') ||
                     'bangkok';
-                const alertSlug = alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-');
+                const alertSlug = alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-') || alert.id;
                 router.push(`/scam-alerts/${citySlug}/${alertSlug}`);
             }}
             className="bg-card rounded-2xl border border-white/8 shadow-sm overflow-hidden group hover:shadow-black/30 hover:shadow-md transition-all duration-300 flex flex-row relative cursor-pointer active:scale-[0.99] items-stretch"
@@ -223,7 +255,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 {alert.imageUrl ? (
                     <img
                         src={alert.imageUrl}
-                        alt={alert.scamName}
+                        alt={alert.scamName || 'Scam alert'}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                 ) : (
@@ -253,8 +285,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
                             {alert.user?.avatarUrl ? (
-                                <img
-                                    src={alert.user.avatarUrl}
+                                <img alt="" src={alert.user.avatarUrl}
                                     className="w-full h-full object-cover"
                                 />
                             ) : (
@@ -279,20 +310,20 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
             <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
                 {/* Meta row - Date first */}
                 <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
-                        <Calendar size={10} />
-                        {new Date(alert.createdAt).toLocaleDateString()}
-                    </span>
+                        <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
+                            <Calendar size={10} />
+                            {alert.createdAt ? new Date(alert.createdAt).toLocaleDateString() : ''}
+                        </span>
                 </div>
 
                 {/* Title */}
                 <h3 className="font-display text-lg font-bold text-foreground tracking-tight group-hover:text-red-400 transition-colors leading-tight">
-                    {alert.scamName}
+                    {alert.scamName || 'Scam Alert'}
                 </h3>
 
                 {/* Description */}
                 <p className="text-sm text-white/60 font-medium leading-relaxed line-clamp-2">
-                    {alert.description}
+                    {alert.description || ''}
                 </p>
 
                 {/* Prevention tip */}
@@ -316,9 +347,15 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             count={alert._count?.votes || 0}
                             isVoted={alert.hasVoted}
                             onVote={async () => {
+                                if (!authUser) {
+                                    toast.error("Join us to like alerts!", {
+                                        description: "Login to help others stay safe.",
+                                    });
+                                    return;
+                                }
                                 const wasVoted = Boolean(alert.hasVoted);
 
-                                setAlert((prev: any) => ({
+                                setAlert((prev) => ({
                                     ...prev,
                                     hasVoted: !wasVoted,
                                     voteId: wasVoted ? null : 'temp-id',
@@ -331,9 +368,16 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                     },
                                 }));
 
-                                const result = await toggleVote(alert);
+                                const result = await toggleVote({
+                                    id: alert.id,
+                                    hasVoted: alert.hasVoted,
+                                    voteId: alert.voteId,
+                                    _count: {
+                                        votes: alert._count?.votes ?? 0,
+                                    },
+                                });
 
-                                setAlert((prev: any) => ({
+                                setAlert((prev) => ({
                                     ...prev,
                                     hasVoted: Boolean(result.voteId),
                                     voteId: result.voteId,

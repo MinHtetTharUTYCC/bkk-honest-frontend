@@ -5,19 +5,27 @@ import { cn } from '@/lib/utils';
 import TipForm from './tip-form';
 import { TipFormValues } from '@/lib/validations/tip';
 
+
 interface EditTipModalProps {
-  tip: any;
+  tip: EditTipData;
   onSave: (values: TipFormValues) => Promise<void>;
   onClose: () => void;
   isLoading?: boolean;
+}
+
+interface EditTipData {
+  type?: string;
+  title: string;
+  description: string;
 }
 
 export default function EditTipModal({
   tip,
   onSave,
   onClose,
-  isLoading = false,
-}: EditTipModalProps) {
+  isLoading = false }: EditTipModalProps) {
+  const normalizedType: 'TRY' | 'AVOID' = tip.type === 'AVOID' ? 'AVOID' : 'TRY';
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
       <div
@@ -31,12 +39,12 @@ export default function EditTipModal({
             <div
               className={cn(
                 'w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-xl',
-                tip.type === 'AVOID'
+                normalizedType === 'AVOID'
                   ? 'bg-red-400 shadow-red-400/20'
                   : 'bg-emerald-400 shadow-emerald-400/20'
               )}
             >
-              {tip.type === 'AVOID' ? '⚠️' : '✓'}
+              {normalizedType === 'AVOID' ? '⚠️' : '✓'}
             </div>
             <div>
               <h3 className="font-display text-xl font-bold text-foreground tracking-tight">
@@ -58,10 +66,9 @@ export default function EditTipModal({
         <div className="p-8">
             <TipForm
                 initialData={{
-                    type: tip.type,
+                    type: normalizedType,
                     title: tip.title,
-                    description: tip.description,
-                }}
+                    description: tip.description }}
                 onSubmit={onSave}
                 isLoading={isLoading}
                 submitLabel="Save Changes"

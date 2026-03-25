@@ -1,8 +1,9 @@
 'use client';
+import { Tip } from "@/types";
 
 import { useState, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { X, MessageSquare, Send, Loader2, User, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { X, MessageSquare, Send, Loader2, User as UserIcon, Edit2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
@@ -20,12 +21,44 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+  AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 interface TipCommentsModalProps {
-  tip: any;
+  tip: Tip;
   onClose: () => void;
+}
+
+interface TipCommentUser {
+  id?: string;
+  name?: string;
+  level?: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU' | string;
+  avatarUrl?: string | null;
+}
+
+interface TipComment {
+  id: string;
+  userId: string;
+  user?: TipCommentUser;
+  createdAt?: string;
+  content?: string;
+  text?: string;
+  reactionCount?: number;
+  userHasReacted?: boolean;
+}
+
+type TipCommentsPage = { data?: TipComment[] };
+
+function extractTipComments(page: unknown): TipComment[] {
+  if (Array.isArray(page)) {
+    return page as TipComment[];
+  }
+
+  if (page && typeof page === 'object' && 'data' in page) {
+    const data = (page as TipCommentsPage).data;
+    return Array.isArray(data) ? data : [];
+  }
+
+  return [];
 }
 
 export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps) {
@@ -38,7 +71,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     isFetchingNextPage
   } = useTipComments(tip.id);
 
-  const comments = commentsResponse?.pages?.flatMap(page => page.data || (Array.isArray(page) ? page : [])) || [];
+  const comments = commentsResponse?.pages?.flatMap(extractTipComments) || [];
   
   const createCommentMutation = useCreateComment();
   const updateCommentMutation = useUpdateComment();
@@ -87,8 +120,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
       await updateCommentMutation.mutateAsync({
         id: commentId,
         content: editContent.trim(),
-        communityTipId: tip.id,
-      });
+        communityTipId: tip.id });
       setEditingCommentId(null);
     } catch (err) {
       console.error(err);
@@ -141,7 +173,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
               {deleteCommentMutation.isPending ? (
                 <Loader2 size={16} className="animate-spin mr-2" />
               ) : null}
-              Delete Comment
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -209,16 +241,16 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     <Loader2 size={24} className="animate-spin text-amber-400" />
                   </div>
                 ) : comments?.length > 0 ? (
-                  comments.map((comment: any) => (
+                  comments.map((comment: TipComment) => (
                     <div key={comment.id} className="flex gap-3 items-start group">
                       <Link 
                         href={`/profile/${comment.userId}`}
                         className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
                       >
                          {comment.user?.avatarUrl ? (
-                            <img src={comment.user.avatarUrl} className="w-full h-full object-cover" />
+                            <img alt="" src={comment.user.avatarUrl} className="w-full h-full object-cover" />
                           ) : (
-                            <User size={16} />
+                            <UserIcon size={16} />
                           )}
                       </Link>
                       <div className="flex-1 space-y-1">
@@ -236,13 +268,13 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                                </span>
                             )}
                             <span className="text-[10px] font-medium text-white/50">
-                              {new Date(comment.createdAt).toLocaleDateString()}
+                              {comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : ''}
                             </span>
                           </div>
 
                           {user?.id === comment.userId && (
                              <div className="flex items-center gap-2">
-                               <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.content || comment.text); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={18} /></button>
+                               <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.content || comment.text || ''); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={18} /></button>
                                <button 
                                  onClick={() => setCommentToDelete(comment.id)} 
                                  disabled={deleteCommentMutation.isPending && commentToDelete === comment.id}

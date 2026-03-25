@@ -2,17 +2,18 @@
 
 import { Source, Layer, useMap } from 'react-map-gl/mapbox';
 import type { LayerProps } from 'react-map-gl/mapbox';
+import type { FeatureCollection, Point } from 'geojson';
 
 interface TransitStationsProps {
     id: string;
-    data: any; // GeoJSON data with station points
+    data: FeatureCollection<Point>; // GeoJSON data with station points
 }
 
 export default function TransitStations({ id, data }: TransitStationsProps) {
     // Guard: ensure MapContext is available before rendering Source
     const map = useMap();
 
-    if (!data || !data.features || !map) {
+    if (!data || !Array.isArray(data.features) || !map) {
         return null;
     }
 

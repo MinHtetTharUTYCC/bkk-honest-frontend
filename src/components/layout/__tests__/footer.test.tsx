@@ -6,7 +6,7 @@ import { FooterSection } from '../footer-section';
 
 // Mock Next.js components
 jest.mock('next/link', () => {
-  return function Link({ children, href, ...props }: any) {
+  return function Link({ children, href, ...props }: unknown) {
     return <a href={href} {...props}>{children}</a>;
   };
 });

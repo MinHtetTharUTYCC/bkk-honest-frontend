@@ -72,37 +72,37 @@ describe('LikeButton', () => {
 
   describe('Variants', () => {
     it('renders default variant', () => {
-      const { container } = render(<LikeButton variant="default" />);
+       render(<LikeButton variant="default" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-full');
     });
 
     it('renders compact variant', () => {
-      const { container } = render(<LikeButton variant="compact" />);
+       render(<LikeButton variant="compact" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-md');
     });
 
     it('renders overlay variant', () => {
-      const { container } = render(<LikeButton variant="overlay" />);
+       render(<LikeButton variant="overlay" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('rounded-md');
     });
 
     it('applies sm size variant', () => {
-      const { container } = render(<LikeButton size="sm" />);
+       render(<LikeButton size="sm" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-xs');
     });
 
     it('applies md size variant', () => {
-      const { container } = render(<LikeButton size="md" />);
+       render(<LikeButton size="md" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-sm');
     });
 
     it('applies lg size variant', () => {
-      const { container } = render(<LikeButton size="lg" />);
+       render(<LikeButton size="lg" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('text-base');
     });
@@ -208,7 +208,7 @@ describe('LikeButton', () => {
     });
 
     it('applies custom className', () => {
-      const { container } = render(<LikeButton className="custom-class" />);
+       render(<LikeButton className="custom-class" />);
       const button = screen.getByRole('button');
       expect(button).toHaveClass('custom-class');
     });
@@ -232,10 +232,12 @@ describe('LikeButton', () => {
     });
 
     it('uses white/70 when not voted', () => {
-      const { container } = render(<LikeButton isVoted={false} count={5} />);
+       const { container } = render(<LikeButton isVoted={false} count={5} />);
       const countText = screen.getByText('5');
+      const heartIcon = container.querySelector('svg');
       
       expect(countText).toHaveClass('text-white/70');
+      expect(heartIcon).toHaveClass('text-white/70');
     });
 
     it('uses amber on hover when not voted', () => {

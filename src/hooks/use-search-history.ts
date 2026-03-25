@@ -18,14 +18,14 @@ export function useSearchHistory() {
 
   // Load history from localStorage on mount
   useEffect(() => {
-    setIsClient(true);
+    setTimeout(() => setIsClient(true), 0);
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        setHistory(parsed);
+        setTimeout(() => setHistory(parsed), 0);
       } catch {
-        setHistory([]);
+        setTimeout(() => setHistory([]), 0);
       }
     }
   }, []);

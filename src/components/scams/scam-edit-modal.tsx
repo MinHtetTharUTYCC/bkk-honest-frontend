@@ -11,22 +11,30 @@ import { cn } from '@/lib/utils';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
+import type { ScamAlertData } from './scam-alert-card';
 
 interface ScamEditModalProps {
-    alert: any;
+    alert: ScamAlertData;
     onClose: () => void;
+}
+
+interface NamedOption {
+    id: string;
+    name: string;
 }
 
 export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
     const updateScamMutation = useUpdateScamAlert();
     const { data: categories } = useCategories();
     const { data: cities } = useCities();
+    const categoryOptions = (categories ?? []) as NamedOption[];
+    const cityOptions = (cities ?? []) as NamedOption[];
 
-    const [editName, setEditName] = useState(alert.scamName);
-    const [editDesc, setEditDesc] = useState(alert.description);
-    const [editPrev, setEditPrev] = useState(alert.preventionTip);
-    const [editCategory, setEditCategory] = useState(alert.categoryId);
-    const [editCity, setEditCity] = useState(alert.cityId);
+    const [editName, setEditName] = useState(alert.scamName ?? '');
+    const [editDesc, setEditDesc] = useState(alert.description ?? '');
+    const [editPrev, setEditPrev] = useState(alert.preventionTip ?? '');
+    const [editCategory, setEditCategory] = useState(alert.categoryId ?? '');
+    const [editCity, setEditCity] = useState(alert.cityId ?? '');
     const [editFile, setEditFile] = useState<File | null>(null);
     const [editPreview, setEditPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,8 +47,8 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                     scamName: editName,
                     description: editDesc,
                     preventionTip: editPrev,
-                    categoryId: editCategory,
-                    cityId: editCity,
+                    categoryId: editCategory || undefined,
+                    cityId: editCity || undefined,
                     image: editFile || undefined,
                 },
             });
@@ -81,8 +89,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                 className="w-32 h-32 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                             >
                                 {editPreview || alert.imageUrl ? (
-                                    <img
-                                        src={editPreview || alert.imageUrl}
+                                    <img alt="Scam alert" src={editPreview || alert.imageUrl}
                                         className="w-full h-full object-cover group-hover:opacity-50"
                                     />
                                 ) : (
@@ -114,7 +121,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                         onChange={(e) => setEditCategory(e.target.value)}
                                         className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                     >
-                                        {categories?.map((cat: any) => (
+                                        {categoryOptions.map((cat) => (
                                             <option key={cat.id} value={cat.id}>
                                                 {cat.name}
                                             </option>
@@ -125,7 +132,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                         onChange={(e) => setEditCity(e.target.value)}
                                         className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-[10px] font-bold uppercase tracking-widest text-foreground focus:outline-none focus:border-amber-400 transition-all"
                                     >
-                                        {cities?.map((city: any) => (
+                                        {cityOptions.map((city) => (
                                             <option key={city.id} value={city.id}>
                                                 {city.name}
                                             </option>

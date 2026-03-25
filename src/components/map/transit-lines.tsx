@@ -2,17 +2,18 @@
 
 import { Source, Layer, useMap } from 'react-map-gl/mapbox';
 import type { LayerProps } from 'react-map-gl/mapbox';
+import type { FeatureCollection, Geometry } from 'geojson';
 
 interface TransitLinesProps {
     id: string;
-    data: any; // GeoJSON data
+    data: FeatureCollection<Geometry>;
 }
 
 export default function TransitLines({ id, data }: TransitLinesProps) {
     // Guard: ensure MapContext is available before rendering Source
     const map = useMap();
 
-    if (!data || !data.features || !map) {
+    if (!data || !Array.isArray(data.features) || !map) {
         return null;
     }
 

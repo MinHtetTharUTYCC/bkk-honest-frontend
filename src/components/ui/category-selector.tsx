@@ -4,8 +4,9 @@ import { cn } from '@/lib/utils';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Loader2 } from 'lucide-react';
 
+
 interface CategorySelectorProps {
-    categories: any[];
+    categories: unknown[];
     selectedId?: string;
     onSelect: (id: string | undefined) => void;
     onHover?: (id: string | undefined) => void;
@@ -16,6 +17,16 @@ interface CategorySelectorProps {
     className?: string;
     containerClassName?: string;
     variant?: 'pill' | 'badge';
+}
+
+interface CategoryItem {
+    id: string;
+    name?: string;
+    _count?: Record<string, number | undefined>;
+}
+
+function isCategoryItem(value: unknown): value is CategoryItem {
+    return !!value && typeof value === 'object' && 'id' in value && typeof (value as { id?: unknown }).id === 'string';
 }
 
 export function CategorySelector({
@@ -29,8 +40,7 @@ export function CategorySelector({
     isAllLoading,
     className,
     containerClassName,
-    variant = 'pill',
-}: CategorySelectorProps) {
+    variant = 'pill' }: CategorySelectorProps) {
     const isPill = variant === 'pill';
 
     return (
@@ -53,10 +63,11 @@ export function CategorySelector({
                     {isAllLoading && <Loader2 size={12} className="animate-spin" />}
                 </button>
 
-                {categories?.map((cat) => {
+                {categories?.filter(isCategoryItem).map((cat) => {
                     const isSelected = selectedId === cat.id;
                     const showLoader = isLoadingId === cat.id;
-                    const count = countKey && cat._count ? cat._count[countKey] : null;
+                    const rawCount = countKey && cat._count ? cat._count[countKey] : undefined;
+                    const count = typeof rawCount === 'number' ? rawCount : 0;
 
                     return (
                         <button
@@ -73,8 +84,8 @@ export function CategorySelector({
                                     : (isPill ? 'bg-white/5 border border-white/10 text-white/40 hover:bg-white/8' : 'bg-black/60 backdrop-blur-md border border-white/10 text-white/70 hover:bg-white/10')
                             )}
                         >
-                            {cat.name}
-                            {count !== null && count > 0 && (
+                            {cat.name || ''}
+                            {count > 0 && (
                                 <span
                                     className={cn(
                                         'px-1.5 py-0.5 rounded-md text-[12px]',

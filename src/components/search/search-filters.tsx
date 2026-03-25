@@ -13,6 +13,11 @@ interface SearchFiltersProps {
   className?: string;
 }
 
+interface CategoryOption {
+  id: string;
+  name: string;
+}
+
 export function SearchFilters({
   categoryId,
   sort = 'popular',
@@ -22,18 +27,15 @@ export function SearchFilters({
 }: SearchFiltersProps) {
   const [isClient, setIsClient] = useState(false);
   const { data: categoriesResponse } = useCategories();
-  // @ts-ignore
-  const categories = categoriesResponse?.data || categoriesResponse || [];
+  const categories = (Array.isArray(categoriesResponse) ? categoriesResponse : []) as CategoryOption[];
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  useEffect(() => { setTimeout(() => setIsClient(true), 0); }, []);
 
   if (!isClient) return null;
 
   const categoryOptions = [
     { id: '', name: 'All Categories' },
-    ...categories.map((cat: any) => ({ id: cat.id, name: cat.name })),
+    ...categories.map((cat) => ({ id: cat.id, name: cat.name })),
   ];
 
   const sortOptions = [
@@ -58,7 +60,11 @@ export function SearchFilters({
           label="Sort By"
           options={sortOptions}
           value={sort}
-          onChange={(value: any) => onSortChange(value)}
+          onChange={(value) => {
+            if (value === 'newest' || value === 'popular') {
+              onSortChange(value);
+            }
+          }}
         />
       </div>
     </div>

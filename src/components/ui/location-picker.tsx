@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Map, { Marker, ViewState, MapRef } from 'react-map-gl/mapbox';
+import type { MapMouseEvent } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, Loader2, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
@@ -23,8 +25,7 @@ export function LocationPicker({
   label,
   required = false,
   isLoading = false,
-  height = 'h-80',
-}: LocationPickerProps) {
+  height = 'h-80' }: LocationPickerProps) {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState<ViewState>({
     latitude: initialLocation?.latitude || 13.7563,
@@ -32,8 +33,7 @@ export function LocationPicker({
     zoom: 14,
     bearing: 0,
     pitch: 0,
-    padding: { top: 0, bottom: 0, left: 0, right: 0 },
-  });
+    padding: { top: 0, bottom: 0, left: 0, right: 0 } });
   const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(
     initialLocation || null
   );
@@ -50,8 +50,7 @@ export function LocationPicker({
       const response = await fetch(`${apiUrl}/spots/reverse-geocode`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude: lat, longitude: lng }),
-      });
+        body: JSON.stringify({ latitude: lat, longitude: lng }) });
       if (response.ok) {
         const data = await response.json();
         return data.address;
@@ -62,7 +61,7 @@ export function LocationPicker({
     return undefined;
   };
 
-  const handleMapClick = async (e: any) => {
+  const handleMapClick = async (e: MapMouseEvent) => {
     if (isLoading) return;
     const { lng, lat } = e.lngLat;
     const location = { latitude: lat, longitude: lng };

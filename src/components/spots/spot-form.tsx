@@ -11,7 +11,6 @@ import { spotSchema, SpotFormValues } from '@/lib/validations/spot';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
