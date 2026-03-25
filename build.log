@@ -4,32 +4,52 @@
 
 ▲ Next.js 16.1.6 (Turbopack)
 - Environments: .env.local
+- Experiments (use with caution):
+  · clientTraceMetadata
 
   Creating an optimized production build ...
-✓ Compiled successfully in 25.2s
+✓ Compiled successfully in 40s
+  Running next.config.js provided runAfterProductionCompile ...
+✓ Completed runAfterProductionCompile in 12062ms
   Running TypeScript ...
-  Collecting page data using 1 worker ...
-  Generating static pages using 1 worker (0/13) ...
-  Generating static pages using 1 worker (3/13) 
-  Generating static pages using 1 worker (6/13) 
-  Generating static pages using 1 worker (9/13) 
-✓ Generating static pages using 1 worker (13/13) in 305.8ms
-  Finalizing page optimization ...
+Failed to compile.
 
-Route (app)
-┌ ƒ /
-├ ƒ /_not-found
-├ ƒ /dev-login
-├ ƒ /map
-├ ƒ /missions
-├ ƒ /navigate
-├ ƒ /profile
-├ ƒ /report
-├ ƒ /scam-alerts
-├ ƒ /search
-├ ƒ /spots
-└ ƒ /spots/[id]
+./src/app/(main)/spots/[citySlug]/[spotSlug]/layout-client-wrapper.tsx:90:11
+Type error: Type '{ src: string; alt: string; onClose: () => void; }' is not assignable to type 'IntrinsicAttributes & ImageViewerProps'.
+  Property 'src' does not exist on type 'IntrinsicAttributes & ImageViewerProps'.
 
+[0m [90m 88 |[39m       {showImageViewer [33m&&[39m spot[33m.[39mimageUrl [33m&&[39m (
+ [90m 89 |[39m         [33m<[39m[33mImageViewer[39m
+[31m[1m>[22m[39m[90m 90 |[39m           src[33m=[39m{spot[33m.[39mimageUrl}
+ [90m    |[39m           [31m[1m^[22m[39m
+ [90m 91 |[39m           alt[33m=[39m{spot[33m.[39mname}
+ [90m 92 |[39m           onClose[33m=[39m{() [33m=>[39m setShowImageViewer([36mfalse[39m)}
+ [90m 93 |[39m         [33m/[39m[33m>[39m[0m
+Next.js build worker exited with code: 1 and signal: null
 
-ƒ  (Dynamic)  server-rendered on demand
+> bkk-honest-frontend@0.1.0 build
+> next build
 
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  · clientTraceMetadata
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 39.9s
+  Running next.config.js provided runAfterProductionCompile ...
+✓ Completed runAfterProductionCompile in 14068ms
+  Running TypeScript ...
+Failed to compile.
+
+./src/app/(main)/spots/page.tsx:15:15
+Type error: Module '"@/components/spots/spot-card"' has no exported member 'SpotCardData'. Did you mean to use 'import SpotCardData from "@/components/spots/spot-card"' instead?
+
+[0m [90m 13 |[39m [36mimport[39m { [33mCategorySelector[39m } [36mfrom[39m [32m"@/components/ui/category-selector"[39m[33m;[39m
+ [90m 14 |[39m [36mimport[39m api [36mfrom[39m [32m"@/lib/api"[39m[33m;[39m
+[31m[1m>[22m[39m[90m 15 |[39m [36mimport[39m type { [33mSpotCardData[39m } [36mfrom[39m [32m"@/components/spots/spot-card"[39m[33m;[39m
+ [90m    |[39m               [31m[1m^[22m[39m
+ [90m 16 |[39m
+ [90m 17 |[39m [36minterface[39m [33mSpotCardDataExtended[39m [36mextends[39m [33mSpotCardData[39m {
+ [90m 18 |[39m   createdAt[33m?[39m[33m:[39m string[33m;[39m[0m
+Next.js build worker exited with code: 1 and signal: null

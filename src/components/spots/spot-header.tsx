@@ -137,8 +137,9 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
         </div>
 
         {/* Desktop Content - Right Side */}
-        <div className="hidden md:flex flex-col flex-1 gap-6">
-          <div className="space-y-4">
+        <div className="hidden md:flex flex-col flex-1 gap-4">
+          {/* Title & Address */}
+          <div className="space-y-3">
             <h1 className="text-5xl lg:text-6xl font-display font-bold text-white tracking-tight">
               {spot.name}
             </h1>
@@ -148,6 +149,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
             </p>
           </div>
 
+          {/* Primary Actions */}
           <div className="flex items-center gap-3">
             <button
               onClick={handleAcceptMission}
@@ -196,28 +198,32 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
             />
           </div>
 
-          <div className="flex items-center gap-3 mt-auto">
+          {/* Divider */}
+          <div className="border-t border-white/10 my-1" />
+
+          {/* Secondary Actions */}
+          <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="flex-1 bg-white/5 backdrop-blur-md text-white/70 hover:text-white px-4 py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 flex items-center justify-center gap-2 text-sm font-medium"
+              className="flex-1 bg-white/5 backdrop-blur-md text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
             >
-              <Share2 size={16} />
+              <Share2 size={14} />
               Share
             </button>
             {isOwner && (
               <>
                 <button
                   onClick={onEdit}
-                  className="bg-white/5 backdrop-blur-md text-white/70 hover:text-white px-4 py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 flex items-center gap-2 text-sm font-medium"
+                  className="bg-white/5 backdrop-blur-md text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
                 >
-                  <Edit2 size={16} />
+                  <Edit2 size={14} />
                   Edit
                 </button>
                 <button
                   onClick={onDelete}
-                  className="bg-white/5 backdrop-blur-md text-red-400/70 hover:text-red-400 px-4 py-3 rounded-xl hover:bg-red-500/10 transition-all border border-white/10 flex items-center gap-2 text-sm font-medium"
+                  className="bg-white/5 backdrop-blur-md text-red-400/60 hover:text-red-400 px-3 py-2.5 rounded-xl hover:bg-red-500/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={14} />
                   Delete
                 </button>
               </>
@@ -225,9 +231,9 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
             <ReportButton
               targetId={spot.id}
               reportType="SPOT"
-              className="bg-white/5 backdrop-blur-md text-white/70 hover:text-white px-4 py-3 rounded-xl hover:bg-white/10 transition-all border border-white/10 flex items-center gap-2 text-sm font-medium"
+              className="bg-white/5 backdrop-blur-md text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
             >
-              <Flag size={16} />
+              <Flag size={14} />
               Report
             </ReportButton>
           </div>

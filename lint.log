@@ -1,0 +1,385 @@
+
+> bkk-honest-frontend@0.1.0 lint
+> eslint
+
+
+/root/.openclaw/workspace/bkk-honest-frontend/extract-tips.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/about/page.tsx
+   39:21  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   45:29  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   46:41  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   99:17  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   99:53  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  156:15  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  157:74  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  158:36  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/community-guidelines/page.tsx
+  160:24  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  160:60  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  161:45  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  180:24  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  324:15  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  324:39  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  325:31  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/how-it-works/page.tsx
+   69:20  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  109:38  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  142:60  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  249:21  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  251:58  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  259:21  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  259:46  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  260:55  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  289:75  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/map/page.tsx
+   87:9   warning  'urlCat' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  128:17  error    Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/map/page.tsx:128:17
+  126 |     if (!timestamp) return null;
+  127 |     const date = new Date(timestamp);
+> 128 |     const now = Date.now();
+      |                 ^^^^^^^^^^ Cannot call impure function
+  129 |     const seconds = Math.floor((now - date.getTime()) / 1000);
+  130 |     if (seconds < 60) return "Just now";
+  131 |     const minutes = Math.floor(seconds / 60);  react-hooks/purity
+  302:6   warning  React Hook useEffect has a missing dependency: 'syncUrl'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/missions/page.tsx
+   2:50  warning  'useRef' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  20:3   warning  'Filter' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+  66:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/missions/page.tsx:66:5
+  64 |
+  65 |   useEffect(() => {
+> 66 |     setIsClient(true);
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  67 |   }, []);
+  68 |
+  69 |   const { selectedCity } = useCity();  react-hooks/set-state-in-effect
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/navigate/ManualLocationModal.tsx
+  25:3  warning  'destName' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/navigate/page.tsx
+   89:6   warning  React Hook useEffect has a missing dependency: 'checkGeolocationPermission'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  116:14  warning  'err' is defined but never used                                                                                                @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/report/page.tsx
+  52:5  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/report/page.tsx:52:5
+  50 |
+  51 |   useEffect(() => {
+> 52 |     setIsClient(true);
+     |     ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  53 |   }, []);
+  54 |
+  55 |   const [submitted, setSubmitted] = useState(false);         react-hooks/set-state-in-effect
+  74:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/report/page.tsx:74:7
+  72 |   useEffect(() => {
+  73 |     if (selectedCityId) {
+> 74 |       setScamCity(selectedCityId);
+     |       ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  75 |     }
+  76 |   }, [selectedCityId]);
+  77 |  react-hooks/set-state-in-effect
+  83:9  warning  'spots' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/scam-alerts/[citySlug]/[alertSlug]/layout.tsx
+  80:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/scam-alerts/[citySlug]/[alertSlug]/scam-alert-client.tsx
+  516:19  warning  img elements must have an alt prop, either with meaningful text, or an empty string for decorative images  jsx-a11y/alt-text
+  620:27  warning  img elements must have an alt prop, either with meaningful text, or an empty string for decorative images  jsx-a11y/alt-text
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/spots/[citySlug]/[spotSlug]/layout-client-wrapper.tsx
+  26:53  warning  'citySlug' is defined but never used  @typescript-eslint/no-unused-vars
+  26:63  warning  'spotSlug' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/spots/[citySlug]/[spotSlug]/layout.tsx
+  3:8  warning  'Link' is defined but never used        @typescript-eslint/no-unused-vars
+  4:8  warning  'SpotHeader' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/spots/page.tsx
+  178:23  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/spots/page.tsx:178:23
+  176 |       
+  177 |       // Always force newest spots to top for 12 hours
+> 178 |       const isNewA = (Date.now() - dateA) < 43200000;
+      |                       ^^^^^^^^^^ Cannot call impure function
+  179 |       const isNewB = (Date.now() - dateB) < 43200000;
+  180 |       if (isNewA && !isNewB) return -1;
+  181 |       if (!isNewA && isNewB) return 1;  react-hooks/purity
+  179:23  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/spots/page.tsx:179:23
+  177 |       // Always force newest spots to top for 12 hours
+  178 |       const isNewA = (Date.now() - dateA) < 43200000;
+> 179 |       const isNewB = (Date.now() - dateB) < 43200000;
+      |                       ^^^^^^^^^^ Cannot call impure function
+  180 |       if (isNewA && !isNewB) return -1;
+  181 |       if (!isNewA && isNewB) return 1;
+  182 |         react-hooks/purity
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/terms/page.tsx
+   71:26  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  103:51  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  103:64  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  290:48  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  290:54  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  363:50  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  380:50  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/app/(main)/vibes/page.tsx
+  2:20  warning  'useState' is defined but never used    @typescript-eslint/no-unused-vars
+  3:43  warning  'Filter' is defined but never used      @typescript-eslint/no-unused-vars
+  3:51  warning  'Search' is defined but never used      @typescript-eslint/no-unused-vars
+  8:10  warning  'ScrollArea' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/layout/footer.tsx
+   6:3  warning  'Instagram' is defined but never used  @typescript-eslint/no-unused-vars
+   7:3  warning  'Facebook' is defined but never used   @typescript-eslint/no-unused-vars
+   8:3  warning  'Twitter' is defined but never used    @typescript-eslint/no-unused-vars
+   9:3  warning  'Music' is defined but never used      @typescript-eslint/no-unused-vars
+  11:3  warning  'MapPin' is defined but never used     @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/layout/sidebar.tsx
+   4:10  warning  'MapPin' is defined but never used                 @typescript-eslint/no-unused-vars
+   6:10  warning  'cn' is defined but never used                     @typescript-eslint/no-unused-vars
+  18:13  warning  'selectedCity' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  20:11  warning  'isDiscovery' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/layout/top-bar.tsx
+  3:18  warning  'Bell' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/leaderboard-list.tsx
+   62:33  warning  img elements must have an alt prop, either with meaningful text, or an empty string for decorative images  jsx-a11y/alt-text
+  118:29  warning  img elements must have an alt prop, either with meaningful text, or an empty string for decorative images  jsx-a11y/alt-text
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/map/transit-stations.tsx
+  24:11  warning  'stationIconStyle' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/profile/profile-tabs.tsx
+  14:5  warning  'Target' is defined but never used    @typescript-eslint/no-unused-vars
+  16:5  warning  'Calendar' is defined but never used  @typescript-eslint/no-unused-vars
+  19:5  warning  'Tag' is defined but never used       @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/providers/city-provider.tsx
+  28:7   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/providers/city-provider.tsx:28:7
+  26 |     const saved = localStorage.getItem('selectedCityId');
+  27 |     if (saved) {
+> 28 |       setSelectedCityId(saved);
+     |       ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  29 |     }
+  30 |     setIsHydrated(true);
+  31 |   }, []);                                                                                                 react-hooks/set-state-in-effect
+  54:11  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/providers/city-provider.tsx:54:11
+  52 |         const bangkok = (cities as City[]).find((c) => c.name.toLowerCase() === 'bangkok');
+  53 |         if (bangkok) {
+> 54 |           setSelectedCityId(bangkok.id);
+     |           ^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  55 |         } else {
+  56 |           setSelectedCityId((cities as City[])[0].id);
+  57 |         }  react-hooks/set-state-in-effect
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/reactions/__tests__/reaction-button.test.tsx
+  239:13  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  261:13  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  287:13  warning  'user' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  341:31  error    Unexpected any. Specify a different type   @typescript-eslint/no-explicit-any
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/report/report-modal.tsx
+  45:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/scams/scam-alerts-page-client.tsx
+  10:10  warning  'ScrollArea' is defined but never used                                                                     @typescript-eslint/no-unused-vars
+  10:22  warning  'ScrollBar' is defined but never used                                                                      @typescript-eslint/no-unused-vars
+  75:8   warning  React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/scams/scam-edit-modal.tsx
+  10:10  warning  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/gallery-modal.tsx
+   6:46  warning  'Upload' is defined but never used                   @typescript-eslint/no-unused-vars
+  51:11  warning  'uploadMutation' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/spot-form.tsx
+   3:33  warning  'useEffect' is defined but never used  @typescript-eslint/no-unused-vars
+  19:10  warning  'Input' is defined but never used      @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/spot-header.tsx
+    4:8    warning  'Link' is defined but never used          @typescript-eslint/no-unused-vars
+   34:59   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   35:46   error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   65:14   warning  'err' is defined but never used           @typescript-eslint/no-unused-vars
+  100:186  error    'MoreVertical' is not defined             react/jsx-no-undef
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/spot-stats-grid.tsx
+  9:33  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/spot-stats-grid.tsx:9:33
+   7 |   const timeAgo = (timestamp: number | null) => {
+   8 |     if (!timestamp) return "No Data";
+>  9 |     const seconds = Math.floor((Date.now() - timestamp) / 1000);
+     |                                 ^^^^^^^^^^ Cannot call impure function
+  10 |     if (seconds < 60) return "Just now";
+  11 |     const minutes = Math.floor(seconds / 60);
+  12 |     if (minutes < 60) return `${minutes}m ago`;  react-hooks/purity
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/gallery-tab.tsx
+   8:10  warning  'cn' is defined but never used            @typescript-eslint/no-unused-vars
+  32:44  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/prices-tab.tsx
+   34:41  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-explicit-any
+   40:23  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/prices-tab.tsx:40:23
+  38 |       const dateB = b.timestamp || b.reportedAt ? new Date(b.timestamp || b.reportedAt!).getTime() : 0;
+  39 |       
+> 40 |       const isNewA = (Date.now() - dateA) < 43200000;
+     |                       ^^^^^^^^^^ Cannot call impure function
+  41 |       const isNewB = (Date.now() - dateB) < 43200000;
+  42 |       if (isNewA && !isNewB) return -1;
+  43 |       if (!isNewA && isNewB) return 1;                                                                   react-hooks/purity
+   41:23  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/prices-tab.tsx:41:23
+  39 |       
+  40 |       const isNewA = (Date.now() - dateA) < 43200000;
+> 41 |       const isNewB = (Date.now() - dateB) < 43200000;
+     |                       ^^^^^^^^^^ Cannot call impure function
+  42 |       if (isNewA && !isNewB) return -1;
+  43 |       if (!isNewA && isNewB) return 1;
+  44 |                                                                                                                                                                           react-hooks/purity
+  127:62  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/prices-tab.tsx:127:62
+  125 |                   </td>
+  126 |                   <td className="px-8 py-6 text-[10px] font-medium text-white/50 uppercase tracking-widest" suppressHydrationWarning>
+> 127 |                     {new Date(r.timestamp || r.reportedAt || Date.now()).toLocaleDateString()}
+      |                                                              ^^^^^^^^^^ Cannot call impure function
+  128 |                   </td>
+  129 |                 </tr>
+  130 |               ))  react-hooks/purity
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/tips-tab.tsx
+  21:17  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  24:41  warning  'initialTips' is defined but never used   @typescript-eslint/no-unused-vars
+  47:52  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  77:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+  86:14  warning  'error' is defined but never used         @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/vibes-tab.tsx
+  34:54  error  Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-explicit-any
+  40:23  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/vibes-tab.tsx:40:23
+  38 |       const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+  39 |       
+> 40 |       const isNewA = (Date.now() - dateA) < 86400000;
+     |                       ^^^^^^^^^^ Cannot call impure function
+  41 |       const isNewB = (Date.now() - dateB) < 86400000;
+  42 |       if (isNewA && !isNewB) return -1;
+  43 |       if (!isNewA && isNewB) return 1;  react-hooks/purity
+  41:23  error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/spots/tabs/vibes-tab.tsx:41:23
+  39 |       
+  40 |       const isNewA = (Date.now() - dateA) < 86400000;
+> 41 |       const isNewB = (Date.now() - dateB) < 86400000;
+     |                       ^^^^^^^^^^ Cannot call impure function
+  42 |       if (isNewA && !isNewB) return -1;
+  43 |       if (!isNewA && isNewB) return 1;
+  44 |                                                                         react-hooks/purity
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/tips/create-tip-modal.tsx
+  45:23  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/tips/tip-actions-menu.tsx
+  5:10  warning  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/ui/bottom-sheet.tsx
+  5:10  warning  'cn' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/ui/button.tsx
+  46:3  warning  'asChild' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/ui/share-button.tsx
+  4:50  warning  'Loader2' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/components/ui/tabs.tsx
+  128:36  warning  '_onValueChange' is defined but never used  @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/hooks/use-api.ts
+  764:25  warning  'spotId' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  777:34  warning  'spotId' is defined but never used           @typescript-eslint/no-unused-vars
+  849:29  warning  'id' is defined but never used               @typescript-eslint/no-unused-vars
+
+/root/.openclaw/workspace/bkk-honest-frontend/src/lib/transit-utils.ts
+  58:11  warning  'GeoJsonStationCollection' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 118 problems (56 errors, 62 warnings)
+
