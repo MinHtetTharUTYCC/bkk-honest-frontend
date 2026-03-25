@@ -65,8 +65,10 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
           ...page,
           data: page.data?.map((t) => updateItem(t, item)) ?? [] })) };
     }
-    if (old.data) return { ...old, data: old.data.map((t) => updateItem(t, item)) };
-    return old;
+    if (old.data && Array.isArray(old.data)) return { ...old, data: old.data.map(t => updateItem(t, item)) };
+    
+    // Single item case (e.g., spot detail query)
+    return updateItem(old, item);
   };
 
   const findItemInCache = (data: CacheNode | CacheNode[] | null | undefined, itemId: string): CacheNode | null => {
@@ -81,8 +83,10 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
         }
       }
     }
-    if (data.data) return data.data.find((t) => t.id === itemId) || null;
-    return null;
+    if (data.data && Array.isArray(data.data)) return data.data.find((t) => t.id === itemId) || null;
+    
+    // Single item case
+    return data.id === itemId ? data : null;
   };
 
   const setItemState = (oldData: CacheNode | CacheNode[] | undefined, itemId: string, newState: Partial<VoteableItem>) => {
@@ -96,8 +100,10 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
           ...page,
           data: page.data?.map(updateTarget) ?? [] })) };
     }
-    if (oldData.data) return { ...oldData, data: oldData.data.map(updateTarget) };
-    return oldData;
+    if (oldData.data && Array.isArray(oldData.data)) return { ...oldData, data: oldData.data.map(updateTarget) };
+    
+    // Single item case
+    return updateTarget(oldData);
   };
 
   const toggleVote = async (item: VoteableItem): Promise<{ voteId: string | null }> => {
@@ -121,8 +127,7 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
 
     try {
       if (item.hasVoted && currentVoteId && currentVoteId !== 'temp-id') {
-        const deleteType = type === 'spot' ? 'image' : type;
-        await deleteVote.mutateAsync({ voteId: currentVoteId, type: deleteType });
+        await deleteVote.mutateAsync({ voteId: currentVoteId, type });
         // After successful delete, set state directly (not toggle)
         queryClient.setQueriesData<CacheNode | CacheNode[]>({ predicate }, (old) => 
           setItemState(old, item.id, { hasVoted: false, voteId: null })
