@@ -1,10 +1,12 @@
 export interface User {
   id: string;
   email?: string;
+  name?: string;
   username?: string;
   avatarUrl?: string;
   bio?: string;
   role?: string;
+  level?: string;
   reputationScore?: number;
   trustLevel?: number;
 }
@@ -35,6 +37,8 @@ export interface Tip {
   id: string;
   spotId: string;
   userId: string;
+  title?: string;
+  type?: 'TRY' | 'AVOID';
   content: string;
   imageUrl?: string;
   category?: string;
@@ -105,10 +109,13 @@ export interface ScamAlert {
 
 export interface Comment {
   id: string;
-  content: string;
+  content?: string;
+  text?: string;
   userId: string;
-  entityId: string;
-  entityType: 'TIP' | 'SCAM_ALERT';
+  entityId?: string;
+  entityType?: 'TIP' | 'SCAM_ALERT';
+  reactionCount?: number;
+  userHasReacted?: boolean;
   createdAt?: string;
   updatedAt?: string;
   user?: User;
