@@ -14,8 +14,10 @@ export async function generateMetadata({
 }: ScamAlertLayoutProps): Promise<Metadata> {
   try {
     const { citySlug, alertSlug } = await params;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-    const path = `/scam-alerts/${citySlug}/${alertSlug}`;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const encodedCitySlug = encodeURIComponent(citySlug);
+    const encodedAlertSlug = encodeURIComponent(alertSlug);
+    const path = `/scam-alerts/${encodedCitySlug}/${encodedAlertSlug}`;
     const canonicalUrl = `${siteUrl}${path}`;
 
     // Fetch alert data for dynamic metadata
