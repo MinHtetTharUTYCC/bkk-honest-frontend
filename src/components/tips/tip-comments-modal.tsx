@@ -1,5 +1,5 @@
 'use client';
-import {   User } from "@/types";
+import { Tip, Comment } from "@/types";
 
 import { useState, useEffect, useRef } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -24,7 +24,7 @@ import {
   AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 interface TipCommentsModalProps {
-  tip: unknown;
+  tip: Tip;
   onClose: () => void;
 }
 
@@ -208,7 +208,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     <Loader2 size={24} className="animate-spin text-amber-400" />
                   </div>
                 ) : comments?.length > 0 ? (
-                  comments.map((comment: unknown) => (
+                  comments.map((comment: Comment) => (
                     <div key={comment.id} className="flex gap-3 items-start group">
                       <Link 
                         href={`/profile/${comment.userId}`}
