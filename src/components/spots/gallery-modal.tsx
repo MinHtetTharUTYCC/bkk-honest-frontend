@@ -9,7 +9,29 @@ import { LikeButton } from '@/components/ui/like-button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
-import {   User } from '@/types';
+
+interface GalleryUser {
+    id?: string;
+    name?: string;
+    level?: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU' | string;
+    avatarUrl?: string | null;
+}
+
+interface GalleryImage {
+    id: string;
+    url: string;
+    userId: string;
+    createdAt: string;
+    hasVoted?: boolean;
+    _count?: { votes?: number };
+    user?: GalleryUser;
+}
+
+interface GalleryPage {
+    data?: GalleryImage[];
+    pagination?: { total?: number };
+    total?: number;
+}
 
 
 interface GalleryModalProps {
@@ -27,10 +49,10 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
     const { toggleVote, isPending: votePending } = useVoteToggle('image', spotId);
     const [votingImageId, setVotingImageId] = useState<string | null>(null);
     
-    const rawImages = data?.pages.flatMap((page) => page.data || page) || [];
+    const rawImages = (data?.pages as GalleryPage[] | undefined)?.flatMap((page) => page.data || []) || [];
     // Remove duplicates that can occur with offset pagination when new items are added
-    const images = Array.from(new Map(rawImages.map((img: unknown) => [img.id, img])).values());
-    const totalImages = (data?.pages[0] as unknown)?.pagination?.total || (data?.pages[0] as unknown)?.total;
+    const images = Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
+    const totalImages = (data?.pages?.[0] as GalleryPage | undefined)?.pagination?.total || (data?.pages?.[0] as GalleryPage | undefined)?.total;
 
     // Infinite scroll trigger
     const { ref: observerTarget, inView } = useInView({ threshold: 0.5 });
@@ -137,15 +159,15 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                     ) : (
                         <>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {images.map((img: unknown) => (
+                                {images.map((img) => (
                                     <div
                                         key={img.id}
                                         className="bg-card rounded-2xl overflow-hidden border border-white/8 shadow-xl shadow-black/30 group"
                                     >
                                         <div className="aspect-[4/5] relative overflow-hidden">
-                                            <img alt="" src={img.url}
+                                            <img src={img.url}
                                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                                alt=" vibe"
+                                                alt="vibe"
                                                 loading="lazy"
                                             />
                                         </div>
@@ -205,7 +227,13 @@ export default function GalleryModal({ spotId, spotName, onClose }: GalleryModal
                                                         onVote={async () => {
                                                             setVotingImageId(img.id);
                                                             try {
-                                                                await toggleVote(img);
+                                                                await toggleVote({
+                                                                    id: img.id,
+                                                                    hasVoted: img.hasVoted,
+                                                                    _count: {
+                                                                        votes: img._count?.votes ?? 0,
+                                                                    },
+                                                                });
                                                             } finally {
                                                                 setVotingImageId(null);
                                                             }

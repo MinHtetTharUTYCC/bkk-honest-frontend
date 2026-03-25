@@ -57,6 +57,23 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   default: <MapPin size={14} />,
 };
 
+interface MapSpot {
+  id: string;
+  name: string;
+  slug?: string;
+  address: string;
+  imageUrl?: string;
+  latitude: number;
+  longitude: number;
+  city?: { slug?: string };
+  category?: { name?: string };
+  _count?: {
+    communityTips?: number;
+    vibeChecks?: number;
+    priceReports?: number;
+  };
+}
+
 function MapPageContent() {
   const router = useRouter();
   const urlParams = useSearchParams();
@@ -94,7 +111,7 @@ function MapPageContent() {
   const [activeCategoryId, setActiveCategoryId] = useState<string | undefined>(
     urlCat,
   );
-  const [selectedSpot, setSelectedSpot] = useState<unknown>(null);
+  const [selectedSpot, setSelectedSpot] = useState<MapSpot | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const { transitVisible, toggleTransitVisible, hasHydrated } =
     useMapTransitVisible();
@@ -155,7 +172,7 @@ function MapPageContent() {
   };
 
   // Sync searchParams when map move ends — always update, snapping coords to ~1km grid
-  const handleMoveEnd = (evt: unknown) => {
+  const handleMoveEnd = (evt: { viewState: ViewState }) => {
     const lat = snapCoord(evt.viewState.latitude);
     const lng = snapCoord(evt.viewState.longitude);
     const zoom = evt.viewState.zoom;
@@ -186,13 +203,13 @@ function MapPageContent() {
     if (spots.length === 0) return;
 
     const bounds = mapRef.current.getBounds();
-    const unknownVisible = spots.some((s: unknown) =>
+    const unknownVisible = spots.some((s: MapSpot) =>
       bounds?.contains([s.longitude, s.latitude]),
     );
 
     if (!unknownVisible) {
-      const lngs = (spots || []).map((s: unknown) => s.longitude as number);
-      const lats = (spots || []).map((s: unknown) => s.latitude as number);
+      const lngs = (spots || []).map((s: MapSpot) => s.longitude);
+      const lats = (spots || []).map((s: MapSpot) => s.latitude);
       mapRef.current.fitBounds(
         [
           [Math.min(...lngs), Math.min(...lats)],
@@ -356,8 +373,8 @@ function MapPageContent() {
         )}
 
         {/* Spot Markers */}
-        {spots?.map((spot: unknown) => {
-          const config = getCategoryConfig(spot.category?.name);
+        {spots?.map((spot: MapSpot) => {
+          const config = getCategoryConfig(spot.category?.name || "default");
           const isSelected = selectedSpot?.id === spot.id;
 
           return (
@@ -570,7 +587,7 @@ function MapPageContent() {
                     <span
                       className={cn(
                         "text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-sm",
-                        getCategoryConfig(selectedSpot.category?.name).colors,
+                        getCategoryConfig(selectedSpot.category?.name || "default").colors,
                       )}
                     >
                       {selectedSpot.category?.name || "Category"}
@@ -598,7 +615,7 @@ function MapPageContent() {
                     Tips
                   </span>
                   <span className="text-sm font-bold text-white">
-                    {selectedSpot.community_tips_count || 0}
+                    {selectedSpot._count?.communityTips || 0}
                   </span>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-white/5">
@@ -607,7 +624,7 @@ function MapPageContent() {
                     Vibes
                   </span>
                   <span className="text-sm font-bold text-white">
-                    {selectedSpot.vibe_checks_count || 0}
+                    {selectedSpot._count?.vibeChecks || 0}
                   </span>
                 </div>
                 <div className="bg-white/5 rounded-2xl p-3 flex flex-col items-center justify-center border border-white/5">
@@ -616,7 +633,7 @@ function MapPageContent() {
                     Reports
                   </span>
                   <span className="text-sm font-bold text-white">
-                    {selectedSpot.price_reports_count || 0}
+                    {selectedSpot._count?.priceReports || 0}
                   </span>
                 </div>
               </div>

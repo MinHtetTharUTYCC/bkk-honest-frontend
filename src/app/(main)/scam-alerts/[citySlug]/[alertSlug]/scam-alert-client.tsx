@@ -48,6 +48,62 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+interface AlertUser {
+  id?: string;
+  name?: string;
+  level?: string;
+  avatarUrl?: string;
+}
+
+interface AlertCity {
+  name?: string;
+}
+
+interface AlertCounts {
+  votes?: number;
+  comments?: number;
+}
+
+interface LocalAlert {
+  id: string;
+  userId?: string;
+  city?: AlertCity;
+  user?: AlertUser;
+  scamName: string;
+  slug?: string;
+  imageUrl?: string;
+  description?: string;
+  preventionTip?: string;
+  createdAt: string;
+  hasVoted?: boolean;
+  voteId?: string | null;
+  _count?: AlertCounts;
+}
+
+interface AlertComment {
+  id: string;
+  userId?: string;
+  createdAt: string;
+  content?: string;
+  text?: string;
+  reactionCount?: number;
+  userHasReacted?: boolean;
+  user?: AlertUser;
+}
+
+function unwrapAlertData(payload: unknown): LocalAlert | null {
+  const unwrapped =
+    payload && typeof payload === "object" && "data" in payload
+      ? (payload as { data?: unknown }).data ?? payload
+      : payload;
+
+  if (!unwrapped || typeof unwrapped !== "object") {
+    return null;
+  }
+
+  return unwrapped as LocalAlert;
+}
+
 export default function ScamAlertClient() {
   const { citySlug, alertSlug } = useParams() as {
     citySlug: string;
@@ -55,15 +111,19 @@ export default function ScamAlertClient() {
   };
   const { user } = useAuth();
   const router = useRouter();
-  const { data: alert, isLoading: alertLoading } = useScamAlertBySlug(
+  const { data: alertResponse, isLoading: alertLoading } = useScamAlertBySlug(
     citySlug === "thailand" ? "" : citySlug,
     alertSlug,
   );
-  const [localAlert, setLocalAlert] = useState<unknown>(alert);
+  const alert = unwrapAlertData(alertResponse);
+  const [localAlert, setLocalAlert] = useState<LocalAlert | null>(
+    alert,
+  );
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showImageViewer, setShowImageViewer] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
+  const alertId = alert?.id ?? localAlert?.id ?? "";
 
   useEffect(() => {
     if (alert) {
@@ -77,11 +137,13 @@ export default function ScamAlertClient() {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useScamComments(alert?.id || "");
+  } = useScamComments(alertId);
 
-  const comments =
+  const comments: AlertComment[] =
     commentsResponse?.pages?.flatMap(
-      (page) => page.data || (Array.isArray(page) ? page : []),
+      (page) =>
+        (page as { data?: AlertComment[] })?.data ||
+        (Array.isArray(page) ? (page as AlertComment[]) : []),
     ) || [];
   const createCommentMutation = useCreateComment();
   const { toggleVote, isPending: votePending } = useVoteToggle("alert");
@@ -101,13 +163,13 @@ export default function ScamAlertClient() {
       inView &&
       hasNextPage &&
       !isFetchingNextPage &&
-      alert?.id &&
+      alertId &&
       !hasFetchedRef.current
     ) {
       hasFetchedRef.current = true;
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage, alert?.id, fetchNextPage]);
+  }, [inView, hasNextPage, isFetchingNextPage, alertId, fetchNextPage]);
 
   useEffect(() => {
     if (!inView) {
@@ -117,11 +179,11 @@ export default function ScamAlertClient() {
 
   const handleSendComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || !user || !alert) return;
+    if (!newComment.trim() || !user || !alertId) return;
 
     try {
       await createCommentMutation.mutateAsync({
-        scamAlertId: alert.id,
+        scamAlertId: alertId,
         content: newComment.trim(),
       });
       setNewComment("");
@@ -133,12 +195,12 @@ export default function ScamAlertClient() {
   };
 
   const handleEditSubmit = async (commentId: string) => {
-    if (!editContent.trim() || !alert) return;
+    if (!editContent.trim() || !alertId) return;
     try {
       await updateCommentMutation.mutateAsync({
         id: commentId,
         content: editContent.trim(),
-        scamAlertId: alert.id,
+        scamAlertId: alertId,
       });
       setEditingCommentId(null);
       toast.success("Comment updated");
@@ -149,11 +211,11 @@ export default function ScamAlertClient() {
   };
 
   const handleDeleteComment = async (commentId: string) => {
-    if (!alert) return;
+    if (!alertId) return;
     try {
       await deleteCommentMutation.mutateAsync({
         id: commentId,
-        scamAlertId: alert.id,
+        scamAlertId: alertId,
       });
       setCommentToDelete(null);
       toast.success("Comment deleted");
@@ -174,28 +236,42 @@ export default function ScamAlertClient() {
 
     const wasVoted = Boolean(localAlert.hasVoted);
 
-    setLocalAlert((prev: unknown) => ({
-      ...prev,
-      hasVoted: !wasVoted,
-      voteId: wasVoted ? null : "temp-id",
+    setLocalAlert((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        hasVoted: !wasVoted,
+        voteId: wasVoted ? null : "temp-id",
+        _count: {
+          ...prev._count,
+          votes: Math.max(0, (prev._count?.votes || 0) + (wasVoted ? -1 : 1)),
+        },
+      };
+    });
+
+    const result = await toggleVote({
+      id: localAlert.id,
+      hasVoted: localAlert.hasVoted,
+      voteId: localAlert.voteId,
       _count: {
-        ...prev._count,
-        votes: Math.max(0, (prev._count?.votes || 0) + (wasVoted ? -1 : 1)),
+        votes: localAlert._count?.votes ?? 0,
       },
-    }));
+    });
 
-    const result = await toggleVote(localAlert);
-
-    setLocalAlert((prev: unknown) => ({
-      ...prev,
-      hasVoted: Boolean(result.voteId),
-      voteId: result.voteId,
-    }));
+    setLocalAlert((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        hasVoted: Boolean(result.voteId),
+        voteId: result.voteId,
+      };
+    });
   };
 
   const handleDeleteAlert = async () => {
+    if (!alertId) return;
     try {
-      await deleteScamAlertMutation.mutateAsync(alert.id);
+      await deleteScamAlertMutation.mutateAsync(alertId);
       toast.success("Scam alert deleted");
       router.push("/scam-alerts");
     } catch (err) {
@@ -518,7 +594,7 @@ export default function ScamAlertClient() {
                 No one's talking yet.
               </div>
             ) : (
-              comments.map((comment: unknown) => (
+              comments.map((comment) => (
                 <div
                   key={comment.id}
                   className="p-5 bg-white/5 border border-white/8 rounded-2xl space-y-3"
@@ -573,7 +649,7 @@ export default function ScamAlertClient() {
                           <DropdownMenuItem
                             onClick={() => {
                               setEditingCommentId(comment.id);
-                              setEditContent(comment.content);
+                              setEditContent(comment.content ?? "");
                             }}
                             className="gap-2 py-3"
                           >
@@ -630,7 +706,7 @@ export default function ScamAlertClient() {
                   ) : (
                     <div className="space-y-3">
                       <p className="text-sm text-white/70 font-medium leading-relaxed whitespace-pre-wrap">
-                        {comment.content || (comment as unknown).text}
+                        {comment.content || comment.text}
                       </p>
                       <div className="flex items-center gap-2 pt-1">
                         <ReactionButton

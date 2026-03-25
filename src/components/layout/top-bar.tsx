@@ -12,12 +12,30 @@ import CitySwitcher from './city-switcher';
 
 import logoImg from '../../../public/logo-bh-linked-1-trans.png';
 
+interface TopBarProfile {
+    reputation?: number;
+}
+
+function unwrapTopBarProfile(payload: unknown): TopBarProfile | null {
+    const unwrapped =
+        payload && typeof payload === 'object' && 'data' in payload
+            ? (payload as { data?: unknown }).data ?? payload
+            : payload;
+
+    if (!unwrapped || typeof unwrapped !== 'object') {
+        return null;
+    }
+
+    return unwrapped as TopBarProfile;
+}
+
 export default function TopBar() {
     const { user, loading } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [searchInput, setSearchInput] = useState('');
-    const { data: profile } = useProfile(user ? 'me' : '');
+    const { data: profileResponse } = useProfile(user ? 'me' : '');
+    const profile = unwrapTopBarProfile(profileResponse);
     const isSearchPage = pathname?.endsWith('/search') || pathname?.endsWith('/search/');
 
     const handleSearchFocus = () => {

@@ -11,6 +11,19 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
 
+interface VibeItem {
+  id: string;
+  timestamp: string;
+  crowdLevel: number;
+  waitTimeMinutes?: number;
+  spot?: {
+    slug?: string;
+    name?: string;
+    address?: string;
+    city?: { slug?: string };
+  };
+}
+
 function VibesPageContent() {
   const router = useRouter();
   const pathname = usePathname();
@@ -18,7 +31,7 @@ function VibesPageContent() {
 
   const { selectedCityId, selectedCity } = useCity();
   const { data: categoriesResponse } = useCategories();
-  const categories = categoriesResponse?.data || categoriesResponse || [];
+  const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
   // Initialize from URL
   const [selectedCategory, setSelectedCategory] = useState<string>(
@@ -64,10 +77,13 @@ function VibesPageContent() {
     isFetchingNextPage,
   } = useInfiniteLiveVibes({
     cityId: selectedCityId,
-    categoryId: selectedCategory as unknown,
+    categoryId: selectedCategory || undefined,
   });
 
-  const vibes = vibesData?.pages.flatMap((page) => page.data || []) || [];
+  const vibes: VibeItem[] =
+    vibesData?.pages.flatMap(
+      (page) => (page as { data?: VibeItem[] })?.data || [],
+    ) || [];
 
   // Intersection Observer for Infinite Scroll
   const { ref: observerTarget, inView } = useInView({ threshold: 0.1 });
@@ -133,7 +149,7 @@ function VibesPageContent() {
             />
           ))
         ) : vibes.length > 0 ? (
-          vibes.map((vibe: unknown) => (
+          vibes.map((vibe) => (
             <Link
               key={vibe.id}
               href={getSpotUrl(

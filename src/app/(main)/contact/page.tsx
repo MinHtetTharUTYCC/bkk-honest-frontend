@@ -27,9 +27,12 @@ export default function ContactPage() {
       setIsSuccess(true);
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (err: unknown) {
+      const apiError = err as {
+        response?: { data?: { message?: string } };
+      };
       console.error("Form submission error:", err);
       setError(
-        err.response?.data?.message ||
+        apiError.response?.data?.message ||
           "Failed to send message. Please try again.",
       );
     } finally {

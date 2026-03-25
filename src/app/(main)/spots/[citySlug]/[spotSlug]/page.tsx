@@ -7,6 +7,13 @@ import SpotDetailClient from "./spot-detail-client";
 
 export const revalidate = 3600;
 
+interface StaticSpotParam {
+  slug?: string;
+  city?: {
+    slug?: string;
+  };
+}
+
 export async function generateStaticParams() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   try {
@@ -15,8 +22,8 @@ export async function generateStaticParams() {
     });
     if (!response.ok) return [];
     const json = await response.json();
-    const spots = json.data || [];
-    return spots.map((spot: unknown) => ({
+    const spots = (json.data || []) as StaticSpotParam[];
+    return spots.map((spot) => ({
       citySlug: spot.city?.slug || "bangkok",
       spotSlug: spot.slug,
     }));

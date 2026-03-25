@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import type { FeatureCollection, Geometry, Point } from 'geojson';
 import TransitLines from './transit-lines';
 import TransitStations from './transit-stations';
 
@@ -12,10 +13,10 @@ interface TransitOverlayProps {
 }
 
 interface TransitData {
-  btsLines: unknown;
-  mrtLines: unknown;
-  arlLines: unknown;
-  stations: unknown;
+  btsLines: FeatureCollection<Geometry>;
+  mrtLines: FeatureCollection<Geometry>;
+  arlLines: FeatureCollection<Geometry>;
+  stations: FeatureCollection<Point>;
 }
 
 export default function TransitOverlay({ 
@@ -40,17 +41,17 @@ export default function TransitOverlay({
         const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/bkk-honest';
         
         // Helper to fetch and check response
-        const fetchGeoJSON = async (path: string) => {
+        const fetchGeoJSON = async <T extends Geometry>(path: string): Promise<FeatureCollection<T>> => {
           const res = await fetch(`${basePath}${path}`);
           if (!res.ok) throw new Error(`Failed to load ${path}: ${res.statusText}`);
-          return res.json();
+          return res.json() as Promise<FeatureCollection<T>>;
         };
 
         const [btsLines, mrtLines, arlLines, stations] = await Promise.all([
-          fetchGeoJSON('/data/transit/bts-lines.geojson'),
-          fetchGeoJSON('/data/transit/mrt-lines.geojson'),
-          fetchGeoJSON('/data/transit/arl-lines.geojson'),
-          fetchGeoJSON('/data/transit/stations.geojson')
+          fetchGeoJSON<Geometry>('/data/transit/bts-lines.geojson'),
+          fetchGeoJSON<Geometry>('/data/transit/mrt-lines.geojson'),
+          fetchGeoJSON<Geometry>('/data/transit/arl-lines.geojson'),
+          fetchGeoJSON<Point>('/data/transit/stations.geojson')
         ]);
 
         setTransitData({

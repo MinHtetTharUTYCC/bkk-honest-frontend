@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Map, { Marker } from 'react-map-gl/mapbox';
+import type { MapMouseEvent, MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, Navigation, AlertCircle, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -18,7 +19,7 @@ const DEFAULT_ZOOM = 13;
 export default function LocationPicker({
   onLocationSelected,
   initialLocation }: LocationPickerProps) {
-  const mapRef = useRef<unknown>(null);
+  const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: initialLocation?.latitude ?? BANGKOK_CENTER.latitude,
     longitude: initialLocation?.longitude ?? BANGKOK_CENTER.longitude,
@@ -89,7 +90,7 @@ export default function LocationPicker({
     );
   };
 
-  const handleMapClick = (event: unknown) => {
+  const handleMapClick = (event: MapMouseEvent) => {
     const { lngLat } = event;
     setSelectedLocation({ latitude: lngLat.lat, longitude: lngLat.lng });
     setError(null);

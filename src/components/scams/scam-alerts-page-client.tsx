@@ -11,6 +11,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { CategorySelector } from '@/components/ui/category-selector';
+import type { ScamAlertData } from '@/components/scams/scam-alert-card';
 
 export default function ScamAlertsPageClient() {
     const router = useRouter();
@@ -79,7 +80,7 @@ export default function ScamAlertsPageClient() {
     useEffect(() => { setTimeout(() => setIsClient(true), 0); }, []);
 
     const { data: categoriesResponse } = useCategories();
-    const categories = categoriesResponse?.data || categoriesResponse || [];
+    const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
     const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
         useInfiniteScamAlerts({
@@ -106,7 +107,7 @@ export default function ScamAlertsPageClient() {
 
     if (!isClient) return null;
 
-    const alerts = data?.pages.flatMap((page) => page.data) || [];
+    const alerts = (data?.pages.flatMap((page) => page.data || []) || []) as ScamAlertData[];
 
     return (
         <div className="space-y-6 pb-24">
@@ -189,7 +190,7 @@ export default function ScamAlertsPageClient() {
                     ))
                 ) : alerts && alerts.length > 0 ? (
                     <>
-                        {alerts.map((alert: unknown) => (
+                        {alerts.map((alert) => (
                             <ScamAlertCard key={alert.id} alert={alert} />
                         ))}
 
@@ -201,7 +202,7 @@ export default function ScamAlertsPageClient() {
                                 <div className="h-1" />
                             ) : (
                                 <p className="text-[12px] font-bold text-white/50 uppercase tracking-[0.2em]">
-                                    — You've reached the end —
+                                    — You&apos;ve reached the end —
                                 </p>
                             )}
                         </div>
@@ -216,7 +217,7 @@ export default function ScamAlertsPageClient() {
                                 Zero alerts reported
                             </h4>
                             <p className="text-xs text-white/50 font-medium">
-                                It's quiet for now. Stay vigilant regardless!
+                                It&apos;s quiet for now. Stay vigilant regardless!
                             </p>
                         </div>
                     </div>

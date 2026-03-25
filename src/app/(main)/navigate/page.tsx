@@ -2,7 +2,7 @@
 import { Suspense, useState, useEffect, useRef } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import Map, { Marker, Source, Layer } from "react-map-gl/mapbox";
+import Map, { Marker, Source, Layer, MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
   MapPin,
@@ -77,7 +77,7 @@ function NavigatePageContent() {
   const { transitVisible, toggleTransitVisible, hasHydrated } =
     useMapTransitVisible();
 
-  const mapRef = useRef<unknown>(null);
+  const mapRef = useRef<MapRef>(null);
 
   useEffect(() => {
     checkGeolocationPermission();

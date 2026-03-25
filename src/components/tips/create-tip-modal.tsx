@@ -12,6 +12,15 @@ interface CreateTipModalProps {
   onClose: () => void;
 }
 
+interface ApiError {
+  message?: string;
+  response?: {
+    data?: {
+      message?: string | string[];
+    };
+  };
+}
+
 export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps) {
   const createMutation = useCreateCommunityTip();
 
@@ -20,11 +29,12 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
       await createMutation.mutateAsync({
         spotId,
         ...values });
-      toast.success(' shared with the community!');
+      toast.success('Tip shared with the community!');
       onClose();
     } catch (error: unknown) {
+      const apiError = error as ApiError;
       console.error(error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to share tip';
+      const errorMessage = apiError.response?.data?.message || apiError.message || 'Failed to share tip';
       toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to share tip');
     }
   };
@@ -44,7 +54,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
             </div>
             <div>
               <h3 className="font-display text-xl font-bold text-foreground tracking-tight">
-                Share a 
+                Share a Tip
               </h3>
               <p className="text-[10px] font-medium text-white/40 uppercase tracking-widest">
                 Help the community pulse
@@ -63,7 +73,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
             <TipForm
                 onSubmit={onFormSubmit}
                 isLoading={createMutation.isPending}
-                submitLabel="Publish "
+                submitLabel="Publish Tip"
             />
         </div>
       </div>

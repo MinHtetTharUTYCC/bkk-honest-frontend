@@ -41,13 +41,13 @@ describe('LikeButton', () => {
 
   describe('States', () => {
     it('shows voted styling when isVoted is true', () => {
-       render(<LikeButton isVoted={true} count={10} />);
+      const { container } = render(<LikeButton isVoted={true} count={10} />);
       const heartIcon = container.querySelector('svg');
       expect(heartIcon).toHaveClass('fill-amber-400');
     });
 
     it('shows not voted styling when isVoted is false', () => {
-       render(<LikeButton isVoted={false} count={10} />);
+      const { container } = render(<LikeButton isVoted={false} count={10} />);
       const heartIcon = container.querySelector('svg');
       expect(heartIcon).not.toHaveClass('fill-amber-400');
     });
@@ -214,7 +214,7 @@ describe('LikeButton', () => {
     });
 
     it('transitions colors smoothly', () => {
-       render(<LikeButton isVoted={false} />);
+      const { container } = render(<LikeButton isVoted={false} />);
       const heartIcon = container.querySelector('svg');
       expect(heartIcon).toHaveClass('transition-all');
       expect(heartIcon).toHaveClass('duration-200');
@@ -223,7 +223,7 @@ describe('LikeButton', () => {
 
   describe('Color Consistency', () => {
     it('uses amber color when voted', () => {
-       render(<LikeButton isVoted={true} count={5} />);
+      const { container } = render(<LikeButton isVoted={true} count={5} />);
       const heartIcon = container.querySelector('svg');
       const countText = screen.getByText('5');
       
@@ -239,7 +239,7 @@ describe('LikeButton', () => {
     });
 
     it('uses amber on hover when not voted', () => {
-       render(<LikeButton isVoted={false} />);
+      const { container } = render(<LikeButton isVoted={false} />);
       const heartIcon = container.querySelector('svg');
       
       expect(heartIcon).toHaveClass('group-hover:text-amber-400');

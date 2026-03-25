@@ -7,6 +7,13 @@ import ScamAlertClient from "./scam-alert-client";
 
 export const revalidate = 3600;
 
+interface StaticAlertParam {
+  slug?: string;
+  city?: {
+    slug?: string;
+  };
+}
+
 export async function generateStaticParams() {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   try {
@@ -15,8 +22,8 @@ export async function generateStaticParams() {
     });
     if (!response.ok) return [];
     const json = await response.json();
-    const alerts = json.data || [];
-    return alerts.map((alert: unknown) => ({
+    const alerts = (json.data || []) as StaticAlertParam[];
+    return alerts.map((alert) => ({
       citySlug: alert.city?.slug || "bangkok",
       alertSlug: alert.slug,
     }));

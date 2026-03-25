@@ -9,6 +9,38 @@ import { components } from '@/types/api';
 type PaginatedSpots = components['schemas']['PaginatedSpotsWithStatsResponseDto'];
 type PaginatedScamAlerts = components['schemas']['PaginatedScamAlertsResponseDto'];
 type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto'];
+type PaginatedLiveVibes = { data: unknown[]; pagination?: { skip?: number; take?: number; total?: number; hasMore?: boolean }; skip?: number; take?: number; total?: number };
+type PaginationLike = { pagination?: { skip?: number; take?: number; total?: number; hasMore?: boolean }; skip?: number; take?: number; total?: number };
+
+function unwrapApiData(payload: unknown): unknown {
+    if (payload && typeof payload === 'object' && 'data' in payload) {
+        return (payload as { data?: unknown }).data ?? payload;
+    }
+    return payload;
+}
+
+function getNextSkipFromPage(lastPage: unknown, requireHasMore = false): number | undefined {
+    if (!lastPage || typeof lastPage !== 'object') {
+        return undefined;
+    }
+
+    const page = lastPage as PaginationLike;
+    const source = page.pagination ?? page;
+    const skip = source?.skip;
+    const take = source?.take;
+    const total = source?.total;
+
+    if (typeof skip !== 'number' || typeof take !== 'number' || typeof total !== 'number') {
+        return undefined;
+    }
+
+    if (requireHasMore && page.pagination?.hasMore === false) {
+        return undefined;
+    }
+
+    const nextSkip = skip + take;
+    return nextSkip < total ? nextSkip : undefined;
+}
 
 // --- Profiles ---
 
@@ -19,7 +51,7 @@ export function useMyProfile() {
         queryFn: async () => {
             const response = await api.get<unknown>('/profiles/me');
             const data = response.data;
-            return data?.data || data;
+            return unwrapApiData(data);
         },
         enabled: !!user,
         retry: false });
@@ -30,7 +62,7 @@ export function useLeaderboard(take = 5) {
         queryKey: ['leaderboard', take],
         queryFn: async () => {
             const { data } = await api.get(`/profiles/leaderboard/top?take=${take}`);
-            return data?.data || data;
+            return unwrapApiData(data);
         },
         staleTime: 5 * 60 * 1000 });
 }
@@ -42,7 +74,7 @@ export function useProfile(id: string) {
             const endpoint = id === 'me' ? '/profiles/me' : `/profiles/${id}`;
             const response = await api.get<unknown>(endpoint);
             const data = response.data;
-            return data?.data || data;
+            return unwrapApiData(data);
         },
         enabled: !!id,
         retry: false });
@@ -54,7 +86,8 @@ export function useUserPriceReports(userId: string) {
         queryFn: async () => {
             const endpoint = userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`;
             const { data } = await api.get(endpoint);
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: !!userId });
 }
@@ -65,7 +98,8 @@ export function useUserScamAlerts(userId: string) {
         queryFn: async () => {
             const endpoint = userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`;
             const { data } = await api.get(endpoint);
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: !!userId });
 }
@@ -76,7 +110,8 @@ export function useUserCommunityTips(userId: string) {
         queryFn: async () => {
             const endpoint = userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`;
             const { data } = await api.get(endpoint);
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: !!userId });
 }
@@ -93,8 +128,7 @@ export function useInfiniteUserPriceReports(userId: string) {
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            return skip + take < total ? skip + take : undefined;
+            return getNextSkipFromPage(lastPage);
         },
         enabled: !!userId });
 }
@@ -111,8 +145,7 @@ export function useInfiniteUserScamAlerts(userId: string) {
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            return skip + take < total ? skip + take : undefined;
+            return getNextSkipFromPage(lastPage);
         },
         enabled: !!userId });
 }
@@ -129,8 +162,7 @@ export function useInfiniteUserCommunityTips(userId: string) {
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            return skip + take < total ? skip + take : undefined;
+            return getNextSkipFromPage(lastPage);
         },
         enabled: !!userId });
 }
@@ -147,20 +179,19 @@ export function useInfiniteUserSpots(userId: string) {
         },
         initialPageParam: 0,
         getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            return skip + take < total ? skip + take : undefined;
+            return getNextSkipFromPage(lastPage);
         },
         enabled: !!userId });
 }
 
 // --- Spots ---
 
-export function useSpot(_: string) {
+export function useSpot(id: string) {
     return useQuery({
         queryKey: ['spot', id],
         queryFn: async () => {
             const { data } = await api.get<unknown>(`/spots/${id}`);
-            return data?.data || data;
+            return unwrapApiData(data);
         },
         enabled: !!id });
 }
@@ -170,7 +201,7 @@ export function useSpotBySlug(citySlug: string, spotSlug: string) {
         queryKey: ['spot', citySlug, spotSlug],
         queryFn: async () => {
             const { data } = await api.get<unknown>(`/spots/by-slug/${citySlug}/${spotSlug}`);
-            return data?.data || data;
+            return unwrapApiData(data);
         },
         enabled: !!citySlug && !!spotSlug });
 }
@@ -180,7 +211,7 @@ export function useScamAlertBySlug(citySlug: string, alertSlug: string) {
         queryKey: ['scam-alert', citySlug, alertSlug],
         queryFn: async () => {
             const { data } = await api.get<unknown>(`/scam-alerts/by-slug/${citySlug}/${alertSlug}`);
-            return data?.data || data;
+            return unwrapApiData(data);
         },
         enabled: !!citySlug && !!alertSlug });
 }
@@ -192,7 +223,7 @@ export function useSpots(params?: {
     sort?: 'newest' | 'popular';
 }) {
     // Clean up undefined parameters
-    const cleanParams: unknown = {};
+    const cleanParams: Record<string, string> = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -205,7 +236,8 @@ export function useSpots(params?: {
         queryFn: async () => {
             const { data } = await api.get<PaginatedSpots>('/spots', { params: cleanParams });
             // The backend returns { data: [...] }
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         staleTime: 5 * 60 * 1000, // Increased to 5 minutes
     });
@@ -218,7 +250,7 @@ export function useInfiniteSpots(params?: {
     sort?: 'newest' | 'popular';
     take?: number;
 }) {
-    const cleanParams: unknown = {};
+    const cleanParams: Record<string, string> = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -237,10 +269,8 @@ export function useInfiniteSpots(params?: {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            const nextSkip = skip + take;
-            return nextSkip < total ? nextSkip : undefined;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage);
         },
         staleTime: 5 * 60 * 1000, // Increased to 5 minutes
     });
@@ -251,10 +281,11 @@ export function useNearbySpots(params: { latitude: number; longitude: number; di
         queryKey: ['spots-nearby', params],
         queryFn: async () => {
             const { data } = await api.get<PaginatedSpots>('/spots/nearby', { params });
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: enabled && !!params.latitude && !!params.longitude,
-        placeholderData: (prev: unknown) => prev,
+        placeholderData: (prev) => prev,
         staleTime: 60_000 });
 }
 
@@ -276,7 +307,8 @@ export function useSpotSearch(query: string, cityId?: string, limit: number = 20
             if (cityId) params.set('cityId', cityId);
             if (limit !== 20) params.set('limit', limit.toString());
             const { data } = await api.get(`/spots/search${params.toString() ? `?${params}` : ''}`);
-            return Array.isArray(data) ? data : data?.data || [];
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: query.trim().length >= 1 });
 }
@@ -286,7 +318,8 @@ export function useSpotPriceReports(spotId: string) {
         queryKey: ['price-reports', spotId],
         queryFn: async () => {
             const { data } = await api.get(`/price-reports/spot/${spotId}`);
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: !!spotId });
 }
@@ -302,12 +335,8 @@ export function useInfiniteSpotPriceReports(spotId: string) {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            if (skip === undefined || take === undefined || total === undefined) return undefined;
-            const nextSkip = skip + take;
-            if (nextSkip >= total) return undefined;
-            return nextSkip;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage);
         },
         enabled: !!spotId });
 }
@@ -317,7 +346,8 @@ export function useSpotTips(spotId: string) {
         queryKey: ['tips', spotId],
         queryFn: async () => {
             const { data } = await api.get(`/community-tips/spot/${spotId}`);
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         enabled: !!spotId });
 }
@@ -339,9 +369,8 @@ export function useInfiniteSpotTips(
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            if (!lastPage.pagination?.hasMore) return undefined;
-            return lastPage.pagination.skip + lastPage.pagination.take;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage, true);
         },
         enabled: !!spotId });
 }
@@ -370,12 +399,8 @@ export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total, hasMore } = lastPage.pagination || {};
-            if (!hasMore) return undefined;
-            const nextSkip = skip + take;
-            if (nextSkip >= total) return undefined;
-            return nextSkip;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage, true);
         },
         enabled: !!spotId });
 }
@@ -403,7 +428,8 @@ export function useCategories() {
         queryKey: ['categories'],
         queryFn: async () => {
             const { data } = await api.get<unknown>('/categories');
-            return Array.isArray(data) ? data : (data as unknown)?.data || [];
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
         gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
@@ -415,7 +441,8 @@ export function useCities() {
         queryKey: ['cities'],
         queryFn: async () => {
             const { data } = await api.get<unknown[]>('/cities');
-            return Array.isArray(data) ? data : (data as unknown)?.data || [];
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
         gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
@@ -461,11 +488,11 @@ export function useCreateSpot() {
 export function useUpdateSpot() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: unknown }) => {
+        mutationFn: async ({ id, payload }: { id: string; payload: Record<string, string | Blob | number | undefined> }) => {
             const formData = new FormData();
-            Object.keys(payload).forEach(key => {
-                if (payload[key] !== undefined) {
-                    formData.append(key, payload[key]);
+            Object.entries(payload).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    formData.append(key, typeof value === 'number' ? value.toString() : value);
                 }
             });
             const { data } = await api.patch(`/spots/${id}`, formData, {
@@ -487,7 +514,7 @@ export function useScamAlerts(params?: {
     take?: number;
 }) {
     // Clean up undefined parameters
-    const cleanParams: unknown = {};
+    const cleanParams: Record<string, string | number> = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -501,7 +528,8 @@ export function useScamAlerts(params?: {
         queryFn: async () => {
             const { data } = await api.get<PaginatedScamAlerts>('/scam-alerts', {
                 params: cleanParams });
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -514,7 +542,7 @@ export function useInfiniteScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: unknown = {};
+    const cleanParams: Record<string, string> = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -533,10 +561,8 @@ export function useInfiniteScamAlerts(params?: {
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            const nextSkip = skip + take;
-            return nextSkip < total ? nextSkip : undefined;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage);
         },
         staleTime: 5 * 60 * 1000, // 5 minutes
     });
@@ -552,7 +578,8 @@ export function useLiveVibes(params?: { spotId?: string; cityId?: string; take?:
         queryKey: ['live-vibes', params],
         queryFn: async () => {
             const { data } = await api.get<unknown>(`/live-vibes${qs ? `?${qs}` : ''}`);
-            return data?.data || (Array.isArray(data) ? data : []);
+            const unwrapped = unwrapApiData(data);
+            return Array.isArray(unwrapped) ? unwrapped : [];
         },
         staleTime: 60 * 1000, // 1 minute
     });
@@ -567,13 +594,18 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
                     ...params,
                     skip: pageParam,
                     take: params?.take || 10 } });
-            return data;
+            const unwrapped = unwrapApiData(data);
+            if (unwrapped && typeof unwrapped === 'object' && 'data' in unwrapped) {
+                return unwrapped as PaginatedLiveVibes;
+            }
+            return {
+                data: Array.isArray(unwrapped) ? unwrapped : [],
+                pagination: { skip: Number(pageParam) || 0, take: params?.take || 10, total: Array.isArray(unwrapped) ? unwrapped.length : 0, hasMore: false }
+            } satisfies PaginatedLiveVibes;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            const nextSkip = skip + take;
-            return nextSkip < total ? nextSkip : undefined;
+        getNextPageParam: (lastPage: PaginatedLiveVibes) => {
+            return getNextSkipFromPage(lastPage);
         },
         staleTime: 60 * 1000, // 1 minute
     });
@@ -588,12 +620,8 @@ export function useTipComments(tipId: string) {
             const { data } = await api.get(`/comments/tip/${tipId}?skip=${pageParam}&take=10`);
             return data;
         },
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total, hasMore } = lastPage?.pagination || {};
-            if (!hasMore) return undefined;
-            const nextSkip = skip + take;
-            if (nextSkip >= total) return undefined;
-            return nextSkip;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage, true);
         },
         initialPageParam: 0,
         enabled: !!tipId });
@@ -609,11 +637,7 @@ export function useScamComments(scamAlertId: string) {
             return data;
         },
         getNextPageParam: (lastPage) => {
-            const { skip, take, total, hasMore } = lastPage?.pagination || {};
-            if (!hasMore) return undefined;
-            const nextSkip = skip + take;
-            if (nextSkip >= total) return undefined;
-            return nextSkip;
+            return getNextSkipFromPage(lastPage, true);
         },
         initialPageParam: 0,
         enabled: !!scamAlertId });
@@ -626,7 +650,7 @@ export function useCreateComment() {
             communityTipId?: string;
             content: string;
         }) => {
-            const apiPayload: unknown = {
+            const apiPayload: Record<string, string> = {
                 text: payload.content };
             
             if (payload.scamAlertId) {
@@ -791,11 +815,11 @@ export function useCreateScamAlert() {
 export function useUpdateScamAlert() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: unknown }) => {
+        mutationFn: async ({ id, payload }: { id: string; payload: Record<string, string | Blob | number | undefined> }) => {
             const formData = new FormData();
-            Object.keys(payload).forEach(key => {
-                if (payload[key] !== undefined) {
-                    formData.append(key, payload[key]);
+            Object.entries(payload).forEach(([key, value]) => {
+                if (value !== undefined) {
+                    formData.append(key, typeof value === 'number' ? value.toString() : value);
                 }
             });
             const { data } = await api.patch(`/scam-alerts/${id}`, formData, {
@@ -811,7 +835,7 @@ export function useUpdateScamAlert() {
 export function useDeleteScamAlert() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (_: string) => {
+        mutationFn: async (id: string) => {
             const { data } = await api.delete(`/scam-alerts/${id}`);
             return data;
         },
@@ -849,7 +873,7 @@ export function useCreateVote() {
             type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             let endpoint = '';
-            const payload: unknown = {};
+            const payload: Record<string, string> = {};
 
             if (type === 'tip') {
                 endpoint = '/votes/tip';
@@ -889,7 +913,7 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
     return useInfiniteQuery({
         queryKey: ['missions-infinite', userId, status, sort],
         queryFn: async ({ pageParam = 0 }) => {
-            const params: unknown = { skip: pageParam, take: 10, sort };
+            const params: Record<string, string | number> = { skip: pageParam, take: 10, sort };
             if (status !== 'all') {
                 params.status = status;
             }
@@ -897,9 +921,8 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
             return data;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            const { skip, take, total } = lastPage.pagination || lastPage;
-            return skip + take < total ? skip + take : undefined;
+        getNextPageParam: (lastPage: PaginationLike) => {
+            return getNextSkipFromPage(lastPage);
         },
         enabled: !!userId });
 }
@@ -947,7 +970,7 @@ export function useUpdateMission() {
 export function useDeleteMission() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (_: string) => {
+        mutationFn: async (id: string) => {
             const { data } = await api.delete(`/checklist/${id}`);
             return data;
         },
@@ -1009,24 +1032,24 @@ export function useToggleCommentReaction() {
         },
         onSuccess: (data, commentId) => {
             // updateInfiniteQueryData is a helper or we can do it inline
-            const updatePage = (page: unknown) => ({
+            const updatePage = (page: { data?: Array<{ id?: string } & Record<string, unknown>> }) => ({
                 ...page,
-                data: page.data?.map((c: unknown) => c.id === commentId ? { ...c, ...data } : c)
+                data: page.data?.map((c) => c.id === commentId ? { ...c, ...data } : c)
             });
 
-            queryClient.setQueriesData({ queryKey: ['tip-comments'] }, (old: unknown) => {
+            queryClient.setQueriesData({ queryKey: ['tip-comments'] }, (old: { pages?: Array<{ data?: Array<{ id?: string } & Record<string, unknown>> }> } | undefined) => {
                 if (!old) return old;
                 return {
                     ...old,
-                    pages: old.pages.map(updatePage)
+                    pages: old.pages?.map(updatePage)
                 };
             });
 
-            queryClient.setQueriesData({ queryKey: ['scam-comments'] }, (old: unknown) => {
+            queryClient.setQueriesData({ queryKey: ['scam-comments'] }, (old: { pages?: Array<{ data?: Array<{ id?: string } & Record<string, unknown>> }> } | undefined) => {
                 if (!old) return old;
                 return {
                     ...old,
-                    pages: old.pages.map(updatePage)
+                    pages: old.pages?.map(updatePage)
                 };
             });
         } });

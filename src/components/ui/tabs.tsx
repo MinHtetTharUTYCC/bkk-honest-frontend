@@ -3,6 +3,11 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
+type TabsInjectedProps = {
+  _tabsValue?: string;
+  _onValueChange?: (value: string) => void;
+};
+
 
 const Tabs = React.forwardRef<
   HTMLDivElement,
@@ -31,12 +36,12 @@ const Tabs = React.forwardRef<
       data-value={currentValue}
     >
       {React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
+        if (React.isValidElement<TabsInjectedProps>(child)) {
           // If the child is TabsList, we pass the props.
           // Otherwise (like for TabsContent), we also pass the props.
           // BUT, we only want these props on our custom components, not on native DOM elements.
           // In our case, Tabs only has TabsList and TabsContent as children, so it should be fine.
-          return React.cloneElement(child as unknown, {
+          return React.cloneElement(child, {
             _tabsValue: currentValue,
             _onValueChange: handleValueChange });
         }
@@ -64,8 +69,8 @@ const TabsList = React.forwardRef<
     {...props}
   >
     {React.Children.map(children, (child) => {
-      if (React.isValidElement(child)) {
-        return React.cloneElement(child as unknown, {
+      if (React.isValidElement<TabsInjectedProps>(child)) {
+        return React.cloneElement(child, {
           _tabsValue,
           _onValueChange });
       }

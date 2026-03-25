@@ -27,6 +27,29 @@ interface ApiError {
   };
 }
 
+interface ProfileData {
+  name?: string;
+  avatarUrl?: string;
+  level?: string;
+  bio?: string;
+  country?: string;
+  createdAt?: string;
+  reputation?: number;
+}
+
+function unwrapProfileData(payload: unknown): ProfileData | null {
+  const unwrapped =
+    payload && typeof payload === "object" && "data" in payload
+      ? (payload as { data?: unknown }).data ?? payload
+      : payload;
+
+  if (!unwrapped || typeof unwrapped !== "object") {
+    return null;
+  }
+
+  return unwrapped as ProfileData;
+}
+
 function UserProfilePageContent({
   params,
 }: {
@@ -63,7 +86,7 @@ function UserProfilePageContent({
     isLoading: profileLoading,
     error: profileError,
   } = useProfile(userId);
-  const profile = profileResponse?.data || profileResponse;
+  const profile = unwrapProfileData(profileResponse);
 
   const isProfileNotFound =
     (profileError as ApiError)?.response?.status === 404;

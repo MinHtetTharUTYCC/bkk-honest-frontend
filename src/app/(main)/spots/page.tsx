@@ -11,6 +11,11 @@ import { useCity } from "@/components/providers/city-provider";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
+import api from "@/lib/api";
+
+interface SpotListItem {
+  id: string;
+}
 
 function DiscoveryPageContent() {
   const router = useRouter();
@@ -28,7 +33,6 @@ function DiscoveryPageContent() {
   );
 
   const { selectedCityId, selectedCity } = useCity();
-  const [isClient, setIsClient] = useState(false);
   const queryClient = useQueryClient();
 
   const prefetchCategory = (catId: string | undefined) => {
@@ -43,7 +47,30 @@ function DiscoveryPageContent() {
         },
       ],
       initialPageParam: 0,
-    } as unknown);
+      queryFn: async ({ pageParam = 0 }) => {
+        const { data } = await api.get("/spots", {
+          params: {
+            cityId: selectedCityId,
+            categoryId: catId,
+            search,
+            sort,
+            skip: pageParam,
+            take: 10,
+          },
+        });
+        return data;
+      },
+      getNextPageParam: (lastPage: {
+        pagination?: { skip?: number; take?: number; total?: number };
+      }) => {
+        const { skip, take, total } = lastPage.pagination || {};
+        if (skip === undefined || take === undefined || total === undefined) {
+          return undefined;
+        }
+        const nextSkip = skip + take;
+        return nextSkip < total ? nextSkip : undefined;
+      },
+    });
   };
 
   // Function to update URL params
@@ -105,15 +132,10 @@ function DiscoveryPageContent() {
       }
     }, 500);
     return () => clearTimeout(timer);
-  }, [search, pathname, createQueryString, searchParams]);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  }, [search, pathname, createQueryString, searchParams, router]);
 
   const { data: categoriesResponse } = useCategories();
-  // @ts-ignore
-  const categories = categoriesResponse?.data || categoriesResponse || [];
+  const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
   const {
     data: spotsData,
@@ -148,9 +170,10 @@ function DiscoveryPageContent() {
     }
   }, [inView]);
 
-  if (!isClient) return null;
-
-  const spots = spotsData?.pages.flatMap((page) => page.data) || [];
+  const spots: SpotListItem[] =
+    spotsData?.pages.flatMap(
+      (page) => (page as { data?: SpotListItem[] })?.data || [],
+    ) || [];
 
   return (
     <div className="space-y-6 pb-24">
@@ -230,7 +253,7 @@ function DiscoveryPageContent() {
           ))
         ) : spots && spots.length > 0 ? (
           <>
-            {spots.map((spot: unknown) => (
+            {spots.map((spot) => (
               <SpotCard key={spot.id} spot={spot} />
             ))}
 

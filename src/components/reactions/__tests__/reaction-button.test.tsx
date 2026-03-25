@@ -64,7 +64,7 @@ describe('ReactionButton Component', () => {
 
   describe('Click Interaction', () => {
     it('should toggle reaction when button is clicked', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} initialCount={5} />);
@@ -79,7 +79,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should increment count when not reacted', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} initialCount={10} initialUserReacted={false} />);
@@ -93,7 +93,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should decrement count when already reacted', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} initialCount={10} initialUserReacted={true} />);
@@ -107,7 +107,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should update heart icon color to red when reaction is added', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} initialUserReacted={false} />);
@@ -127,7 +127,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should update heart icon color back when reaction is removed', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} initialUserReacted={true} />);
@@ -149,7 +149,7 @@ describe('ReactionButton Component', () => {
 
   describe('API Call', () => {
     it('should call API with correct comment ID', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} />);
@@ -163,7 +163,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should send API call on each toggle', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
@@ -236,7 +236,7 @@ describe('ReactionButton Component', () => {
 
   describe('Error Handling', () => {
     it('should revert count on API error', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockRejectedValueOnce(new Error('Network error'));
 
       render(<ReactionButton {...defaultProps} initialCount={5} initialUserReacted={false} />);
@@ -258,7 +258,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should revert reaction state on API error', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockRejectedValueOnce(new Error('API error'));
 
       render(<ReactionButton {...defaultProps} initialUserReacted={false} />);
@@ -284,7 +284,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should handle network errors gracefully', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       mockMutateAsync.mockRejectedValueOnce(new Error('Network timeout'));
 
@@ -315,7 +315,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should be keyboard accessible', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} />);
@@ -337,7 +337,7 @@ describe('ReactionButton Component', () => {
 
   describe('Optimistic Updates', () => {
     it('should update UI before API call completes', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       let resolveApi: unknown;
       mockMutateAsync.mockReturnValueOnce(
         new Promise(resolve => { resolveApi = resolve; })
@@ -373,7 +373,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should handle rapid clicks gracefully', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       render(<ReactionButton {...defaultProps} initialCount={0} />);
@@ -430,7 +430,7 @@ describe('ReactionButton Component', () => {
 
   describe('Different Comment IDs', () => {
     it('should work with different comment IDs', async () => {
-      const // userEvent.setup();
+      const user = userEvent.setup();
       mockMutateAsync.mockResolvedValueOnce({ success: true });
 
       const { unmount } = render(<ReactionButton commentId="comment-1" />);

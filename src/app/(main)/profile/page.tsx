@@ -39,6 +39,36 @@ interface ApiError {
   };
 }
 
+interface ProfileData {
+  id?: string;
+  name?: string;
+  bio?: string;
+  country?: string;
+  avatarUrl?: string;
+  level?: string;
+  createdAt?: string;
+  reputation?: number;
+}
+
+function unwrapProfileData(payload: unknown): ProfileData | null {
+  const unwrapped =
+    payload && typeof payload === "object" && "data" in payload
+      ? (payload as { data?: unknown }).data ?? payload
+      : payload;
+
+  if (!unwrapped || typeof unwrapped !== "object") {
+    return null;
+  }
+
+  return unwrapped as ProfileData;
+}
+
+interface PageWithPagination {
+  pagination?: {
+    total?: number;
+  };
+}
+
 function ProfilePageContent() {
   const { user, loading: authLoading } = useAuth();
   const supabase = createClient();
@@ -69,7 +99,7 @@ function ProfilePageContent() {
     isLoading: profileLoading,
     error: profileError,
   } = useMyProfile();
-  const profile = profileResponse?.data || profileResponse;
+  const profile = unwrapProfileData(profileResponse);
   const { data: missionStats } = useMissionStats();
 
   const isProfileNotFound =
@@ -102,10 +132,10 @@ function ProfilePageContent() {
   const { data: tipsData } = useInfiniteUserCommunityTips(userId);
   const { data: spotsData } = useInfiniteUserSpots(userId);
 
-  const reportsTotal = reportsData?.pages[0]?.pagination?.total || 0;
-  const scamsTotal = scamsData?.pages[0]?.pagination?.total || 0;
-  const tipsTotal = tipsData?.pages[0]?.pagination?.total || 0;
-  const spotsTotal = spotsData?.pages[0]?.pagination?.total || 0;
+  const reportsTotal = (reportsData?.pages?.[0] as PageWithPagination | undefined)?.pagination?.total || 0;
+  const scamsTotal = (scamsData?.pages?.[0] as PageWithPagination | undefined)?.pagination?.total || 0;
+  const tipsTotal = (tipsData?.pages?.[0] as PageWithPagination | undefined)?.pagination?.total || 0;
+  const spotsTotal = (spotsData?.pages?.[0] as PageWithPagination | undefined)?.pagination?.total || 0;
 
   // Edit State
   const [isEditing, setIsEditing] = useState(false);

@@ -1,17 +1,31 @@
 'use client';
 
 import { MapPin, Zap, ImageIcon } from 'lucide-react';
-import { components } from '@/types/api';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { useAuth } from '@/components/providers/auth-provider';
 import { cn } from '@/lib/utils';
 import { getSpotUrl } from '@/lib/slug';
 import { LikeButton } from '@/components/ui/like-button';
 import { useRouter } from 'next/navigation';
 import { useQueryClient } from '@tanstack/react-query';
+import api from '@/lib/api';
 
+interface SpotCardData {
+    id: string;
+    slug?: string;
+    name?: string;
+    address?: string;
+    imageUrl?: string;
+    images?: Array<{ url?: string }>;
+    city?: { slug?: string };
+    category?: { name?: string };
+    hasVoted?: boolean;
+    voteId?: string | null;
+    _count?: { votes?: number };
+    vibeStats?: { avgCrowdLevel?: number };
+    priceStats?: { avg?: number; count?: number };
+}
 
-export default function SpotCard({ spot }: { spot: unknown }) {
+export default function SpotCard({ spot }: { spot: SpotCardData }) {
     const router = useRouter();
     const queryClient = useQueryClient();
     const { id, slug, city, name, category, address, priceStats, vibeStats, imageUrl, images } = spot;
@@ -32,13 +46,28 @@ export default function SpotCard({ spot }: { spot: unknown }) {
         // Prefetch Tips (Initial popular try tips)
         queryClient.prefetchInfiniteQuery({
             queryKey: ['tips-infinite', id, 'TRY', 'popular'],
-            initialPageParam: 0 } as unknown);
+            initialPageParam: 0,
+            queryFn: async ({ pageParam = 0 }) => {
+                const { data } = await api.get(`/community-tips/spot/${id}`, {
+                    params: { skip: pageParam, take: 10, type: 'TRY', sort: 'popular' },
+                });
+                return data;
+            },
+            getNextPageParam: (lastPage: { pagination?: { skip?: number; take?: number; total?: number } }) => {
+                const { skip, take, total } = lastPage.pagination || {};
+                if (skip === undefined || take === undefined || total === undefined) {
+                    return undefined;
+                }
+                const nextSkip = skip + take;
+                return nextSkip < total ? nextSkip : undefined;
+            },
+        });
     };
 
         const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
     // Format category name
-    const categoryName = (category as unknown)?.name || 'Category';
+    const categoryName = category?.name || 'Category';
 
     // Get the display image
     const displayImage = imageUrl || (images && images.length > 0 ? images[0].url : null);
@@ -61,7 +90,7 @@ export default function SpotCard({ spot }: { spot: unknown }) {
                 {displayImage ? (
                     <img
                         src={displayImage}
-                        alt={name}
+                        alt={name || 'Spot'}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                 ) : (
@@ -80,8 +109,8 @@ export default function SpotCard({ spot }: { spot: unknown }) {
                     </span>
                     <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
                         <Zap size={10} fill="currentColor" />
-                        {(vibeStats as unknown)?.avgCrowdLevel
-                            ? `Busy: ${(vibeStats as unknown).avgCrowdLevel.toFixed(1)}/5`
+                        {vibeStats?.avgCrowdLevel
+                            ? `Busy: ${vibeStats.avgCrowdLevel.toFixed(1)}/5`
                             : 'New'}
                     </div>
                 </div>
@@ -106,7 +135,7 @@ export default function SpotCard({ spot }: { spot: unknown }) {
             <div className="p-5">
                 <div className="space-y-1 mb-5">
                     <h3 className="font-display text-xl font-bold text-foreground leading-tight line-clamp-1 tracking-tight group-hover:text-amber-400 transition-colors">
-                        {name}
+                        {name || 'Unnamed Spot'}
                     </h3>
                     <p className="text-white/60 font-medium text-[12px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
                         <MapPin size={11} className="text-amber-400 shrink-0" />
@@ -120,7 +149,7 @@ export default function SpotCard({ spot }: { spot: unknown }) {
                             Avg Price
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
-                            {(priceStats as unknown)?.avg ? `${(priceStats as unknown).avg} THB` : '--'}
+                            {priceStats?.avg ? `${priceStats.avg} THB` : '--'}
                         </span>
                     </div>
                     <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
@@ -128,7 +157,7 @@ export default function SpotCard({ spot }: { spot: unknown }) {
                             Pulse
                         </span>
                         <span className="text-sm font-bold text-foreground tracking-tight">
-                            {(priceStats as unknown)?.count || 0} Reports
+                            {priceStats?.count || 0} Reports
                         </span>
                     </div>
                 </div>

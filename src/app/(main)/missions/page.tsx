@@ -42,6 +42,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+interface MissionItem {
+  id: string;
+  completed: boolean;
+  spot?: {
+    name?: string;
+    slug?: string;
+    imageUrl?: string;
+    city?: { slug?: string };
+  };
+}
+
 function MissionsPageContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -110,7 +121,11 @@ function MissionsPageContent() {
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const missions = useMemo(() => {
-    return missionsData?.pages.flatMap((page) => page.data || []) || [];
+    return (
+      (missionsData?.pages as Array<{ data?: MissionItem[] }> | undefined)?.flatMap(
+        (page) => page.data || [],
+      ) || []
+    );
   }, [missionsData]);
   const completedCount = stats?.completed || 0;
   const totalCount = stats?.total || 0;
@@ -293,7 +308,7 @@ function MissionsPageContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {missions.map((mission: unknown) => (
+            {missions.map((mission: MissionItem) => (
               <div
                 key={mission.id}
                 className={cn(

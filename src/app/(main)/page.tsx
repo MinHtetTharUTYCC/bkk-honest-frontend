@@ -8,6 +8,11 @@ import HomeFeedClient from "@/components/home/home-feed-client";
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+interface City {
+  id: string;
+  name: string;
+}
+
 async function fetchApi(
   path: string,
   params?: Record<string, string | number | undefined>,
@@ -42,9 +47,9 @@ async function HomeFeedPrefetched() {
     staleTime: 24 * 60 * 60 * 1000,
   });
 
-  const cities = (queryClient.getQueryData(["cities"]) as unknown[]) || [];
+  const cities = (queryClient.getQueryData(["cities"]) as City[]) || [];
   const bangkok = cities.find(
-    (city: unknown) => city?.name?.toLowerCase() === "bangkok",
+    (city) => city?.name?.toLowerCase() === "bangkok",
   );
   const selectedCity = bangkok || cities[0];
   const selectedCityId = selectedCity?.id;

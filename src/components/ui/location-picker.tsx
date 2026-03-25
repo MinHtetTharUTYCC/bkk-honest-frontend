@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import Map, { Marker, ViewState, MapRef } from 'react-map-gl/mapbox';
+import type { MapMouseEvent } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { MapPin, Loader2, Navigation } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -60,7 +61,7 @@ export function LocationPicker({
     return undefined;
   };
 
-  const handleMapClick = async (e: unknown) => {
+  const handleMapClick = async (e: MapMouseEvent) => {
     if (isLoading) return;
     const { lng, lat } = e.lngLat;
     const location = { latitude: lat, longitude: lng };

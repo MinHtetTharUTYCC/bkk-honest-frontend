@@ -22,6 +22,31 @@ interface HomeFeedClientProps {
     fallbackCityName?: string;
 }
 
+interface HomeSpotItem {
+    id: string;
+}
+
+interface HomeScamAlertItem {
+    id: string;
+}
+
+interface HomeVibeItem {
+    id: string;
+    timestamp: string;
+    crowdLevel: number;
+    waitTimeMinutes?: number;
+    spot?: {
+        slug?: string;
+        name?: string;
+        city?: { slug?: string };
+    };
+}
+
+interface HomeCategoryItem {
+    id: string;
+    name: string;
+}
+
 export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFeedClientProps) {
     const { selectedCityId, selectedCity } = useCity();
     const { latitude, longitude } = useGeolocation();
@@ -81,7 +106,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     />
                                 ))
                             ) : Array.isArray(nearbySpots) && nearbySpots.length > 0 ? (
-                                nearbySpots.map((spot: unknown) => (
+                                nearbySpots.map((spot: HomeSpotItem) => (
                                     <div key={spot.id} className="w-72 shrink-0">
                                         <SpotCard spot={spot} />
                                     </div>
@@ -156,7 +181,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                 />
                             ))
                         ) : Array.isArray(spots) && spots.length > 0 ? (
-                            spots.map((spot: unknown) => (
+                            spots.map((spot: HomeSpotItem) => (
                                 <div key={spot.id} className="w-72 shrink-0">
                                     <SpotCard spot={spot} />
                                 </div>
@@ -209,7 +234,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     />
                                 ))
                             ) : Array.isArray(scamAlerts) && scamAlerts.length > 0 ? (
-                                scamAlerts.map((alert: unknown) => (
+                                scamAlerts.map((alert: HomeScamAlertItem) => (
                                     <ScamAlertCard key={alert.id} alert={alert} />
                                 ))
                             ) : (
@@ -246,7 +271,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                     />
                                 ))
                             ) : Array.isArray(vibes) && vibes.length > 0 ? (
-                                vibes.map((vibe: unknown) => (
+                                vibes.map((vibe: HomeVibeItem) => (
                                     <Link
                                         key={vibe.id}
                                         href={getSpotUrl(
@@ -325,7 +350,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                     <ScrollArea className="w-full whitespace-nowrap -mx-8">
                         <div className="flex gap-4 pb-4 px-8">
                             {Array.isArray(categories) &&
-                                categories.map((cat: unknown) => (
+                                categories.map((cat: HomeCategoryItem) => (
                                     <Link
                                         key={cat.id}
                                         href={`/spots?categoryId=${cat.id}`}

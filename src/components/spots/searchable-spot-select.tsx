@@ -11,7 +11,14 @@ interface SearchableSpotSelectProps {
     required?: boolean;
     placeholder?: string;
     cityId?: string;
-    onSelect?: (spotId: string, spot?: unknown) => void;
+    onSelect?: (spotId: string, spot?: SpotSearchItem) => void;
+}
+
+interface SpotSearchItem {
+    id: string;
+    name: string;
+    address?: string;
+    city?: { name?: string };
 }
 
 export default function SearchableSpotSelect({
@@ -21,12 +28,13 @@ export default function SearchableSpotSelect({
     cityId,
     onSelect }: SearchableSpotSelectProps) {
     const [inputValue, setInputValue] = useState('');
-    const [selectedSpot, setSelectedSpot] = useState<unknown>(null);
+    const [selectedSpot, setSelectedSpot] = useState<SpotSearchItem | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const { data: spots = [] } = useSpotSearch(inputValue, cityId, 15);
+    const { data: spotsData = [] } = useSpotSearch(inputValue, cityId, 15);
+    const spots = spotsData as SpotSearchItem[];
 
     // Close dropdown when clicking outside
     useEffect(() => {
@@ -40,7 +48,7 @@ export default function SearchableSpotSelect({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleSelect = (spot: unknown) => {
+    const handleSelect = (spot: SpotSearchItem) => {
         setSelectedSpot(spot);
         setInputValue(spot.name);
         setIsOpen(false);
@@ -96,7 +104,7 @@ export default function SearchableSpotSelect({
                     <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-white/10 rounded-2xl shadow-2xl shadow-black/50 z-50 max-h-64 overflow-y-auto">
                         {spots.length > 0 ? (
                             <ul className="py-2">
-                                {spots.map((spot: unknown) => (
+                                {spots.map((spot) => (
                                     <li key={spot.id}>
                                         <button
                                             type="button"

@@ -6,6 +6,11 @@ import { useCities } from '@/hooks/use-api';
 import { useState, useRef, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 
+interface CityOption {
+    id: string;
+    name: string;
+}
+
 export default function CitySwitcher() {
     const { selectedCityId, setSelectedCityId, selectedCity } = useCity();
     const { data: cities } = useCities();
@@ -54,7 +59,7 @@ export default function CitySwitcher() {
                         </span>
                     </div>
                     <div className="space-y-1">
-                        {cities?.map((city: unknown) => (
+                        {cities?.map((city: CityOption) => (
                             <button
                                 key={city.id}
                                 onClick={() => {
