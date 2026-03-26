@@ -427,6 +427,19 @@ export function useUploadSpotImage() {
         } });
 }
 
+export function useDeleteGalleryImage() {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async ({ id }: { id: string; spotId: string }) => {
+            await api.delete(`/gallery/${id}`);
+        },
+        onSuccess: (_, { spotId }) => {
+            queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['gallery-infinite', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['spot', spotId] });
+        } });
+}
+
 // --- Metadata ---
 
 export function useCategories() {
