@@ -118,7 +118,7 @@ export default function ScamAlertClient() {
   };
   const { user } = useAuth();
   const router = useRouter();
-  const { data: alertResponse, isLoading: alertLoading } = useScamAlertBySlug(
+  const { data: alertResponse } = useScamAlertBySlug(
     citySlug === "thailand" ? "" : citySlug,
     alertSlug,
   );
@@ -137,6 +137,11 @@ export default function ScamAlertClient() {
       setLocalAlert(alert);
     }
   }, [alert]);
+
+  // Ensure localAlert is never null when rendering
+  if (!localAlert) {
+    return null;
+  }
 
   const {
     data: commentsResponse,
@@ -286,14 +291,6 @@ export default function ScamAlertClient() {
       toast.error("Failed to delete alert");
     }
   };
-
-  if (alertLoading || !localAlert) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="animate-spin text-amber-400" size={32} />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-background pb-20">

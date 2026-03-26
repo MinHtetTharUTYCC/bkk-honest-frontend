@@ -4,6 +4,7 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import ScamAlertClient from "./scam-alert-client";
+import { getScamAlert, getScamAlertComments } from "@/services/scam-alert";
 
 export const revalidate = 3600;
 
@@ -41,22 +42,24 @@ export default async function ScamAlertPage({
   const { citySlug, alertSlug } = await params;
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["scam-alert", citySlug, alertSlug],
-    queryFn: async () => {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-      const res = await fetch(
-        `${baseUrl}/scam-alerts/by-slug/${encodeURIComponent(citySlug)}/${encodeURIComponent(alertSlug)}`,
-        {
-          next: { revalidate: 3600 },
-        },
-      );
-      if (!res.ok) throw new Error("Alert not found");
-      const data = await res.json();
-      return data?.data || data;
-    },
-  });
+  // Fetch the alert data
+  const alert = await getScamAlert(citySlug, alertSlug);
+
+  if (!alert) {
+    return <div>Alert not found</div>;
+  }
+
+  // Prefetch alert data for hydration
+  queryClient.setQueryData(["scam-alert", citySlug, alertSlug], alert);
+
+  // Prefetch first page of comments
+  const comments = await getScamAlertComments(alert.id, 0, 10);
+  if (comments) {
+    queryClient.setQueryData(["scam-comments", alert.id], {
+      pages: [comments],
+      pageParams: [0],
+    });
+  }
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

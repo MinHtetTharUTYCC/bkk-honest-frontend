@@ -13,7 +13,15 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { CategorySelector } from '@/components/ui/category-selector';
 import type { ScamAlertData } from '@/components/scams/scam-alert-card';
 
-export default function ScamAlertsPageClient() {
+type ScamAlertsPageClientProps = {
+    searchParams?: {
+        q?: string;
+        sort?: 'newest' | 'popular';
+        categoryId?: string;
+    };
+};
+
+export default function ScamAlertsPageClient({ searchParams: initialParams }: ScamAlertsPageClientProps = {}) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -26,7 +34,6 @@ export default function ScamAlertsPageClient() {
     );
 
     const { selectedCityId, selectedCity } = useCity();
-    const [isClient, setIsClient] = useState(false);
     const { ref, inView } = useInView();
 
     // Function to update URL params
@@ -74,8 +81,6 @@ export default function ScamAlertsPageClient() {
         return () => clearTimeout(timer);
     }, [search, pathname, createQueryString, searchParams]);
 
-    useEffect(() => { setTimeout(() => setIsClient(true), 0); }, []);
-
     const { data: categoriesResponse } = useCategories();
     const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
@@ -101,8 +106,6 @@ export default function ScamAlertsPageClient() {
             hasFetchedRef.current = false;
         }
     }, [inView]);
-
-    if (!isClient) return null;
 
     const alerts = (data?.pages.flatMap((page) => page.data || []) || []) as ScamAlertData[];
 
@@ -171,21 +174,7 @@ export default function ScamAlertsPageClient() {
 
             {/* List of Alerts */}
             <div className="flex flex-col gap-4 pt-2">
-                {isLoading ? (
-                    Array.from({ length: 4 }).map((_, i) => (
-                        <div
-                            key={i}
-                            className="h-28 bg-card rounded-2xl border border-white/8 shadow-sm animate-pulse flex overflow-hidden"
-                        >
-                            <div className="w-36 shrink-0 bg-white/5" />
-                            <div className="flex-1 p-5 space-y-3">
-                                <div className="h-3 w-24 bg-white/5 rounded-full" />
-                                <div className="h-4 w-3/4 bg-white/5 rounded-full" />
-                                <div className="h-3 w-full bg-white/5 rounded-full" />
-                            </div>
-                        </div>
-                    ))
-                ) : alerts && alerts.length > 0 ? (
+                {alerts && alerts.length > 0 ? (
                     <>
                         {alerts.map((alert) => (
                             <ScamAlertCard key={alert.id} alert={alert} />

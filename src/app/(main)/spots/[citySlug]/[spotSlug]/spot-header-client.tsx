@@ -37,8 +37,9 @@ export default function SpotHeaderClient({
 
   // Use the authenticated spot from SSR as initial data
   // This prevents the client from overwriting with "guest" data during hydration
-  const { data: spot = initialSpot } = useSpotBySlug(citySlug, spotSlug);
+  const { data: spotData = initialSpot } = useSpotBySlug(citySlug, spotSlug);
 
+  const spot = (spotData || initialSpot) as SpotData;
   // Sync initialSpot to TanStack cache if it's not there
   // This ensures other components (like TipsTab) can benefit from the SSR data
   useState(() => {
@@ -51,7 +52,7 @@ export default function SpotHeaderClient({
 
   const deleteSpotMutation = useMutation({
     mutationFn: async () => {
-      await api.delete(`/spots/${spot.id}`);
+      await api.delete(`/spots/${(spot as SpotData).id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["spots"] });
@@ -99,7 +100,7 @@ export default function SpotHeaderClient({
       </AlertDialog>
 
       {isEditing && (
-        <SpotEditModal spot={spot} onClose={() => setIsEditing(false)} />
+        <SpotEditModal spot={spot as SpotData} onClose={() => setIsEditing(false)} />
       )}
 
       <ImageViewer
