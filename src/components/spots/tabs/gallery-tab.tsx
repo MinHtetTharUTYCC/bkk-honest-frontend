@@ -4,6 +4,7 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotGallery, useUploadSpotImage } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
+import { useQueryClient } from "@tanstack/react-query";
 import { Camera, Upload, Loader2, User, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GalleryImage, SpotData } from "@/types/spot";
@@ -25,6 +26,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const searchParams = useSearchParams();
   const spotId = spot.id;
 
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -68,7 +70,35 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
-      await uploadMutation.mutateAsync({ spotId, file });
+      const response = await uploadMutation.mutateAsync({ spotId, file });
+      const newImage = response?.data || response;
+
+      // Manually update the infinite query cache to show the new image at index 0 immediately
+      // This ensures the new upload stays at the top regardless of sort (Popular vs Newest)
+      const sortTypes = ['popular', 'newest'];
+      sortTypes.forEach((sortType) => {
+        queryClient.setQueryData(
+          ['gallery-infinite', spotId, sortType],
+          (oldData: any) => {
+            if (!oldData || !oldData.pages) return oldData;
+            
+            const newPages = [...oldData.pages];
+            if (newPages.length === 0) {
+              newPages[0] = { data: [newImage] };
+            } else {
+              const firstPage = { ...newPages[0] };
+              firstPage.data = [newImage, ...(firstPage.data || [])];
+              newPages[0] = firstPage;
+            }
+            
+            return {
+              ...oldData,
+              pages: newPages,
+            };
+          }
+        );
+      });
+
       toast.success("Photo uploaded successfully!");
     } catch (err) {
       toast.error("Failed to upload photo");

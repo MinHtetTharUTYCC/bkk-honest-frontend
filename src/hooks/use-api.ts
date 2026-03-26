@@ -418,8 +418,12 @@ export function useUploadSpotImage() {
             return data;
         },
         onSuccess: (_, { spotId }) => {
+            // Note: We avoid broad invalidation of 'gallery-infinite' here because 
+            // GalleryTab handles manual prepending to ensure the new item 
+            // stays at the top regardless of backend sort (Popular vs Newest).
+            // Invalidation would trigger an immediate re-fetch that overwrites the manual placement.
             queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['gallery-infinite', spotId] });
+            queryClient.invalidateQueries({ queryKey: ['spot', spotId] });
         } });
 }
 
