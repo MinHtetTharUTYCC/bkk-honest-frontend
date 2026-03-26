@@ -22,7 +22,7 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotData; cla
   return (
     <>
       {/* Desktop: Stats grid with height constraint */}
-      <div className={cn("hidden md:grid grid-cols-4 gap-3 md:gap-4 md:h-[420px] lg:h-[480px]", className)}>
+      <div className={cn("hidden md:grid grid-cols-2 grid-rows-2 gap-3 md:gap-4", className)}>
         <div className="bg-card p-4 md:p-5 rounded-2xl border border-border shadow-xl shadow-black/20 flex flex-col">
           <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-1 md:mb-2">
             Last Pulse

@@ -11,11 +11,12 @@ import SpotEditModal from "@/components/spots/spot-edit-modal";
 import { ImageViewer } from "@/components/ui/image-viewer";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSpotBySlug } from "@/hooks/use-api";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-interface LayoutClientWrapperProps {
+interface SpotHeaderClientProps {
   spot: SpotData;
   citySlug: string;
   spotSlug: string;
@@ -23,10 +24,26 @@ interface LayoutClientWrapperProps {
   children: React.ReactNode;
 }
 
-export default function LayoutClientWrapper({ spot, citySlug, spotSlug, basePath, children }: LayoutClientWrapperProps) {
+export default function SpotHeaderClient({ 
+  spot: initialSpot, 
+  citySlug, 
+  spotSlug, 
+  basePath, 
+  children 
+}: SpotHeaderClientProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const pathname = usePathname();
+
+  // Use the authenticated spot from SSR as initial data
+  // This prevents the client from overwriting with "guest" data during hydration
+  const { data: spot = initialSpot } = useSpotBySlug(citySlug, spotSlug);
+
+  // Sync initialSpot to TanStack cache if it's not there
+  // This ensures other components (like TipsTab) can benefit from the SSR data
+  useState(() => {
+    queryClient.setQueryData(['spot', citySlug, spotSlug], initialSpot);
+  });
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -93,13 +110,13 @@ export default function LayoutClientWrapper({ spot, citySlug, spotSlug, basePath
       />
 
       <SpotHeader
-        spot={spot}
+        spot={spot as SpotData}
         onEdit={() => setIsEditing(true)}
         onDelete={() => setIsDeleteDialogOpen(true)}
         onImageClick={() => setShowImageViewer(true)}
       />
 
-      <SpotStatsGrid spot={spot} className="md:hidden my-8" />
+      <SpotStatsGrid spot={spot as SpotData} className="md:hidden my-8" />
 
       <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5 overflow-x-auto hide-scrollbar sticky top-20 z-40 backdrop-blur-md">
         {tabs.map((tab) => {

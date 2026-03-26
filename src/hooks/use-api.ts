@@ -372,7 +372,9 @@ export function useInfiniteSpotTips(
         getNextPageParam: (lastPage: PaginationLike) => {
             return getNextSkipFromPage(lastPage, true);
         },
-        enabled: !!spotId });
+        enabled: !!spotId,
+        staleTime: 5 * 60 * 1000, // 5 minutes (Matches Discovery spots)
+    });
 }
 
 export function useSpotGallery(spotId: string, limit: number = 12, sort: 'newest' | 'popular' = 'newest') {
@@ -745,9 +747,12 @@ export function useCreateCommunityTip() {
             return data;
         },
         onSuccess: (_, { spotId }) => {
-            queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['spot'] });
+            // Note: We avoid broad invalidation of 'tips-infinite' here because 
+            // CreateTipModal handles manual prepending to ensure the new item 
+            // stays at the top regardless of backend sort (Popular vs Newest).
+            // Invalidation would trigger an immediate re-fetch that overwrites the manual placement.
+            queryClient.invalidateQueries({ queryKey: ['spot', spotId] });
+            // Update individual query caches for specific counts if needed
         } });
 }
 

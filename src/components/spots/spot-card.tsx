@@ -4,9 +4,7 @@ import { MapPin, Zap, ImageIcon } from 'lucide-react';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { getSpotUrl } from '@/lib/slug';
 import { LikeButton } from '@/components/ui/like-button';
-import { useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/api';
+import Link from 'next/link';
 import { useMemo } from 'react';
 
 export interface SpotCardData {
@@ -32,9 +30,7 @@ export interface SpotCardData {
 }
 
 export default function SpotCard({ spot }: { spot: SpotCardData }) {
-    const router = useRouter();
-    const queryClient = useQueryClient();
-    const { id, slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageUrl, images } = spot;
+    const { slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageUrl, images } = spot;
 
     // Helper for "Pulse" freshness - memoized to avoid recalculating on every render
     const pulseLabel = useMemo(() => {
@@ -55,50 +51,6 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
 
     const totalPulse = (_count?.priceReports || 0) + (_count?.vibeChecks || 0) + (_count?.communityTips || 0);
 
-    const prefetchSpot = () => {
-        const citySlug = city?.slug || 'bangkok';
-        const spotSlug = slug || '';
-        if (!citySlug || !spotSlug) return;
-
-        // Prefetch  Detail
-        queryClient.prefetchQuery({
-            queryKey: ['spot', citySlug, spotSlug],
-            queryFn: async () => {
-                const { data } = await api.get(`/spots/by-slug/${citySlug}/${spotSlug}`);
-                return data;
-            }
-        });
-
-        // Prefetch Gallery (First 6)
-        queryClient.prefetchQuery({
-            queryKey: ['gallery', id, 6, 'newest'],
-            queryFn: async () => {
-                const { data } = await api.get(`/gallery/spot/${id}?take=6&sort=newest`);
-                return data;
-            }
-        });
-
-        // Prefetch Tips (Initial popular try tips)
-        queryClient.prefetchInfiniteQuery({
-            queryKey: ['tips-infinite', id, 'TRY', 'popular'],
-            initialPageParam: 0,
-            queryFn: async ({ pageParam = 0 }) => {
-                const { data } = await api.get(`/community-tips/spot/${id}`, {
-                    params: { skip: pageParam, take: 10, type: 'TRY', sort: 'popular' },
-                });
-                return data;
-            },
-            getNextPageParam: (lastPage: { pagination?: { skip?: number; take?: number; total?: number } }) => {
-                const { skip, take, total } = lastPage.pagination || {};
-                if (skip === undefined || take === undefined || total === undefined) {
-                    return undefined;
-                }
-                const nextSkip = skip + take;
-                return nextSkip < total ? nextSkip : undefined;
-            },
-        });
-    };
-
     const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
     // Format category name
@@ -115,9 +67,8 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
     };
 
     return (
-        <div 
-            onClick={() => router.push(getSpotUrl(spot.city?.slug || 'bangkok', spot.slug || ''))}
-            onMouseEnter={prefetchSpot}
+        <Link 
+            href={getSpotUrl(spot.city?.slug || 'bangkok', spot.slug || '')}
             className="shrink-0 w-full bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500 cursor-pointer overflow-hidden"
         >
             {/* Image Section */}
@@ -197,6 +148,6 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </Link>
     );
 }

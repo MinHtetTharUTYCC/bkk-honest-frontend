@@ -70,6 +70,8 @@ export interface SpotData {
   longitude: number;
   hasVoted?: boolean;
   voteId?: string | null;
+  isInMission?: boolean;
+  missionId?: string | null;
   _count?: { votes?: number };
   user?: {
     id: string;

@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical, X } from "lucide-react";
-import Link from "next/link";
+import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { SpotData, MissionRow } from "@/types/spot";
+import { SpotData } from "@/types/spot";
 import { LikeButton } from "@/components/ui/like-button";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ReportButton from "@/components/report/report-button";
@@ -15,6 +14,7 @@ import { useAddMission, useMissions } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import SpotStatsGrid from "@/components/spots/spot-stats-grid";
 import { TruncatedTextWithDialog } from "@/components/ui/truncated-text-with-dialog";
+import { MissionRow } from "@/types/spot";
 
 interface SpotHeaderProps {
   spot: SpotData;
@@ -38,7 +38,9 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
     missionsData?.pages.flatMap(
       (page) => (page as { data?: MissionRow[] })?.data || [],
     ) || [];
-  const isInMissions = missionsList.some((m) => m.spot?.id === spot.id);
+
+  // Use mission status from SSR data, but fallback to checking the missions list from cache
+  const isInMissions = spot.isInMission ?? missionsList.some((m) => m.spot?.id === spot.id);
 
   const handleAcceptMission = () => {
     if (!authUser) {
@@ -68,7 +70,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
         await navigator.clipboard.writeText(url);
         toast.success("Link copied to clipboard!");
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to share");
     }
   };
@@ -181,10 +183,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
           </div>
 
           {/* Stats Grid */}
-          <SpotStatsGrid spot={spot} className="my-0 gap-4" />
-
-          {/* Middle: Flexible Spacer - pushes buttons to bottom */}
-          <div className="flex-1" />
+          <SpotStatsGrid spot={spot} className="flex-1 my-6 gap-4" />
 
           {/* Bottom: Primary Actions, Divider, Secondary Actions */}
           <div className="flex-shrink-0 space-y-2">

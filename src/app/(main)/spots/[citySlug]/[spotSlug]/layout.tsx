@@ -1,8 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import SpotHeader from "@/components/spots/spot-header";
-import { SpotData } from "@/types/spot";
+import { getSpot } from "@/services/spot";
 
 interface SpotDetailLayoutProps {
   children: React.ReactNode;
@@ -13,23 +11,6 @@ interface SpotDetailLayoutProps {
 }
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
-
-// Centralized fetcher for the spot layout
-async function getSpot(citySlug: string, spotSlug: string): Promise<SpotData | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-  const endpoint = `${baseUrl}/spots/by-slug/${encodeURIComponent(citySlug)}/${encodeURIComponent(spotSlug)}`;
-  
-  try {
-    const res = await fetch(endpoint, {
-      cache: "no-store", // Fix: Do not cache the spot details layout fetch so updates are instant
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json?.data || json;
-  } catch {
-    return null;
-  }
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ citySlug: string; spotSlug: string }> }): Promise<Metadata> {
   const { citySlug, spotSlug } = await params;
@@ -71,8 +52,7 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   };
 }
 
-// Layout wrapper component that provides context to the client headers
-import LayoutClientWrapper from "./layout-client-wrapper";
+import SpotHeaderClient from "./spot-header-client";
 
 export default async function SpotDetailLayout({ children, params }: SpotDetailLayoutProps) {
   const { citySlug, spotSlug } = await params;
@@ -86,11 +66,14 @@ export default async function SpotDetailLayout({ children, params }: SpotDetailL
 
   return (
     <div className="space-y-12 pb-24">
-      {/* We use a thin client wrapper to hold the Edit/Delete/Image modal states if needed, 
-          or we can pass them down to a purely client SpotHeader. */}
-      <LayoutClientWrapper spot={spot} citySlug={citySlug} spotSlug={spotSlug} basePath={basePath}>
+      <SpotHeaderClient 
+        spot={spot} 
+        citySlug={citySlug} 
+        spotSlug={spotSlug} 
+        basePath={basePath}
+      >
         {children}
-      </LayoutClientWrapper>
+      </SpotHeaderClient>
     </div>
   );
 }
