@@ -2,10 +2,10 @@
 
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
-import { useInfiniteSpotGallery, useUploadSpotImage, useDeleteGalleryImage } from "@/hooks/use-api";
+import { useInfiniteSpotGallery, useUploadSpotImage, useDeleteGalleryImage, useFlagGalleryImage } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import { useQueryClient } from "@tanstack/react-query";
-import { Camera, Upload, Loader2, User, Calendar, Trash2 } from "lucide-react";
+import { Camera, Upload, Loader2, User, Calendar, Trash2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GalleryImage, SpotData } from "@/types/spot";
 import { LikeButton } from "@/components/ui/like-button";
@@ -57,12 +57,15 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
 
   const uploadMutation = useUploadSpotImage();
   const deleteMutation = useDeleteGalleryImage();
+  const flagMutation = useFlagGalleryImage();
 
   const images = useMemo(() => {
     const rawImages = galleryData?.pages.flatMap((page) => (page as { data?: GalleryImage[] })?.data || []) || [];
     // Deduplicate items just in case
     return Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
   }, [galleryData]);
+
+  const totalCount = (galleryData?.pages?.[0] as any)?.pagination?.total || images.length;
 
   const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
   const hasFetchedRef = useRef(false);
@@ -134,6 +137,20 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const handleFlagImage = async (id: string) => {
+    if (!authUser) {
+      toast.error("Join us first to report!", { description: "Please login to help keep the community safe." });
+      return;
+    }
+    try {
+      await flagMutation.mutateAsync(id);
+      toast.success("Photo reported successfully", { description: "Our moderators will review it soon." });
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Failed to report photo";
+      toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
+    }
+  };
+
   const handleDeleteImage = async () => {
     if (!deleteImageId) return;
     try {
@@ -183,7 +200,14 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Camera size={20} className="text-amber-400" />
-            <h3 className="text-2xl font-display font-bold text-white">Vibe Gallery</h3>
+            <h3 className="text-2xl font-display font-bold text-white flex items-center gap-3">
+              Vibe Gallery
+              {totalCount > 0 && (
+                <span className="text-sm font-bold text-white/40 bg-white/5 px-2.5 py-0.5 rounded-lg border border-white/10 tracking-widest">
+                  {totalCount}
+                </span>
+              )}
+            </h3>
           </div>
           
           <button
@@ -252,19 +276,32 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                 key={img.id}
                 className="bg-card rounded-2xl overflow-hidden border border-white/8 shadow-xl shadow-black/30 group relative flex flex-col"
               >
-                {/* Delete Button (Owner Only) - Top Left */}
-                {isOwner && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setDeleteImageId(img.id);
-                    }}
-                    className="absolute top-3 left-3 z-30 p-2 rounded-lg bg-black/40 hover:bg-red-500/80 text-white/70 hover:text-white backdrop-blur-md border border-white/10 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
-                    title="Delete photo"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                )}
+                {/* Action Buttons Overlay (Delete for owner, Report for others) */}
+                <div className="absolute top-3 left-3 z-30 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all">
+                  {isOwner ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteImageId(img.id);
+                      }}
+                      className="p-2 rounded-lg bg-black/40 hover:bg-red-500/80 text-white/70 hover:text-white backdrop-blur-md border border-white/10 transition-colors"
+                      title="Delete photo"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  ) : (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleFlagImage(img.id);
+                      }}
+                      className="p-2 rounded-lg bg-black/40 hover:bg-orange-500/80 text-white/70 hover:text-white backdrop-blur-md border border-white/10 transition-colors"
+                      title="Report inappropriate content"
+                    >
+                      <AlertCircle size={14} />
+                    </button>
+                  )}
+                </div>
 
                 <div 
                   className="aspect-[4/5] relative overflow-hidden cursor-zoom-in"

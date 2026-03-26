@@ -440,6 +440,15 @@ export function useDeleteGalleryImage() {
         } });
 }
 
+export function useFlagGalleryImage() {
+    return useMutation({
+        mutationFn: async (id: string) => {
+            const { data } = await api.post(`/gallery/${id}/flag`);
+            return data;
+        }
+    });
+}
+
 // --- Metadata ---
 
 export function useCategories() {
