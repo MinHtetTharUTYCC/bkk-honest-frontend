@@ -103,7 +103,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                 type="file"
                                 ref={fileInputRef}
                                 className="hidden"
-                                accept="image/*"
+                                accept="image/jpeg,image/png,image/webp,image/gif"
                                 onChange={handleFileChange}
                             />
 

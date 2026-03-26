@@ -411,7 +411,7 @@ function ProfilePageContent() {
               type="file"
               ref={fileInputRef}
               className="hidden"
-              accept="image/*"
+              accept="image/jpeg,image/png,image/webp,image/gif"
               onChange={handleFileChange}
             />
             <div className="absolute -bottom-2 md:-bottom-4 left-1/2 -translate-x-1/2 bg-background border border-white/10 text-white/60 px-4 py-1.5 rounded-full text-[10px] md:text-xs font-bold tracking-widest uppercase shadow-xl whitespace-nowrap">

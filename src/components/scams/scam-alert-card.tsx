@@ -159,7 +159,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             type="file"
                             ref={fileInputRef}
                             className="hidden"
-                            accept="image/*"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
                             onChange={handleFileChange}
                         />
 

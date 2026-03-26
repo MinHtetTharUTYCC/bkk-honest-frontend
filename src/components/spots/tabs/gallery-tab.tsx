@@ -147,7 +147,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
             <span className="hidden sm:inline">{uploadMutation.isPending ? "Uploading..." : "Upload Photo"}</span>
             <span className="sm:hidden">{uploadMutation.isPending ? "..." : "Upload"}</span>
           </button>
-          <input type="file" className="hidden" ref={fileInputRef} accept="image/*" onChange={handleFileUpload} />
+          <input type="file" className="hidden" ref={fileInputRef} accept="image/jpeg,image/png,image/webp,image/gif" onChange={handleFileUpload} />
         </div>
 
         <div className="flex justify-end">

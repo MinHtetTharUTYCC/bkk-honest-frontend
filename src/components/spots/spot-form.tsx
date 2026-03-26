@@ -311,7 +311,7 @@ export default function SpotForm({
             <label className="block cursor-pointer group">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/gif"
                 onChange={handleImageChange}
                 disabled={isLoading}
                 className="hidden"
