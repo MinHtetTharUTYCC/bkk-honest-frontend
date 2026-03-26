@@ -252,7 +252,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                       e.stopPropagation();
                       setDeleteImageId(img.id);
                     }}
-                    className="absolute top-3 left-3 z-30 p-2 rounded-lg bg-black/40 hover:bg-red-500/80 text-white/70 hover:text-white backdrop-blur-md border border-white/10 transition-all opacity-0 group-hover:opacity-100"
+                    className="absolute top-3 left-3 z-30 p-2 rounded-lg bg-black/40 hover:bg-red-500/80 text-white/70 hover:text-white backdrop-blur-md border border-white/10 transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100"
                     title="Delete photo"
                   >
                     <Trash2 size={14} />
