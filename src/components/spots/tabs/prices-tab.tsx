@@ -126,7 +126,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-[10px] font-medium text-white/50 uppercase tracking-widest" suppressHydrationWarning>
-                    // eslint-disable-next-line react-hooks/purity
+                    {/* eslint-disable-next-line react-hooks/purity */}
                     {new Date(r.timestamp || r.reportedAt || Date.now()).toLocaleDateString()}
                   </td>
                 </tr>
