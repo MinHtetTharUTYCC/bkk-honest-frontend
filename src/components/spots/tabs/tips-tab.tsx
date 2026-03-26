@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
-import { Zap, Loader2 } from "lucide-react";
+import { Zap, Loader2, CheckCircle2, AlertTriangle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SpotTip, SpotData } from "@/types/spot";
 import { TipCard } from "@/components/tips/tip-card";
@@ -14,7 +14,14 @@ import TipCommentsModal from "@/components/tips/tip-comments-modal";
 import { useInView } from "react-intersection-observer";
 import { TipFormValues } from "@/lib/validations/tip";
 import { toast } from "sonner";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface TipsTabProps {
   spot: SpotData;
@@ -25,14 +32,16 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const { user: authUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const spotId = spot.id;
 
   const [showTipModal, setShowTipModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
   const [editingTip, setEditingTip] = useState<SpotTip | null>(null);
 
-  const [tipType, setTipType] = useState<"TRY" | "AVOID">("TRY");
-  const [tipSort, setTipSort] = useState<"popular" | "newest">("popular");
+  // Sync state with URL params
+  const tipType = (searchParams.get("type") as "TRY" | "AVOID") || "TRY";
+  const tipSort = (searchParams.get("sort") as "popular" | "newest") || "popular";
 
   const {
     data: tipsData,
@@ -41,6 +50,18 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
     isFetchingNextPage: isFetchingNextTips,
     isLoading: tipsLoading,
   } = useInfiniteSpotTips(spotId, tipType, tipSort);
+
+  const handleTypeChange = (newType: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("type", newType);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleSortChange = (newSort: "popular" | "newest") => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", newSort);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const tips: SpotTip[] = useMemo(() => {
     // We can merge initialTips with react-query data, but for simplicity we rely on React Query hydration.
@@ -116,70 +137,65 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
         />
       )}
 
-      <header className="flex flex-col gap-6 px-2">
-        <div className="flex items-center justify-between gap-4">
-          <h3 className="text-2xl font-display font-bold text-white">Tips</h3>
-          <button
-            onClick={() => {
-              if (!authUser) {
-                router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
-                return;
-              }
-              setShowTipModal(true);
-            }}
-            className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap"
-          >
-            <Zap size={14} fill="currentColor" className="text-black group-hover:text-white transition-colors" />
-            <span className="hidden sm:inline">Share a New Tip</span>
-            <span className="sm:hidden">New Tip</span>
-          </button>
+      {/* Optimized Header Row */}
+      <header className="flex items-center justify-between gap-3 px-2">
+        <div className="flex items-center gap-4 flex-1">
+          <h3 className="text-xl md:text-2xl font-display font-bold text-white shrink-0">Tips</h3>
+          
+          <Select value={tipType} onValueChange={handleTypeChange}>
+            <SelectTrigger className="w-full max-w-[180px] bg-white/5 border-white/10 rounded-xl h-11 text-xs font-bold uppercase tracking-wider">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-zinc-900 border-white/10">
+              <SelectItem value="TRY" className="text-emerald-400 font-bold focus:bg-emerald-400/10 focus:text-emerald-400 cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={14} />
+                  <span>To Try ({spot.tipStats?.tryCount ?? 0})</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="AVOID" className="text-red-400 font-bold focus:bg-red-400/10 focus:text-red-400 cursor-pointer">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle size={14} />
+                  <span>To Avoid ({spot.tipStats?.avoidCount ?? 0})</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setTipType("TRY")}
-              className={cn(
-                "flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border",
-                tipType === "TRY"
-                  ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
-                  : "bg-white/5 text-white/50 border-border hover:bg-white/10"
-              )}
-            >
-              To Try
-            </button>
-            <button
-              onClick={() => setTipType("AVOID")}
-              className={cn(
-                "flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all border",
-                tipType === "AVOID"
-                  ? "bg-red-500/20 text-red-400 border-red-500/30"
-                  : "bg-white/5 text-white/50 border-border hover:bg-white/10"
-              )}
-            >
-              To Avoid
-            </button>
-          </div>
-        </div>
+        <button
+          onClick={() => {
+            if (!authUser) {
+              router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);
+              return;
+            }
+            setShowTipModal(true);
+          }}
+          className="bg-amber-500 text-black hover:text-white px-5 md:px-6 h-11 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 shrink-0"
+        >
+          <Zap size={14} fill="currentColor" />
+          <span className="hidden sm:inline">Share New Tip</span>
+          <span className="sm:hidden">New Tip</span>
+        </button>
       </header>
 
       <div className="space-y-4">
         <div className="flex justify-end px-2">
           <div className="flex bg-white/5 p-1 rounded-xl w-fit border border-border">
             <button
-              onClick={() => setTipSort("popular")}
+              onClick={() => handleSortChange("popular")}
               className={cn(
-                "px-4 py-1.5 rounded-lg text-xs font-semibold transition-all",
-                tipSort === "popular" ? "bg-white/10 text-amber-400" : "text-white/50 hover:text-white/70"
+                "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer",
+                tipSort === "popular" ? "bg-white/10 text-amber-400 shadow-sm" : "text-white/40 hover:text-white/70"
               )}
             >
               Popular
             </button>
             <button
-              onClick={() => setTipSort("newest")}
+              onClick={() => handleSortChange("newest")}
               className={cn(
-                "px-4 py-1.5 rounded-lg text-xs font-semibold transition-all",
-                tipSort === "newest" ? "bg-white/10 text-amber-400" : "text-white/50 hover:text-white/70"
+                "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-all cursor-pointer",
+                tipSort === "newest" ? "bg-white/10 text-amber-400 shadow-sm" : "text-white/40 hover:text-white/70"
               )}
             >
               Newest

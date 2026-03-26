@@ -18,8 +18,15 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   };
 }
 
-export default async function TipsPage({ params }: { params: Promise<{ citySlug: string; spotSlug: string }> }) {
+export default async function TipsPage({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ citySlug: string; spotSlug: string }>;
+  searchParams: Promise<{ type?: string }>;
+}) {
   const { citySlug, spotSlug } = await params;
+  const { type = "TRY" } = await searchParams;
   const spot = await getSpot(citySlug, spotSlug);
   
   if (!spot) {
@@ -31,13 +38,15 @@ export default async function TipsPage({ params }: { params: Promise<{ citySlug:
   // Prefetch the spot data so the shared header finds it in cache
   queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
 
-  // Prefetch the first page of tips on the server
+  const normalizedType = type === "AVOID" ? "AVOID" : "TRY";
+
+  // Prefetch the first page of tips on the server based on URL param
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ["tips-infinite", spot.id, "TRY", "popular"],
+    queryKey: ["tips-infinite", spot.id, normalizedType, "popular"],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
       const res = await apiFetch(
-        `/community-tips/spot/${spot.id}?skip=${pageParam}&take=10&type=TRY&sort=popular`,
+        `/community-tips/spot/${spot.id}?skip=${pageParam}&take=10&type=${normalizedType}&sort=popular`,
         { next: { revalidate: 60 } }
       );
       if (!res.ok) throw new Error("Tips fetch failed");
