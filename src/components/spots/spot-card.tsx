@@ -93,8 +93,8 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                     <span className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest shadow-sm border border-white/10 text-wrap">
                         {categoryName}
                     </span>
-                    <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest shadow-lg shadow-amber-400/20 border border-amber-300/20 text-wrap">
-                        <Zap size={10} fill="currentColor" />
+                    <div className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl flex items-center gap-1.5 font-bold text-[12px] tracking-widest shadow-sm border border-white/10 text-wrap">
+                        <Zap size={10} fill="#fbbf24" className="text-amber-400" />
                         {vibeStats?.avgCrowdLevel
                             ? `Busy: ${vibeStats.avgCrowdLevel.toFixed(1)}/5`
                             : 'New'}
@@ -129,20 +129,23 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
-                        <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
+                <div className="flex items-center gap-6 pt-1">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-0.5">
                             Avg Price
                         </span>
-                        <span className="text-sm font-bold text-foreground tracking-tight">
+                        <span className="text-sm font-mono font-bold text-foreground tracking-tight">
                             {priceStats?.avg ? `${priceStats.avg} THB` : '--'}
                         </span>
                     </div>
-                    <div className="bg-white/5 p-3.5 rounded-xl border border-white/6 group-hover:bg-white/8 group-hover:border-white/10 transition-all">
-                        <span className="text-[12px] font-bold text-white/40 uppercase tracking-widest block mb-1">
+                    
+                    <div className="w-px h-8 bg-white/10" />
+
+                    <div className="flex flex-col">
+                        <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-0.5">
                             Pulse
                         </span>
-                        <span className="text-sm font-bold text-foreground tracking-tight">
+                        <span className="text-sm font-mono font-bold text-foreground tracking-tight">
                             {pulseLabel ? pulseLabel : `${totalPulse} Updates`}
                         </span>
                     </div>
