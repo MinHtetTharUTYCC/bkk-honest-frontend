@@ -81,6 +81,7 @@ export interface SpotData {
   category?: { id?: string; name?: string };
   city?: { id?: string; name?: string; slug?: string };
   vibeStats?: { avgCrowdLevel?: number; count?: number };
+  tipStats?: { tryCount: number; avoidCount: number };
   priceStats?: { avg?: number; count?: number; min?: number; max?: number };
   activityStats?: { totalContributors: number; lastActivity: string | null };
 }
