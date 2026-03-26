@@ -52,6 +52,12 @@ export default async function TipsPage({
       if (!res.ok) throw new Error("Tips fetch failed");
       return res.json();
     },
+    getNextPageParam: (lastPage: any) => {
+      const { skip, take, total } = lastPage.pagination || {};
+      if (skip === undefined || take === undefined || total === undefined) return undefined;
+      const nextSkip = skip + take;
+      return nextSkip < total ? nextSkip : undefined;
+    },
   });
 
   return (

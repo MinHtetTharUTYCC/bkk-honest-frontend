@@ -41,6 +41,12 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
       if (!res.ok) throw new Error("Vibes fetch failed");
       return res.json();
     },
+    getNextPageParam: (lastPage: any) => {
+      const { skip, take, total } = lastPage.pagination || {};
+      if (skip === undefined || take === undefined || total === undefined) return undefined;
+      const nextSkip = skip + take;
+      return nextSkip < total ? nextSkip : undefined;
+    },
   });
 
   return (

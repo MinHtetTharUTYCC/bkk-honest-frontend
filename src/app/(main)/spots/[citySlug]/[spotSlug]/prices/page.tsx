@@ -41,6 +41,12 @@ export default async function PricesPage({ params }: { params: Promise<{ citySlu
       if (!res.ok) throw new Error("Prices fetch failed");
       return res.json();
     },
+    getNextPageParam: (lastPage: any) => {
+      const { skip, take, total } = lastPage.pagination || {};
+      if (skip === undefined || take === undefined || total === undefined) return undefined;
+      const nextSkip = skip + take;
+      return nextSkip < total ? nextSkip : undefined;
+    },
   });
 
   return (
