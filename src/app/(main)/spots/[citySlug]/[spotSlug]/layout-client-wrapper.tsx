@@ -99,7 +99,7 @@ export default function LayoutClientWrapper({ spot, citySlug, spotSlug, basePath
         onImageClick={() => setShowImageViewer(true)}
       />
 
-      <SpotStatsGrid spot={spot} />
+      <SpotStatsGrid spot={spot} className="md:hidden my-8" />
 
       <div className="flex bg-white/5 p-1 rounded-2xl border border-white/5 overflow-x-auto hide-scrollbar sticky top-20 z-40 backdrop-blur-md">
         {tabs.map((tab) => {

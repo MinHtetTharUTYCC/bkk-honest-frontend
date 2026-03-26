@@ -4,7 +4,7 @@ import { X } from 'lucide-react';
 import { useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
 import SpotForm, { SpotFormData } from '@/components/spots/spot-form';
 import { toast } from 'sonner';
-
+import { useRouter } from 'next/navigation';
 
 interface SpotEditModalProps {
     spot: SpotEditData;
@@ -30,6 +30,7 @@ interface ApiError {
 }
 
 export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
+    const router = useRouter();
     const updateSpotMutation = useUpdateSpot();
     const { data: categoriesResponse } = useCategories();
     const { data: citiesResponse } = useCities();
@@ -50,6 +51,7 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                     longitude: formData.longitude,
                     image: formData.imageFile || undefined } });
             toast.success('Spot updated successfully');
+            router.refresh();
             onClose();
         } catch (err: unknown) {
             const apiError = err as ApiError;

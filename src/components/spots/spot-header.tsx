@@ -1,6 +1,7 @@
 "use client";
 
-import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -12,6 +13,8 @@ import { useAuth } from "@/components/providers/auth-provider";
 import { toast } from "sonner";
 import { useAddMission, useMissions } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
+import SpotStatsGrid from "@/components/spots/spot-stats-grid";
+import { TruncatedTextWithDialog } from "@/components/ui/truncated-text-with-dialog";
 
 interface SpotHeaderProps {
   spot: SpotData;
@@ -71,7 +74,8 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
   };
 
   return (
-    <header className="space-y-6">
+    <>
+      <header className="space-y-6">
       <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-xs font-semibold tracking-wide text-white/50 hover:text-amber-400 transition-colors">
         <ArrowLeft size={14} strokeWidth={3} /> Back
       </button>
@@ -119,10 +123,17 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
 
           <div className="absolute bottom-6 left-6 right-6 flex flex-col justify-between gap-6 md:hidden">
             <div className="space-y-3">
-              <h1 className="text-4xl font-display font-bold text-white tracking-tight drop-shadow-sm line-clamp-2 break-words">{spot.name}</h1>
-              <div className="space-y-1">
-                <p className="text-white/60 font-bold uppercase tracking-widest text-xs flex items-center gap-2"><MapPin size={14} strokeWidth={3} className="text-amber-400 shrink-0" /><span className="truncate">{spot.address}</span></p>
-              </div>
+              <TruncatedTextWithDialog
+                text={spot.name}
+                textClassName="text-2xl font-display font-bold text-white tracking-tight drop-shadow-sm"
+              />
+              <TruncatedTextWithDialog
+                text={spot.address}
+                title="Full Address"
+                icon={<MapPin size={14} strokeWidth={3} className="text-amber-400 mt-0.5" />}
+                textClassName="text-white/60 font-bold uppercase tracking-widest text-xs leading-tight"
+                className="mt-1"
+              />
             </div>
             <div className="flex w-full items-center justify-between gap-3" onClick={(e) => e.stopPropagation()}>
               <button onClick={handleAcceptMission} disabled={addMission.isPending || isInMissions} className={cn("flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide", isInMissions ? "bg-emerald-500/80 border-emerald-400 text-white" : "hover:bg-amber-400 border-white/20")}>
@@ -137,108 +148,101 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
         </div>
 
         {/* Desktop Content - Right Side */}
-        <div className="hidden md:flex flex-col flex-1 gap-4">
-          {/* Title & Address */}
-          <div className="space-y-3">
-            <h1 className="text-5xl lg:text-6xl font-display font-bold text-white tracking-tight">
-              {spot.name}
-            </h1>
-            <p className="text-white/60 font-bold uppercase tracking-widest text-sm flex items-center gap-2">
-              <MapPin size={16} strokeWidth={3} className="text-amber-400 shrink-0" />
-              <span className="truncate">{spot.address}</span>
-            </p>
-          </div>
-
-          {/* Primary Actions */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleAcceptMission}
-              disabled={addMission.isPending || isInMissions}
-              className={cn(
-                "flex-1 px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-sm font-semibold tracking-wide",
-                isInMissions
-                  ? "bg-emerald-500/80 border-emerald-400 text-white"
-                  : "bg-white/10 backdrop-blur-md text-white hover:bg-amber-400 border-white/20"
-              )}
-            >
-              {addMission.isPending ? (
-                <Loader2 size={18} className="animate-spin shrink-0" />
-              ) : isInMissions ? (
+        <div className="hidden md:flex flex-col flex-1 md:h-[420px] lg:h-[480px]">
+          {/* Top: Title, Address & Menu */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1 flex-1 min-w-0">
+              <TruncatedTextWithDialog
+                text={spot.name}
+                textClassName="text-3xl lg:text-4xl font-display font-bold text-white tracking-tight"
+              />
+              <TruncatedTextWithDialog
+                text={spot.address}
+                title="Full Address"
+                icon={<MapPin size={16} strokeWidth={3} className="text-amber-400 mt-0.5" />}
+                textClassName="text-white/60 font-bold uppercase tracking-widest text-xs leading-tight"
+              />
+            </div>
+            
+            <DropdownMenu trigger={<button className="bg-white/5 hover:bg-white/10 text-white/70 hover:text-white p-3 rounded-xl border border-white/10 shadow-xl transition-all shrink-0"><MoreVertical size={20} /></button>}>
+              <DropdownMenuItem onClick={handleShare} className="gap-3 py-3"><Share2 size={16} className="text-amber-400" /><span className="text-sm font-medium">Share Spot</span></DropdownMenuItem>
+              {isOwner && (
                 <>
-                  <CheckCircle2 size={18} className="shrink-0" />
-                  <span>Mission Accepted</span>
-                </>
-              ) : (
-                <>
-                  <Target size={18} className="shrink-0" />
-                  <span>Accept Mission</span>
+                  <DropdownMenuItem onClick={onEdit} className="gap-3 py-3"><Edit2 size={16} /><span>Edit Spot</span></DropdownMenuItem>
+                  <DropdownMenuItem onClick={onDelete} className="gap-3 py-3" danger><Trash2 size={16} /><span>Delete Spot</span></DropdownMenuItem>
                 </>
               )}
-            </button>
-            <button
-              onClick={() =>
-                router.push(
-                  `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`
-                )
-              }
-              className="flex-1 bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-sm font-semibold tracking-wide"
-              title="Navigate to this spot"
-            >
-              <Navigation size={18} />
-              Navigate
-            </button>
-            <LikeButton
-              count={spot._count?.votes || 0}
-              isVoted={spot.hasVoted}
-              onVote={handleSpotVoteClick}
-              variant="default"
-              size="lg"
-              className="text-sm font-semibold tracking-wide px-6 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30"
-              title={spot.hasVoted ? "Remove like" : "Like this spot"}
-            />
+              <DropdownMenuItem asChild>
+                <ReportButton targetId={spot.id} reportType="SPOT" className="w-full flex items-center justify-start gap-3 py-3 px-4 text-sm font-medium hover:bg-white/5 transition-colors border-none text-white/70 hover:text-white">
+                  <Flag size={16} /><span>Report Spot</span>
+                </ReportButton>
+              </DropdownMenuItem>
+            </DropdownMenu>
           </div>
 
-          {/* Divider */}
-          <div className="border-t border-white/10 my-1" />
+          {/* Stats Grid */}
+          <SpotStatsGrid spot={spot} className="my-0 gap-4" />
 
-          {/* Secondary Actions */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleShare}
-              className="flex-1 bg-white/5 backdrop-blur-md text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
-            >
-              <Share2 size={14} />
-              Share
-            </button>
-            {isOwner && (
-              <>
-                <button
-                  onClick={onEdit}
-                  className="bg-white/5 backdrop-blur-md text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
-                >
-                  <Edit2 size={14} />
-                  Edit
-                </button>
-                <button
-                  onClick={onDelete}
-                  className="bg-white/5 backdrop-blur-md text-red-400/60 hover:text-red-400 px-3 py-2.5 rounded-xl hover:bg-red-500/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
-                >
-                  <Trash2 size={14} />
-                  Delete
-                </button>
-              </>
-            )}
-            <ReportButton
-              targetId={spot.id}
-              reportType="SPOT"
-              className="bg-white/5 backdrop-blur-md text-white/60 hover:text-white px-3 py-2.5 rounded-xl hover:bg-white/10 transition-all border border-white/5 flex items-center justify-center gap-2 text-xs font-medium"
-            >
-              <Flag size={14} />
-              Report
-            </ReportButton>
+          {/* Middle: Flexible Spacer - pushes buttons to bottom */}
+          <div className="flex-1" />
+
+          {/* Bottom: Primary Actions, Divider, Secondary Actions */}
+          <div className="flex-shrink-0 space-y-2">
+            {/* Primary Actions */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleAcceptMission}
+                disabled={addMission.isPending || isInMissions}
+                className={cn(
+                  "flex-1 px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-sm font-semibold tracking-wide",
+                  isInMissions
+                    ? "bg-emerald-500/80 border-emerald-400 text-white"
+                    : "bg-white/10 backdrop-blur-md text-white hover:bg-amber-400 border-white/20"
+                )}
+              >
+                {addMission.isPending ? (
+                  <Loader2 size={18} className="animate-spin shrink-0" />
+                ) : isInMissions ? (
+                  <>
+                    <CheckCircle2 size={18} className="shrink-0" />
+                    <span>Mission Accepted</span>
+                  </>
+                ) : (
+                  <>
+                    <Target size={18} className="shrink-0" />
+                    <span>Accept Mission</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() =>
+                  router.push(
+                    `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`
+                  )
+                }
+                className="flex-1 bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-sm font-semibold tracking-wide cursor-pointer"
+                title="Navigate to this spot"
+              >
+                <Navigation size={18} />
+                Navigate
+              </button>
+              <LikeButton
+                count={spot._count?.votes || 0}
+                isVoted={spot.hasVoted}
+                onVote={handleSpotVoteClick}
+                variant="default"
+                size="lg"
+                className="text-sm font-semibold tracking-wide px-6 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30 cursor-pointer"
+                title={spot.hasVoted ? "Remove like" : "Like this spot"}
+              />
+            </div>
+
+            {/* Divider */}
+            <div className="h-px bg-gradient-to-r from-white/0 via-white/20 to-white/0" />
           </div>
         </div>
       </div>
     </header>
+    </>
   );
 }

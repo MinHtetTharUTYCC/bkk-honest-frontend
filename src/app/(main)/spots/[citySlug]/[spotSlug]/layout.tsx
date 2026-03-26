@@ -21,7 +21,7 @@ async function getSpot(citySlug: string, spotSlug: string): Promise<SpotData | n
   
   try {
     const res = await fetch(endpoint, {
-      next: { revalidate: 3600 },
+      cache: "no-store", // Fix: Do not cache the spot details layout fetch so updates are instant
     });
     if (!res.ok) return null;
     const json = await res.json();
