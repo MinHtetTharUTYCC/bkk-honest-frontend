@@ -766,7 +766,7 @@ export function useUpdateCommunityTip() {
             title?: string;
             description?: string;
         }) => {
-            const { id, spotId, ...updateData } = payload;
+            const { id, spotId, type, ...updateData } = payload;
             const { data } = await api.patch(`/community-tips/${id}`, updateData);
             return data;
         },
