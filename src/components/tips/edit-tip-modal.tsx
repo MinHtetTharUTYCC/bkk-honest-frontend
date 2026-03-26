@@ -72,6 +72,7 @@ export default function EditTipModal({
                 onSubmit={onSave}
                 isLoading={isLoading}
                 submitLabel="Save Changes"
+                isEdit={true}
             />
         </div>
       </div>

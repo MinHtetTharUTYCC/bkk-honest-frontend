@@ -21,6 +21,7 @@ interface TipFormProps {
   onSubmit: (values: TipFormValues) => Promise<void>;
   isLoading: boolean;
   submitLabel?: string;
+  isEdit?: boolean;
 }
 
 export default function TipForm({
@@ -28,6 +29,7 @@ export default function TipForm({
   onSubmit,
   isLoading,
   submitLabel = 'Publish Tip',
+  isEdit = false,
 }: TipFormProps) {
   const form = useForm<TipFormValues>({
     resolver: zodResolver(tipSchema),
@@ -45,48 +47,50 @@ export default function TipForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="space-y-4">
-              <FormLabel className="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">
-                Tip Type
-              </FormLabel>
-              <FormControl>
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => field.onChange('TRY')}
-                    className={cn(
-                      'flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center justify-center gap-2',
-                      field.value === 'TRY'
-                        ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20 shadow-sm'
-                        : 'bg-white/5 text-white/40 border-white/10',
-                    )}
-                  >
-                    <CheckCircle2 size={14} className="shrink-0" />
-                    To Try
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => field.onChange('AVOID')}
-                    className={cn(
-                      'flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center justify-center gap-2',
-                      field.value === 'AVOID'
-                        ? 'bg-red-400/10 text-red-400 border-red-400/20 shadow-sm'
-                        : 'bg-white/5 text-white/40 border-white/10',
-                    )}
-                  >
-                    <AlertTriangle size={14} className="shrink-0" />
-                    To Avoid
-                  </button>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {!isEdit && (
+          <FormField
+            control={control}
+            name="type"
+            render={({ field }) => (
+              <FormItem className="space-y-4">
+                <FormLabel className="text-[10px] font-bold text-white/40 uppercase tracking-widest ml-1">
+                  Tip Type
+                </FormLabel>
+                <FormControl>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => field.onChange('TRY')}
+                      className={cn(
+                        'flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center justify-center gap-2',
+                        field.value === 'TRY'
+                          ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20 shadow-sm'
+                          : 'bg-white/5 text-white/40 border-white/10',
+                      )}
+                    >
+                      <CheckCircle2 size={14} className="shrink-0" />
+                      To Try
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => field.onChange('AVOID')}
+                      className={cn(
+                        'flex-1 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border flex items-center justify-center gap-2',
+                        field.value === 'AVOID'
+                          ? 'bg-red-400/10 text-red-400 border-red-400/20 shadow-sm'
+                          : 'bg-white/5 text-white/40 border-white/10',
+                      )}
+                    >
+                      <AlertTriangle size={14} className="shrink-0" />
+                      To Avoid
+                    </button>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={control}
