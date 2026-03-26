@@ -81,6 +81,13 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Client-side size validation (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File is too large", { description: "Maximum size is 10MB" });
+      return;
+    }
+
     try {
       const response = await uploadMutation.mutateAsync({ spotId, file });
       const newImage = response?.data || response;

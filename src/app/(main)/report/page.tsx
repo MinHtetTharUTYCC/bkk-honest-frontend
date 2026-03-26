@@ -177,8 +177,8 @@ export default function ReportPage() {
   const handleScamImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image size must be less than 5MB");
+      if (file.size > 10 * 1024 * 1024) {
+        alert("Image size must be less than 10MB");
         return;
       }
       setScamImageFile(file);

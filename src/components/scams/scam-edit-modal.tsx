@@ -63,6 +63,10 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                toast.error('Image is too large', { description: 'Maximum size is 10MB' });
+                return;
+            }
             setEditFile(file);
             setEditPreview(URL.createObjectURL(file));
         }
