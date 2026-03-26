@@ -14,10 +14,6 @@ import { CategorySelector } from "@/components/ui/category-selector";
 import api from "@/lib/api";
 import type { SpotCardData } from "@/components/spots/spot-card";
 
-interface SpotCardDataExtended extends SpotCardData {
-  createdAt?: string;
-}
-
 function DiscoveryPageContent() {
   const router = useRouter();
   const pathname = usePathname();
@@ -165,24 +161,9 @@ function DiscoveryPageContent() {
   }, [inView]);
 
   const spots: SpotCardData[] = useMemo(() => {
-    const rawSpots = spotsData?.pages.flatMap(
-      (page) => (page as { data?: SpotCardDataExtended[] })?.data || [],
+    return spotsData?.pages.flatMap(
+      (page) => (page as { data?: SpotCardData[] })?.data || [],
     ) || [];
-
-    // Sort to keep newest spots on top
-    return [...rawSpots].sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      
-      // Always force newest spots to top for 12 hours
-      const isNewA = (Date.now() - dateA) < 43200000;
-      const isNewB = (Date.now() - dateB) < 43200000;
-      if (isNewA && !isNewB) return -1;
-      if (!isNewA && isNewB) return 1;
-
-      if (dateA !== dateB) return dateB - dateA;
-      return b.id.localeCompare(a.id);
-    });
   }, [spotsData]);
 
   return (
