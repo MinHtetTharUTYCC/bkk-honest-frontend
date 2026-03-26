@@ -17,8 +17,15 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   };
 }
 
-export default async function GalleryPage({ params }: { params: Promise<{ citySlug: string; spotSlug: string }> }) {
+export default async function GalleryPage({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ citySlug: string; spotSlug: string }>;
+  searchParams: Promise<{ sort?: string }>;
+}) {
   const { citySlug, spotSlug } = await params;
+  const { sort = "newest" } = await searchParams;
   const spot = await getSpot(citySlug, spotSlug);
   
   if (!spot) {
@@ -30,15 +37,24 @@ export default async function GalleryPage({ params }: { params: Promise<{ citySl
   // Prefetch the spot data so the shared header finds it in cache
   queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
 
-  await queryClient.prefetchQuery({
-    queryKey: ["gallery", spot.id, 6, "newest"],
-    queryFn: async () => {
+  const normalizedSort = sort === "popular" ? "popular" : "newest";
+
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ["gallery-infinite", spot.id, normalizedSort],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam = 0 }) => {
       const res = await apiFetch(
-        `/gallery/spot/${spot.id}?take=6&sort=newest`,
+        `/gallery/spot/${spot.id}?skip=${pageParam}&take=12&sort=${normalizedSort}`,
         { next: { revalidate: 60 } }
       );
       if (!res.ok) throw new Error("Gallery fetch failed");
       return res.json();
+    },
+    getNextPageParam: (lastPage: any) => {
+      const { skip, take, total } = lastPage.pagination || {};
+      if (skip === undefined || take === undefined || total === undefined) return undefined;
+      const nextSkip = skip + take;
+      return nextSkip < total ? nextSkip : undefined;
     },
   });
 

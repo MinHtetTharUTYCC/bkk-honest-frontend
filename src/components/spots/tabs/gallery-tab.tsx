@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
-import { useSpotGallery, useUploadSpotImage } from "@/hooks/use-api";
+import { useInfiniteSpotGallery, useUploadSpotImage } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
-import { Camera, Upload, Maximize2, Loader2 } from "lucide-react";
+import { Camera, Upload, Loader2, User, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GalleryImage, SpotData } from "@/types/spot";
-import GalleryModal from "@/components/spots/gallery-modal";
 import { LikeButton } from "@/components/ui/like-button";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useInView } from "react-intersection-observer";
+import { toast } from "sonner";
+import Link from "next/link";
+import { ImageViewer } from "@/components/ui/image-viewer";
 
 interface GalleryTabProps {
   spot: SpotData;
@@ -19,41 +22,82 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const { user: authUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const spotId = spot.id;
 
-  const [showGalleryModal, setShowGalleryModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  const { data: galleryResponse } = useSpotGallery(spotId, 6);
+  // Sync state with URL params
+  const sort = (searchParams.get("sort") as "popular" | "newest") || "newest";
+
+  const {
+    data: galleryData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteSpotGallery(spotId, sort);
+
+  const { toggleVote, isPending: votePending } = useVoteToggle("image", spotId);
+  const [votingImageId, setVotingImageId] = useState<string | null>(null);
+
   const uploadMutation = useUploadSpotImage();
-  const { toggleVote: toggleImageVote, isPending: imageVotePending } = useVoteToggle("image", spotId);
 
-  const galleryList = Array.isArray(galleryResponse?.data) ? galleryResponse.data : [];
-  const galleryTotal = (galleryResponse as { pagination?: { total?: number } })?.pagination?.total;
+  const images = useMemo(() => {
+    const rawImages = galleryData?.pages.flatMap((page) => (page as { data?: GalleryImage[] })?.data || []) || [];
+    // Deduplicate items just in case
+    return Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
+  }, [galleryData]);
+
+  const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
+  const hasFetchedRef = useRef(false);
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  useEffect(() => {
+    if (!inView) hasFetchedRef.current = false;
+  }, [inView]);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     try {
       await uploadMutation.mutateAsync({ spotId, file });
+      toast.success("Photo uploaded successfully!");
+    } catch (err) {
+      toast.error("Failed to upload photo");
     } finally {
       if (e.target) e.target.value = "";
     }
   };
 
+  const handleSortChange = (newSort: "popular" | "newest") => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", newSort);
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      {showGalleryModal && <GalleryModal spotId={spotId} spotName={spot.name} onClose={() => setShowGalleryModal(false)} />}
-      
-      <header className="flex items-center justify-between px-2">
-        <div className="flex items-center gap-3">
-          <Camera size={20} className="text-amber-400" />
-          <h3 className="text-2xl font-display font-bold text-white">
-            <span className="md:hidden">Vibe</span>
-            <span className="hidden md:block">Vibe Gallery</span>
-          </h3>
-        </div>
-        <div className="flex items-center gap-6">
+      <ImageViewer
+        isOpen={!!selectedImage}
+        imageUrl={selectedImage || ""}
+        onClose={() => setSelectedImage(null)}
+      />
+
+      <header className="flex flex-col gap-6 px-2">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Camera size={20} className="text-amber-400" />
+            <h3 className="text-2xl font-display font-bold text-white">Vibe Gallery</h3>
+          </div>
+          
           <button
             onClick={() => {
               if (!authUser) {
@@ -65,60 +109,138 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
             disabled={uploadMutation.isPending}
             className="group bg-amber-500 text-black hover:text-white px-6 py-3 rounded-xl text-[10px] font-semibold tracking-wide hover:bg-amber-400 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-50"
           >
-            {uploadMutation.isPending ? <Loader2 size={14} className="animate-spin text-black group-hover:text-white" /> : <Upload size={14} className="text-black group-hover:text-white transition-colors" />}
-            <span className="hidden md:inline">{uploadMutation.isPending ? "Uploading..." : "Upload Photo"}</span>
-            <span className="md:hidden">{uploadMutation.isPending ? "..." : "Upload"}</span>
+            {uploadMutation.isPending ? (
+              <Loader2 size={14} className="animate-spin text-black group-hover:text-white" />
+            ) : (
+              <Upload size={14} className="text-black group-hover:text-white transition-colors" />
+            )}
+            <span className="hidden sm:inline">{uploadMutation.isPending ? "Uploading..." : "Upload Photo"}</span>
+            <span className="sm:hidden">{uploadMutation.isPending ? "..." : "Upload"}</span>
           </button>
           <input type="file" className="hidden" ref={fileInputRef} accept="image/*" onChange={handleFileUpload} />
-          {(galleryTotal || galleryList.length) > 0 && (
-            <button onClick={() => setShowGalleryModal(true)} className="text-[10px] font-medium text-amber-500 uppercase tracking-widest hover:text-amber-400 transition-colors flex items-center gap-2">
-              <span className="hidden md:inline">View All {galleryTotal || galleryList.length} Photos</span>
-              <span className="md:hidden">All ({galleryTotal || galleryList.length})</span>
-              <Maximize2 size={12} />
+        </div>
+
+        <div className="flex justify-end">
+          <div className="flex bg-white/5 p-1 rounded-xl border border-white/5">
+            <button
+              onClick={() => handleSortChange("popular")}
+              className={cn(
+                "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer",
+                sort === "popular" ? "bg-white/10 text-amber-400 shadow-sm" : "text-white/40 hover:text-white/70"
+              )}
+            >
+              Popular
             </button>
-          )}
+            <button
+              onClick={() => handleSortChange("newest")}
+              className={cn(
+                "px-4 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all cursor-pointer",
+                sort === "newest" ? "bg-white/10 text-amber-400 shadow-sm" : "text-white/40 hover:text-white/70"
+              )}
+            >
+              Newest
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-        {galleryList.length === 0 ? (
-          <div className="col-span-full py-16 text-center bg-white/5 rounded-2xl border border-dashed border-white/20">
-            <p className="text-sm font-semibold text-white/40 tracking-wide">No vibe photos yet</p>
-          </div>
-        ) : (
-          <>
-            {(galleryList as GalleryImage[]).slice(0, 5).map((img) => (
-              <div key={img.id} className="aspect-square rounded-2xl overflow-hidden shadow-lg shadow-black/20 group relative border border-border">
+      {isLoading ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-2">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="aspect-[4/5] bg-white/5 rounded-2xl animate-pulse border border-white/5" />
+          ))}
+        </div>
+      ) : images.length === 0 ? (
+        <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/10 mx-2">
+          <Camera size={32} className="text-white/10 mx-auto mb-3" />
+          <p className="text-sm font-bold text-white/40 uppercase tracking-widest">No vibes yet. Be the first to share!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 px-2">
+          {images.map((img) => (
+            <div
+              key={img.id}
+              className="bg-card rounded-2xl overflow-hidden border border-white/8 shadow-xl shadow-black/30 group relative flex flex-col"
+            >
+              <div 
+                className="aspect-[4/5] relative overflow-hidden cursor-zoom-in"
+                onClick={() => setSelectedImage(img.url)}
+              >
                 <img
-                  src={`${img.url}?w=300&h=300&fit=crop`}
-                  className="w-full h-full object-cover transition-transform group-hover:scale-110 cursor-pointer"
-                  alt="Spot Vibe"
-                  onClick={() => setShowGalleryModal(true)}
-                  onError={(e) => { (e.target as HTMLImageElement).src = img.url; }}
+                  src={img.url}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  alt="vibe"
+                  loading="lazy"
                 />
-                <div className="absolute top-3 right-3 flex bg-white/10 p-0.5 rounded-lg border border-border shadow-sm">
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                   <div className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+                     <Camera size={20} className="text-white" />
+                   </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-white/[0.02]">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Link 
+                      href={`/profile/${img.userId}`}
+                      className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 border border-transparent transition-colors shrink-0"
+                    >
+                      {(img.user as any)?.avatarUrl ? (
+                        <img alt="" src={(img.user as any).avatarUrl} className="w-full h-full object-cover" />
+                      ) : (
+                        <User size={12} />
+                      )}
+                    </Link>
+                    <div className="flex flex-col min-w-0">
+                      <Link 
+                        href={`/profile/${img.userId}`}
+                        className="text-[9px] font-black text-foreground uppercase truncate hover:text-amber-400 transition-colors tracking-tight"
+                      >
+                        {img.user?.name || 'Local'}
+                      </Link>
+                      <span className="text-[8px] font-medium text-white/30 uppercase flex items-center gap-1">
+                        <Calendar size={8} />
+                        {img.createdAt ? new Date(img.createdAt).toLocaleDateString() : ''}
+                      </span>
+                    </div>
+                  </div>
+
                   <LikeButton
                     count={img._count?.votes || 0}
                     isVoted={img.hasVoted}
                     onVote={async () => {
-                      await toggleImageVote({ id: img.id, hasVoted: img.hasVoted, voteId: img.voteId, _count: { votes: img._count?.votes ?? 0 } });
+                      if (!authUser) {
+                        toast.error("Join us to like photos!", { description: "Login to save your favorites." });
+                        return;
+                      }
+                      setVotingImageId(img.id);
+                      try {
+                        await toggleVote({ id: img.id, hasVoted: img.hasVoted, voteId: img.voteId, _count: { votes: img._count?.votes ?? 0 } });
+                      } finally {
+                        setVotingImageId(null);
+                      }
                     }}
-                    isPending={imageVotePending}
-                    disabled={imageVotePending}
+                    isPending={votePending && votingImageId === img.id}
+                    disabled={votePending && votingImageId === img.id}
                     variant="overlay"
                     size="sm"
-                    className="text-xs font-semibold gap-1.5 px-4 py-2 rounded-md bg-white/0 hover:bg-white/0"
+                    className="text-[10px] font-semibold gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5"
                   />
                 </div>
               </div>
-            ))}
-            {(galleryTotal && galleryTotal > 5) || galleryList.length > 5 ? (
-              <button onClick={() => setShowGalleryModal(true)} className="aspect-square rounded-xl bg-amber-500 text-white flex flex-col items-center justify-center gap-2 shadow-xl shadow-amber-500/20 active:scale-95 transition-transform">
-                <span className="text-xl font-display font-bold">+{Math.max(0, (galleryTotal || galleryList.length) - 5)}</span>
-                <span className="text-[8px] font-semibold tracking-wide">More Vibes</span>
-              </button>
-            ) : null}
-          </>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div ref={observerTarget} className="py-20 flex justify-center">
+        {isFetchingNextPage ? (
+          <Loader2 size={24} className="text-amber-400 animate-spin" />
+        ) : hasNextPage ? (
+          <div className="h-4 w-4" />
+        ) : (
+          <p className="text-[10px] font-medium text-white/40 uppercase tracking-[0.2em]">End of gallery</p>
         )}
       </div>
     </div>
