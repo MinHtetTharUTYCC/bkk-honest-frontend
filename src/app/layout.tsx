@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Syne, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import QueryProvider from '@/components/providers/query-provider';
 import { AuthProvider } from '@/components/providers/auth-provider';
@@ -9,16 +9,10 @@ import { GlobalReportModal } from '@/components/report/global-report-modal';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
 
-const syne = Syne({
-    variable: '--font-display',
+const inter = Inter({
+    variable: '--font-inter',
     subsets: ['latin'],
-    weight: ['700', '800'],
-});
-
-const plusJakartaSans = Plus_Jakarta_Sans({
-    variable: '--font-body',
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700', '800'],
+    display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -38,7 +32,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${syne.variable} ${plusJakartaSans.variable} antialiased`}>
+            <body className={`${inter.variable} antialiased font-sans`}>
                 <AuthProvider>
                     <QueryProvider>
                         <CityProvider>{children}</CityProvider>
