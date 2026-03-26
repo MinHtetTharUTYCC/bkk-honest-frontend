@@ -107,12 +107,10 @@ export default function ReportPage() {
         image: formData.imageFile || undefined,
       });
       setSubmitted(true);
-    } catch (err) {
-      const apiError = err as ApiError;
+    } catch (err: any) {
       console.error("Failed to create spot:", err);
-      const message =
-        apiError?.response?.data?.message || "Failed to create spot";
-      setError(Array.isArray(message) ? message.join(", ") : message);
+      const message = err.response?.data?.message || "Failed to create spot";
+      setError(Array.isArray(message) ? message[0] : message);
     }
   };
 
@@ -134,11 +132,9 @@ export default function ReportPage() {
         priceThb: Number(formData.get("priceThb")),
       });
       setSubmitted(true);
-    } catch (err) {
-      const apiError = err as ApiError;
-      const message =
-        apiError?.response?.data?.message || "Failed to publish price report";
-      setError(Array.isArray(message) ? message.join(", ") : message);
+    } catch (err: any) {
+      const message = err.response?.data?.message || "Failed to publish price report";
+      setError(Array.isArray(message) ? message[0] : message);
     }
   };
 
@@ -172,11 +168,9 @@ export default function ReportPage() {
         image: scamImageFile || undefined,
       });
       setSubmitted(true);
-    } catch (err) {
-      const apiError = err as ApiError;
-      const message =
-        apiError?.response?.data?.message || "Failed to publish scam alert";
-      setError(Array.isArray(message) ? message.join(", ") : message);
+    } catch (err: any) {
+      const message = err.response?.data?.message || "Failed to publish scam alert";
+      setError(Array.isArray(message) ? message[0] : message);
     }
   };
 

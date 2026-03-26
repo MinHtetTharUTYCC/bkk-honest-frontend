@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCreateLiveVibe } from '@/hooks/use-api';
 import { Zap, Loader2 } from 'lucide-react';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
+import { toast } from 'sonner';
 
 interface CreateVibeFormProps {
   spotId?: string;
@@ -41,6 +42,11 @@ export default function CreateVibeForm({
       setCrowdLevel(3);
       if (showSpotSelect) setSelectedSpotId('');
       onSuccess?.();
+      toast.success("Vibe checked in!");
+    } catch (err: any) {
+      console.error(err);
+      const message = err.response?.data?.message || "Failed to check in vibe";
+      toast.error(Array.isArray(message) ? message[0] : message);
     } finally {
       setIsSubmitting(false);
     }

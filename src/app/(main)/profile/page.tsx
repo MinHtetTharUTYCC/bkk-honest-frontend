@@ -175,9 +175,10 @@ function ProfilePageContent() {
       });
       await queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
       setIsEditing(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setSaveError("Failed to update profile. Please try again.");
+      const message = err.response?.data?.message || "Failed to update profile. Please try again.";
+      setSaveError(Array.isArray(message) ? message[0] : message);
     } finally {
       setIsSaving(false);
     }
@@ -205,9 +206,10 @@ function ProfilePageContent() {
       await queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
       setSelectedFile(null);
       setPreviewUrl(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setUploadError("Failed to upload avatar. Please try again.");
+      const message = err.response?.data?.message || "Failed to upload avatar. Please try again.";
+      setUploadError(Array.isArray(message) ? message[0] : message);
     } finally {
       setIsUploading(false);
     }

@@ -100,8 +100,10 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
       });
 
       toast.success("Photo uploaded successfully!");
-    } catch (err) {
-      toast.error("Failed to upload photo");
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      const errorMessage = err.response?.data?.message || err.message || "Failed to upload photo";
+      toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
     } finally {
       if (e.target) e.target.value = "";
     }
