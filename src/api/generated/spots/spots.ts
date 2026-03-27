@@ -88,6 +88,9 @@ if(createSpotDto.address !== undefined) {
  }
 formData.append(`latitude`, createSpotDto.latitude.toString())
 formData.append(`longitude`, createSpotDto.longitude.toString())
+if(createSpotDto.image !== undefined) {
+ formData.append(`image`, createSpotDto.image);
+ }
 
   return customInstance<spotsControllerCreateResponse>(getSpotsControllerCreateUrl(),
   {

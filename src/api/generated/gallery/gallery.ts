@@ -31,6 +31,7 @@ import type {
 
 import type {
   GalleryControllerGetGalleryParams,
+  GalleryControllerUploadImageBody,
   GalleryImageResponseDto,
   GalleryStatsResponseDto,
   MessageResponseDto,
@@ -74,14 +75,20 @@ export const getGalleryControllerUploadImageUrl = (spotId: string,) => {
   return `/gallery/upload/${spotId}`
 }
 
-export const galleryControllerUploadImage = async (spotId: string, options?: RequestInit): Promise<galleryControllerUploadImageResponse> => {
+export const galleryControllerUploadImage = async (spotId: string,
+    galleryControllerUploadImageBody: GalleryControllerUploadImageBody, options?: RequestInit): Promise<galleryControllerUploadImageResponse> => {
+    const formData = new FormData();
+if(galleryControllerUploadImageBody.image !== undefined) {
+ formData.append(`image`, galleryControllerUploadImageBody.image);
+ }
 
   return customInstance<galleryControllerUploadImageResponse>(getGalleryControllerUploadImageUrl(spotId),
   {
     ...options,
     method: 'POST'
-
-
+    ,
+    body:
+      formData,
   }
 );}
 
@@ -89,8 +96,8 @@ export const galleryControllerUploadImage = async (spotId: string, options?: Req
 
 
 export const getGalleryControllerUploadImageMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string;data: GalleryControllerUploadImageBody}, TContext>, request?: SecondParameter<typeof customInstance>}
+): UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string;data: GalleryControllerUploadImageBody}, TContext> => {
 
 const mutationKey = ['galleryControllerUploadImage'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -102,10 +109,10 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof galleryControllerUploadImage>>, {spotId: string}> = (props) => {
-          const {spotId} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof galleryControllerUploadImage>>, {spotId: string;data: GalleryControllerUploadImageBody}> = (props) => {
+          const {spotId,data} = props ?? {};
 
-          return  galleryControllerUploadImage(spotId,requestOptions)
+          return  galleryControllerUploadImage(spotId,data,requestOptions)
         }
 
 
@@ -116,18 +123,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type GalleryControllerUploadImageMutationResult = NonNullable<Awaited<ReturnType<typeof galleryControllerUploadImage>>>
-
+    export type GalleryControllerUploadImageMutationBody = GalleryControllerUploadImageBody
     export type GalleryControllerUploadImageMutationError = void
 
     /**
  * @summary Upload image to spot gallery
  */
 export const useGalleryControllerUploadImage = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string;data: GalleryControllerUploadImageBody}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof galleryControllerUploadImage>>,
         TError,
-        {spotId: string},
+        {spotId: string;data: GalleryControllerUploadImageBody},
         TContext
       > => {
       return useMutation(getGalleryControllerUploadImageMutationOptions(options), queryClient);

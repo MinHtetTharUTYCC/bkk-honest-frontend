@@ -29,9 +29,19 @@ export const customInstance = <T>(
   options?: any,
 ): Promise<T> => {
   const source = Axios.CancelToken.source();
+  
+  // Transform body -> data for Axios compatibility
+  const requestConfig = {
+      ...(typeof config === 'string' ? { url: config } : config),
+      ...(options || {}),
+  };
+  if (requestConfig.body) {
+      requestConfig.data = requestConfig.body;
+      delete requestConfig.body;
+  }
+
   const promise = AXIOS_INSTANCE({
-    ...(typeof config === 'string' ? { url: config } : config),
-    ...(options || {}),
+    ...requestConfig,
     cancelToken: source.token,
   }).then(({ data }) => data);
 

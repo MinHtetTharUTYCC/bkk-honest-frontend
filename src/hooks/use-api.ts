@@ -1,7 +1,8 @@
 'use client';
 
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { components } from '@/types/api';
+import { AXIOS_INSTANCE } from '@/api/mutator/custom-instance';
 
 import { 
     useCommentsControllerFindByTipInfinite, 
@@ -23,7 +24,8 @@ import {
     useGalleryControllerGetGalleryInfinite,
     useGalleryControllerGetGallery,
     useGalleryControllerDeleteImage,
-    useGalleryControllerFlagImage
+    useGalleryControllerFlagImage,
+    useGalleryControllerUploadImage
 } from '@/api/generated/gallery/gallery';
 import { GalleryControllerGetGallerySort } from '@/api/generated/model/galleryControllerGetGallerySort';
 import { 
@@ -744,11 +746,24 @@ export function useDeleteMission() {
     };
 }
 
-// --- Contact Form ---
+// --- Uploads ---
 
-export function useSubmitContactForm() {
-    return useContactControllerSubmitContactForm();
+export function useUploadSpotImage() {
+    return useMutation({
+        mutationFn: async ({ spotId, file }: { spotId: string; file: File }) => {
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            const { data } = await AXIOS_INSTANCE.post(`/gallery/upload/${spotId}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return data;
+        }
+    });
 }
+
 
 export function useReverseGeocode() {
     const mutation = useSpotsControllerReverseGeocode();
@@ -797,7 +812,7 @@ export function useGetCommentReaction(commentId: string) {
     return { ...query, data: query.data?.data || { reactionCount: 0, userHasReacted: false } };
 }
 
-export { useGalleryControllerUploadImage as useUploadSpotImage };
+
 export { useGalleryControllerDeleteImage as useDeleteGalleryImage };
 export { useGalleryControllerFlagImage as useFlagGalleryImage };
 

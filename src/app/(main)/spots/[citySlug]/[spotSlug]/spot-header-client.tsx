@@ -11,9 +11,11 @@ import SpotEditModal from "@/components/spots/spot-edit-modal";
 import { ImageViewer } from "@/components/ui/image-viewer";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSpotsControllerFindBySlug, useSpotsControllerDelete } from "@/api/generated/spots/spots";
+import { useSpotsControllerDelete, getSpotsControllerFindBySlugQueryKey } from "@/api/generated/spots/spots";
+import { useSpotBySlug } from "@/hooks/use-api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { SpotWithStatsResponseDto } from "@/api/generated/model";
 
 interface SpotHeaderClientProps {
   spot: SpotWithStatsResponseDto;
@@ -34,16 +36,16 @@ export default function SpotHeaderClient({
   const queryClient = useQueryClient();
   const pathname = usePathname();
 
-  // Use the authenticated spot from SSR as initial data
-  // This prevents the client from overwriting with "guest" data during hydration
-  const { data: spotData = initialSpot } = useSpotsControllerFindBySlug(citySlug, spotSlug, { query: { enabled: !!citySlug && !!spotSlug } });
-
-  const spot = (spotData || initialSpot) as SpotWithStatsResponseDto;
   // Sync initialSpot to TanStack cache if it's not there
   // This ensures other components (like TipsTab) can benefit from the SSR data
   useState(() => {
-    queryClient.setQueryData(['spot', citySlug, spotSlug], initialSpot);
+    queryClient.setQueryData(getSpotsControllerFindBySlugQueryKey(citySlug, spotSlug), { data: initialSpot });
   });
+
+  // Use the authenticated spot from SSR as initial data
+  const { data: spotData = initialSpot } = useSpotBySlug(citySlug, spotSlug);
+
+  const spot = (spotData || initialSpot) as SpotWithStatsResponseDto;
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);

@@ -4,6 +4,7 @@ import { MapPin, Zap, ImageIcon } from 'lucide-react';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { getSpotUrl } from '@/lib/slug';
 import { LikeButton } from '@/components/ui/like-button';
+import OptimizedImage from '@/components/ui/OptimizedImage';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
@@ -13,6 +14,8 @@ export interface SpotCardData {
     name?: string;
     address?: string;
     imageUrl?: string;
+    imageVariants?: any;
+    blurPlaceholder?: string;
     images?: Array<{ url?: string }>;
     city?: { slug?: string };
     category?: { name?: string };
@@ -74,10 +77,14 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
             {/* Image Section */}
             <div className="relative w-full aspect-square overflow-hidden bg-white/5 border-b border-white/8">
                 {displayImage ? (
-                    <img
-                        src={displayImage}
+                    <OptimizedImage
+                        variants={spot.imageVariants}
+                        fallbackUrl={displayImage}
                         alt={name || 'Spot'}
+                        size="thumbnail"
+                        fill
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        blurDataURL={spot.blurPlaceholder}
                     />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">

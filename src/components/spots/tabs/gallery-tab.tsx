@@ -9,11 +9,13 @@ import { Camera, Upload, Loader2, User, Calendar, Trash2, AlertCircle } from "lu
 import { cn } from "@/lib/utils";
 import { GalleryImage, SpotData } from "@/types/spot";
 import { LikeButton } from "@/components/ui/like-button";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
 import Link from "next/link";
 import { ImageViewer } from "@/components/ui/image-viewer";
+import { buildRenderableImage, extractGalleryImageData } from "@/lib/image-utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -310,11 +312,14 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                   className="aspect-[4/5] relative overflow-hidden cursor-zoom-in"
                   onClick={() => setSelectedImage(img.url)}
                 >
-                  <img
-                    src={img.url}
+                  <OptimizedImage
+                    variants={img.imageVariants}
+                    fallbackUrl={img.url}
+                    alt="Gallery image"
+                    size="display"
+                    fill
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    alt="vibe"
-                    loading="lazy"
+                    blurDataURL={img.blurPlaceholder}
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                     <div className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">

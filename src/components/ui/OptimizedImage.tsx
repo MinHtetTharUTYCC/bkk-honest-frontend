@@ -1,19 +1,16 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { ImageIcon } from 'lucide-react';
+import type { ImageVariantsDto } from '@/api/generated/model';
+import { getImageVariant } from '@/lib/image-utils';
 
-interface ImageVariants {
-  thumbnail: string;
-  medium: string;
-  large: string;
-  original: string;
-}
+type VariantSize = 'thumbnail' | 'display';
 
 interface OptimizedImageProps {
-  variants?: ImageVariants | null;
+  variants?: ImageVariantsDto | null;
   fallbackUrl?: string; // For backward compatibility with old non-variant images
   alt: string;
-  size?: 'thumbnail' | 'medium' | 'large' | 'original';
+  size?: VariantSize;
   className?: string;
   priority?: boolean;
   fill?: boolean;
@@ -28,17 +25,19 @@ interface OptimizedImageProps {
  * OptimizedImage Component
  * 
  * Wrapper around Next.js Image that automatically selects the appropriate
- * image variant based on the size prop. Handles loading states, errors,
- * and provides blur placeholders for progressive loading.
+ * image variant based on the size prop. Uses type-safe orval-generated types.
+ * Handles loading states, errors, and provides blur placeholders for progressive loading.
+ * 
+ * Supports 2-variant structure: thumbnail (small) and display (full).
  * 
  * @example
  * // With variants (new format)
  * <OptimizedImage
  *   variants={profile.imageVariants}
  *   alt={profile.name}
- *   size="medium"
- *   width={256}
- *   height={256}
+ *   size="display"
+ *   width={512}
+ *   height={512}
  * />
  * 
  * @example
@@ -55,7 +54,7 @@ export default function OptimizedImage({
   variants,
   fallbackUrl,
   alt,
-  size = 'medium',
+  size = 'display',
   className = '',
   priority = false,
   fill = false,
@@ -67,11 +66,17 @@ export default function OptimizedImage({
 }: OptimizedImageProps) {
   const [hasError, setHasError] = useState(false);
 
-  // Select the appropriate variant URL
+  // Select the appropriate variant URL using type-safe utility
   const getImageUrl = (): string | null => {
-    // If variants exist, use them
-    if (variants && typeof variants === 'object') {
-      return variants[size] || variants.medium || variants.large || null;
+    // If variants exist, use type-safe selection
+    if (variants) {
+      const variantUrl = getImageVariant(variants, size);
+      if (variantUrl) return variantUrl;
+      
+      // Fallback to other variant if requested not available
+      const fallbackVariant = size === 'thumbnail' ? 'display' : 'thumbnail';
+      const fallbackVariantUrl = getImageVariant(variants, fallbackVariant);
+      if (fallbackVariantUrl) return fallbackVariantUrl;
     }
 
     // Fallback to old-style single URL

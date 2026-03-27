@@ -41,6 +41,7 @@ export * from './createVoteResponseDto';
 export * from './createVoteResponseDtoVoteType';
 export * from './galleryControllerGetGalleryParams';
 export * from './galleryControllerGetGallerySort';
+export * from './galleryControllerUploadImageBody';
 export * from './galleryImageResponseDto';
 export * from './galleryStatsResponseDto';
 export * from './imageVariantsDto';
