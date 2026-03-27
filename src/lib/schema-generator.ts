@@ -3,10 +3,15 @@ type BreadcrumbItem = {
   item: string;
 };
 
+type ImageVariants = {
+  thumbnail?: string;
+  display?: string;
+};
+
 type SpotSchemaInput = {
   name?: string;
   description?: string;
-  imageUrl?: string;
+  imageVariants?: ImageVariants;
   address?: string;
   latitude?: number;
   longitude?: number;
@@ -19,7 +24,7 @@ type SpotSchemaInput = {
 type ScamAlertSchemaInput = {
   scamName?: string;
   description?: string;
-  imageUrl?: string;
+  imageVariants?: ImageVariants;
   createdAt?: string;
   updatedAt?: string;
   category?: { name?: string };
@@ -51,7 +56,7 @@ export function generateSpotSchema(spot: SpotSchemaInput, url: string) {
     description:
       spot.description || `Explore local prices, vibes, and tips for ${spot.name || 'this spot'} on BKK Honest.`,
     url,
-    image: spot.imageUrl ? [spot.imageUrl] : undefined,
+    image: spot.imageVariants?.display ? [spot.imageVariants.display] : undefined,
     address: {
       '@type': 'PostalAddress',
       streetAddress: spot.address || undefined,
@@ -86,7 +91,7 @@ export function generateScamAlertSchema(alert: ScamAlertSchemaInput, url: string
     headline: alert.scamName || 'Scam Alert',
     description:
       alert.description || `Learn how to identify and avoid ${alert.scamName || 'this scam'} in Bangkok.`,
-    image: alert.imageUrl ? [alert.imageUrl] : undefined,
+    image: alert.imageVariants?.display ? [alert.imageVariants.display] : undefined,
     datePublished: alert.createdAt || undefined,
     dateModified: alert.updatedAt || alert.createdAt || undefined,
     articleSection: alert.category?.name || 'Scam Alert',

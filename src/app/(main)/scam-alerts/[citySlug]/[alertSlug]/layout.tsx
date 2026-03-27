@@ -36,6 +36,9 @@ export async function generateMetadata({
 
     const alert = await response.json();
     const alertData = alert.data || alert;
+    
+    // Get display image variant for OG tags
+    const ogImageUrl = alertData.imageVariants?.display || null;
 
     return {
       title: `${alertData.scamName} - Scam Alert | BKK Honest`,
@@ -55,10 +58,10 @@ export async function generateMetadata({
           alertData.description || `Learn about the ${alertData.scamName} scam`,
         type: "article",
         url: canonicalUrl,
-        images: alertData.imageUrl
+        images: ogImageUrl
           ? [
               {
-                url: alertData.imageUrl,
+                url: ogImageUrl,
                 width: 1200,
                 height: 630,
                 alt: alertData.scamName,
@@ -71,7 +74,7 @@ export async function generateMetadata({
         title: `${alertData.scamName} - Scam Alert`,
         description:
           alertData.description || `Learn about the ${alertData.scamName} scam`,
-        images: alertData.imageUrl ? [alertData.imageUrl] : [],
+        images: ogImageUrl ? [ogImageUrl] : [],
       },
       alternates: {
         canonical: path,

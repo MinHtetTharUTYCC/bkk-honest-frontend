@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ citySlug:
   const spotName = spot.name;
   const spotAddress = spot.address;
   const spotDescription = `Explore ${spotName} in ${spotAddress}. See prices, vibes, and community tips.`;
-  const imageUrl = spot.imageUrl;
+  const imageUrl = spot.imageVariants?.display || null;
 
   return {
     title: `${spotName} - Spot Details | BKK Honest`,
