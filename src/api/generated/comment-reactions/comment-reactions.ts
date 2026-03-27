@@ -6,18 +6,23 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -235,11 +240,82 @@ export const commentReactionsControllerGetReactionSummary = async (commentId: st
 
 
 
+export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey = (commentId: string,) => {
+    return [
+    'infinite', `/comments/${commentId}/reactions`
+    ] as const;
+    }
+
 export const getCommentReactionsControllerGetReactionSummaryQueryKey = (commentId: string,) => {
     return [
     `/comments/${commentId}/reactions`
     ] as const;
     }
+
+
+export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey(commentId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(commentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CommentReactionsControllerGetReactionSummaryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>
+export type CommentReactionsControllerGetReactionSummaryInfiniteQueryError = unknown
+
+
+export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
+ commentId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+          TError,
+          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
+ commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+          TError,
+          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
+ commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get reaction summary for a comment
+ */
+
+export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
+ commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions(commentId,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getCommentReactionsControllerGetReactionSummaryQueryOptions = <TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}

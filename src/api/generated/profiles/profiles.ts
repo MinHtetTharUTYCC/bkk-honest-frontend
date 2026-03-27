@@ -6,18 +6,23 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -159,11 +164,82 @@ export const profilesControllerGetMe = async ( options?: RequestInit): Promise<p
 
 
 
+export const getProfilesControllerGetMeInfiniteQueryKey = () => {
+    return [
+    'infinite', `/profiles/me`
+    ] as const;
+    }
+
 export const getProfilesControllerGetMeQueryKey = () => {
     return [
     `/profiles/me`
     ] as const;
     }
+
+
+export const getProfilesControllerGetMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetMeInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({ signal }) => profilesControllerGetMe({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ProfilesControllerGetMeInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerGetMe>>>
+export type ProfilesControllerGetMeInfiniteQueryError = unknown
+
+
+export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerGetMe>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerGetMe>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerGetMe>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerGetMe>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get current user profile
+ */
+
+export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getProfilesControllerGetMeInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getProfilesControllerGetMeQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
@@ -371,11 +447,82 @@ export const profilesControllerGetLeaderboard = async (params: ProfilesControlle
 
 
 
+export const getProfilesControllerGetLeaderboardInfiniteQueryKey = (params?: ProfilesControllerGetLeaderboardParams,) => {
+    return [
+    'infinite', `/profiles/leaderboard/top`, ...(params ? [params] : [])
+    ] as const;
+    }
+
 export const getProfilesControllerGetLeaderboardQueryKey = (params?: ProfilesControllerGetLeaderboardParams,) => {
     return [
     `/profiles/leaderboard/top`, ...(params ? [params] : [])
     ] as const;
     }
+
+
+export const getProfilesControllerGetLeaderboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetLeaderboardInfiniteQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey, ProfilesControllerGetLeaderboardParams['skip']> = ({ signal, pageParam }) => profilesControllerGetLeaderboard({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ProfilesControllerGetLeaderboardInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>>
+export type ProfilesControllerGetLeaderboardInfiniteQueryError = unknown
+
+
+export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
+ params: ProfilesControllerGetLeaderboardParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get leaderboard
+ */
+
+export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getProfilesControllerGetLeaderboardInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getProfilesControllerGetLeaderboardQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = unknown>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
@@ -481,11 +628,82 @@ export const profilesControllerFindOne = async (id: string, options?: RequestIni
 
 
 
+export const getProfilesControllerFindOneInfiniteQueryKey = (id: string,) => {
+    return [
+    'infinite', `/profiles/${id}`
+    ] as const;
+    }
+
 export const getProfilesControllerFindOneQueryKey = (id: string,) => {
     return [
     `/profiles/${id}`
     ] as const;
     }
+
+
+export const getProfilesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerFindOneInfiniteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ProfilesControllerFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerFindOne>>>
+export type ProfilesControllerFindOneInfiniteQueryError = unknown
+
+
+export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerFindOne>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerFindOne>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get profile by ID
+ */
+
+export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getProfilesControllerFindOneInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getProfilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
@@ -591,11 +809,82 @@ export const profilesControllerGetReputationStats = async (id: string, options?:
 
 
 
+export const getProfilesControllerGetReputationStatsInfiniteQueryKey = (id: string,) => {
+    return [
+    'infinite', `/profiles/${id}/reputation`
+    ] as const;
+    }
+
 export const getProfilesControllerGetReputationStatsQueryKey = (id: string,) => {
     return [
     `/profiles/${id}/reputation`
     ] as const;
     }
+
+
+export const getProfilesControllerGetReputationStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetReputationStatsInfiniteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>> = ({ signal }) => profilesControllerGetReputationStats(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ProfilesControllerGetReputationStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>
+export type ProfilesControllerGetReputationStatsInfiniteQueryError = unknown
+
+
+export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get reputation stats
+ */
+
+export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getProfilesControllerGetReputationStatsInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getProfilesControllerGetReputationStatsQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}

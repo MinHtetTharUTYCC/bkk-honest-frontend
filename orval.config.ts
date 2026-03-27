@@ -1,7 +1,9 @@
-module.exports = {
+import { defineConfig } from 'orval';
+
+export default defineConfig({
   bkkHonestApi: {
     input: {
-      target: 'http://localhost:3000/api-json', // Or whatever path returns your OpenAPI spec from NestJS
+      target: 'http://localhost:3000/api-json', 
     },
     output: {
       mode: 'tags-split',
@@ -9,13 +11,17 @@ module.exports = {
       schemas: 'src/api/generated/model',
       client: 'react-query',
       mock: true,
-      prettier: true,
       override: {
         mutator: {
           path: 'src/api/mutator/custom-instance.ts',
           name: 'customInstance',
         },
+        query: {
+          useQuery: true,
+          useInfinite: true,
+          useInfiniteQueryParam: 'skip',
+        }
       },
     },
   },
-};
+});

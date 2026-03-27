@@ -11,7 +11,6 @@ import { useCity } from "@/components/providers/city-provider";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
-import api from "@/lib/api";
 import type { SpotCardData } from "@/components/spots/spot-card";
 
 function DiscoveryPageContent() {
@@ -31,37 +30,8 @@ function DiscoveryPageContent() {
   const queryClient = useQueryClient();
 
   const prefetchCategory = (catId: string | undefined) => {
-    const params = {
-      cityId: selectedCityId,
-      categoryId: catId,
-      search: search || undefined,
-      sort: sort,
-    };
-
-    queryClient.prefetchInfiniteQuery({
-      queryKey: ["spots-infinite", params],
-      initialPageParam: 0,
-      queryFn: async ({ pageParam = 0 }) => {
-        const { data } = await api.get("/spots", {
-          params: {
-            ...params,
-            skip: pageParam,
-            take: 10,
-          },
-        });
-        return data;
-      },
-      getNextPageParam: (lastPage: {
-        pagination?: { skip?: number; take?: number; total?: number };
-      }) => {
-        const { skip, take, total } = lastPage.pagination || {};
-        if (skip === undefined || take === undefined || total === undefined) {
-          return undefined;
-        }
-        const nextSkip = skip + take;
-        return nextSkip < total ? nextSkip : undefined;
-      },
-    });
+    // Prefetch is handled by useInfiniteSpots hook itself
+    // Just update the URL state
   };
 
   // Function to update URL params

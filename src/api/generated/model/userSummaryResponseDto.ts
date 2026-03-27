@@ -6,7 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GalleryStatsResponseDto {
-  totalImages: number;
-  totalVotes: number;
+export interface UserSummaryResponseDto {
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  level?: number;
 }

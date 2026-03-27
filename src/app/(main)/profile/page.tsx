@@ -9,6 +9,8 @@ import {
   useInfiniteUserCommunityTips,
   useInfiniteUserSpots,
   useMissionStats,
+  useCreateProfile,
+  useUpdateProfile,
 } from "@/hooks/use-api";
 import {
   Zap,
@@ -26,7 +28,6 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import api from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { ProfileTabs } from "@/components/profile/profile-tabs";
@@ -107,27 +108,31 @@ function ProfilePageContent() {
 
   const hasAttemptedAutoCreate = useRef(false);
 
+  const { mutate: createProfile } = useCreateProfile();
+  const { mutate: updateProfile } = useUpdateProfile();
+
   useEffect(() => {
     if (isProfileNotFound && user && !hasAttemptedAutoCreate.current) {
       hasAttemptedAutoCreate.current = true;
-      const createProfile = async () => {
-        try {
-          await api.post("/profiles", {
-            name:
-              user.user_metadata?.full_name ||
-              user.email?.split("@")[0] ||
-              "Pulse Scout",
-            avatarUrl: user.user_metadata?.avatar_url || "",
-          });
-        } catch (err) {
-          console.error("Failed to auto-create profile:", err);
-        } finally {
-          queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
+      createProfile(
+        {
+          name:
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "Pulse Scout",
+          avatarUrl: user.user_metadata?.avatar_url || "",
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
+          },
+          onError: (err) => {
+            console.error("Failed to auto-create profile:", err);
+          }
         }
-      };
-      createProfile();
+      );
     }
-  }, [isProfileNotFound, user, queryClient]);
+  }, [isProfileNotFound, user, queryClient, createProfile]);
 
   const userId = user ? "me" : "";
 
@@ -168,13 +173,25 @@ function ProfilePageContent() {
     try {
       setSaveError(null);
       setIsSaving(true);
-      await api.patch("/profiles/me", {
-        name: editName,
-        bio: editBio,
-        country: editCountry,
+      await new Promise((resolve, reject) => {
+        updateProfile(
+          {
+            name: editName,
+            bio: editBio,
+            country: editCountry,
+          },
+          {
+            onSuccess: () => {
+              queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
+              setIsEditing(false);
+              resolve(true);
+            },
+            onError: (err: any) => {
+              reject(err);
+            }
+          }
+        );
       });
-      await queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
-      setIsEditing(false);
     } catch (err: any) {
       console.error(err);
       const message = err.response?.data?.message || "Failed to update profile. Please try again.";
@@ -197,19 +214,27 @@ function ProfilePageContent() {
     try {
       setUploadError(null);
       setIsUploading(true);
+      
       const formData = new FormData();
-      formData.append("image", selectedFile);
+      formData.append("avatarUrl", selectedFile);
 
-      await api.patch("/profiles/me", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      await queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
-      setSelectedFile(null);
-      setPreviewUrl(null);
-    } catch (err: any) {
-      console.error(err);
-      const message = err.response?.data?.message || "Failed to upload avatar. Please try again.";
-      setUploadError(Array.isArray(message) ? message[0] : message);
+      updateProfile(
+        {
+          avatarUrl: selectedFile as any, // FormData supports file appending
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
+            setSelectedFile(null);
+            setPreviewUrl(null);
+          },
+          onError: (err: any) => {
+            console.error(err);
+            const message = err.response?.data?.message || "Failed to upload avatar. Please try again.";
+            setUploadError(Array.isArray(message) ? message[0] : message);
+          }
+        }
+      );
     } finally {
       setIsUploading(false);
     }

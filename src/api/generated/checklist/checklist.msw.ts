@@ -6,6 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  faker
+} from '@faker-js/faker';
+
+import {
   HttpResponse,
   http
 } from 'msw';
@@ -13,23 +17,40 @@ import type {
   RequestHandlerOptions
 } from 'msw';
 
+import type {
+  ChecklistItemDto,
+  PaginatedChecklistItemResponseDto
+} from '../model';
 
 
-export const getChecklistControllerCreateMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+export const getChecklistControllerCreateResponseMock = (overrideResponse: Partial<Extract<ChecklistItemDto, object>> = {}): ChecklistItemDto => ({id: faker.string.alpha({length: {min: 10, max: 20}}), spotId: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), completed: faker.datatype.boolean(), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', spot: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
+
+export const getChecklistControllerFindAllResponseMock = (overrideResponse: Partial<Extract<PaginatedChecklistItemResponseDto, object>> = {}): PaginatedChecklistItemResponseDto => ({data: Array.from({ length: faker.number.int({min: 1, max: 10}) }, (_, i) => i + 1).map(() => ({id: faker.string.alpha({length: {min: 10, max: 20}}), spotId: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), completed: faker.datatype.boolean(), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', spot: faker.helpers.arrayElement([{}, undefined])})), pagination: {}, ...overrideResponse})
+
+export const getChecklistControllerFindOneResponseMock = (overrideResponse: Partial<Extract<ChecklistItemDto, object>> = {}): ChecklistItemDto => ({id: faker.string.alpha({length: {min: 10, max: 20}}), spotId: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), completed: faker.datatype.boolean(), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', spot: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
+
+export const getChecklistControllerUpdateResponseMock = (overrideResponse: Partial<Extract<ChecklistItemDto, object>> = {}): ChecklistItemDto => ({id: faker.string.alpha({length: {min: 10, max: 20}}), spotId: faker.string.alpha({length: {min: 10, max: 20}}), userId: faker.string.alpha({length: {min: 10, max: 20}}), completed: faker.datatype.boolean(), createdAt: faker.date.past().toISOString().slice(0, 19) + 'Z', spot: faker.helpers.arrayElement([{}, undefined]), ...overrideResponse})
+
+
+export const getChecklistControllerCreateMockHandler = (overrideResponse?: ChecklistItemDto | ((info: Parameters<Parameters<typeof http.post>[1]>[0]) => Promise<ChecklistItemDto> | ChecklistItemDto), options?: RequestHandlerOptions) => {
   return http.post('*/checklist', async (info: Parameters<Parameters<typeof http.post>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getChecklistControllerCreateResponseMock(),
       { status: 201
       })
   }, options)
 }
 
-export const getChecklistControllerFindAllMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+export const getChecklistControllerFindAllMockHandler = (overrideResponse?: PaginatedChecklistItemResponseDto | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<PaginatedChecklistItemResponseDto> | PaginatedChecklistItemResponseDto), options?: RequestHandlerOptions) => {
   return http.get('*/checklist', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getChecklistControllerFindAllResponseMock(),
       { status: 200
       })
   }, options)
@@ -45,21 +66,25 @@ export const getChecklistControllerGetStatsMockHandler = (overrideResponse?: voi
   }, options)
 }
 
-export const getChecklistControllerFindOneMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+export const getChecklistControllerFindOneMockHandler = (overrideResponse?: ChecklistItemDto | ((info: Parameters<Parameters<typeof http.get>[1]>[0]) => Promise<ChecklistItemDto> | ChecklistItemDto), options?: RequestHandlerOptions) => {
   return http.get('*/checklist/:id', async (info: Parameters<Parameters<typeof http.get>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getChecklistControllerFindOneResponseMock(),
       { status: 200
       })
   }, options)
 }
 
-export const getChecklistControllerUpdateMockHandler = (overrideResponse?: void | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<void> | void), options?: RequestHandlerOptions) => {
+export const getChecklistControllerUpdateMockHandler = (overrideResponse?: ChecklistItemDto | ((info: Parameters<Parameters<typeof http.patch>[1]>[0]) => Promise<ChecklistItemDto> | ChecklistItemDto), options?: RequestHandlerOptions) => {
   return http.patch('*/checklist/:id', async (info: Parameters<Parameters<typeof http.patch>[1]>[0]) => {
-  if (typeof overrideResponse === 'function') {await overrideResponse(info); }
 
-    return new HttpResponse(null,
+
+    return HttpResponse.json(overrideResponse !== undefined
+    ? (typeof overrideResponse === "function" ? await overrideResponse(info) : overrideResponse)
+    : getChecklistControllerUpdateResponseMock(),
       { status: 200
       })
   }, options)

@@ -6,7 +6,4 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GalleryStatsResponseDto {
-  totalImages: number;
-  totalVotes: number;
-}
+export type ChecklistItemDtoSpot = { [key: string]: unknown };

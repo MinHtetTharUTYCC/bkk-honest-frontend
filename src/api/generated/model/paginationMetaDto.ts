@@ -6,4 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface PaginationMetaDto { [key: string]: unknown }
+export interface PaginationMetaDto {
+  skip: number;
+  take: number;
+  total: number;
+  hasMore: boolean;
+}

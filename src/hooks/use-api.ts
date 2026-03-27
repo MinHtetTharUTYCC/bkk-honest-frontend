@@ -1,23 +1,99 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import { useAuth } from '@/components/providers/auth-provider';
-import api from '@/lib/api';
+import { useQueryClient } from '@tanstack/react-query';
 import { components } from '@/types/api';
 
+import { 
+    useCommentsControllerFindByTipInfinite, 
+    useCommentsControllerFindByScamAlertInfinite,
+    useCommentsControllerCreate,
+    useCommentsControllerUpdate,
+    useCommentsControllerDelete
+} from '@/api/generated/comments/comments';
+import { 
+    useCommunityTipsControllerFindBySpotInfinite,
+    useCommunityTipsControllerFindBySpot,
+    useCommunityTipsControllerCreate,
+    useCommunityTipsControllerUpdate,
+    useCommunityTipsControllerDelete,
+    useCommunityTipsControllerFindMyTipsInfinite,
+    useCommunityTipsControllerFindByUserInfinite
+} from '@/api/generated/community-tips/community-tips';
+import { 
+    useGalleryControllerGetGalleryInfinite,
+    useGalleryControllerGetGallery,
+    useGalleryControllerDeleteImage,
+    useGalleryControllerFlagImage
+} from '@/api/generated/gallery/gallery';
+import { GalleryControllerGetGallerySort } from '@/api/generated/model/galleryControllerGetGallerySort';
+import { 
+    usePriceReportsControllerFindBySpotInfinite,
+    usePriceReportsControllerFindBySpot,
+    usePriceReportsControllerCreate,
+    usePriceReportsControllerFindMyReportsInfinite,
+    usePriceReportsControllerFindByUserInfinite
+} from '@/api/generated/price-reports/price-reports';
+import { 
+    useLiveVibesControllerFindAllInfinite,
+    useLiveVibesControllerFindAll as _useLiveVibesControllerFindAll,
+    useLiveVibesControllerCreate 
+} from '@/api/generated/live-vibes/live-vibes';
+import { 
+    useScamAlertsControllerFindAllInfinite,
+    useScamAlertsControllerFindBySlug,
+    useScamAlertsControllerFindAll,
+    useScamAlertsControllerCreate,
+    useScamAlertsControllerUpdate,
+    useScamAlertsControllerDelete,
+    useScamAlertsControllerFindMyAlertsInfinite,
+    useScamAlertsControllerFindByUserInfinite
+} from '@/api/generated/scam-alerts/scam-alerts';
+import { 
+    useSpotsControllerFindOne, 
+    useSpotsControllerFindBySlug, 
+    useSpotsControllerFindAll, 
+    useSpotsControllerFindNearby, 
+    useSpotsControllerSearch, 
+    useSpotsControllerFindAllInfinite,
+    useSpotsControllerCreate,
+    useSpotsControllerUpdate,
+    useSpotsControllerFindMySpotsInfinite,
+    useSpotsControllerFindByUserInfinite,
+    useSpotsControllerReverseGeocode
+} from '@/api/generated/spots/spots';
+import { 
+    useVotesControllerCreateTipVote,
+    useVotesControllerDeleteVote
+} from '@/api/generated/votes/votes';
+import { useCategoriesControllerFindAll } from '@/api/generated/categories/categories';
+import { useCitiesControllerFindAll } from '@/api/generated/cities/cities';
+import { 
+    useProfilesControllerGetMe, 
+    useProfilesControllerGetLeaderboard, 
+    useProfilesControllerFindOne,
+    useProfilesControllerCreate,
+    useProfilesControllerUpdate
+} from '@/api/generated/profiles/profiles';
+import { 
+    useChecklistControllerCreate, 
+    useChecklistControllerUpdate, 
+    useChecklistControllerDelete, 
+    useChecklistControllerFindAllInfinite, 
+    useChecklistControllerGetStats 
+} from '@/api/generated/checklist/checklist';
+import { 
+    useReportsControllerCreateReport, 
+    useReportsControllerGetReports 
+} from '@/api/generated/reports/reports';
+import { 
+    useCommentReactionsControllerToggleReaction, 
+    useCommentReactionsControllerGetReactionSummary
+} from '@/api/generated/comment-reactions/comment-reactions';
+import { useContactControllerSubmitContactForm } from '@/api/generated/contact/contact';
 
-type PaginatedSpots = components['schemas']['PaginatedSpotsWithStatsResponseDto'];
-type PaginatedScamAlerts = components['schemas']['PaginatedScamAlertsResponseDto'];
-type PaginatedGallery = components['schemas']['PaginatedGalleryImagesResponseDto'];
-type PaginatedLiveVibes = { data: unknown[]; pagination?: { skip?: number; take?: number; total?: number; hasMore?: boolean }; skip?: number; take?: number; total?: number };
+import { ScamAlertsControllerFindAllSort } from '@/api/generated/model/scamAlertsControllerFindAllSort';
+
 type PaginationLike = { pagination?: { skip?: number; take?: number; total?: number; hasMore?: boolean }; skip?: number; take?: number; total?: number };
-
-function unwrapApiData(payload: unknown): unknown {
-    if (payload && typeof payload === 'object' && 'data' in payload) {
-        return (payload as { data?: unknown }).data ?? payload;
-    }
-    return payload;
-}
 
 function getNextSkipFromPage(lastPage: unknown, requireHasMore = false): number | undefined {
     if (!lastPage || typeof lastPage !== 'object') {
@@ -45,175 +121,113 @@ function getNextSkipFromPage(lastPage: unknown, requireHasMore = false): number 
 // --- Profiles ---
 
 export function useMyProfile() {
-    const { user } = useAuth();
-    return useQuery({
-        queryKey: ['profile', 'me'],
-        queryFn: async () => {
-            const response = await api.get<unknown>('/profiles/me');
-            const data = response.data;
-            return unwrapApiData(data);
-        },
-        enabled: !!user,
-        retry: false });
+    const query = useProfilesControllerGetMe({ query: { retry: false } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useLeaderboard(take = 5) {
-    return useQuery({
-        queryKey: ['leaderboard', take],
-        queryFn: async () => {
-            const { data } = await api.get(`/profiles/leaderboard/top?take=${take}`);
-            return unwrapApiData(data);
-        },
-        staleTime: 5 * 60 * 1000 });
+    const query = useProfilesControllerGetLeaderboard({ take }, { query: { staleTime: 5 * 60 * 1000 } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useProfile(id: string) {
-    return useQuery({
-        queryKey: ['profile', id],
-        queryFn: async () => {
-            const endpoint = id === 'me' ? '/profiles/me' : `/profiles/${id}`;
-            const response = await api.get<unknown>(endpoint);
-            const data = response.data;
-            return unwrapApiData(data);
-        },
-        enabled: !!id,
-        retry: false });
+    const query = useProfilesControllerFindOne(id, { query: { enabled: !!id, retry: false } });
+    return { ...query, data: query.data?.data };
 }
 
-export function useUserPriceReports(userId: string) {
-    return useQuery({
-        queryKey: ['user-price-reports', userId],
-        queryFn: async () => {
-            const endpoint = userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`;
-            const { data } = await api.get(endpoint);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: !!userId });
+export function useCreateProfile() {
+    const mutation = useProfilesControllerCreate();
+    return {
+        ...mutation,
+        mutate: (data) => mutation.mutate({ data }),
+        mutateAsync: (data) => mutation.mutateAsync({ data })
+    };
 }
 
-export function useUserScamAlerts(userId: string) {
-    return useQuery({
-        queryKey: ['user-scam-alerts', userId],
-        queryFn: async () => {
-            const endpoint = userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`;
-            const { data } = await api.get(endpoint);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: !!userId });
-}
-
-export function useUserCommunityTips(userId: string) {
-    return useQuery({
-        queryKey: ['user-community-tips', userId],
-        queryFn: async () => {
-            const endpoint = userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`;
-            const { data } = await api.get(endpoint);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: !!userId });
+export function useUpdateProfile() {
+    const mutation = useProfilesControllerUpdate();
+    return {
+        ...mutation,
+        mutate: (data) => mutation.mutate({ data }),
+        mutateAsync: (data) => mutation.mutateAsync({ data })
+    };
 }
 
 export function useInfiniteUserPriceReports(userId: string) {
-    return useInfiniteQuery({
-        queryKey: ['user-price-reports-infinite', userId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const endpoint = userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`;
-            const { data } = await api.get(endpoint, {
-                params: { skip: pageParam, take: 10 }
-            });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        enabled: !!userId });
+    const isMe = userId === 'me';
+    return isMe 
+        ? usePriceReportsControllerFindMyReportsInfinite({ take: 10 }, {
+            query: { queryKey: ['user-price-reports-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+        })
+        : usePriceReportsControllerFindByUserInfinite(userId, { take: 10 }, {
+            query: { 
+                queryKey: ['user-price-reports-infinite', userId], 
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                enabled: !!userId
+            }
+        });
 }
 
 export function useInfiniteUserScamAlerts(userId: string) {
-    return useInfiniteQuery({
-        queryKey: ['user-scam-alerts-infinite', userId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const endpoint = userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`;
-            const { data } = await api.get(endpoint, {
-                params: { skip: pageParam, take: 10 }
-            });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        enabled: !!userId });
+    const isMe = userId === 'me';
+    return isMe 
+        ? useScamAlertsControllerFindMyAlertsInfinite({ take: 10 }, {
+            query: { queryKey: ['user-scam-alerts-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+        })
+        : useScamAlertsControllerFindByUserInfinite(userId, { take: 10 }, {
+            query: { 
+                queryKey: ['user-scam-alerts-infinite', userId], 
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                enabled: !!userId 
+            }
+        });
 }
 
 export function useInfiniteUserCommunityTips(userId: string) {
-    return useInfiniteQuery({
-        queryKey: ['user-community-tips-infinite', userId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const endpoint = userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`;
-            const { data } = await api.get(endpoint, {
-                params: { skip: pageParam, take: 10 }
-            });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        enabled: !!userId });
+    const isMe = userId === 'me';
+    return isMe 
+        ? useCommunityTipsControllerFindMyTipsInfinite({ take: 10 }, {
+            query: { queryKey: ['user-community-tips-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+        })
+        : useCommunityTipsControllerFindByUserInfinite(userId, { take: 10 }, {
+            query: { 
+                queryKey: ['user-community-tips-infinite', userId], 
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                enabled: !!userId 
+            }
+        });
 }
 
 export function useInfiniteUserSpots(userId: string) {
-    return useInfiniteQuery({
-        queryKey: ['user-spots-infinite', userId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const endpoint = userId === 'me' ? '/spots/mine' : `/spots/user/${userId}`;
-            const { data } = await api.get(endpoint, {
-                params: { skip: pageParam, take: 10 }
-            });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        enabled: !!userId });
+    const isMe = userId === 'me';
+    return isMe 
+        ? useSpotsControllerFindMySpotsInfinite({ take: 10 }, {
+            query: { queryKey: ['user-spots-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+        })
+        : useSpotsControllerFindByUserInfinite(userId, { take: 10 }, {
+            query: { 
+                queryKey: ['user-spots-infinite', userId], 
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                enabled: !!userId 
+            }
+        });
 }
 
 // --- Spots ---
 
 export function useSpot(id: string) {
-    return useQuery({
-        queryKey: ['spot', id],
-        queryFn: async () => {
-            const { data } = await api.get<unknown>(`/spots/${id}`);
-            return unwrapApiData(data);
-        },
-        enabled: !!id });
+    const query = useSpotsControllerFindOne(id, { query: { enabled: !!id } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useSpotBySlug(citySlug: string, spotSlug: string) {
-    return useQuery({
-        queryKey: ['spot', citySlug, spotSlug],
-        queryFn: async () => {
-            const { data } = await api.get<unknown>(`/spots/by-slug/${citySlug}/${spotSlug}`);
-            return unwrapApiData(data);
-        },
-        enabled: !!citySlug && !!spotSlug });
+    const query = useSpotsControllerFindBySlug(citySlug, spotSlug, { query: { enabled: !!citySlug && !!spotSlug } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useScamAlertBySlug(citySlug: string, alertSlug: string) {
-    return useQuery({
-        queryKey: ['scam-alert', citySlug, alertSlug],
-        queryFn: async () => {
-            const { data } = await api.get<unknown>(`/scam-alerts/by-slug/${citySlug}/${alertSlug}`);
-            return unwrapApiData(data);
-        },
-        enabled: !!citySlug && !!alertSlug });
+    const query = useScamAlertsControllerFindBySlug(citySlug, alertSlug, { query: { enabled: !!citySlug && !!alertSlug } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useSpots(params?: {
@@ -222,8 +236,7 @@ export function useSpots(params?: {
     search?: string;
     sort?: 'newest' | 'popular';
 }) {
-    // Clean up undefined parameters
-    const cleanParams: Record<string, string> = {};
+    const cleanParams: any = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -231,16 +244,8 @@ export function useSpots(params?: {
         if (params.sort) cleanParams.sort = params.sort;
     }
 
-    return useQuery({
-        queryKey: ['spots', cleanParams],
-        queryFn: async () => {
-            const { data } = await api.get<PaginatedSpots>('/spots', { params: cleanParams });
-            // The backend returns { data: [...] }
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        staleTime: 5 * 60 * 1000, // Increased to 5 minutes
-    });
+    const query = useSpotsControllerFindAll(cleanParams, { query: { staleTime: 5 * 60 * 1000 } });
+    return { ...query, data: query.data?.data ? (Array.isArray(query.data.data) ? query.data.data : [query.data.data]) : [] };
 }
 
 export function useInfiniteSpots(params?: {
@@ -250,106 +255,70 @@ export function useInfiniteSpots(params?: {
     sort?: 'newest' | 'popular';
     take?: number;
 }) {
-    const cleanParams: Record<string, string> = {};
+    const cleanParams: any = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.search) cleanParams.search = params.search;
         if (params.sort) cleanParams.sort = params.sort;
+        cleanParams.take = params.take || 10;
     }
 
-    return useInfiniteQuery({
-        queryKey: ['spots-infinite', cleanParams],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get<PaginatedSpots>('/spots', {
-                params: {
-                    ...cleanParams,
-                    skip: pageParam,
-                    take: params?.take || 10 } });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        staleTime: 5 * 60 * 1000, // Increased to 5 minutes
+    return useSpotsControllerFindAllInfinite(cleanParams, {
+        query: {
+            queryKey: ['spots-infinite', cleanParams],
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+            staleTime: 5 * 60 * 1000,
+        }
     });
 }
 
 export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number; categoryId?: string; limit?: number }, enabled = true) {
-    return useQuery({
-        queryKey: ['spots-nearby', params],
-        queryFn: async () => {
-            const { data } = await api.get<PaginatedSpots>('/spots/nearby', { params });
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: enabled && !!params.latitude && !!params.longitude,
-        placeholderData: (prev) => prev,
-        staleTime: 60_000 });
+    const query = useSpotsControllerFindNearby(params, {
+        query: {
+            queryKey: ['spots-nearby', params],
+            enabled: enabled && !!params.latitude && !!params.longitude,
+            placeholderData: (prev: any) => prev,
+            staleTime: 60_000
+        }
+    });
+    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
 }
 
-export function usePopularArea() {
-    return useQuery({
-        queryKey: ['popular-area'],
-        queryFn: async () => {
-            const { data } = await api.get<{ latitude: number; longitude: number; cityName: string; spotCount: number }>('/spots/popular-area');
-            return data;
-        } });
-}
+export function useSpotSearch(queryStr: string, cityId?: string, limit: number = 20) {
+    const params: any = { q: queryStr };
+    if (cityId) params.cityId = cityId;
+    if (limit !== 20) params.limit = limit;
 
-export function useSpotSearch(query: string, cityId?: string, limit: number = 20) {
-    return useQuery({
-        queryKey: ['spot-search', query, cityId],
-        queryFn: async () => {
-            const params = new URLSearchParams();
-            if (query) params.set('q', query);
-            if (cityId) params.set('cityId', cityId);
-            if (limit !== 20) params.set('limit', limit.toString());
-            const { data } = await api.get(`/spots/search${params.toString() ? `?${params}` : ''}`);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: query.trim().length >= 1 });
+    const query = useSpotsControllerSearch(params, {
+        query: {
+            queryKey: ['spot-search', queryStr, cityId],
+            enabled: queryStr.trim().length >= 1
+        }
+    });
+    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
 }
 
 export function useSpotPriceReports(spotId: string) {
-    return useQuery({
-        queryKey: ['price-reports', spotId],
-        queryFn: async () => {
-            const { data } = await api.get(`/price-reports/spot/${spotId}`);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: !!spotId });
+    const query = usePriceReportsControllerFindBySpot(spotId, { query: { enabled: !!spotId } });
+    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
 }
 
 export function useInfiniteSpotPriceReports(spotId: string) {
-    return useInfiniteQuery({
-        queryKey: ['price-reports-infinite', spotId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get(`/price-reports/spot/${spotId}`, {
-                params: {
-                    skip: pageParam,
-                    take: 10 } });
-            return data;
+    return usePriceReportsControllerFindBySpotInfinite(spotId, {
+        take: 10,
+    }, {
+        query: {
+            queryKey: ['price-reports-infinite', spotId],
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, false),
+            enabled: !!spotId
         },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        enabled: !!spotId });
+    });
 }
 
 export function useSpotTips(spotId: string) {
-    return useQuery({
-        queryKey: ['tips', spotId],
-        queryFn: async () => {
-            const { data } = await api.get(`/community-tips/spot/${spotId}`);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        enabled: !!spotId });
+    const query = useCommunityTipsControllerFindBySpot(spotId, {}, { query: { enabled: !!spotId } });
+    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
 }
 
 export function useInfiniteSpotTips(
@@ -357,100 +326,52 @@ export function useInfiniteSpotTips(
     type: 'TRY' | 'AVOID',
     sort: 'newest' | 'popular' = 'popular',
 ) {
-    return useInfiniteQuery({
-        queryKey: ['tips-infinite', spotId, type, sort],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get(`/community-tips/spot/${spotId}`, {
-                params: {
-                    skip: pageParam,
-                    take: 10,
-                    type,
-                    sort } });
-            return data;
+    const normalizedType = type === 'TRY' 
+      ? 'TRY' 
+      : 'AVOID';
+      
+    const normalizedSort = sort === 'popular'
+      ? 'popular'
+      : 'newest';
+
+    return useCommunityTipsControllerFindBySpotInfinite(spotId, {
+        type: normalizedType,
+        sort: normalizedSort,
+        take: 10,
+    }, {
+        query: {
+            queryKey: ['tips-infinite', spotId, normalizedType, normalizedSort],
+            staleTime: 5 * 60 * 1000,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
         },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage, true);
-        },
-        enabled: !!spotId,
-        staleTime: 5 * 60 * 1000, // 5 minutes (Matches Discovery spots)
     });
 }
 
 export function useSpotGallery(spotId: string, limit: number = 12, sort: 'newest' | 'popular' = 'newest') {
-    return useQuery({
-        queryKey: ['gallery', spotId, limit, sort],
-        queryFn: async () => {
-            const { data } = await api.get<PaginatedGallery>(
-                `/gallery/spot/${spotId}?take=${limit}&sort=${sort}`,
-            );
-            return data;
-        },
-        enabled: !!spotId });
+    const normalizedSort = sort === 'popular'
+        ? GalleryControllerGetGallerySort.popular
+        : GalleryControllerGetGallerySort.newest;
+        
+    const query = useGalleryControllerGetGallery(spotId, { take: limit, sort: normalizedSort }, { query: { enabled: !!spotId } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular' = 'newest') {
-    return useInfiniteQuery({
-        queryKey: ['gallery-infinite', spotId, sort],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get<PaginatedGallery>(`/gallery/spot/${spotId}`, {
-                params: {
-                    skip: pageParam,
-                    take: 12,
-                    sort } });
-            return data;
+    const normalizedSort = sort === 'popular'
+        ? GalleryControllerGetGallerySort.popular
+        : GalleryControllerGetGallerySort.newest;
+        
+    return useGalleryControllerGetGalleryInfinite(spotId, {
+        take: 12,
+        sort: normalizedSort,
+    }, {
+        query: {
+            queryKey: ['gallery-infinite', spotId, normalizedSort],
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            enabled: !!spotId
         },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage, true);
-        },
-        enabled: !!spotId });
-}
-
-export function useUploadSpotImage() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async ({ spotId, file }: { spotId: string; file: File }) => {
-            const formData = new FormData();
-            formData.append('image', file);
-            const { data } = await api.post(`/gallery/upload/${spotId}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' } });
-            return data;
-        },
-        onSuccess: (_, { spotId }) => {
-            // Note: We avoid broad invalidation of 'gallery-infinite' here because 
-            // GalleryTab handles manual prepending to ensure the new item 
-            // stays at the top regardless of backend sort (Popular vs Newest).
-            // Invalidation would trigger an immediate re-fetch that overwrites the manual placement.
-            queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['spot', spotId] });
-        } });
-}
-
-export function useDeleteGalleryImage() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async ({ id }: { id: string; spotId: string }) => {
-            await api.delete(`/gallery/${id}`);
-        },
-        onSuccess: (_, { spotId }) => {
-            queryClient.invalidateQueries({ queryKey: ['gallery', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['gallery-infinite', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['spot', spotId] });
-        } });
-}
-
-export function useFlagGalleryImage() {
-    return useMutation({
-        mutationFn: async (id: string) => {
-            const { data } = await api.post(`/gallery/${id}/flag`);
-            return data;
-        }
     });
 }
-
-import { useCategoriesControllerFindAll } from '@/api/generated/categories/categories';
-import { useCitiesControllerFindAll } from '@/api/generated/cities/cities';
 
 // --- Metadata ---
 
@@ -467,9 +388,10 @@ export function useCities() {
 // --- Social & Alerts ---
 
 export function useCreateSpot() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: {
+    const mutation = useSpotsControllerCreate();
+    return {
+        ...mutation,
+        mutate: (payload: {
             name: string;
             address: string;
             categoryId: string;
@@ -477,49 +399,26 @@ export function useCreateSpot() {
             latitude: number;
             longitude: number;
             image?: File;
-        }) => {
-            const formData = new FormData();
-            formData.append('name', payload.name);
-            formData.append('address', payload.address);
-            formData.append('categoryId', payload.categoryId);
-            formData.append('cityId', payload.cityId);
-            formData.append('latitude', payload.latitude.toString());
-            formData.append('longitude', payload.longitude.toString());
-            
-            if (payload.image) {
-                formData.append('image', payload.image);
-            }
-
-            const { data } = await api.post('/spots', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' } });
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['spots'] });
-            queryClient.invalidateQueries({ queryKey: ['spots-infinite'] });
-            queryClient.invalidateQueries({ queryKey: ['spots-nearby'] });
-        } });
+        }) => mutation.mutate({ data: payload as any }),
+        mutateAsync: (payload: {
+            name: string;
+            address: string;
+            categoryId: string;
+            cityId: string;
+            latitude: number;
+            longitude: number;
+            image?: File;
+        }) => mutation.mutateAsync({ data: payload as any })
+    };
 }
 
 export function useUpdateSpot() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: Record<string, string | Blob | number | undefined> }) => {
-            const formData = new FormData();
-            Object.entries(payload).forEach(([key, value]) => {
-                if (value !== undefined) {
-                    formData.append(key, typeof value === 'number' ? value.toString() : value);
-                }
-            });
-            const { data } = await api.patch(`/spots/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' } });
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['spot'] });
-            queryClient.invalidateQueries({ queryKey: ['spots'] });
-            queryClient.invalidateQueries({ queryKey: ['user-spots-infinite'] });
-        } });
+    const mutation = useSpotsControllerUpdate();
+    return {
+        ...mutation,
+        mutate: ({ id, payload }: { id: string; payload: any }) => mutation.mutate({ id, data: payload }),
+        mutateAsync: ({ id, payload }: { id: string; payload: any }) => mutation.mutateAsync({ id, data: payload })
+    };
 }
 
 export function useScamAlerts(params?: {
@@ -529,26 +428,22 @@ export function useScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    // Clean up undefined parameters
-    const cleanParams: Record<string, string | number> = {};
+    const cleanParams: any = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
-        if (params.sort) cleanParams.sort = params.sort;
+        if (params.sort) cleanParams.sort = params.sort === 'popular' ? ScamAlertsControllerFindAllSort.popular : ScamAlertsControllerFindAllSort.newest;
         if (params.search) cleanParams.search = params.search;
         if (params.take) cleanParams.take = params.take;
     }
 
-    return useQuery({
-        queryKey: ['scam-alerts', cleanParams],
-        queryFn: async () => {
-            const { data } = await api.get<PaginatedScamAlerts>('/scam-alerts', {
-                params: cleanParams });
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+    const query = useScamAlertsControllerFindAll(cleanParams, {
+        query: {
+            queryKey: ['scam-alerts', cleanParams],
+            staleTime: 5 * 60 * 1000,
+        }
     });
+    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
 }
 
 export function useInfiniteScamAlerts(params?: {
@@ -558,134 +453,84 @@ export function useInfiniteScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: Record<string, string> = {};
+    const cleanParams: any = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
-        if (params.sort) cleanParams.sort = params.sort;
+        if (params.sort) {
+             cleanParams.sort = params.sort === 'popular' ? ScamAlertsControllerFindAllSort.popular : ScamAlertsControllerFindAllSort.newest;
+        }
         if (params.search) cleanParams.search = params.search;
+        cleanParams.take = params.take || 10;
     }
 
-    return useInfiniteQuery({
-        queryKey: ['scam-alerts-infinite', cleanParams],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get<PaginatedScamAlerts>('/scam-alerts', {
-                params: {
-                    ...cleanParams,
-                    skip: pageParam,
-                    take: params?.take || 10 } });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        staleTime: 5 * 60 * 1000, // 5 minutes
+    return useScamAlertsControllerFindAllInfinite(cleanParams, {
+        query: {
+            queryKey: ['scam-alerts-infinite', cleanParams],
+            staleTime: 5 * 60 * 1000,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, false),
+        }
     });
 }
 
 export function useLiveVibes(params?: { spotId?: string; cityId?: string; take?: number }) {
-    const query = new URLSearchParams();
-    if (params?.spotId) query.set('spotId', params.spotId);
-    if (params?.cityId) query.set('cityId', params.cityId);
-    if (params?.take) query.set('take', params.take.toString());
-    const qs = query.toString();
-    return useQuery({
-        queryKey: ['live-vibes', params],
-        queryFn: async () => {
-            const { data } = await api.get<unknown>(`/live-vibes${qs ? `?${qs}` : ''}`);
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        staleTime: 60 * 1000, // 1 minute
+    const query = _useLiveVibesControllerFindAll({
+        ...params,
+        take: params?.take || 10
+    }, {
+        query: {
+            queryKey: ['live-vibes', params],
+            staleTime: 60 * 1000,
+        }
     });
+    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
 }
 
 export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string; categoryId?: string; take?: number }) {
-    return useInfiniteQuery({
-        queryKey: ['live-vibes-infinite', params],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get<unknown>('/live-vibes', {
-                params: {
-                    ...params,
-                    skip: pageParam,
-                    take: params?.take || 10 } });
-            
-            // Inspect the raw data first before unwrapping
-            if (data && typeof data === 'object' && 'data' in data && 'pagination' in data) {
-                return data as PaginatedLiveVibes;
-            }
-            
-            const unwrapped = unwrapApiData(data);
-            if (unwrapped && typeof unwrapped === 'object' && 'data' in unwrapped) {
-                return unwrapped as PaginatedLiveVibes;
-            }
-            
-            const takeCount = params?.take || 10;
-            const items = Array.isArray(unwrapped) ? unwrapped : [];
-            const skip = Number(pageParam) || 0;
-            const hasMore = items.length >= takeCount;
-
-            return {
-                data: items,
-                pagination: { 
-                    skip, 
-                    take: takeCount, 
-                    total: hasMore ? skip + takeCount + 1 : skip + items.length, 
-                    hasMore
-                }
-            } satisfies PaginatedLiveVibes;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginatedLiveVibes) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        staleTime: 60 * 1000, // 1 minute
+    return useLiveVibesControllerFindAllInfinite({
+        ...params,
+        take: params?.take || 10
+    }, {
+        query: {
+            queryKey: ['live-vibes-infinite', params],
+            staleTime: 60 * 1000,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, false),
+        }
     });
 }
 
 // --- Comments ---
 
 export function useTipComments(tipId: string) {
-    return useInfiniteQuery({
-        queryKey: ['tip-comments', tipId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get(`/comments/tip/${tipId}?skip=${pageParam}&take=10`);
-            return data;
-        },
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage, true);
-        },
-        initialPageParam: 0,
-        enabled: !!tipId });
+    return useCommentsControllerFindByTipInfinite(tipId, {
+        take: 10,
+    }, {
+        query: {
+            queryKey: ['tip-comments', tipId],
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            enabled: !!tipId
+        }
+    });
 }
 
-
- 
 export function useScamComments(scamAlertId: string) {
-    return useInfiniteQuery({
-        queryKey: ['scam-comments', scamAlertId],
-        queryFn: async ({ pageParam = 0 }) => {
-            const { data } = await api.get(`/comments/alert/${scamAlertId}?skip=${pageParam}&take=10`);
-            return data;
-        },
-        getNextPageParam: (lastPage) => {
-            return getNextSkipFromPage(lastPage, true);
-        },
-        initialPageParam: 0,
-        enabled: !!scamAlertId });
+    return useCommentsControllerFindByScamAlertInfinite(scamAlertId, {
+        take: 10,
+    }, {
+        query: {
+            queryKey: ['scam-comments', scamAlertId],
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            enabled: !!scamAlertId
+        }
+    });
 }
+
 export function useCreateComment() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: {
-            scamAlertId?: string;
-            communityTipId?: string;
-            content: string;
-        }) => {
-            const apiPayload: Record<string, string> = {
-                text: payload.content };
-            
+    const mutation = useCommentsControllerCreate();
+    return {
+        ...mutation,
+        mutate: (payload: { scamAlertId?: string; communityTipId?: string; content: string }) => {
+            const apiPayload: any = { text: payload.content };
             if (payload.scamAlertId) {
                 apiPayload.targetType = 'SCAM_ALERT';
                 apiPayload.scamAlertId = payload.scamAlertId;
@@ -693,426 +538,270 @@ export function useCreateComment() {
                 apiPayload.targetType = 'COMMUNITY_TIP';
                 apiPayload.communityTipId = payload.communityTipId;
             }
-
-            const { data } = await api.post('/comments', apiPayload);
-            return data;
+            return mutation.mutate({ data: apiPayload });
         },
-        onSuccess: (_, variables) => {
-            if (variables.scamAlertId) {
-                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
-                queryClient.invalidateQueries({ queryKey: ['scam-alerts-infinite'] });
+        mutateAsync: async (payload: { scamAlertId?: string; communityTipId?: string; content: string }) => {
+            const apiPayload: any = { text: payload.content };
+            if (payload.scamAlertId) {
+                apiPayload.targetType = 'SCAM_ALERT';
+                apiPayload.scamAlertId = payload.scamAlertId;
+            } else if (payload.communityTipId) {
+                apiPayload.targetType = 'COMMUNITY_TIP';
+                apiPayload.communityTipId = payload.communityTipId;
             }
-            if (variables.communityTipId) {
-                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
-                queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
-            }
-        } });
+            return mutation.mutateAsync({ data: apiPayload });
+        }
+    };
 }
 
 export function useUpdateComment() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: { id: string; content: string; scamAlertId?: string; communityTipId?: string }) => {
-            const { data } = await api.patch(`/comments/${payload.id}`, { text: payload.content });
-            return data;
-        },
-        onSuccess: (_, variables) => {
-            if (variables.scamAlertId) {
-                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
-            }
-            if (variables.communityTipId) {
-                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
-            }
-        }
-    });
+    const mutation = useCommentsControllerUpdate();
+    return {
+        ...mutation,
+        mutate: (payload: { id: string; content: string; scamAlertId?: string; communityTipId?: string }) => 
+            mutation.mutate({ id: payload.id, data: { text: payload.content } }),
+        mutateAsync: (payload: { id: string; content: string; scamAlertId?: string; communityTipId?: string }) => 
+            mutation.mutateAsync({ id: payload.id, data: { text: payload.content } })
+    };
 }
 
 export function useDeleteComment() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: { id: string; scamAlertId?: string; communityTipId?: string }) => {
-            const { data } = await api.delete(`/comments/${payload.id}`);
-            return data;
-        },
-        onSuccess: (_, variables) => {
-            if (variables.scamAlertId) {
-                queryClient.invalidateQueries({ queryKey: ['scam-comments', variables.scamAlertId] });
-                queryClient.invalidateQueries({ queryKey: ['scam-alerts-infinite'] });
-            }
-            if (variables.communityTipId) {
-                queryClient.invalidateQueries({ queryKey: ['tip-comments', variables.communityTipId] });
-                queryClient.invalidateQueries({ queryKey: ['tips-infinite'] });
-            }
-        }
-    });
+    const mutation = useCommentsControllerDelete();
+    return {
+        ...mutation,
+        mutate: (payload: { id: string; scamAlertId?: string; communityTipId?: string }) => 
+            mutation.mutate({ id: payload.id }),
+        mutateAsync: (payload: { id: string; scamAlertId?: string; communityTipId?: string }) => 
+            mutation.mutateAsync({ id: payload.id })
+    };
 }
 
 export function useCreateCommunityTip() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: {
-            spotId: string;
-            type: 'TRY' | 'AVOID';
-            title: string;
-            description: string;
-        }) => {
-            const { data } = await api.post('/community-tips', payload);
-            return data;
-        },
-        onSuccess: (_, { spotId }) => {
-            // Note: We avoid broad invalidation of 'tips-infinite' here because 
-            // CreateTipModal handles manual prepending to ensure the new item 
-            // stays at the top regardless of backend sort (Popular vs Newest).
-            // Invalidation would trigger an immediate re-fetch that overwrites the manual placement.
-            queryClient.invalidateQueries({ queryKey: ['spot', spotId] });
-            // Update individual query caches for specific counts if needed
-        } });
+    const mutation = useCommunityTipsControllerCreate();
+    return {
+        ...mutation,
+        mutate: (payload: { spotId: string; type: 'TRY' | 'AVOID'; title: string; description: string }) => 
+            mutation.mutate({ data: payload }),
+        mutateAsync: (payload: { spotId: string; type: 'TRY' | 'AVOID'; title: string; description: string }) => 
+            mutation.mutateAsync({ data: payload })
+    };
 }
 
 export function useUpdateCommunityTip() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: {
-            id: string;
-            spotId: string;
-            type?: 'TRY' | 'AVOID';
-            title?: string;
-            description?: string;
-        }) => {
-            const { id, spotId, type, ...updateData } = payload;
-            const { data } = await api.patch(`/community-tips/${id}`, updateData);
-            return data;
+    const mutation = useCommunityTipsControllerUpdate();
+    return {
+        ...mutation,
+        mutate: (payload: { id: string; spotId: string; type?: 'TRY' | 'AVOID'; title?: string; description?: string }) => {
+            const { id, spotId, ...data } = payload;
+            return mutation.mutate({ id, data });
         },
-        onSuccess: (_, { spotId }) => {
-            queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
-        } });
+        mutateAsync: (payload: { id: string; spotId: string; type?: 'TRY' | 'AVOID'; title?: string; description?: string }) => {
+            const { id, spotId, ...data } = payload;
+            return mutation.mutateAsync({ id, data });
+        }
+    };
 }
 
 export function useDeleteCommunityTip() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async ({ id, spotId }: { id: string; spotId: string }) => {
-            const { data } = await api.delete(`/community-tips/${id}`);
-            return data;
-        },
-        onSuccess: (_, { spotId }) => {
-            queryClient.invalidateQueries({ queryKey: ['tips', spotId] });
-            queryClient.invalidateQueries({ queryKey: ['tips-infinite', spotId] });
-        } });
+    const mutation = useCommunityTipsControllerDelete();
+    return {
+        ...mutation,
+        mutate: ({ id, spotId }: { id: string; spotId: string }) => mutation.mutate({ id }),
+        mutateAsync: ({ id, spotId }: { id: string; spotId: string }) => mutation.mutateAsync({ id })
+    };
 }
 
 // --- Mutations ---
 
 export function useCreatePriceReport() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: { spotId: string; itemName: string; priceThb: number }) => {
-            const { data } = await api.post('/price-reports', payload);
-            return data;
-        },
-        onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['spots'] });
-            queryClient.invalidateQueries({ queryKey: ['spot'] });
-            queryClient.invalidateQueries({ queryKey: ['price-reports', variables.spotId] });
-            queryClient.invalidateQueries({ queryKey: ['price-reports-infinite', variables.spotId] });
-        } });
+    const mutation = usePriceReportsControllerCreate();
+    return {
+        ...mutation,
+        mutate: (payload: { spotId: string; itemName: string; priceThb: number }) => mutation.mutate({ data: payload }),
+        mutateAsync: (payload: { spotId: string; itemName: string; priceThb: number }) => mutation.mutateAsync({ data: payload })
+    };
 }
 
 export function useCreateScamAlert() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: {
-            scamName: string;
-            description: string;
-            preventionTip: string;
-            cityId: string;
-            categoryId: string;
-            image?: File;
-        }) => {
-            const formData = new FormData();
-            formData.append('scamName', payload.scamName);
-            formData.append('description', payload.description);
-            formData.append('preventionTip', payload.preventionTip);
-            formData.append('cityId', payload.cityId);
-            formData.append('categoryId', payload.categoryId);
-            
-            if (payload.image) {
-                formData.append('image', payload.image);
-            }
-
-            const { data } = await api.post('/scam-alerts', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' } });
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
-        } });
+    const mutation = useScamAlertsControllerCreate();
+    return {
+        ...mutation,
+        mutate: (payload: { scamName: string; description: string; preventionTip: string; cityId: string; categoryId: string; image?: File }) => 
+            mutation.mutate({ data: payload }),
+        mutateAsync: (payload: { scamName: string; description: string; preventionTip: string; cityId: string; categoryId: string; image?: File }) => 
+            mutation.mutateAsync({ data: payload })
+    };
 }
 
 export function useUpdateScamAlert() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: Record<string, string | Blob | number | undefined> }) => {
-            const formData = new FormData();
-            Object.entries(payload).forEach(([key, value]) => {
-                if (value !== undefined) {
-                    formData.append(key, typeof value === 'number' ? value.toString() : value);
-                }
-            });
-            const { data } = await api.patch(`/scam-alerts/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' } });
-            return data;
-        },
-        onSuccess: (data, { id }) => {
-            const unwrapped = unwrapApiData(data) as { city?: { slug?: string }; slug?: string };
-            queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
-            queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
-            
-            // Invalidate the detail cache if we have slugs
-            if (unwrapped?.city?.slug && unwrapped?.slug) {
-                queryClient.invalidateQueries({ queryKey: ['scam-alert', unwrapped.city.slug, unwrapped.slug] });
-            }
-        } });
+    const mutation = useScamAlertsControllerUpdate();
+    return {
+        ...mutation,
+        mutate: ({ id, payload }: { id: string; payload: any }) => mutation.mutate({ id, data: payload }),
+        mutateAsync: ({ id, payload }: { id: string; payload: any }) => mutation.mutateAsync({ id, data: payload })
+    };
 }
 
 export function useDeleteScamAlert() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (id: string) => {
-            const { data } = await api.delete(`/scam-alerts/${id}`);
-            return data;
-        },
-        onSuccess: (data) => {
-            const unwrapped = unwrapApiData(data) as { city?: { slug?: string }; slug?: string };
-            queryClient.invalidateQueries({ queryKey: ['scam-alerts'] });
-            queryClient.invalidateQueries({ queryKey: ['user-scam-alerts-infinite'] });
-
-            // Invalidate the detail cache if we have slugs
-            if (unwrapped?.city?.slug && unwrapped?.slug) {
-                queryClient.invalidateQueries({ queryKey: ['scam-alert', unwrapped.city.slug, unwrapped.slug] });
-            }
-        } });
+    const mutation = useScamAlertsControllerDelete();
+    return {
+        ...mutation,
+        mutate: (id: string) => mutation.mutate({ id }),
+        mutateAsync: (id: string) => mutation.mutateAsync({ id })
+    };
 }
 
 export function useCreateLiveVibe() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (payload: {
-            spotId: string;
-            crowdLevel: number;
-            waitTimeMinutes?: number;
-        }) => {
-            const { data } = await api.post('/live-vibes', payload);
-            return data;
-        },
-        onSuccess: (_, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['live-vibes'] });
-            queryClient.invalidateQueries({ queryKey: ['live-vibes-infinite', { spotId: variables.spotId }] });
-            queryClient.invalidateQueries({ queryKey: ['spots'] });
-            queryClient.invalidateQueries({ queryKey: ['spot'] });
-        } });
+    const mutation = useLiveVibesControllerCreate();
+    return {
+        ...mutation,
+        mutate: (payload: { spotId: string; crowdLevel: number; waitTimeMinutes?: number }) => mutation.mutate({ data: payload }),
+        mutateAsync: (payload: { spotId: string; crowdLevel: number; waitTimeMinutes?: number }) => mutation.mutateAsync({ data: payload })
+    };
 }
 
 // --- Votes ---
 
 export function useCreateVote() {
-    return useMutation({
-        mutationFn: async ({
-            targetId,
-            type }: {
-            targetId: string;
-            type: 'tip' | 'alert' | 'image' | 'spot';
-        }) => {
-            let endpoint = '';
-            const payload: Record<string, string> = {};
-
-            if (type === 'tip') {
-                endpoint = '/votes/tip';
-                payload.communityTipId = targetId;
-            } else if (type === 'alert') {
-                endpoint = '/votes/alert';
-                payload.scamAlertId = targetId;
-            } else if (type === 'image') {
-                endpoint = '/votes/image';
-                payload.galleryImageId = targetId;
-            } else if (type === 'spot') {
-                endpoint = '/votes/spot';
-                payload.spotId = targetId;
-            }
-
-            const { data } = await api.post(endpoint, payload);
-            return data;
-        } });
+    const mutation = useVotesControllerCreateTipVote();
+    return {
+        ...mutation,
+        mutate: ({ targetId, type }: { targetId: string; type: 'tip' | 'alert' | 'image' | 'spot' }) => {
+            const payload: any = {};
+            if (type === 'tip') payload.communityTipId = targetId;
+            else if (type === 'alert') payload.scamAlertId = targetId;
+            else if (type === 'image') payload.galleryImageId = targetId;
+            else if (type === 'spot') payload.spotId = targetId;
+            return mutation.mutate({ data: payload });
+        },
+        mutateAsync: ({ targetId, type }: { targetId: string; type: 'tip' | 'alert' | 'image' | 'spot' }) => {
+            const payload: any = {};
+            if (type === 'tip') payload.communityTipId = targetId;
+            else if (type === 'alert') payload.scamAlertId = targetId;
+            else if (type === 'image') payload.galleryImageId = targetId;
+            else if (type === 'spot') payload.spotId = targetId;
+            return mutation.mutateAsync({ data: payload });
+        }
+    };
 }
 
 export function useDeleteVote() {
-    return useMutation({
-        mutationFn: async ({
-            voteId,
-            type }: {
-            voteId: string;
-            type: 'tip' | 'alert' | 'image' | 'spot';
-        }) => {
-            const { data } = await api.delete(`/votes/${type}/${voteId}`);
-            return data;
-        } });
+    const mutation = useVotesControllerDeleteVote();
+    return {
+        ...mutation,
+        mutate: ({ voteId, type }: { voteId: string; type: 'tip' | 'alert' | 'image' | 'spot' }) => 
+            mutation.mutate({ id: voteId }),
+        mutateAsync: ({ voteId, type }: { voteId: string; type: 'tip' | 'alert' | 'image' | 'spot' }) => 
+            mutation.mutateAsync({ id: voteId })
+    };
 }
 
 // --- Missions (Checklist) ---
 
 export function useMissions(status: string = 'all', sort: string = 'newest', userId: string = 'me') {
-    return useInfiniteQuery({
-        queryKey: ['missions-infinite', userId, status, sort],
-        queryFn: async ({ pageParam = 0 }) => {
-            const params: Record<string, string | number> = { skip: pageParam, take: 10, sort };
-            if (status !== 'all') {
-                params.status = status;
-            }
-            const { data } = await api.get('/checklist', { params });
-            return data;
-        },
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: PaginationLike) => {
-            return getNextSkipFromPage(lastPage);
-        },
-        enabled: !!userId });
+    return useChecklistControllerFindAllInfinite({
+        status: status === 'all' ? undefined : status as any,
+        sort: sort as any,
+        take: 10
+    }, {
+        query: {
+            queryKey: ['missions-infinite', userId, status, sort],
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+            enabled: userId === 'me'
+        }
+    });
 }
 
 export function useMissionStats() {
-    return useQuery({
-        queryKey: ['mission-stats'],
-        queryFn: async () => {
-            const { data } = await api.get('/checklist/stats');
-            return data;
-        } });
+    const query = useChecklistControllerGetStats({ query: { queryKey: ['mission-stats'] } });
+    return { ...query, data: query.data?.data };
 }
 
 export function useAddMission() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (spotId: string) => {
-            const { data } = await api.post('/checklist', { spotId });
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
-            queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
-            queryClient.invalidateQueries({ queryKey: ['spot'] });
-            queryClient.invalidateQueries({ queryKey: ['spots'] });
-        } });
+    const mutation = useChecklistControllerCreate();
+    return {
+        ...mutation,
+        mutate: (spotId: string) => mutation.mutate({ data: { spotId } }),
+        mutateAsync: (spotId: string) => mutation.mutateAsync({ data: { spotId } })
+    };
 }
 
 export function useUpdateMission() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async ({ id, completed }: { id: string; completed: boolean }) => {
-            const { data } = await api.patch(`/checklist/${id}`, { completed });
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
-            queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
-            queryClient.invalidateQueries({ queryKey: ['spot'] });
-            queryClient.invalidateQueries({ queryKey: ['spots'] });
-        } });
+    const mutation = useChecklistControllerUpdate();
+    return {
+        ...mutation,
+        mutate: ({ id, completed }: { id: string; completed: boolean }) => mutation.mutate({ id, data: { completed } }),
+        mutateAsync: ({ id, completed }: { id: string; completed: boolean }) => mutation.mutateAsync({ id, data: { completed } })
+    };
 }
 
 export function useDeleteMission() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (id: string) => {
-            const { data } = await api.delete(`/checklist/${id}`);
-            return data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['missions-infinite'] });
-            queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
-        } });
+    const mutation = useChecklistControllerDelete();
+    return {
+        ...mutation,
+        mutate: (id: string) => mutation.mutate({ id }),
+        mutateAsync: (id: string) => mutation.mutateAsync({ id })
+    };
+}
+
+// --- Contact Form ---
+
+export function useSubmitContactForm() {
+    return useContactControllerSubmitContactForm();
 }
 
 export function useReverseGeocode() {
-    return useMutation({
-        mutationFn: async ({ latitude, longitude }: { latitude: number; longitude: number }) => {
-            const { data } = await api.post('/spots/reverse-geocode', { latitude, longitude });
-            return data?.address || `${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
-        } });
+    const mutation = useSpotsControllerReverseGeocode();
+    return {
+        ...mutation,
+        mutate: ({ latitude, longitude }: { latitude: number; longitude: number }) => 
+            mutation.mutate({ data: { latitude, longitude } }),
+        mutateAsync: ({ latitude, longitude }: { latitude: number; longitude: number }) => 
+            mutation.mutateAsync({ data: { latitude, longitude } })
+    };
 }
 
 // --- Reports ---
 
 export function useCreateReport() {
-    return useMutation({
-        mutationFn: async ({
-            reportType,
-            targetId,
-            reason,
-            description }: {
-            reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
-            targetId: string;
-            reason: string;
-            description?: string;
-        }) => {
-            const { data } = await api.post('/reports', {
-                reportType,
-                targetId,
-                reason,
-                description });
-            return data;
-        } });
+    const mutation = useReportsControllerCreateReport();
+    return {
+        ...mutation,
+        mutate: (payload: { reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE'; targetId: string; reason: string; description?: string }) => 
+            mutation.mutate({ data: payload }),
+        mutateAsync: (payload: { reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE'; targetId: string; reason: string; description?: string }) => 
+            mutation.mutateAsync({ data: payload })
+    };
 }
 
 export function useGetReports(status?: string) {
-    return useQuery({
-        queryKey: ['reports', status],
-        queryFn: async () => {
-            const params = status ? { status } : {};
-            const { data } = await api.get('/reports', { params });
-            return data?.data || [];
-        } });
+    const query = useReportsControllerGetReports({ status: status as any }, { query: { queryKey: ['reports', status] } });
+    return { ...query, data: query.data?.data || [] };
 }
 
 // ---  Reactions ---
 
 export function useToggleCommentReaction() {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (commentId: string) => {
-            const { data } = await api.post(`/comments/${commentId}/reactions`);
-            return data;
-        },
-        onSuccess: (data, commentId) => {
-            // updateInfiniteQueryData is a helper or we can do it inline
-            const updatePage = (page: { data?: Array<{ id?: string } & Record<string, unknown>> }) => ({
-                ...page,
-                data: page.data?.map((c) => c.id === commentId ? { ...c, ...data } : c)
-            });
-
-            queryClient.setQueriesData({ queryKey: ['tip-comments'] }, (old: { pages?: Array<{ data?: Array<{ id?: string } & Record<string, unknown>> }> } | undefined) => {
-                if (!old) return old;
-                return {
-                    ...old,
-                    pages: old.pages?.map(updatePage)
-                };
-            });
-
-            queryClient.setQueriesData({ queryKey: ['scam-comments'] }, (old: { pages?: Array<{ data?: Array<{ id?: string } & Record<string, unknown>> }> } | undefined) => {
-                if (!old) return old;
-                return {
-                    ...old,
-                    pages: old.pages?.map(updatePage)
-                };
-            });
-        } });
+    const mutation = useCommentReactionsControllerToggleReaction();
+    return {
+        ...mutation,
+        mutate: (commentId: string) => mutation.mutate({ id: commentId }),
+        mutateAsync: (commentId: string) => mutation.mutateAsync({ id: commentId })
+    };
 }
 
 export function useGetCommentReaction(commentId: string) {
-    return useQuery({
-        queryKey: ['comment-reaction', commentId],
-        queryFn: async () => {
-            const { data } = await api.get(`/comments/${commentId}/reactions`);
-            return data?.data || { reactionCount: 0, userHasReacted: false };
-        },
-        enabled: !!commentId });
+    const query = useCommentReactionsControllerGetReactionSummary(commentId, { 
+        query: { enabled: !!commentId, queryKey: ['comment-reaction', commentId] } 
+    });
+    return { ...query, data: query.data?.data || { reactionCount: 0, userHasReacted: false } };
+}
+
+export { useGalleryControllerUploadImage as useUploadSpotImage };
+export { useGalleryControllerDeleteImage as useDeleteGalleryImage };
+export { useGalleryControllerFlagImage as useFlagGalleryImage };
+
+// --- Popular Area (deprecated, returns empty) ---
+export function usePopularArea() {
+    return { data: null, isLoading: false, error: null };
 }

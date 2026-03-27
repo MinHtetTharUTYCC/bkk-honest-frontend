@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { SpotData } from "@/types/spot";
+import { SpotWithStatsResponseDto, ChecklistItemDto } from "@/api/generated/model";
 import { LikeButton } from "@/components/ui/like-button";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ReportButton from "@/components/report/report-button";
@@ -14,10 +14,9 @@ import { useAddMission, useMissions } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import SpotStatsGrid from "@/components/spots/spot-stats-grid";
 import { TruncatedTextWithDialog } from "@/components/ui/truncated-text-with-dialog";
-import { MissionRow } from "@/types/spot";
 
 interface SpotHeaderProps {
-  spot: SpotData;
+  spot: SpotWithStatsResponseDto;
   onEdit: () => void;
   onDelete: () => void;
   onImageClick: () => void;
@@ -36,11 +35,11 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
 
   const missionsList =
     missionsData?.pages.flatMap(
-      (page) => (page as { data?: MissionRow[] })?.data || [],
+      (page: any) => (page.data as ChecklistItemDto[]) || [],
     ) || [];
 
   // Use mission status from SSR data, but fallback to checking the missions list from cache
-  const isInMissions = spot.isInMission ?? missionsList.some((m) => m.spot?.id === spot.id);
+  const isInMissions = spot.isInMission ?? missionsList.some((m) => m.spotId === spot.id);
 
   const handleAcceptMission = () => {
     if (!authUser) {

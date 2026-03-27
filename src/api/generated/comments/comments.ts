@@ -6,18 +6,23 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -169,12 +174,89 @@ export const commentsControllerFindByTip = async (communityTipId: string,
 
 
 
+export const getCommentsControllerFindByTipInfiniteQueryKey = (communityTipId: string,
+    params?: CommentsControllerFindByTipParams,) => {
+    return [
+    'infinite', `/comments/tip/${communityTipId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
 export const getCommentsControllerFindByTipQueryKey = (communityTipId: string,
     params?: CommentsControllerFindByTipParams,) => {
     return [
     `/comments/tip/${communityTipId}`, ...(params ? [params] : [])
     ] as const;
     }
+
+
+export const getCommentsControllerFindByTipInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(communityTipId: string,
+    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCommentsControllerFindByTipInfiniteQueryKey(communityTipId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerFindByTip>>, QueryKey, CommentsControllerFindByTipParams['skip']> = ({ signal, pageParam }) => commentsControllerFindByTip(communityTipId,{...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(communityTipId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CommentsControllerFindByTipInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentsControllerFindByTip>>>
+export type CommentsControllerFindByTipInfiniteQueryError = unknown
+
+
+export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
+ communityTipId: string,
+    params: undefined |  CommentsControllerFindByTipParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerFindByTip>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
+ communityTipId: string,
+    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerFindByTip>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
+ communityTipId: string,
+    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get comments by tip ID
+ */
+
+export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
+ communityTipId: string,
+    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCommentsControllerFindByTipInfiniteQueryOptions(communityTipId,params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getCommentsControllerFindByTipQueryOptions = <TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError = unknown>(communityTipId: string,
@@ -294,12 +376,89 @@ export const commentsControllerFindByScamAlert = async (scamAlertId: string,
 
 
 
+export const getCommentsControllerFindByScamAlertInfiniteQueryKey = (scamAlertId: string,
+    params?: CommentsControllerFindByScamAlertParams,) => {
+    return [
+    'infinite', `/comments/alert/${scamAlertId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
 export const getCommentsControllerFindByScamAlertQueryKey = (scamAlertId: string,
     params?: CommentsControllerFindByScamAlertParams,) => {
     return [
     `/comments/alert/${scamAlertId}`, ...(params ? [params] : [])
     ] as const;
     }
+
+
+export const getCommentsControllerFindByScamAlertInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(scamAlertId: string,
+    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCommentsControllerFindByScamAlertInfiniteQueryKey(scamAlertId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, QueryKey, CommentsControllerFindByScamAlertParams['skip']> = ({ signal, pageParam }) => commentsControllerFindByScamAlert(scamAlertId,{...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(scamAlertId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CommentsControllerFindByScamAlertInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>>
+export type CommentsControllerFindByScamAlertInfiniteQueryError = unknown
+
+
+export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
+ scamAlertId: string,
+    params: undefined |  CommentsControllerFindByScamAlertParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
+ scamAlertId: string,
+    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+          TError,
+          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
+ scamAlertId: string,
+    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get comments by scam alert ID
+ */
+
+export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
+ scamAlertId: string,
+    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCommentsControllerFindByScamAlertInfiniteQueryOptions(scamAlertId,params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getCommentsControllerFindByScamAlertQueryOptions = <TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError = unknown>(scamAlertId: string,

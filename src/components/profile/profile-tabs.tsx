@@ -26,7 +26,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import { getSpotUrl, getScamAlertUrl } from '@/lib/slug';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import api from '@/lib/api';
 
 interface ProfileTabsProps {
     userId: string;
@@ -89,42 +88,6 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
     const { ref, inView } = useInView({ threshold: 0.1 });
     const lastFetchTabRef = useRef<string | null>(null);
     const queryClient = useQueryClient();
-
-    const prefetchTab = (tab: ProfileTabsProps['activeTab']) => {
-        const queryKeyMap: Record<ProfileTabsProps['activeTab'], string> = {
-            scams: 'user-scam-alerts-infinite',
-            tips: 'user-community-tips-infinite',
-            reports: 'user-price-reports-infinite',
-            spots: 'user-spots-infinite',
-        };
-
-        const key = queryKeyMap[tab];
-        const endpointMap: Record<ProfileTabsProps['activeTab'], string> = {
-            scams: userId === 'me' ? '/scam-alerts/mine' : `/scam-alerts/user/${userId}`,
-            tips: userId === 'me' ? '/community-tips/mine' : `/community-tips/user/${userId}`,
-            reports: userId === 'me' ? '/price-reports/mine' : `/price-reports/user/${userId}`,
-            spots: userId === 'me' ? '/spots/mine' : `/spots/user/${userId}`,
-        };
-
-        queryClient.prefetchInfiniteQuery({
-            queryKey: [key, userId],
-            initialPageParam: 0,
-            queryFn: async ({ pageParam = 0 }) => {
-                const { data } = await api.get(endpointMap[tab], {
-                    params: { skip: pageParam, take: 10 },
-                });
-                return data;
-            },
-            getNextPageParam: (lastPage: PaginationPage) => {
-                const { skip, take, total } = lastPage.pagination || {};
-                if (skip === undefined || take === undefined || total === undefined) {
-                    return undefined;
-                }
-                const nextSkip = skip + take;
-                return nextSkip < total ? nextSkip : undefined;
-            },
-        });
-    };
 
     const {
         data: reportsData,

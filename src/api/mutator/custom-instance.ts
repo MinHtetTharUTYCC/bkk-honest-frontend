@@ -25,13 +25,13 @@ AXIOS_INSTANCE.interceptors.request.use(async (config) => {
 
 // Custom instance wrapper for Orval
 export const customInstance = <T>(
-  config: AxiosRequestConfig,
-  options?: AxiosRequestConfig,
+  config: AxiosRequestConfig | string,
+  options?: any,
 ): Promise<T> => {
   const source = Axios.CancelToken.source();
   const promise = AXIOS_INSTANCE({
-    ...config,
-    ...options,
+    ...(typeof config === 'string' ? { url: config } : config),
+    ...(options || {}),
     cancelToken: source.token,
   }).then(({ data }) => data);
 

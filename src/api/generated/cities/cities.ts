@@ -6,18 +6,23 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -157,11 +162,82 @@ export const citiesControllerFindAll = async ( options?: RequestInit): Promise<c
 
 
 
+export const getCitiesControllerFindAllInfiniteQueryKey = () => {
+    return [
+    'infinite', `/cities`
+    ] as const;
+    }
+
 export const getCitiesControllerFindAllQueryKey = () => {
     return [
     `/cities`
     ] as const;
     }
+
+
+export const getCitiesControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindAllInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindAll>>> = ({ signal }) => citiesControllerFindAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CitiesControllerFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindAll>>>
+export type CitiesControllerFindAllInfiniteQueryError = unknown
+
+
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindAll>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindAll>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all cities
+ */
+
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCitiesControllerFindAllInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getCitiesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
@@ -267,11 +343,82 @@ export const citiesControllerFindOne = async (id: string, options?: RequestInit)
 
 
 
+export const getCitiesControllerFindOneInfiniteQueryKey = (id: string,) => {
+    return [
+    'infinite', `/cities/${id}`
+    ] as const;
+    }
+
 export const getCitiesControllerFindOneQueryKey = (id: string,) => {
     return [
     `/cities/${id}`
     ] as const;
     }
+
+
+export const getCitiesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindOneInfiniteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindOne>>> = ({ signal }) => citiesControllerFindOne(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CitiesControllerFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindOne>>>
+export type CitiesControllerFindOneInfiniteQueryError = unknown
+
+
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindOne>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindOne>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get city by ID
+ */
+
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCitiesControllerFindOneInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
 
 
 export const getCitiesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}

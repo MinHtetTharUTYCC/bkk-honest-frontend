@@ -4,7 +4,7 @@ import { MapPin, Clock, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { Textarea } from "@/components/ui/textarea";
-import api from "@/lib/api";
+import { useSubmitContactForm } from "@/hooks/use-api";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -13,40 +13,42 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { mutate: submitContact, isPending: isSubmitting } = useSubmitContactForm();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setError(null);
 
-    try {
-      await api.post("/contact", formData);
-      setIsSuccess(true);
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (err: unknown) {
-      const apiError = err as {
-        response?: { data?: { message?: string | string[] | object } };
-      };
-      console.error("Form submission error:", err);
-      
-      let errorMessage = "Failed to send message. Please try again.";
-      const rawMessage = apiError.response?.data?.message;
-      
-      if (typeof rawMessage === "string") {
-        errorMessage = rawMessage;
-      } else if (Array.isArray(rawMessage)) {
-        errorMessage = rawMessage[0];
-      } else if (rawMessage && typeof rawMessage === "object") {
-        errorMessage = JSON.stringify(rawMessage);
+    submitContact(
+      { data: formData },
+      {
+        onSuccess: () => {
+          setIsSuccess(true);
+          setFormData({ name: "", email: "", subject: "", message: "" });
+        },
+        onError: (err: unknown) => {
+          const apiError = err as {
+            response?: { data?: { message?: string | string[] | object } };
+          };
+          console.error("Form submission error:", err);
+          
+          let errorMessage = "Failed to send message. Please try again.";
+          const rawMessage = apiError.response?.data?.message;
+          
+          if (typeof rawMessage === "string") {
+            errorMessage = rawMessage;
+          } else if (Array.isArray(rawMessage)) {
+            errorMessage = rawMessage[0];
+          } else if (rawMessage && typeof rawMessage === "object") {
+            errorMessage = JSON.stringify(rawMessage);
+          }
+          
+          setError(errorMessage);
+        }
       }
-      
-      setError(errorMessage);
-    } finally {
-      setIsSubmitting(false);
-    }
+    );
   };
 
   const handleChange = (

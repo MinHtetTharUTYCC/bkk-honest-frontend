@@ -1,7 +1,7 @@
-import { SpotData } from "@/types/spot";
+import { SpotWithStatsResponseDto } from "@/api/generated/model";
 import { cn } from "@/lib/utils";
 
-export default function SpotStatsGrid({ spot, className }: { spot: SpotData; className?: string }) {
+export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStatsResponseDto; className?: string }) {
   const { activityStats, priceStats, vibeStats } = spot;
 
   const lastPulseDate = activityStats?.lastActivity ? new Date(activityStats.lastActivity).getTime() : null;
