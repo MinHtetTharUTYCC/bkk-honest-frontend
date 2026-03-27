@@ -9,10 +9,6 @@
 export interface ImageVariantsDto {
   /** Thumbnail variant URL (smallest, for cards/avatars) */
   thumbnail: string;
-  /** Medium variant URL (for mobile/tablet) */
-  medium: string;
-  /** Large variant URL (for desktop) */
-  large: string;
-  /** Original variant URL (compressed, highest quality) */
-  original: string;
+  /** Display variant URL (for full view/modal) */
+  display: string;
 }

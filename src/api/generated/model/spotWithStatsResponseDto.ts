@@ -30,7 +30,7 @@ export interface SpotWithStatsResponseDto {
   citySlug: string;
   /** Spot image URL */
   imageUrl?: string;
-  /** Image variants (thumbnail, medium, large, original) */
+  /** Image variants (thumbnail, display) */
   imageVariants?: ImageVariantsDto;
   /** Image width in pixels */
   imageWidth?: number;

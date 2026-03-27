@@ -38,6 +38,11 @@ export interface GalleryImage {
     name?: string;
     level?: string;
   };
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
+  blurPlaceholder?: string;
 }
 
 export interface SpotTip {
