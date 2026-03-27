@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "generate:api": "orval"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -47,6 +48,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@orval/query": "^8.6.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -61,6 +63,7 @@
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "openapi-typescript": "^7.13.0",
+    "orval": "^8.6.2",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",

@@ -25,7 +25,7 @@ import {
 
 interface TipsTabProps {
   spot: SpotData;
-  initialTips?: any;
+  initialTips?: { pages: any[]; pageParams: any[] };
 }
 
 export default function TipsTab({ spot, initialTips }: TipsTabProps) {

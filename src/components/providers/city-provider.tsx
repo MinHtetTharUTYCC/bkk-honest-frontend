@@ -43,18 +43,17 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
 
   // Try to pick a default if none selected (e.g. Bangkok) or if the saved city doesn't exist anymore
   useEffect(() => {
-    if (!isHydrated) return;
+    if (!isHydrated || !cities || cities.length === 0) return;
 
-    if (cities && cities.length > 0) {
-      const isValid = selectedCityId && (cities as City[]).some((c) => c.id === selectedCityId);
+    const isValid = selectedCityId && (cities as City[]).some((c) => c.id === selectedCityId);
+    
+    if (!selectedCityId || !isValid) {
+      const bangkok = (cities as City[]).find((c) => c.name.toLowerCase() === 'bangkok');
+      const fallbackId = bangkok ? bangkok.id : (cities as City[])[0].id;
       
-      if (!selectedCityId || !isValid) {
-        const bangkok = (cities as City[]).find((c) => c.name.toLowerCase() === 'bangkok');
-        if (bangkok) {
-          setSelectedCityId(bangkok.id);
-        } else {
-          setSelectedCityId((cities as City[])[0].id);
-        }
+      if (selectedCityId !== fallbackId) {
+        // Use functional update or guard to reduce cascading render impact
+        setSelectedCityId(fallbackId);
       }
     }
   }, [cities, selectedCityId, isHydrated]);

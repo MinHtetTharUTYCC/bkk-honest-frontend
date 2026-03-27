@@ -68,7 +68,7 @@ export default function TermsPage() {
                       User Responsibility
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      You're responsible for your content and account security
+                      You&apos;re responsible for your content and account security
                     </p>
                   </div>
                 </div>
@@ -100,7 +100,7 @@ export default function TermsPage() {
                 1. Acceptance of Terms
               </h2>
               <p className="text-muted-foreground">
-                By accessing or using BKK Honest ("the Platform"), you agree to
+                By accessing or using BKK Honest (&quot;the Platform&quot;), you agree to
                 be bound by these Terms of Service. If you do not agree to these
                 terms, please do not use our platform.
               </p>
@@ -287,7 +287,7 @@ export default function TermsPage() {
                       No Warranty
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      The platform is provided "as is" without warranties. We do
+                      The platform is provided &quot;as is&quot; without warranties. We do
                       not guarantee accuracy, completeness, or reliability of
                       any information.
                     </p>
@@ -360,7 +360,7 @@ export default function TermsPage() {
               </h2>
               <p className="text-muted-foreground mb-4">
                 We may update these terms occasionally to reflect changes in our
-                service or legal requirements. We'll notify users of significant
+                service or legal requirements. We&apos;ll notify users of significant
                 changes via email or platform notifications.
               </p>
               <p className="text-muted-foreground italic">
@@ -377,7 +377,7 @@ export default function TermsPage() {
               </h2>
               <div className="bg-primary/10 p-6 rounded-lg border border-primary/20">
                 <p className="text-primary mb-4">
-                  Questions about these terms? We're here to help clarify
+                  Questions about these terms? We&apos;re here to help clarify
                   anything you need to know.
                 </p>
                 <div className="space-y-2 text-primary">

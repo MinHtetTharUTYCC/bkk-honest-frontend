@@ -65,7 +65,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     return Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
   }, [galleryData]);
 
-  const totalCount = (galleryData?.pages?.[0] as any)?.pagination?.total || images.length;
+  const totalCount = (galleryData?.pages?.[0] as { pagination?: { total: number } } | undefined)?.pagination?.total || images.length;
 
   const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
   const hasFetchedRef = useRef(false);
@@ -101,7 +101,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
       sortTypes.forEach((sortType) => {
         queryClient.setQueryData(
           ['gallery-infinite', spotId, sortType],
-          (oldData: any) => {
+          (oldData: { pages: Array<{ data: GalleryImage[] }>; pageParams: any } | undefined) => {
             if (!oldData || !oldData.pages) return oldData;
             
             const newPages = [...oldData.pages];
@@ -122,9 +122,10 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
       });
 
       toast.success("Photo uploaded successfully!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Upload error:", err);
-      const errorMessage = err.response?.data?.message || err.message || "Failed to upload photo";
+      const error = err as { response?: { data?: { message?: string | string[] } }; message?: string };
+      const errorMessage = error.response?.data?.message || error.message || "Failed to upload photo";
       toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
     } finally {
       if (e.target) e.target.value = "";
@@ -145,8 +146,9 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     try {
       await flagMutation.mutateAsync(id);
       toast.success("Photo reported successfully", { description: "Our moderators will review it soon." });
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Failed to report photo";
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string | string[] } } };
+      const errorMessage = error.response?.data?.message || "Failed to report photo";
       toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
     }
   };
@@ -156,8 +158,9 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     try {
       await deleteMutation.mutateAsync({ id: deleteImageId, spotId });
       toast.success("Photo deleted successfully");
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || "Failed to delete photo";
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string | string[] } } };
+      const errorMessage = error.response?.data?.message || "Failed to delete photo";
       toast.error(Array.isArray(errorMessage) ? errorMessage[0] : errorMessage);
     } finally {
       setDeleteImageId(null);

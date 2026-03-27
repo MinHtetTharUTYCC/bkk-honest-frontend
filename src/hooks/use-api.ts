@@ -449,32 +449,19 @@ export function useFlagGalleryImage() {
     });
 }
 
+import { useCategoriesControllerFindAll } from '@/api/generated/categories/categories';
+import { useCitiesControllerFindAll } from '@/api/generated/cities/cities';
+
 // --- Metadata ---
 
 export function useCategories() {
-    return useQuery({
-        queryKey: ['categories'],
-        queryFn: async () => {
-            const { data } = await api.get<unknown>('/categories');
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
-        gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
-    });
+    const query = useCategoriesControllerFindAll({ query: { staleTime: 24 * 60 * 60 * 1000, gcTime: 48 * 60 * 60 * 1000 } });
+    return { ...query, data: Array.isArray(query.data) ? query.data : [] };
 }
 
 export function useCities() {
-    return useQuery({
-        queryKey: ['cities'],
-        queryFn: async () => {
-            const { data } = await api.get<unknown[]>('/cities');
-            const unwrapped = unwrapApiData(data);
-            return Array.isArray(unwrapped) ? unwrapped : [];
-        },
-        staleTime: 24 * 60 * 60 * 1000, // 24 hours (Managed by developer)
-        gcTime: 48 * 60 * 60 * 1000, // Keep in cache for 48 hours
-    });
+    const query = useCitiesControllerFindAll({ query: { staleTime: 24 * 60 * 60 * 1000, gcTime: 48 * 60 * 60 * 1000 } });
+    return { ...query, data: Array.isArray(query.data) ? query.data : [] };
 }
 
 // --- Social & Alerts ---

@@ -2,7 +2,8 @@ import { Metadata } from "next";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import GalleryTab from "@/components/spots/tabs/gallery-tab";
 import { getSpot } from "@/services/spot";
-import { apiFetch } from "@/lib/api-server";
+import { galleryControllerGetGallery } from "@/api/generated/gallery/gallery";
+import { GalleryControllerGetGallerySort } from "@/api/generated/model/galleryControllerGetGallerySort";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -34,21 +35,22 @@ export default async function GalleryPage({
 
   const queryClient = new QueryClient();
 
-  // Prefetch the spot data so the shared header finds it in cache
   queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
 
-  const normalizedSort = sort === "popular" ? "popular" : "newest";
+  const normalizedSort = sort === "popular" 
+    ? GalleryControllerGetGallerySort.popular 
+    : GalleryControllerGetGallerySort.newest;
 
   await queryClient.prefetchInfiniteQuery({
     queryKey: ["gallery-infinite", spot.id, normalizedSort],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
-      const res = await apiFetch(
-        `/gallery/spot/${spot.id}?skip=${pageParam}&take=12&sort=${normalizedSort}`,
-        { next: { revalidate: 60 } }
-      );
-      if (!res.ok) throw new Error("Gallery fetch failed");
-      return res.json();
+      const res = await galleryControllerGetGallery(spot.id, {
+        skip: pageParam as number,
+        take: 12,
+        sort: normalizedSort
+      }, { next: { revalidate: 60 } } as RequestInit);
+      return res.data;
     },
     getNextPageParam: (lastPage: any) => {
       const { skip, take, total } = lastPage.pagination || {};

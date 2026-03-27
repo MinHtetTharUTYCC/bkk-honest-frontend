@@ -11,7 +11,7 @@ import SpotEditModal from "@/components/spots/spot-edit-modal";
 import { ImageViewer } from "@/components/ui/image-viewer";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSpotBySlug } from "@/hooks/use-api";
+import { useSpotsControllerFindBySlug } from "@/api/generated/spots/spots";
 import api from "@/lib/api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -37,7 +37,7 @@ export default function SpotHeaderClient({
 
   // Use the authenticated spot from SSR as initial data
   // This prevents the client from overwriting with "guest" data during hydration
-  const { data: spotData = initialSpot } = useSpotBySlug(citySlug, spotSlug);
+  const { data: spotData = initialSpot } = useSpotsControllerFindBySlug(citySlug, spotSlug, { query: { enabled: !!citySlug && !!spotSlug } });
 
   const spot = (spotData || initialSpot) as SpotData;
   // Sync initialSpot to TanStack cache if it's not there

@@ -138,11 +138,6 @@ export default function ScamAlertClient() {
     }
   }, [alert]);
 
-  // Ensure localAlert is never null when rendering
-  if (!localAlert) {
-    return null;
-  }
-
   const {
     data: commentsResponse,
     isLoading: commentsLoading,
@@ -188,6 +183,11 @@ export default function ScamAlertClient() {
       hasFetchedRef.current = false;
     }
   }, [inView]);
+
+  // Ensure localAlert is never null when rendering the UI
+  if (!localAlert) {
+    return null;
+  }
 
   const handleSendComment = async (e: React.FormEvent) => {
     e.preventDefault();

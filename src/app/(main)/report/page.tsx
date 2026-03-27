@@ -63,17 +63,14 @@ export default function ReportPage() {
   const [scamDescription, setScamDescription] = useState("");
   const [scamPreventionTip, setScamPreventionTip] = useState("");
   const [scamCategory, setScamCategory] = useState("");
-  const [scamCity, setScamCity] = useState(selectedCityId || "");
+  const [scamCity, setScamCity] = useState("");
 
-  const [scamImageFile, setScamImageFile] = useState<File | null>(null);
-  const [scamImagePreview, setScamImagePreview] = useState<string>("");
-
-  // Sync cities when selectedCityId changes
+  // Sync cities when selectedCityId changes, but only if not already set or specifically changed
   useEffect(() => {
-    if (selectedCityId) {
+    if (selectedCityId && !scamCity) {
       setScamCity(selectedCityId);
     }
-  }, [selectedCityId]);
+  }, [selectedCityId, scamCity]);
 
   // Data for Selects
   const { data: spotsResponse } = useSpots({ cityId: selectedCityId });

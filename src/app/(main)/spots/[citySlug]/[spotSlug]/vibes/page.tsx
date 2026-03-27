@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import VibesTab from "@/components/spots/tabs/vibes-tab";
 import { getSpot } from "@/services/spot";
-import { apiFetch } from "@/lib/api-server";
+import { liveVibesControllerFindAll } from "@/api/generated/live-vibes/live-vibes";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -34,12 +34,12 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
     queryKey: ["live-vibes-infinite", { spotId: spot.id }],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
-      const res = await apiFetch(
-        `/live-vibes?spotId=${spot.id}&skip=${pageParam}&take=10`,
-        { next: { revalidate: 60 } }
-      );
-      if (!res.ok) throw new Error("Vibes fetch failed");
-      return res.json();
+      const res = await liveVibesControllerFindAll({
+        spotId: spot.id,
+        skip: pageParam as number,
+        take: 10
+      }, { next: { revalidate: 60 } } as RequestInit);
+      return res.data;
     },
     getNextPageParam: (lastPage: any) => {
       const { skip, take, total } = lastPage.pagination || {};

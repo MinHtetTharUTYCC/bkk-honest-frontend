@@ -36,14 +36,14 @@ export default function AboutPage() {
                 experience.
               </p>
               <p className="text-lg text-muted-foreground mb-4">
-                That's why we created BKK Honest - a community where real people
+                That&apos;s why we created BKK Honest - a community where real people
                 share genuine experiences, honest reviews, and practical advice.
                 We believe everyone deserves to experience the real Thailand,
                 from hidden local gems to authentic cultural experiences.
               </p>
               <p className="text-lg text-muted-foreground">
-                Together, we're building a more transparent, trustworthy way to
-                explore one of the world's greatest destinations.
+                Together, we&apos;re building a more transparent, trustworthy way to
+                explore one of the world&apos;s greatest destinations.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -96,7 +96,7 @@ export default function AboutPage() {
               What Makes BKK Honest Different
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We're not just another review site. We're a community committed to
+              We&apos;re not just another review site. We&apos;re a community committed to
               authentic, helpful experiences.
             </p>
           </div>
@@ -153,9 +153,9 @@ export default function AboutPage() {
             Built by Thailand Lovers
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            We're a team of locals, expats, and travel enthusiasts who are
-            passionate about sharing the real Thailand with the world. We've
-            experienced the country's highs and lows, and we want to help others
+            We&apos;re a team of locals, expats, and travel enthusiasts who are
+            passionate about sharing the real Thailand with the world. We&apos;ve
+            experienced the country&apos;s highs and lows, and we want to help others
             make the most of their time here.
           </p>
           <p className="text-muted-foreground">Made with ❤️ in Thailand</p>
