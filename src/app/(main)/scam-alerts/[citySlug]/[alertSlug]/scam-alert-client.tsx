@@ -73,13 +73,16 @@ interface LocalAlert {
   user?: AlertUser;
   scamName?: string;
   slug?: string;
-  imageUrl?: string;
   description?: string;
   preventionTip?: string;
   createdAt: string;
   hasVoted?: boolean;
   voteId?: string | null;
   _count?: AlertCounts;
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
 }
 
 interface AlertComment {
@@ -372,13 +375,13 @@ export default function ScamAlertClient() {
         </div>
 
         {/* Hero Image */}
-        {localAlert.imageUrl && (
+        {localAlert.imageVariants && Object.values(localAlert.imageVariants).some(v => v) && (
           <div
             className="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl cursor-pointer group"
             onClick={() => setShowImageViewer(true)}
           >
             <Image
-              src={localAlert.imageUrl}
+              src={localAlert.imageVariants.display || localAlert.imageVariants.thumbnail || ''}
               alt={localAlert.scamName || 'Scam alert image'}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -763,10 +766,10 @@ export default function ScamAlertClient() {
       )}
 
       {/* Image Viewer */}
-      {localAlert.imageUrl && (
+      {localAlert.imageVariants && Object.values(localAlert.imageVariants).some(v => v) && (
         <ImageViewer
           isOpen={showImageViewer}
-          imageUrl={localAlert.imageUrl}
+          imageVariants={localAlert.imageVariants}
           alt={localAlert.scamName}
           onClose={() => setShowImageViewer(false)}
         />

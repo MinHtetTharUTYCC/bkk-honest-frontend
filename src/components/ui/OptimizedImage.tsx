@@ -7,8 +7,7 @@ import { getImageVariant } from '@/lib/image-utils';
 type VariantSize = 'thumbnail' | 'display';
 
 interface OptimizedImageProps {
-  variants?: ImageVariantsDto | null;
-  fallbackUrl?: string; // For backward compatibility with old non-variant images
+  variants: ImageVariantsDto;
   alt: string;
   size?: VariantSize;
   className?: string;
@@ -31,7 +30,7 @@ interface OptimizedImageProps {
  * Supports 2-variant structure: thumbnail (small) and display (full).
  * 
  * @example
- * // With variants (new format)
+ * // With variants (required)
  * <OptimizedImage
  *   variants={profile.imageVariants}
  *   alt={profile.name}
@@ -39,20 +38,9 @@ interface OptimizedImageProps {
  *   width={512}
  *   height={512}
  * />
- * 
- * @example
- * // Backward compatible with old URLs
- * <OptimizedImage
- *   fallbackUrl={profile.avatarUrl}
- *   alt={profile.name}
- *   size="thumbnail"
- *   width={128}
- *   height={128}
- * />
  */
 export default function OptimizedImage({
   variants,
-  fallbackUrl,
   alt,
   size = 'display',
   className = '',
@@ -68,21 +56,17 @@ export default function OptimizedImage({
 
   // Select the appropriate variant URL using type-safe utility
   const getImageUrl = (): string | null => {
-    // If variants exist, use type-safe selection
-    if (variants) {
-      const variantUrl = getImageVariant(variants, size);
-      if (variantUrl) return variantUrl;
-      
-      // Fallback to other variant if requested not available
-      const fallbackVariant = size === 'thumbnail' ? 'display' : 'thumbnail';
-      const fallbackVariantUrl = getImageVariant(variants, fallbackVariant);
-      if (fallbackVariantUrl) return fallbackVariantUrl;
+    if (!variants) {
+      return null;
     }
 
-    // Fallback to old-style single URL
-    if (fallbackUrl) {
-      return fallbackUrl;
-    }
+    const variantUrl = getImageVariant(variants, size);
+    if (variantUrl) return variantUrl;
+    
+    // Fallback to other variant if requested not available
+    const fallbackVariant = size === 'thumbnail' ? 'display' : 'thumbnail';
+    const fallbackVariantUrl = getImageVariant(variants, fallbackVariant);
+    if (fallbackVariantUrl) return fallbackVariantUrl;
 
     return null;
   };

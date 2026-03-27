@@ -20,7 +20,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 
 export interface SpotFormData extends SpotFormValues {
-  imageUrl?: string;
   imageFile?: File | null;
 }
 
@@ -42,7 +41,7 @@ export default function SpotForm({
   cities,
 }: SpotFormProps) {
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>(initialData?.imageUrl || '');
+  const [imagePreview, setImagePreview] = useState<string>('');
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
 
   const form = useForm<SpotFormValues>({
@@ -120,7 +119,6 @@ export default function SpotForm({
       await onSubmit({
         ...values,
         imageFile,
-        imageUrl: imagePreview,
       });
     } catch (error) {
       console.error('Form submission error:', error);

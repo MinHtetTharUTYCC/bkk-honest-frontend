@@ -13,8 +13,10 @@ export interface SpotCardData {
     slug?: string;
     name?: string;
     address?: string;
-    imageUrl?: string;
-    imageVariants?: any;
+    imageVariants?: {
+        thumbnail: string;
+        display: string;
+    };
     blurPlaceholder?: string;
     imageWidth?: number;
     imageHeight?: number;
@@ -38,7 +40,7 @@ export interface SpotCardData {
 }
 
 export default function SpotCard({ spot }: { spot: SpotCardData }) {
-    const { slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageUrl, images } = spot;
+    const { slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageVariants, images } = spot;
 
     // Helper for "Pulse" freshness - memoized to avoid recalculating on every render
     const pulseLabel = useMemo(() => {
@@ -64,8 +66,8 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
     // Format category name
     const categoryName = category?.name || 'Category';
 
-    // Get the display image
-    const displayImage = imageUrl || (images && images.length > 0 ? images[0].url : null);
+    // Get the display image - prioritize imageVariants
+    const displayVariants = imageVariants || (images && images.length > 0 ? undefined : null);
 
     const handleVote = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -81,10 +83,9 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
         >
             {/* Image Section */}
             <div className="relative w-full aspect-square overflow-hidden bg-white/5 border-b border-white/8">
-                {displayImage ? (
+                {displayVariants ? (
                     <OptimizedImage
-                        variants={spot.imageVariants}
-                        fallbackUrl={displayImage}
+                        variants={displayVariants}
                         alt={name || 'Spot'}
                         size="thumbnail"
                         fill

@@ -25,11 +25,10 @@ export type VariantType = 'thumbnail' | 'display';
 export type ScreenContext = 'mobile' | 'tablet' | 'desktop';
 
 /**
- * Safe image variant - either variants object or fallback URL
+ * Safe image variant - either variants object or blur placeholder
  */
 export interface SafeImageVariant {
   variants?: ImageVariantsDto;
-  url?: string;
   blurPlaceholder?: string;
 }
 
@@ -136,55 +135,45 @@ export function getHeroImageUrl(
  * Handles gallery images, spot images, profile avatars, scam alerts
  *
  * @param imageData - Image response object (GalleryImageResponseDto, etc.)
- * @param fallbackUrl - Optional fallback URL if variants not available
- * @returns SafeImageVariant with variants, url, and blur placeholder
+ * @returns SafeImageVariant with variants and blur placeholder
  *
  * @example
  * const image = selectImageVariantSafely(galleryImage);
- * const url = image.variants ? getGalleryImageUrl(image.variants) : image.url;
+ * const url = getGalleryImageUrl(image.variants);
  */
 export function selectImageVariantSafely(
-  imageData: any,
-  fallbackUrl?: string
+  imageData: any
 ): SafeImageVariant {
   if (!imageData) {
-    return { url: fallbackUrl };
+    return {};
   }
 
   return {
     variants: imageData.imageVariants as ImageVariantsDto | undefined,
-    url: imageData.url || imageData.imageUrl || fallbackUrl,
     blurPlaceholder: imageData.blurPlaceholder,
   };
 }
 
 /**
- * Build the final image URL with fallback chain
+ * Build the final image URL with proper variant selection
  *
  * Priority:
- * 1. Selected variant URL (preferred)
- * 2. Single image URL (fallback)
- * 3. Provided fallback (last resort)
+ * 1. Selected variant URL (primary)
  *
  * @param variants - ImageVariantsDto with variant URLs
- * @param fallbackUrl - Fallback URL to use if variants unavailable
  * @param variantType - Which variant to select
- * @returns The final image URL or undefined
+ * @returns The image URL or undefined
  *
  * @example
- * const url = buildImageUrl(variants, imageUrl, 'thumbnail');
+ * const url = buildImageUrl(variants, 'thumbnail');
  */
 export function buildImageUrl(
   variants: ImageVariantsDto | undefined,
-  fallbackUrl: string | undefined,
   variantType: VariantType = 'display'
 ): string | undefined {
-  // Try to use variant first
+  // Use variant
   const variantUrl = getImageVariant(variants, variantType);
   if (variantUrl) return variantUrl;
-
-  // Fall back to provided URL
-  if (fallbackUrl) return fallbackUrl;
 
   // No URL available
   return undefined;
@@ -296,22 +285,21 @@ export function buildRenderableImage(
   screenContext: ScreenContext = 'desktop',
   altText: string = 'Image'
 ): RenderableImage | undefined {
-  const { variants, url, blurPlaceholder } = selectImageVariantSafely(imageData);
+  const { variants, blurPlaceholder } = selectImageVariantSafely(imageData);
   const dimensions = getImageDimensions(imageData);
 
-  if (!url && !variants) {
+  if (!variants) {
     return undefined;
   }
 
   const finalUrl =
-    buildImageUrl(variants, url, 'display') ||
-    url ||
+    buildImageUrl(variants, 'display') ||
     'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';
 
   return {
     url: finalUrl,
-    thumbnailUrl: getThumbnailImageUrl(variants) || url,
-    displayUrl: getGalleryImageUrl(variants) || url,
+    thumbnailUrl: getThumbnailImageUrl(variants),
+    displayUrl: getGalleryImageUrl(variants),
     blurPlaceholder,
     width: dimensions?.width,
     height: dimensions?.height,
@@ -363,7 +351,6 @@ export function extractGalleryImageData(galleryImage: GalleryImageResponseDto) {
  */
 export function extractSpotImageData(spot: SpotWithStatsResponseDto) {
   return {
-    url: spot.imageUrl,
     variants: spot.imageVariants,
     blurPlaceholder: spot.blurPlaceholder,
     dimensions: {
@@ -413,7 +400,6 @@ export function extractProfileImageData(profile: ProfileResponseDto) {
  */
 export function extractScamAlertImageData(alert: ScamAlertResponseDto) {
   return {
-    url: alert.imageUrl,
     variants: alert.imageVariants,
     blurPlaceholder: alert.blurPlaceholder,
     dimensions: {

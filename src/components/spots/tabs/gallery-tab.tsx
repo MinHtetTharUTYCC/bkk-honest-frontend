@@ -40,7 +40,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
 
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [deleteImageId, setDeleteImageId] = useState<string | null>(null);
 
   // Sync state with URL params
@@ -173,7 +173,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     <div className="space-y-8 animate-in fade-in duration-300">
       <ImageViewer
         isOpen={!!selectedImage}
-        imageUrl={selectedImage || ""}
+        imageVariants={selectedImage?.imageVariants || { thumbnail: '', display: '' }}
         onClose={() => setSelectedImage(null)}
       />
 
@@ -310,19 +310,20 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
 
                 <div 
                   className="aspect-[4/5] relative overflow-hidden cursor-zoom-in"
-                  onClick={() => setSelectedImage(img.url)}
+                  onClick={() => setSelectedImage(img)}
                 >
-                  <OptimizedImage
-                    variants={img.imageVariants}
-                    fallbackUrl={img.url}
-                    alt="Gallery image"
-                    size="display"
-                    fill
-                    width={img.imageWidth}
-                    height={img.imageHeight}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    blurDataURL={img.blurPlaceholder}
-                  />
+                  {img.imageVariants && (
+                    <OptimizedImage
+                      variants={img.imageVariants}
+                      alt="Gallery image"
+                      size="display"
+                      fill
+                      width={img.imageWidth}
+                      height={img.imageHeight}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      blurDataURL={img.blurPlaceholder}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                     <div className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
                       <Camera size={20} className="text-white" />

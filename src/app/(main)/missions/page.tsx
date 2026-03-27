@@ -48,8 +48,11 @@ interface MissionItem {
   spot?: {
     name?: string;
     slug?: string;
-    imageUrl?: string;
     city?: { slug?: string };
+    imageVariants?: {
+      thumbnail: string;
+      display: string;
+    };
   };
 }
 
@@ -322,9 +325,9 @@ function MissionsPageContent() {
               >
                 <div className="flex items-center gap-6">
                   <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-white/5">
-                    {mission.spot?.imageUrl ? (
+                    {mission.spot?.imageVariants && Object.values(mission.spot.imageVariants).some(v => v) ? (
                       <img
-                        src={mission.spot.imageUrl}
+                        src={mission.spot.imageVariants.display || mission.spot.imageVariants.thumbnail || ''}
                         alt={mission.spot?.name}
                         className="w-full h-full object-cover"
                       />

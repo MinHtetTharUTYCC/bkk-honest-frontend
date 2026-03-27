@@ -2,15 +2,17 @@
 
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
+import type { ImageVariantsDto } from '@/api/generated/model';
+import { getGalleryImageUrl } from '@/lib/image-utils';
 
 interface ImageViewerProps {
   isOpen: boolean;
-  imageUrl: string;
+  imageVariants: ImageVariantsDto;
   alt?: string;
   onClose: () => void;
 }
 
-export function ImageViewer({ isOpen, imageUrl, alt = 'Image', onClose }: ImageViewerProps) {
+export function ImageViewer({ isOpen, imageVariants, alt = 'Image', onClose }: ImageViewerProps) {
   // Handle ESC key
   useEffect(() => {
     if (!isOpen) return;
@@ -39,6 +41,9 @@ export function ImageViewer({ isOpen, imageUrl, alt = 'Image', onClose }: ImageV
   }, [isOpen]);
 
   if (!isOpen) return null;
+
+  const imageUrl = getGalleryImageUrl(imageVariants);
+  if (!imageUrl) return null;
 
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {

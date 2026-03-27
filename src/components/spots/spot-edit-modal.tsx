@@ -19,7 +19,6 @@ interface SpotEditData {
     cityId?: string;
     latitude?: number;
     longitude?: number;
-    imageUrl?: string;
     category?: { id?: string };
     city?: { id?: string };
 }
@@ -90,7 +89,7 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                         cityId: spot.cityId || spot.city?.id || '',
                         latitude: spot.latitude,
                         longitude: spot.longitude,
-                        imageUrl: spot.imageUrl }}
+                    }}
                     categories={categories}
                     cities={cities}
                     isLoading={updateSpotMutation.isPending}

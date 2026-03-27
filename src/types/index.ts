@@ -22,10 +22,13 @@ export interface Spot {
   cityId?: string;
   distance?: number;
   tags?: string[];
-  imageUrl?: string;
   status?: string;
   createdAt?: string;
   updatedAt?: string;
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
   _count?: {
     tips?: number;
     scamAlerts?: number;
@@ -40,7 +43,6 @@ export interface Tip {
   title?: string;
   type?: 'TRY' | 'AVOID';
   content: string;
-  imageUrl?: string;
   category?: string;
   price?: number;
   currency?: string;
@@ -51,6 +53,10 @@ export interface Tip {
   updatedAt?: string;
   user?: User;
   spot?: Spot;
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
   _count?: {
     votes?: number;
     comments?: number;
@@ -61,13 +67,16 @@ export interface Vibe {
   id: string;
   spotId: string;
   userId: string;
-  imageUrl: string;
   caption?: string;
   createdAt?: string;
   hasVoted?: boolean;
   voteId?: string;
   user?: User;
   spot?: Spot;
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
   _count?: {
     votes?: number;
   };
@@ -90,7 +99,6 @@ export interface ScamAlert {
   location?: string;
   severity?: string;
   status?: string;
-  imageUrl?: string;
   latitude?: number;
   longitude?: number;
   userId: string;
@@ -101,6 +109,10 @@ export interface ScamAlert {
   createdAt?: string;
   updatedAt?: string;
   user?: User;
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
   _count?: {
     votes?: number;
     comments?: number;

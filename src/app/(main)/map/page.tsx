@@ -63,11 +63,14 @@ interface MapSpot {
   name: string;
   slug?: string;
   address: string;
-  imageUrl?: string;
   latitude: number;
   longitude: number;
   city?: { slug?: string };
   category?: { name?: string };
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
   _count?: {
     communityTips?: number;
     vibeChecks?: number;
@@ -596,10 +599,10 @@ function MapPageContent() {
           >
             <div className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 p-5 rounded-3xl shadow-2xl max-w-md mx-auto">
               {/* Spot Image */}
-              {selectedSpot.imageUrl && (
+              {selectedSpot.imageVariants && Object.values(selectedSpot.imageVariants).some(v => v) && (
                 <div className="w-full h-40 rounded-2xl overflow-hidden mb-4 bg-white/5">
                   <img
-                    src={selectedSpot.imageUrl}
+                    src={selectedSpot.imageVariants.display || selectedSpot.imageVariants.thumbnail || ''}
                     alt={selectedSpot.name}
                     className="w-full h-full object-cover"
                   />

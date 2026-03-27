@@ -84,10 +84,9 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
 
       <div className="flex flex-col md:flex-row gap-6">
         <div className="relative h-100 md:h-[420px] md:w-[420px] lg:h-[480px] lg:w-[480px] shrink-0 rounded-2xl overflow-hidden group shadow-2xl shadow-black/30 cursor-pointer bg-white/5 border border-white/8" onClick={onImageClick}>
-          {spot.imageUrl ? (
+          {spot.imageVariants ? (
             <OptimizedImage
               variants={spot.imageVariants}
-              fallbackUrl={spot.imageUrl}
               alt={spot.name || 'Spot'}
               size="display"
               fill

@@ -47,9 +47,12 @@ interface ScamItem {
     scamName: string;
     description: string;
     createdAt: string;
-    imageUrl?: string;
     slug?: string;
     city?: { slug?: string };
+    imageVariants?: {
+        thumbnail: string;
+        display: string;
+    };
 }
 
 interface TipItem {
@@ -57,8 +60,11 @@ interface TipItem {
     title: string;
     description: string;
     createdAt: string;
-    imageUrl?: string;
-    spot?: { slug?: string; imageUrl?: string; city?: { slug?: string } };
+    spot?: { slug?: string; city?: { slug?: string }; imageVariants?: { thumbnail: string; display: string } };
+    imageVariants?: {
+        thumbnail: string;
+        display: string;
+    };
 }
 
 interface ReportItem {
@@ -66,8 +72,11 @@ interface ReportItem {
     itemName: string;
     priceThb: number;
     timestamp: string;
-    imageUrl?: string;
-    spot?: { name?: string; slug?: string; imageUrl?: string; city?: { slug?: string } };
+    spot?: { name?: string; slug?: string; city?: { slug?: string }; imageVariants?: { thumbnail: string; display: string } };
+    imageVariants?: {
+        thumbnail: string;
+        display: string;
+    };
 }
 
 interface SpotItem {
@@ -75,9 +84,12 @@ interface SpotItem {
     name: string;
     address?: string;
     createdAt: string;
-    imageUrl?: string;
     slug?: string;
     city?: { slug?: string };
+    imageVariants?: {
+        thumbnail: string;
+        display: string;
+    };
 }
 
 interface InfinitePage<T> extends PaginationPage {
@@ -223,8 +235,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             scamsList.map((scam) => (
                                 <div key={scam.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-red-500 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                     <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
-                                        {scam.imageUrl ? (
-                                            <Image src={scam.imageUrl} alt={scam.scamName} fill className="object-cover" />
+                                        {scam.imageVariants && Object.values(scam.imageVariants).some(v => v) ? (
+                                            <Image src={scam.imageVariants.display || scam.imageVariants.thumbnail || ''} alt={scam.scamName} fill className="object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                 <ImageIcon size={24} strokeWidth={1.5} />
@@ -268,12 +280,12 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                     <div className="flex flex-col gap-6">
                         {tipsList.length > 0 ? (
                             tipsList.map((tip) => {
-                                const displayImg = tip.imageUrl || tip.spot?.imageUrl;
+                                const displayVariants = (tip.imageVariants && Object.values(tip.imageVariants).some(v => v)) ? tip.imageVariants : tip.spot?.imageVariants;
                                 return (
                                     <div key={tip.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-emerald-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                         <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
-                                            {displayImg ? (
-                                                <Image src={displayImg} alt={tip.title} fill className="object-cover" />
+                                            {displayVariants && Object.values(displayVariants).some(v => v) ? (
+                                                <Image src={displayVariants.display || displayVariants.thumbnail || ''} alt={tip.title} fill className="object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                     <ImageIcon size={24} strokeWidth={1.5} />
@@ -318,12 +330,12 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                     <div className="flex flex-col gap-6">
                         {reportsList.length > 0 ? (
                             reportsList.map((report) => {
-                                const displayImg = report.imageUrl || report.spot?.imageUrl;
+                                const displayVariants = (report.imageVariants && Object.values(report.imageVariants).some(v => v)) ? report.imageVariants : report.spot?.imageVariants;
                                 return (
                                     <div key={report.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-amber-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                         <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
-                                            {displayImg ? (
-                                                <Image src={displayImg} alt={report.itemName} fill className="object-cover" />
+                                            {displayVariants && Object.values(displayVariants).some(v => v) ? (
+                                                <Image src={displayVariants.display || displayVariants.thumbnail || ''} alt={report.itemName} fill className="object-cover" />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                     <ImageIcon size={24} strokeWidth={1.5} />
@@ -375,8 +387,8 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
                             spotsList.map((spot) => (
                                 <div key={spot.id} className="bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/20 border-l-4 border-l-orange-400 overflow-hidden flex flex-col sm:flex-row items-stretch">
                                     <div className="w-full sm:w-32 md:w-40 aspect-square bg-white/5 border-b sm:border-b-0 sm:border-r border-white/10 overflow-hidden shrink-0 flex items-center justify-center relative">
-                                        {spot.imageUrl ? (
-                                            <Image src={spot.imageUrl} alt={spot.name} fill className="object-cover" />
+                                        {spot.imageVariants && Object.values(spot.imageVariants).some(v => v) ? (
+                                            <Image src={spot.imageVariants.display || spot.imageVariants.thumbnail || ''} alt={spot.name} fill className="object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                                                 <ImageIcon size={24} strokeWidth={1.5} />

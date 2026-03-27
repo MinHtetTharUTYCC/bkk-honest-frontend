@@ -31,7 +31,6 @@ export interface ScamAlertData {
     preventionTip?: string;
     categoryId?: string;
     cityId?: string;
-    imageUrl?: string;
     createdAt?: string;
     slug?: string;
     hasVoted?: boolean;
@@ -154,8 +153,8 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             onClick={() => fileInputRef.current?.click()}
                             className="w-24 h-24 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                         >
-                            {editPreview || alert.imageUrl ? (
-                                <img alt="" src={editPreview || alert.imageUrl}
+                            {editPreview || (alert.imageVariants && Object.values(alert.imageVariants).some(v => v)) ? (
+                                <img alt="" src={editPreview || (alert.imageVariants?.display || alert.imageVariants?.thumbnail || '')}
                                     className="w-full h-full object-cover group-hover:opacity-50"
                                 />
                             ) : (
@@ -262,9 +261,9 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
         >
             {/* Photo — left */}
             <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8" style={{ aspectRatio: alert.imageHeight && alert.imageWidth ? `${alert.imageWidth}/${alert.imageHeight}` : undefined }}>
-                {alert.imageUrl ? (
+                {alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
                     <img
-                        src={alert.imageUrl}
+                        src={alert.imageVariants.display || alert.imageVariants.thumbnail || ''}
                         alt={alert.scamName || 'Scam alert'}
                         width={alert.imageWidth}
                         height={alert.imageHeight}

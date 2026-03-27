@@ -104,8 +104,8 @@ export default function SpotHeaderClient({
       )}
 
       <ImageViewer
-        isOpen={showImageViewer && !!spot.imageUrl}
-        imageUrl={spot.imageUrl || ''}
+        isOpen={showImageViewer && !!spot.imageVariants}
+        imageVariants={spot.imageVariants || { thumbnail: '', display: '' }}
         alt={spot.name}
         onClose={() => setShowImageViewer(false)}
       />

@@ -11,7 +11,6 @@ export interface VibeRow {
   crowdLevel: number;
   timestamp: string;
   waitTimeMinutes?: number | null;
-  imageUrl?: string;
   caption?: string;
   hasVoted?: boolean;
   voteId?: string | null;
@@ -20,6 +19,10 @@ export interface VibeRow {
     id?: string;
     name?: string;
     avatarUrl?: string;
+  };
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
   };
 }
 
@@ -75,7 +78,6 @@ export interface SpotData {
   cityId?: string;
   name: string;
   address: string;
-  imageUrl?: string;
   latitude: number;
   longitude: number;
   hasVoted?: boolean;
@@ -94,4 +96,8 @@ export interface SpotData {
   tipStats?: { tryCount: number; avoidCount: number };
   priceStats?: { avg?: number; count?: number; min?: number; max?: number };
   activityStats?: { totalContributors: number; lastActivity: string | null };
+  imageVariants?: {
+    thumbnail: string;
+    display: string;
+  };
 }

@@ -92,8 +92,8 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                 onClick={() => fileInputRef.current?.click()}
                                 className="w-32 h-32 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                             >
-                                {editPreview || alert.imageUrl ? (
-                                    <img alt="Scam alert" src={editPreview || alert.imageUrl}
+                                {editPreview || (alert.imageVariants && Object.values(alert.imageVariants).some(v => v)) ? (
+                                    <img alt="Scam alert" src={editPreview || (alert.imageVariants?.display || alert.imageVariants?.thumbnail || '')}
                                         className="w-full h-full object-cover group-hover:opacity-50"
                                     />
                                 ) : (
