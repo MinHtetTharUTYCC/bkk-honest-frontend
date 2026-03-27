@@ -43,6 +43,11 @@ export interface GalleryImage {
     display: string;
   };
   blurPlaceholder?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  imageSize?: number;
+  imageMimeType?: string;
+  qualityScore?: number;
 }
 
 export interface SpotTip {

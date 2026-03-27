@@ -16,6 +16,11 @@ export interface SpotCardData {
     imageUrl?: string;
     imageVariants?: any;
     blurPlaceholder?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+    imageSize?: number;
+    imageMimeType?: string;
+    qualityScore?: number;
     images?: Array<{ url?: string }>;
     city?: { slug?: string };
     category?: { name?: string };
@@ -83,6 +88,8 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                         alt={name || 'Spot'}
                         size="thumbnail"
                         fill
+                        width={spot.imageWidth}
+                        height={spot.imageHeight}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         blurDataURL={spot.blurPlaceholder}
                     />

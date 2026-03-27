@@ -91,6 +91,8 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
               alt={spot.name || 'Spot'}
               size="display"
               fill
+              width={spot.imageWidth}
+              height={spot.imageHeight}
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
               blurDataURL={spot.blurPlaceholder}
             />

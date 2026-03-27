@@ -318,6 +318,8 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                     alt="Gallery image"
                     size="display"
                     fill
+                    width={img.imageWidth}
+                    height={img.imageHeight}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     blurDataURL={img.blurPlaceholder}
                   />

@@ -333,19 +333,22 @@ export function buildRenderableImage(
  * @returns Image data object with all properties
  */
 export function extractGalleryImageData(galleryImage: GalleryImageResponseDto) {
+  // Cast to any to access optional image metadata fields that backend returns
+  // but generated types don't yet include (imageVariants, blurPlaceholder, dimensions, etc.)
+  const imageData = galleryImage as any;
   return {
     id: galleryImage.id,
     url: galleryImage.url,
-    variants: galleryImage.imageVariants,
-    blurPlaceholder: galleryImage.blurPlaceholder,
+    variants: imageData.imageVariants,
+    blurPlaceholder: imageData.blurPlaceholder,
     dimensions: {
-      width: galleryImage.imageWidth,
-      height: galleryImage.imageHeight,
+      width: imageData.imageWidth,
+      height: imageData.imageHeight,
     },
     metadata: {
-      mimeType: galleryImage.imageMimeType,
-      fileSize: galleryImage.imageSize,
-      qualityScore: galleryImage.qualityScore,
+      mimeType: imageData.imageMimeType,
+      fileSize: imageData.imageSize,
+      qualityScore: imageData.qualityScore,
       isDegraded: galleryImage.isDegraded,
     },
   };

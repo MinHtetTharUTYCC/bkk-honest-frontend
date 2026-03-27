@@ -41,6 +41,16 @@ export interface ScamAlertData {
     city?: { slug?: string; name?: string };
     user?: { id?: string; name?: string; avatarUrl?: string; level?: string };
     _count?: { comments?: number; votes?: number };
+    imageVariants?: {
+        thumbnail: string;
+        display: string;
+    };
+    blurPlaceholder?: string;
+    imageWidth?: number;
+    imageHeight?: number;
+    imageSize?: number;
+    imageMimeType?: string;
+    qualityScore?: number;
 }
 
 interface NamedOption {
@@ -251,11 +261,13 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
             className="bg-card rounded-2xl border border-white/8 shadow-sm overflow-hidden group hover:shadow-black/30 hover:shadow-md transition-all duration-300 flex flex-row relative cursor-pointer active:scale-[0.99] items-stretch"
         >
             {/* Photo — left */}
-            <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8">
+            <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8" style={{ aspectRatio: alert.imageHeight && alert.imageWidth ? `${alert.imageWidth}/${alert.imageHeight}` : undefined }}>
                 {alert.imageUrl ? (
                     <img
                         src={alert.imageUrl}
                         alt={alert.scamName || 'Scam alert'}
+                        width={alert.imageWidth}
+                        height={alert.imageHeight}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                 ) : (
