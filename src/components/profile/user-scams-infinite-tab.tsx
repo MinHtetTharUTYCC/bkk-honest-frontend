@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteUserScamAlerts } from "@/hooks/use-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { Loader2 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
@@ -34,6 +35,7 @@ export default function UserScamsInfiniteTab({ userId }: UserScamsInfiniteTabPro
   const { user: authUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   const {
     data: scamsData,
@@ -42,6 +44,13 @@ export default function UserScamsInfiniteTab({ userId }: UserScamsInfiniteTabPro
     isFetchingNextPage: isFetchingNextScams,
     isLoading: scamsLoading,
   } = useInfiniteUserScamAlerts(userId);
+
+  // Invalidate user scams query when auth state changes to refresh hasVoted field
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['user-scams-infinite', userId],
+    });
+  }, [authUser?.id, userId, queryClient]);
 
   const scams: ScamAlert[] = useMemo(() => {
     const rawScams = scamsData?.pages.flatMap((page) => (page as { data?: ScamAlert[] })?.data || []) || [];

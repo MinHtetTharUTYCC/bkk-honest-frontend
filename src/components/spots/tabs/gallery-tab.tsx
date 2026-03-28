@@ -54,6 +54,13 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     isLoading,
   } = useInfiniteSpotGallery(spotId, sort);
 
+  // Invalidate gallery query when user auth state changes to refresh hasVoted field
+  useEffect(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['gallery-infinite', spotId],
+    });
+  }, [authUser?.id, spotId, queryClient]);
+
   const { toggleVote, isPending: votePending } = useVoteToggle("image", spotId);
   const [votingImageId, setVotingImageId] = useState<string | null>(null);
 
