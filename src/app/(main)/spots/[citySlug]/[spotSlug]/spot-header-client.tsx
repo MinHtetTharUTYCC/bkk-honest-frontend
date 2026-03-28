@@ -65,7 +65,7 @@ export default function SpotHeaderClient({
   });
 
   const tabs = [
-    { id: "tips", label: "Tips & Updates", path: `${basePath}/tips` },
+    { id: "tips", label: "Tips", path: `${basePath}/tips` },
     { id: "vibes", label: "Live Vibes", path: `${basePath}/vibes` },
     { id: "prices", label: "Prices", path: `${basePath}/prices` },
     { id: "gallery", label: "Gallery", path: `${basePath}/gallery` },
