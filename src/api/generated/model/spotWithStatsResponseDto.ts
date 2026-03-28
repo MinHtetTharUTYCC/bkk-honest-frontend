@@ -28,8 +28,6 @@ export interface SpotWithStatsResponseDto {
   address: string;
   /** City slug for routing */
   citySlug: string;
-  /** Spot image URL */
-  imageUrl?: string;
   /** Image variants (thumbnail, display) */
   imageVariants?: ImageVariantsDto;
   /** Image width in pixels */

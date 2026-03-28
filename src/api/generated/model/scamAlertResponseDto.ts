@@ -25,8 +25,6 @@ export interface ScamAlertResponseDto {
   preventionTip: string;
   /** City slug for routing */
   citySlug: string;
-  /** Warning/example image URL */
-  imageUrl?: string;
   /** Image variants (thumbnail, display) */
   imageVariants?: ImageVariantsDto;
   /** Image width in pixels */

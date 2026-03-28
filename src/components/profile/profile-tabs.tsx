@@ -197,21 +197,31 @@ export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }
 
                 <ScrollArea className="w-full whitespace-nowrap">
                     <div className="flex bg-white/8 p-1 rounded-2xl md:p-1.5 no-scrollbar">
-                        {visibleTabs.map((tab) => (
-                            <button
-                                key={tab.id}
-                                onClick={() => onTabChange(tab.id)}
-                                onMouseEnter={() => prefetchTab(tab.id)}
-                                className={cn(
-                                    'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer',
-                                    activeTab === tab.id
-                                        ? tab.color.split(' active:')[0] + ' shadow-sm'
-                                        : 'text-white/40 hover:text-white/70',
-                                )}
-                            >
-                                {tab.label} ({tab.count})
-                            </button>
-                        ))}
+                        {visibleTabs.map((tab) => {
+                            const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+                            params.set('tab', tab.id);
+                            const tabUrl = `${typeof window !== 'undefined' ? window.location.pathname : ''}?${params.toString()}`;
+
+                            return (
+                                <Link
+                                    key={tab.id}
+                                    href={tabUrl}
+                                    scroll={false}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onTabChange(tab.id);
+                                    }}
+                                    className={cn(
+                                        'px-4 md:px-6 py-2 rounded-xl text-[12px] md:text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap cursor-pointer block',
+                                        activeTab === tab.id
+                                            ? tab.color.split(' active:')[0] + ' shadow-sm'
+                                            : 'text-white/40 hover:text-white/70',
+                                    )}
+                                >
+                                    {tab.label} ({tab.count})
+                                </Link>
+                            );
+                        })}
                     </div>
                     <ScrollBar orientation="horizontal" className="hidden" />
                 </ScrollArea>

@@ -126,6 +126,7 @@ export default function SpotHeaderClient({
             <Link
               key={tab.id}
               href={tab.path}
+              scroll={false}
               className={cn(
                 "flex-1 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap text-center",
                 isActive

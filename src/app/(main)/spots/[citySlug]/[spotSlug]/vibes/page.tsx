@@ -39,7 +39,7 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
         skip: pageParam as number,
         take: 10
       }, { next: { revalidate: 60 } } as RequestInit);
-      return res.data;
+      return res;
     },
     getNextPageParam: (lastPage: any) => {
       const { skip, take, total } = lastPage.pagination || {};

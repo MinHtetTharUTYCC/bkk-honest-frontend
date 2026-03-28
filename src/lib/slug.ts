@@ -15,7 +15,7 @@ export function generateSlug(text: string): string {
  * NOTE: citySlug should come from API (city.slug), not generated from city name
  */
 export function getSpotUrl(citySlug: string, spotSlug: string): string {
-  return `/spots/${citySlug}/${spotSlug}`;
+  return `/spots/${citySlug}/${spotSlug}/tips`;
 }
 
 /**

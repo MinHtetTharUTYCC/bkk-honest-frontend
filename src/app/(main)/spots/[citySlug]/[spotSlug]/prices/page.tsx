@@ -38,7 +38,7 @@ export default async function PricesPage({ params }: { params: Promise<{ citySlu
         skip: pageParam as number,
         take: 10
       }, { next: { revalidate: 60 } } as RequestInit);
-      return res.data;
+      return res;
     },
     getNextPageParam: (lastPage: any) => {
       const { skip, take, total } = lastPage.pagination || {};

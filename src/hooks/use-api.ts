@@ -159,12 +159,13 @@ export function useInfiniteUserPriceReports(userId: string) {
     const isMe = userId === 'me';
     return isMe 
         ? usePriceReportsControllerFindMyReportsInfinite({ take: 10 }, {
-            query: { queryKey: ['user-price-reports-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+            query: { queryKey: ['user-price-reports-infinite', 'me'], initialPageParam: 0, getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage) }
         })
         : usePriceReportsControllerFindByUserInfinite(userId, { take: 10 }, {
             query: { 
                 queryKey: ['user-price-reports-infinite', userId], 
-                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                initialPageParam: 0,
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
                 enabled: !!userId
             }
         });
@@ -174,12 +175,13 @@ export function useInfiniteUserScamAlerts(userId: string) {
     const isMe = userId === 'me';
     return isMe 
         ? useScamAlertsControllerFindMyAlertsInfinite({ take: 10 }, {
-            query: { queryKey: ['user-scam-alerts-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+            query: { queryKey: ['user-scam-alerts-infinite', 'me'], initialPageParam: 0, getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage) }
         })
         : useScamAlertsControllerFindByUserInfinite(userId, { take: 10 }, {
             query: { 
                 queryKey: ['user-scam-alerts-infinite', userId], 
-                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                initialPageParam: 0,
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
                 enabled: !!userId 
             }
         });
@@ -189,12 +191,13 @@ export function useInfiniteUserCommunityTips(userId: string) {
     const isMe = userId === 'me';
     return isMe 
         ? useCommunityTipsControllerFindMyTipsInfinite({ take: 10 }, {
-            query: { queryKey: ['user-community-tips-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+            query: { queryKey: ['user-community-tips-infinite', 'me'], initialPageParam: 0, getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage) }
         })
         : useCommunityTipsControllerFindByUserInfinite(userId, { take: 10 }, {
             query: { 
                 queryKey: ['user-community-tips-infinite', userId], 
-                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                initialPageParam: 0,
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
                 enabled: !!userId 
             }
         });
@@ -204,12 +207,13 @@ export function useInfiniteUserSpots(userId: string) {
     const isMe = userId === 'me';
     return isMe 
         ? useSpotsControllerFindMySpotsInfinite({ take: 10 }, {
-            query: { queryKey: ['user-spots-infinite', 'me'], getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data) }
+            query: { queryKey: ['user-spots-infinite', 'me'], initialPageParam: 0, getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage) }
         })
         : useSpotsControllerFindByUserInfinite(userId, { take: 10 }, {
             query: { 
                 queryKey: ['user-spots-infinite', userId], 
-                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+                initialPageParam: 0,
+                getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
                 enabled: !!userId 
             }
         });
@@ -269,7 +273,7 @@ export function useInfiniteSpots(params?: {
     return useSpotsControllerFindAllInfinite(cleanParams, {
         query: {
             queryKey: ['spots-infinite', cleanParams],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
             staleTime: 5 * 60 * 1000,
         }
     });
@@ -312,7 +316,8 @@ export function useInfiniteSpotPriceReports(spotId: string) {
     }, {
         query: {
             queryKey: ['price-reports-infinite', spotId],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, false),
+            initialPageParam: 0,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, false),
             enabled: !!spotId
         },
     });
@@ -344,7 +349,8 @@ export function useInfiniteSpotTips(
         query: {
             queryKey: ['tips-infinite', spotId, normalizedType, normalizedSort],
             staleTime: 5 * 60 * 1000,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            initialPageParam: 0,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
         },
     });
 }
@@ -369,7 +375,8 @@ export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular
     }, {
         query: {
             queryKey: ['gallery-infinite', spotId, normalizedSort],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            initialPageParam: 0,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
             enabled: !!spotId
         },
     });
@@ -470,7 +477,7 @@ export function useInfiniteScamAlerts(params?: {
         query: {
             queryKey: ['scam-alerts-infinite', cleanParams],
             staleTime: 5 * 60 * 1000,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, false),
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, false),
         }
     });
 }
@@ -496,7 +503,8 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
         query: {
             queryKey: ['live-vibes-infinite', params],
             staleTime: 60 * 1000,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, false),
+            initialPageParam: 0,
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, false),
         }
     });
 }
@@ -509,7 +517,7 @@ export function useTipComments(tipId: string) {
     }, {
         query: {
             queryKey: ['tip-comments', tipId],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
             enabled: !!tipId
         }
     });
@@ -521,7 +529,7 @@ export function useScamComments(scamAlertId: string) {
     }, {
         query: {
             queryKey: ['scam-comments', scamAlertId],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data, true),
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
             enabled: !!scamAlertId
         }
     });
@@ -708,7 +716,7 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
     }, {
         query: {
             queryKey: ['missions-infinite', userId, status, sort],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage.data),
+            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
             enabled: userId === 'me'
         }
     });

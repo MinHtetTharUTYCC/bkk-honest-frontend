@@ -5,6 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
+import type { ImageVariantsDto } from './imageVariantsDto';
 import type { UserSummaryResponseDto } from './userSummaryResponseDto';
 
 export interface GalleryImageResponseDto {
@@ -13,6 +14,8 @@ export interface GalleryImageResponseDto {
   userId: string;
   url: string;
   isDegraded: boolean;
+  imageVariants?: ImageVariantsDto;
+  blurPlaceholder?: string;
   createdAt: string;
   user: UserSummaryResponseDto;
   voteCount: number;

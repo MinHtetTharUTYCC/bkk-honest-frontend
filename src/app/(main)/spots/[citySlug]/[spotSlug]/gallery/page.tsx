@@ -50,7 +50,7 @@ export default async function GalleryPage({
         take: 12,
         sort: normalizedSort
       }, { next: { revalidate: 60 } } as RequestInit);
-      return res.data;
+      return res;
     },
     getNextPageParam: (lastPage: any) => {
       const { skip, take, total } = lastPage.pagination || {};

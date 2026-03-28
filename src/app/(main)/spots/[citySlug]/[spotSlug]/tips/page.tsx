@@ -26,7 +26,7 @@ export default async function TipsPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const { citySlug, spotSlug } = await params;
-  const { type = "TRY" } = await searchParams;
+  const { type = "TRY", sort = "popular" } = await searchParams;
   const spot = await getSpot(citySlug, spotSlug);
   
   if (!spot) {
@@ -38,18 +38,19 @@ export default async function TipsPage({
   queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
 
   const normalizedType = type === "AVOID" ? "AVOID" : "TRY";
+  const normalizedSort = sort === "newest" ? "newest" : "popular";
 
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ["tips-infinite", spot.id, normalizedType, "popular"],
+    queryKey: ["tips-infinite", spot.id, normalizedType, normalizedSort],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
       const res = await communityTipsControllerFindBySpot(spot.id, {
         skip: pageParam.toString(),
         take: 10,
         type: normalizedType,
-        sort: "popular"
+        sort: normalizedSort
       }, { next: { revalidate: 60 } } as RequestInit);
-      return res.data;
+      return res;
     },
     getNextPageParam: (lastPage: any) => {
       const { skip, take, total } = lastPage.pagination || {};

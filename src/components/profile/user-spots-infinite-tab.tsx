@@ -1,0 +1,124 @@
+"use client";
+
+import { useRef, useEffect, useMemo } from "react";
+import { useAuth } from "@/components/providers/auth-provider";
+import { useInfiniteUserSpots } from "@/hooks/use-api";
+import { useInView } from "react-intersection-observer";
+import { Loader2 } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { toast } from "sonner";
+import { getSpotUrl } from "@/lib/slug";
+import Link from "next/link";
+import OptimizedImage from "@/components/ui/OptimizedImage";
+
+interface UserSpotsInfiniteTabProps {
+  userId: string;
+}
+
+interface Spot {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  createdAt: string;
+  city?: { id: string; name: string; slug: string };
+  imageVariants?: { thumbnail: string; display: string };
+  imageWidth?: number;
+  imageHeight?: number;
+  category?: { id: string; name: string };
+  _count?: { tips: number; priceReports: number; visits: number };
+}
+
+export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabProps) {
+  const { user: authUser } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const {
+    data: spotsData,
+    fetchNextPage: fetchNextSpots,
+    hasNextPage: hasNextSpots,
+    isFetchingNextPage: isFetchingNextSpots,
+    isLoading: spotsLoading,
+  } = useInfiniteUserSpots(userId);
+
+  const spots: Spot[] = useMemo(() => {
+    const rawSpots = spotsData?.pages.flatMap((page) => (page as { data?: Spot[] })?.data || []) || [];
+    return rawSpots;
+  }, [spotsData]);
+
+  const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
+  const hasFetchedSpotsRef = useRef(false);
+
+  useEffect(() => {
+    if (inView && hasNextSpots && !isFetchingNextSpots && !hasFetchedSpotsRef.current) {
+      hasFetchedSpotsRef.current = true;
+      fetchNextSpots();
+    }
+  }, [inView, hasNextSpots, isFetchingNextSpots, fetchNextSpots]);
+
+  useEffect(() => {
+    if (!inView) hasFetchedSpotsRef.current = false;
+  }, [inView]);
+
+  return (
+    <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-white">Visited Spots</h2>
+      </div>
+
+      {spotsLoading ? (
+        <div className="py-20 flex justify-center">
+          <Loader2 size={24} className="text-cyan-400 animate-spin" />
+        </div>
+      ) : spots.length === 0 ? (
+        <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/20 text-xs font-medium text-white/40">
+          No spots visited yet
+        </div>
+      ) : (
+        <div className="space-y-2.5 pb-8">
+          {spots.map((spot) => (
+            <Link
+              key={spot.id}
+              href={getSpotUrl(spot.slug, spot.city?.slug || "")}
+              className="block bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all hover:scale-[1.02]"
+            >
+              <div className="flex gap-4">
+                {spot.imageVariants && (
+                  <div className="flex-shrink-0">
+                    <OptimizedImage
+                      imageVariants={spot.imageVariants}
+                      alt={spot.name}
+                      width={spot.imageWidth || 64}
+                      height={spot.imageHeight || 64}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm text-cyan-400 line-clamp-2">{spot.name}</h3>
+                  <p className="text-xs text-white/60 line-clamp-2 mt-1">{spot.description}</p>
+                  <div className="flex gap-2 mt-2 text-[10px] text-white/40">
+                    {spot.city && <span>{spot.city.name}</span>}
+                    {spot.category && <span className="text-cyan-400/60">{spot.category.name}</span>}
+                    <span>{new Date(spot.createdAt).toLocaleDateString()}</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+
+          <div ref={observerTarget} className="py-6 flex justify-center">
+            {isFetchingNextSpots ? (
+              <Loader2 size={20} className="text-cyan-400 animate-spin" />
+            ) : hasNextSpots ? (
+              <div className="h-4 w-4" />
+            ) : (
+              <p className="text-[10px] font-semibold text-white/40 tracking-wide">End of spots</p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
