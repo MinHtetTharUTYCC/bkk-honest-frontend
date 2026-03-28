@@ -104,12 +104,16 @@ function MissionsPageContent() {
 
   const { ref: observerTarget, inView } = useInView({ threshold: 0.1 });
 
-  // Helper to manually remove item from local list on delete success
-  const handleConfirmDelete = () => {
-    if (missionToDelete) {
-      deleteMission.mutate(missionToDelete, {
-        onSettled: () => setMissionToDelete(null),
-      });
+  // Helper to close dialog and show feedback after successful deletion
+  const handleConfirmDelete = async () => {
+    if (!missionToDelete) return;
+    try {
+      await deleteMission.mutateAsync(missionToDelete);
+      // Only close dialog after mutation succeeds
+      setMissionToDelete(null);
+    } catch (error) {
+      // Dialog stays open if deletion fails
+      console.error('Failed to delete mission:', error);
     }
   };
 
@@ -118,6 +122,14 @@ function MissionsPageContent() {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  // Clear missionToUpdate when mutation finishes (success or error)
+  useEffect(() => {
+    if (!updateMission.isPending && missionToUpdate) {
+      const timer = setTimeout(() => setMissionToUpdate(null), 0);
+      return () => clearTimeout(timer);
+    }
+  }, [updateMission.isPending]);
 
   const missions = useMemo(() => {
     return (
@@ -372,15 +384,10 @@ function MissionsPageContent() {
                   <button
                     onClick={() => {
                       setMissionToUpdate(mission.id);
-                      updateMission.mutate(
-                        {
-                          id: mission.id,
-                          completed: !mission.completed,
-                        },
-                        {
-                          onSettled: () => setMissionToUpdate(null),
-                        },
-                      );
+                      updateMission.mutate({
+                        id: mission.id,
+                        completed: !mission.completed,
+                      });
                     }}
                     disabled={
                       updateMission.isPending && missionToUpdate === mission.id
