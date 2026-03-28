@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteUserCommunityTips } from "@/hooks/use-api";
-import { useQueryClient } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { Loader2 } from "lucide-react";
 import { TipCard } from "@/components/tips/tip-card";
@@ -20,7 +19,6 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
   const { user: authUser } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const queryClient = useQueryClient();
   const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
 
   const {
@@ -30,13 +28,6 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
     isFetchingNextPage: isFetchingNextTips,
     isLoading: tipsLoading,
   } = useInfiniteUserCommunityTips(userId);
-
-  // Invalidate user tips query when auth state changes to refresh hasVoted field
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['user-tips-infinite', userId],
-    });
-  }, [authUser?.id, userId, queryClient]);
 
   return (
     <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">

@@ -6,13 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ScamAlertsControllerFindByUserParams = {
-/**
- * Items per page
- */
-take?: number;
-/**
- * Items to skip
- */
-skip?: number;
+export type PriceReportsControllerFindByUserParams = {
+take?: string;
+skip?: string;
 };

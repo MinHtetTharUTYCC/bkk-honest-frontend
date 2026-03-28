@@ -7,18 +7,16 @@ export const AXIOS_INSTANCE: AxiosInstance = Axios.create({
 
 // Automatically inject Supabase JWT for authenticated requests
 AXIOS_INSTANCE.interceptors.request.use(async (config) => {
-  // Only execute auth fetching on the client-side
-  if (typeof window !== 'undefined') {
-    try {
-      const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session?.access_token) {
-        config.headers['Authorization'] = `Bearer ${session.access_token}`;
-      }
-    } catch (e) {
-      console.error('[Orval Mutator] Error fetching Supabase session:', e);
+  try {
+    // Client-side auth (works on both client and server via cookies)
+    const supabase = createClient();
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session?.access_token) {
+      config.headers['Authorization'] = `Bearer ${session.access_token}`;
     }
+  } catch (e) {
+    console.error('[Orval Mutator] Error fetching Supabase session:', e);
   }
   return config;
 });

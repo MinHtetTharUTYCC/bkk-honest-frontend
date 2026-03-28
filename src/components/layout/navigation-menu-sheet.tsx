@@ -31,7 +31,8 @@ export default function NavigationMenuSheet() {
     if (!pathname) return false;
     const cleanPathname = pathname.split('?')[0];
     if (href === '/profile') {
-      return cleanPathname === '/profile' || cleanPathname === '/profile/';
+      const isMyProfileTab = ['/profile/tips', '/profile/scams', '/profile/spots', '/profile/reports'].includes(cleanPathname);
+      return cleanPathname === '/profile' || cleanPathname === '/profile/' || isMyProfileTab;
     }
     return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
   };

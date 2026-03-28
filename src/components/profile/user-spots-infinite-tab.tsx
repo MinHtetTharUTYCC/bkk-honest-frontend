@@ -80,17 +80,17 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
           {spots.map((spot) => (
             <Link
               key={spot.id}
-              href={getSpotUrl(spot.slug, spot.city?.slug || "")}
+              href={getSpotUrl(spot.city?.slug || "bangkok", spot.slug)}
               className="block bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all hover:scale-[1.02]"
             >
               <div className="flex gap-4">
                 {spot.imageVariants && (
                   <div className="flex-shrink-0">
                     <OptimizedImage
-                      imageVariants={spot.imageVariants}
+                      variants={spot.imageVariants as any}
                       alt={spot.name}
-                      width={spot.imageWidth || 64}
-                      height={spot.imageHeight || 64}
+                      width={64}
+                      height={64}
                       className="w-16 h-16 rounded-lg object-cover"
                     />
                   </div>

@@ -32,7 +32,8 @@ export default function NavDock() {
     }
     
     if (href === '/profile') {
-      return cleanPathname === '/profile' || cleanPathname === '/profile/';
+      const isMyProfileTab = ['/profile/tips', '/profile/scams', '/profile/spots', '/profile/reports'].includes(cleanPathname);
+      return cleanPathname === '/profile' || cleanPathname === '/profile/' || isMyProfileTab;
     }
     
     return cleanPathname === href || cleanPathname.startsWith(`${href}/`);

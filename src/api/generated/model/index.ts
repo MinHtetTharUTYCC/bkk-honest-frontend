@@ -61,6 +61,8 @@ export * from './paginatedSpotsWithStatsResponseDto';
 export * from './paginationMetaDto';
 export * from './priceReportDto';
 export * from './priceReportsControllerFindBySpotParams';
+export * from './priceReportsControllerFindByUserParams';
+export * from './priceReportsControllerFindMyReportsParams';
 export * from './profileResponseDto';
 export * from './profileResponseDtoLevel';
 export * from './profilesControllerGetLeaderboardParams';

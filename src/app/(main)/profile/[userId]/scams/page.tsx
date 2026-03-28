@@ -1,11 +1,4 @@
 import { Metadata } from "next";
-import {
-  QueryClient,
-  HydrationBoundary,
-  dehydrate,
-} from "@tanstack/react-query";
-import { getUserProfile } from "@/services/profile";
-import { scamAlertsControllerFindByUser } from "@/api/generated/scam-alerts/scam-alerts";
 import UserScamsInfiniteTab from "@/components/profile/user-scams-infinite-tab";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
@@ -33,44 +26,6 @@ export default async function UserScamsPage({
 }) {
   const { userId } = await params;
 
-  // Fetch user profile to ensure user exists
-  let user;
-  try {
-    const response = await getUserProfile(userId);
-    user = response?.data || response;
-  } catch (error) {
-    return <div>User not found</div>;
-  }
-
-  if (!user) {
-    return <div>User not found</div>;
-  }
-
-  const queryClient = new QueryClient();
-
-  // Prefetch infinite query with initial data
-  await queryClient.prefetchInfiniteQuery({
-    queryKey: ["user-scams-infinite", userId],
-    initialPageParam: 0,
-    queryFn: async ({ pageParam = 0 }) => {
-      const res = await scamAlertsControllerFindByUser(userId, {
-        skip: pageParam.toString(),
-        take: 10,
-      }, { next: { revalidate: 60 } } as RequestInit);
-      return res;
-    },
-    getNextPageParam: (lastPage: any) => {
-      const { skip, take, total } = lastPage.pagination || {};
-      if (skip === undefined || take === undefined || total === undefined)
-        return undefined;
-      const nextSkip = skip + take;
-      return nextSkip < total ? nextSkip : undefined;
-    },
-  });
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <UserScamsInfiniteTab userId={userId} />
-    </HydrationBoundary>
-  );
+  // Let the client handle auth, loading states, and data fetching.
+  return <UserScamsInfiniteTab userId={userId} />;
 }

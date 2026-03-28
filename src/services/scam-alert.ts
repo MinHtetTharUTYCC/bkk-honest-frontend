@@ -11,7 +11,7 @@ import { commentsControllerFindByScamAlert } from "@/api/generated/comments/comm
  * Automatically handles Supabase Auth headers if a session exists.
  */
 export const getScamAlert = cache(
-  async (citySlug: string, alertSlug: string): Promise<any | null> => {
+  async (citySlug: string, alertSlug: string): Promise<any | null> => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       const res = await scamAlertsControllerFindBySlug(citySlug, alertSlug, {
         next: { revalidate: 3600 }
@@ -32,7 +32,7 @@ export const getScamAlert = cache(
  * Used to load first 10 alerts before hydration.
  */
 export const getScamAlertsPage = cache(
-  async (skip: number = 0, take: number = 10, params?: any): Promise<any | null> => {
+  async (skip: number = 0, take: number = 10, params?: Record<string, unknown>): Promise<any | null> => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       const res = await scamAlertsControllerFindAll({
         skip,
@@ -55,7 +55,7 @@ export const getScamAlertsPage = cache(
  * Used to load first page before hydration.
  */
 export const getScamAlertComments = cache(
-  async (alertId: string, skip: number = 0, take: number = 10): Promise<any | null> => {
+  async (alertId: string, skip: number = 0, take: number = 10): Promise<any | null> => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       const res = await commentsControllerFindByScamAlert(alertId, { skip, take }, {
         next: { revalidate: 300 }

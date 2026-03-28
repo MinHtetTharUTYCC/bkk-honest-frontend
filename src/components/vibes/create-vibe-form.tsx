@@ -5,6 +5,7 @@ import { useCreateLiveVibe } from '@/hooks/use-api';
 import { Zap, Loader2 } from 'lucide-react';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CreateVibeFormProps {
   spotId?: string;
@@ -24,6 +25,7 @@ export default function CreateVibeForm({
   const [waitTime, setWaitTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const createVibeMutation = useCreateLiveVibe();
+  const queryClient = useQueryClient();
 
   const handleSubmit = async () => {
     const finalSpotId = selectedSpotId || initialSpotId;
@@ -33,11 +35,31 @@ export default function CreateVibeForm({
 
     setIsSubmitting(true);
     try {
-      await createVibeMutation.mutateAsync({
+      const response = await createVibeMutation.mutateAsync({
         spotId: finalSpotId,
         crowdLevel,
         waitTimeMinutes: waitTime ? Number(waitTime) : undefined,
       });
+
+      const newVibe = response?.data || response;
+
+      // Update the infinite query cache to show new vibe at index 0
+      queryClient.setQueryData(
+        ['live-vibes-infinite', { spotId: finalSpotId }],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          const newPages = [...oldData.pages];
+          if (newPages.length === 0) {
+            newPages[0] = { data: [newVibe] };
+          } else {
+            const firstPage = { ...newPages[0] };
+            firstPage.data = [newVibe, ...(firstPage.data || [])];
+            newPages[0] = firstPage;
+          }
+          return { ...oldData, pages: newPages };
+        }
+      );
+
       setWaitTime('');
       setCrowdLevel(3);
       if (showSpotSelect) setSelectedSpotId('');

@@ -23,7 +23,11 @@ export function ProfileTabsNav({ userId }: ProfileTabsNavProps) {
     <nav className="flex gap-2 border-b border-white/10 pb-4 overflow-x-auto">
       {tabs.map((tab) => {
         const Icon = tab.icon;
-        const href = `/profile/${userId}/${tab.id}`;
+        // Support both /profile/me/tips and /profile/[userId]/tips routes
+        // Route groups (parentheses) don't appear in actual URLs
+        const href = userId === "me" 
+          ? `/profile/${tab.id}`
+          : `/profile/${userId}/${tab.id}`;
         const isActive = pathname === href;
 
         return (

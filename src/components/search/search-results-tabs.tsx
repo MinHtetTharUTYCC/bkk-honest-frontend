@@ -7,7 +7,6 @@ import ScamAlertCard from '@/components/scams/scam-alert-card';
 import { CardSkeleton, ScamAlertCardSkeleton } from '@/components/ui/skeleton';
 import { useInfiniteSpots, useInfiniteScamAlerts } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
-import { useQueryClient } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 import type { ScamAlertData } from '@/components/scams/scam-alert-card';
 
@@ -41,7 +40,6 @@ export function SearchResultsTabs({
 }: SearchResultsTabsProps) {
   const [tab, setTab] = useState(activeTab);
   const { user: authUser } = useAuth();
-  const queryClient = useQueryClient();
   const { ref, inView } = useInView();
 
   useEffect(() => {
@@ -65,13 +63,6 @@ export function SearchResultsTabs({
     take: 10,
   });
 
-  // Invalidate spots query when auth state changes to refresh hasVoted field
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['spots-infinite', { search: query, categoryId, sort, cityId, take: 10 }],
-    });
-  }, [authUser?.id, query, categoryId, sort, cityId, queryClient]);
-
   // Fetch scam alerts
   const {
     data: scamsData,
@@ -86,13 +77,6 @@ export function SearchResultsTabs({
     cityId,
     take: 10,
   });
-
-  // Invalidate scams query when auth state changes to refresh hasVoted field
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['scam-alerts-infinite', { search: query, categoryId, sort, cityId, take: 10 }],
-    });
-  }, [authUser?.id, query, categoryId, sort, cityId, queryClient]);
 
   // Load more when in view
   useEffect(() => {

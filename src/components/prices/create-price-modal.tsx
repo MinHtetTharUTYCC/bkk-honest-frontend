@@ -5,6 +5,7 @@ import { useCreatePriceReport } from '@/hooks/use-api';
 import { DollarSign, Loader2, Send, X, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CreatePriceModalProps {
   spotId: string;
@@ -23,6 +24,7 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
   const [itemName, setItemName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const createPrice = useCreatePriceReport();
+  const queryClient = useQueryClient();
 
   const handlePriceSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,11 +37,31 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
 
     try {
       const formData = new FormData(e.currentTarget);
-      await createPrice.mutateAsync({
+      const response = await createPrice.mutateAsync({
         spotId,
         itemName,
         priceThb: Number(formData.get('priceThb')),
       });
+
+      const newReport = response?.data || response;
+
+      // Update the infinite query cache to show new report at index 0
+      queryClient.setQueryData(
+        ['price-reports-infinite', spotId],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          const newPages = [...oldData.pages];
+          if (newPages.length === 0) {
+            newPages[0] = { data: [newReport] };
+          } else {
+            const firstPage = { ...newPages[0] };
+            firstPage.data = [newReport, ...(firstPage.data || [])];
+            newPages[0] = firstPage;
+          }
+          return { ...oldData, pages: newPages };
+        }
+      );
+
       toast.success('Price report added successfully');
       onClose();
     } catch (err: unknown) {

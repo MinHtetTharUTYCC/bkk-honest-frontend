@@ -820,6 +820,14 @@ export function useGetCommentReaction(commentId: string) {
     return { ...query, data: query.data?.data || { reactionCount: 0, userHasReacted: false } };
 }
 
+export function useSubmitContactForm() {
+    const mutation = useContactControllerSubmitContactForm();
+    return {
+        ...mutation,
+        mutate: (data: { data: { name: string; email: string; subject: string; message: string } }) => mutation.mutate(data),
+        mutateAsync: (data: { data: { name: string; email: string; subject: string; message: string } }) => mutation.mutateAsync(data)
+    };
+}
 
 export { useGalleryControllerDeleteImage as useDeleteGalleryImage };
 export { useGalleryControllerFlagImage as useFlagGalleryImage };

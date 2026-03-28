@@ -4,7 +4,6 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
-import { useQueryClient } from "@tanstack/react-query";
 import { Zap, Loader2, CheckCircle2, AlertTriangle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SpotTip, SpotData } from "@/types/spot";
@@ -35,7 +34,6 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const spotId = spot.id;
-  const queryClient = useQueryClient();
 
   const [showTipModal, setShowTipModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
@@ -44,13 +42,6 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   // Sync state with URL params
   const tipType = (searchParams.get("type") as "TRY" | "AVOID") || "TRY";
   const tipSort = (searchParams.get("sort") as "popular" | "newest") || "popular";
-
-  // Invalidate tips query when user auth state changes to refresh hasVoted field
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['tips-infinite', spotId, tipType, tipSort],
-    });
-  }, [authUser?.id, spotId, tipType, tipSort, queryClient]);
 
   const {
     data: tipsData,

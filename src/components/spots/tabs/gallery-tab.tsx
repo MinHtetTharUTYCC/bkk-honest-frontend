@@ -4,7 +4,6 @@ import { useRef, useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotGallery, useUploadSpotImage, useDeleteGalleryImage, useFlagGalleryImage } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
-import { useQueryClient } from "@tanstack/react-query";
 import { Camera, Upload, Loader2, User, Calendar, Trash2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GalleryImage, SpotData } from "@/types/spot";
@@ -38,7 +37,6 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const searchParams = useSearchParams();
   const spotId = spot.id;
 
-  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [deleteImageId, setDeleteImageId] = useState<string | null>(null);
@@ -53,13 +51,6 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     isFetchingNextPage,
     isLoading,
   } = useInfiniteSpotGallery(spotId, sort);
-
-  // Invalidate gallery query when user auth state changes to refresh hasVoted field
-  useEffect(() => {
-    queryClient.invalidateQueries({
-      queryKey: ['gallery-infinite', spotId],
-    });
-  }, [authUser?.id, spotId, queryClient]);
 
   const { toggleVote, isPending: votePending } = useVoteToggle("image", spotId);
   const [votingImageId, setVotingImageId] = useState<string | null>(null);
