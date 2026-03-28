@@ -729,9 +729,30 @@ export function useMissionStats() {
 
 export function useAddMission() {
     const mutation = useChecklistControllerCreate();
+    const queryClient = useQueryClient();
     return {
         ...mutation,
-        mutate: (spotId: string) => mutation.mutate({ data: { spotId } }),
+        mutate: (spotId: string) => mutation.mutate({ data: { spotId } }, {
+            onSuccess: (response) => {
+                const newMission = response.data;
+                // Update spot query to reflect mission was accepted
+                queryClient.setQueriesData(
+                    { predicate: (query) => {
+                        const key = query.queryKey[0];
+                        return typeof key === 'string' && (key === 'spot' || key.startsWith('/spots'));
+                    }},
+                    (old: any) => {
+                        if (!old) return old;
+                        const spot = old.data || old;
+                        if (spot?.id === newMission.spotId) {
+                            return old.data ? { ...old, data: { ...spot, isInMission: true, missionId: newMission.id } }
+                                : { ...old, isInMission: true, missionId: newMission.id };
+                        }
+                        return old;
+                    }
+                );
+            }
+        }),
         mutateAsync: (spotId: string) => mutation.mutateAsync({ data: { spotId } })
     };
 }
