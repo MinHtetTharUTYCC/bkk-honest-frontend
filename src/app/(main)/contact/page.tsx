@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Mail, Send, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useSubmitContactForm } from '@/hooks/use-api';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
