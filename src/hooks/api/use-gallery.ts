@@ -32,7 +32,7 @@ export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular
         query: {
             queryKey: ['gallery-infinite', spotId, normalizedSort],
             initialPageParam: 0,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, true),
             enabled: !!spotId
         },
     });

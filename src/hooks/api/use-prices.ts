@@ -19,7 +19,7 @@ export function useInfiniteSpotPriceReports(spotId: string) {
         query: {
             queryKey: ['price-reports-infinite', spotId],
             initialPageParam: 0,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, false),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, false),
             enabled: !!spotId
         },
     });

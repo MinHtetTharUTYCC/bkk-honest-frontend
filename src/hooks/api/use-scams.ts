@@ -8,12 +8,15 @@ import {
     useScamAlertsControllerUpdate,
     useScamAlertsControllerDelete
 } from '@/api/generated/scam-alerts/scam-alerts';
-import { ScamAlertsControllerFindAllSort } from '@/api/generated/model/scamAlertsControllerFindAllSort';
+import type { ScamAlertsControllerFindAllSort } from '@/api/generated/model/scamAlertsControllerFindAllSort';
+import type { ScamAlertsControllerFindAllParams } from '@/api/generated/model/scamAlertsControllerFindAllParams';
+import type { UpdateScamAlertDto } from '@/api/generated/model/updateScamAlertDto';
+import type { PaginatedScamAlertsResponseDto } from '@/api/generated/model/paginatedScamAlertsResponseDto';
 import { getNextSkipFromPage } from './base';
 
 export function useScamAlertBySlug(citySlug: string, alertSlug: string) {
     const query = useScamAlertsControllerFindBySlug(citySlug, alertSlug, { query: { enabled: !!citySlug && !!alertSlug } });
-    const data = (query.data as any)?.data || query.data;
+    const data = (query.data as PaginatedScamAlertsResponseDto | undefined)?.data || query.data;
     return { ...query, data };
 }
 
@@ -24,7 +27,7 @@ export function useScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: any = {};
+    const cleanParams: Record<string, unknown> = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -49,7 +52,7 @@ export function useInfiniteScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: any = {};
+    const cleanParams: Record<string, unknown> = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -64,7 +67,7 @@ export function useInfiniteScamAlerts(params?: {
         query: {
             queryKey: ['scam-alerts-infinite', cleanParams],
             staleTime: 5 * 60 * 1000,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, false),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, false),
         }
     });
 }
@@ -84,8 +87,8 @@ export function useUpdateScamAlert() {
     const mutation = useScamAlertsControllerUpdate();
     return {
         ...mutation,
-        mutate: ({ id, payload }: { id: string; payload: any }) => mutation.mutate({ id, data: payload }),
-        mutateAsync: ({ id, payload }: { id: string; payload: any }) => mutation.mutateAsync({ id, data: payload })
+        mutate: ({ id, payload }: { id: string; payload: UpdateScamAlertDto }) => mutation.mutate({ id, data: payload }),
+        mutateAsync: ({ id, payload }: { id: string; payload: UpdateScamAlertDto }) => mutation.mutateAsync({ id, data: payload })
     };
 }
 

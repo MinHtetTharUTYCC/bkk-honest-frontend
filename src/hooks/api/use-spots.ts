@@ -11,17 +11,25 @@ import {
     useSpotsControllerUpdate,
     useSpotsControllerReverseGeocode
 } from '@/api/generated/spots/spots';
+import type { 
+    SpotWithStatsResponseDto,
+    PaginatedSpotsWithStatsResponseDto,
+    CreateSpotDto,
+    SpotsControllerFindAllParams,
+    SpotsControllerFindNearbyParams,
+    SpotsControllerSearchParams
+} from '@/api/generated/model';
 import { getNextSkipFromPage } from './base';
 
 export function useSpot(id: string) {
     const query = useSpotsControllerFindOne(id, { query: { enabled: !!id } });
-    const data = (query.data as any)?.data || query.data;
+    const data = (query.data as PaginatedSpotsWithStatsResponseDto | undefined)?.data || query.data;
     return { ...query, data };
 }
 
 export function useSpotBySlug(citySlug: string, spotSlug: string) {
     const query = useSpotsControllerFindBySlug(citySlug, spotSlug, { query: { enabled: !!citySlug && !!spotSlug } });
-    const data = (query.data as any)?.data || query.data;
+    const data = (query.data as PaginatedSpotsWithStatsResponseDto | undefined)?.data || query.data;
     return { ...query, data };
 }
 
@@ -31,7 +39,7 @@ export function useSpots(params?: {
     search?: string;
     sort?: 'newest' | 'popular';
 }) {
-    const cleanParams: any = {};
+    const cleanParams: SpotsControllerFindAllParams = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -50,7 +58,7 @@ export function useInfiniteSpots(params?: {
     sort?: 'newest' | 'popular';
     take?: number;
 }) {
-    const cleanParams: any = {};
+    const cleanParams: SpotsControllerFindAllParams = {};
     if (params) {
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
         if (params.cityId) cleanParams.cityId = params.cityId;
@@ -62,31 +70,30 @@ export function useInfiniteSpots(params?: {
     return useSpotsControllerFindAllInfinite(cleanParams, {
         query: {
             queryKey: ['spots-infinite', cleanParams],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage),
+            getNextPageParam: (lastPage: PaginatedSpotsWithStatsResponseDto) => getNextSkipFromPage(lastPage),
             staleTime: 5 * 60 * 1000,
         }
     });
 }
 
-export function useNearbySpots(params: { latitude: number; longitude: number; distance?: number; categoryId?: string; limit?: number }, enabled = true) {
+export function useNearbySpots(params: SpotsControllerFindNearbyParams & { latitude: number; longitude: number }, enabled = true) {
     const query = useSpotsControllerFindNearby(params, {
         query: {
             queryKey: ['spots-nearby', params],
             enabled: enabled && !!params.latitude && !!params.longitude,
-            placeholderData: (prev: any) => prev,
+            placeholderData: (prev: PaginatedSpotsWithStatsResponseDto | undefined) => prev,
             staleTime: 60_000
         }
     });
     
-    // Backend was recently updated to return { data: [], pagination: ... } to match Swagger.
-    // We handle both direct array and wrapped response for robustness.
-    const rawData = query.data as any;
+    // Backend returns { data: SpotWithStatsResponseDto[] }
+    const rawData = query.data as PaginatedSpotsWithStatsResponseDto | SpotWithStatsResponseDto[] | undefined;
     const spots = Array.isArray(rawData) ? rawData : (rawData?.data || []);
     return { ...query, data: spots };
 }
 
 export function useSpotSearch(queryStr: string, cityId?: string, limit: number = 20) {
-    const params: any = { q: queryStr };
+    const params: SpotsControllerSearchParams = { q: queryStr };
     if (cityId) params.cityId = cityId;
     if (limit !== 20) params.limit = limit;
 
@@ -98,7 +105,7 @@ export function useSpotSearch(queryStr: string, cityId?: string, limit: number =
     });
     
     // Handle both direct array and wrapped response
-    const rawData = query.data as any;
+    const rawData = query.data as PaginatedSpotsWithStatsResponseDto | SpotWithStatsResponseDto[] | undefined;
     const spots = Array.isArray(rawData) ? rawData : (rawData?.data || []);
     return { ...query, data: spots };
 }
@@ -107,24 +114,8 @@ export function useCreateSpot() {
     const mutation = useSpotsControllerCreate();
     return {
         ...mutation,
-        mutate: (payload: {
-            name: string;
-            address: string;
-            categoryId: string;
-            cityId: string;
-            latitude: number;
-            longitude: number;
-            image?: File;
-        }) => mutation.mutate({ data: payload as any }),
-        mutateAsync: (payload: {
-            name: string;
-            address: string;
-            categoryId: string;
-            cityId: string;
-            latitude: number;
-            longitude: number;
-            image?: File;
-        }) => mutation.mutateAsync({ data: payload as any })
+        mutate: (payload: CreateSpotDto) => mutation.mutate({ data: payload }),
+        mutateAsync: (payload: CreateSpotDto) => mutation.mutateAsync({ data: payload })
     };
 }
 
@@ -132,8 +123,10 @@ export function useUpdateSpot() {
     const mutation = useSpotsControllerUpdate();
     return {
         ...mutation,
-        mutate: ({ id, payload }: { id: string; payload: any }) => mutation.mutate({ id, data: payload }),
-        mutateAsync: ({ id, payload }: { id: string; payload: any }) => mutation.mutateAsync({ id, data: payload })
+        mutate: ({ id, payload }: { id: string; payload: Partial<SpotWithStatsResponseDto> }) => 
+            mutation.mutate({ id, data: payload as unknown as Record<string, unknown> }),
+        mutateAsync: ({ id, payload }: { id: string; payload: Partial<SpotWithStatsResponseDto> }) => 
+            mutation.mutateAsync({ id, data: payload as unknown as Record<string, unknown> })
     };
 }
 

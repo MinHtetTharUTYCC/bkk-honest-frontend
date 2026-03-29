@@ -46,7 +46,7 @@ export default function CreateVibeForm({
       // Update the infinite query cache to show new vibe at index 0
       queryClient.setQueryData(
         ['live-vibes-infinite', { spotId: finalSpotId }],
-        (oldData: any) => {
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           const newPages = [...oldData.pages];
           if (newPages.length === 0) {
@@ -65,9 +65,10 @@ export default function CreateVibeForm({
       if (showSpotSelect) setSelectedSpotId('');
       onSuccess?.();
       toast.success("Vibe checked in!");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      const message = err.response?.data?.message || "Failed to check in vibe";
+      const errObj = err as { response?: { data?: { message?: string | string[] } } };
+      const message = errObj.response?.data?.message || "Failed to check in vibe";
       toast.error(Array.isArray(message) ? message[0] : message);
     } finally {
       setIsSubmitting(false);

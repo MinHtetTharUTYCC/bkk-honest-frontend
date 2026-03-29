@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState, useEffect, useMemo, useRef } from "react";
+import { Suspense, useState, useEffect, useMemo } from "react";
 
 import {
   useMissions,
@@ -61,16 +61,7 @@ function MissionsPageContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [isClient, setIsClient] = useState(false);
   const [missionToDelete, setMissionToDelete] = useState<string | null>(null);
-  const [missionToUpdate, setMissionToUpdate] = useState<string | null>(null);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const { selectedCity } = useCity();
-
   // Sync state with URL params
   const statusFilter =
     (searchParams.get("status") as "all" | "pending" | "completed") ||
@@ -154,7 +145,7 @@ function MissionsPageContent() {
   const totalCount = stats?.total || 0;
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
-  if (!isClient || authLoading) {
+  if (authLoading) {
     return (
       <div className="space-y-12 animate-pulse">
         <div className="h-64 bg-white/5 rounded-2xl" />

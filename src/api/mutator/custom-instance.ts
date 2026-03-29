@@ -23,11 +23,15 @@ if (typeof window !== 'undefined') {
   });
 }
 
+interface PromiseWithCancel<T> extends Promise<T> {
+  cancel: () => void;
+}
+
 // Custom instance wrapper for Orval
 export const customInstance = <T>(
   config: AxiosRequestConfig | string,
-  options?: any,
-): Promise<T> => {
+  options?: Record<string, unknown>,
+): PromiseWithCancel<T> => {
   const source = Axios.CancelToken.source();
   
   // Transform body -> data for Axios compatibility
@@ -36,22 +40,22 @@ export const customInstance = <T>(
       ...(options || {}),
   };
 
-  if (requestConfig.data === undefined && (requestConfig as any).body) {
-      requestConfig.data = (requestConfig as any).body;
-      delete (requestConfig as any).body;
+  const bodyConfig = requestConfig as AxiosRequestConfig & { body?: unknown };
+  if (requestConfig.data === undefined && bodyConfig.body) {
+      requestConfig.data = bodyConfig.body;
+      delete bodyConfig.body;
   }
 
   // Explicitly merge headers if they are provided in options (useful for SSR)
-  if (options?.headers) {
-    requestConfig.headers = { ...requestConfig.headers, ...options.headers };
+  if (options?.headers && typeof options.headers === 'object') {
+    requestConfig.headers = { ...requestConfig.headers, ...(options.headers as Record<string, unknown>) };
   }
 
   const promise = AXIOS_INSTANCE({
     ...requestConfig,
     cancelToken: source.token,
-  }).then(({ data }) => data);
+  }).then(({ data }) => data) as PromiseWithCancel<T>;
 
-  // @ts-ignore
   promise.cancel = () => {
     source.cancel('Query was cancelled');
   };

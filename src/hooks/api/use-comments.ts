@@ -19,7 +19,7 @@ export function useTipComments(tipId: string) {
     }, {
         query: {
             queryKey: ['tip-comments', tipId],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, true),
             enabled: !!tipId
         }
     });
@@ -31,7 +31,7 @@ export function useScamComments(scamAlertId: string) {
     }, {
         query: {
             queryKey: ['scam-comments', scamAlertId],
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, true),
             enabled: !!scamAlertId
         }
     });
@@ -42,7 +42,7 @@ export function useCreateComment() {
     return {
         ...mutation,
         mutate: (payload: { scamAlertId?: string; communityTipId?: string; content: string }) => {
-            const apiPayload: any = { text: payload.content };
+            const apiPayload: Record<string, unknown> = { text: payload.content };
             if (payload.scamAlertId) {
                 apiPayload.targetType = 'SCAM_ALERT';
                 apiPayload.scamAlertId = payload.scamAlertId;
@@ -53,7 +53,7 @@ export function useCreateComment() {
             return mutation.mutate({ data: apiPayload });
         },
         mutateAsync: async (payload: { scamAlertId?: string; communityTipId?: string; content: string }) => {
-            const apiPayload: any = { text: payload.content };
+            const apiPayload: Record<string, unknown> = { text: payload.content };
             if (payload.scamAlertId) {
                 apiPayload.targetType = 'SCAM_ALERT';
                 apiPayload.scamAlertId = payload.scamAlertId;

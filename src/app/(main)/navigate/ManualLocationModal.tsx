@@ -22,7 +22,7 @@ interface ManualLocationModalProps {
 export default function ManualLocationModal({
   destLat,
   destLng,
-  destName,
+  
   onLocationSelected,
   onClose,
   errorType,

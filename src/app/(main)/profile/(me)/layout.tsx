@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useState, useRef } from 'react';
+import { Suspense, useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useMyProfile } from '@/hooks/use-api';
 import { ProfileUserInfo } from '@/components/profile/profile-user-info';

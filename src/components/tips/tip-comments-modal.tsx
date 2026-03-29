@@ -116,7 +116,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
       // Update the infinite query cache to show new comment at index 0
       queryClient.setQueryData(
         ['tip-comments', tip.id],
-        (oldData: any) => {
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           const newPages = [...oldData.pages];
           if (newPages.length === 0) {
@@ -151,11 +151,11 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
       // Update the infinite query cache
       queryClient.setQueryData(
         ['tip-comments', tip.id],
-        (oldData: any) => {
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page: unknown) => ({
               ...page,
               data: page.data?.map((comment: TipComment) => 
                 comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text || updatedComment.content } : comment
@@ -181,11 +181,11 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
       // Update the infinite query cache
       queryClient.setQueryData(
         ['tip-comments', tip.id],
-        (oldData: any) => {
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: any) => ({
+            pages: oldData.pages.map((page: unknown) => ({
               ...page,
               data: page.data?.filter((comment: TipComment) => comment.id !== commentToDelete)
             }))

@@ -50,6 +50,6 @@ export function useCreateReport() {
 }
 
 export function useGetReports(status?: string) {
-    const query = useReportsControllerGetReports({ status: status as any }, { query: { queryKey: ['reports', status] } });
+    const query = useReportsControllerGetReports({ status: status as string | undefined }, { query: { queryKey: ['reports', status] } });
     return { ...query, data: query.data?.data || [] };
 }

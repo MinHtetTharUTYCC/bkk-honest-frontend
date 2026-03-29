@@ -113,7 +113,7 @@ function NavigatePageContent() {
       } else {
         attemptGeolocation();
       }
-    } catch (err) {
+    } catch (_err) {
       // Fallback if permissions API fails
       attemptGeolocation();
     }
@@ -179,7 +179,7 @@ function NavigatePageContent() {
       } else {
         setError("No route found");
       }
-    } catch (err) {
+    } catch (_err) {
       console.error("Route fetch error:", err);
       setError("Failed to calculate route");
     } finally {

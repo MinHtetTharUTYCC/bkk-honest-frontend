@@ -29,7 +29,7 @@ export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string
             queryKey: ['live-vibes-infinite', params],
             staleTime: 60 * 1000,
             initialPageParam: 0,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, false),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, false),
         }
     });
 }

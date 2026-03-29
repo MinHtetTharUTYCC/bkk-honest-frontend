@@ -7,6 +7,7 @@ import {
     useCommunityTipsControllerUpdate,
     useCommunityTipsControllerDelete
 } from '@/api/generated/community-tips/community-tips';
+import type { PaginatedCommunityTipsResponseDto } from '@/api/generated/model';
 import { getNextSkipFromPage } from './base';
 
 export function useSpotTips(spotId: string) {
@@ -36,7 +37,7 @@ export function useInfiniteSpotTips(
             queryKey: ['tips-infinite', spotId, normalizedType, normalizedSort],
             staleTime: 5 * 60 * 1000,
             initialPageParam: 0,
-            getNextPageParam: (lastPage: any) => getNextSkipFromPage(lastPage, true),
+            getNextPageParam: (lastPage: PaginatedCommunityTipsResponseDto) => getNextSkipFromPage(lastPage, true),
         },
     });
 }
@@ -57,11 +58,11 @@ export function useUpdateCommunityTip() {
     return {
         ...mutation,
         mutate: (payload: { id: string; spotId: string; type?: 'TRY' | 'AVOID'; title?: string; description?: string }) => {
-            const { id, spotId, ...data } = payload;
+            const { id, ...data } = payload;
             return mutation.mutate({ id, data });
         },
         mutateAsync: (payload: { id: string; spotId: string; type?: 'TRY' | 'AVOID'; title?: string; description?: string }) => {
-            const { id, spotId, ...data } = payload;
+            const { id, ...data } = payload;
             return mutation.mutateAsync({ id, data });
         }
     };

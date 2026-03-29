@@ -256,7 +256,7 @@ export default function HowItWorksPage() {
                     Tips:
                   </span>
                   <p className="text-muted-foreground mt-1 italic">
-                    &quot;Try the green curry - it's not on the tourist menu but
+                    &quot;Try the green curry - it&apos;s not on the tourist menu but
                     locals love it. Bring small bills.&quot;
                   </p>
                 </div>
