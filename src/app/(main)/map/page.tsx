@@ -269,18 +269,18 @@ function MapPageContent() {
           if (popularArea) {
             setViewState((prev) => ({
               ...prev,
-              latitude: popularArea.latitude,
-              longitude: popularArea.longitude,
+              latitude: (popularArea as any).latitude,
+              longitude: (popularArea as any).longitude,
               zoom: 14,
             }));
             setSearchParams({
-              latitude: popularArea.latitude,
-              longitude: popularArea.longitude,
+              latitude: (popularArea as any).latitude,
+              longitude: (popularArea as any).longitude,
               zoom: 14,
             });
             syncUrl(
-              popularArea.latitude,
-              popularArea.longitude,
+              (popularArea as any).latitude,
+              (popularArea as any).longitude,
               14,
               activeCategoryId,
             );
@@ -291,18 +291,18 @@ function MapPageContent() {
     } else if (popularArea) {
       setViewState((prev) => ({
         ...prev,
-        latitude: popularArea.latitude,
-        longitude: popularArea.longitude,
+        latitude: (popularArea as any).latitude,
+        longitude: (popularArea as any).longitude,
         zoom: 14,
       }));
       setSearchParams({
-        latitude: popularArea.latitude,
-        longitude: popularArea.longitude,
+        latitude: (popularArea as any).latitude,
+        longitude: (popularArea as any).longitude,
         zoom: 14,
       });
       syncUrl(
-        popularArea.latitude,
-        popularArea.longitude,
+        (popularArea as any).latitude,
+        (popularArea as any).longitude,
         14,
         activeCategoryId,
       );

@@ -7,5 +7,6 @@
  */
 
 export type ProfilesControllerGetLeaderboardParams = {
-take: string;
+skip?: string | number;
+take?: string | number;
 };

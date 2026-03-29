@@ -15,7 +15,6 @@ import { useSpotsControllerDelete, getSpotsControllerFindBySlugQueryKey } from "
 import { useSpotBySlug } from "@/hooks/use-api";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { SpotWithStatsResponseDto } from "@/api/generated/model";
 
 interface SpotHeaderClientProps {
   spot: SpotWithStatsResponseDto;

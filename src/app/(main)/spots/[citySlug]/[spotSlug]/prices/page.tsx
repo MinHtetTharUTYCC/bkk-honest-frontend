@@ -3,6 +3,7 @@ import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query
 import PricesTab from "@/components/spots/tabs/prices-tab";
 import { getSpot } from "@/services/spot";
 import { priceReportsControllerFindBySpot } from "@/api/generated/price-reports/price-reports";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -25,6 +26,12 @@ export default async function PricesPage({ params }: { params: Promise<{ citySlu
     return <div>Spot not found</div>;
   }
 
+  const supabase = await createServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = session?.access_token 
+    ? { Authorization: `Bearer ${session.access_token}` } 
+    : {};
+
   const queryClient = new QueryClient();
 
   // Prefetch the spot data so the shared header finds it in cache
@@ -37,7 +44,7 @@ export default async function PricesPage({ params }: { params: Promise<{ citySlu
       const res = await priceReportsControllerFindBySpot(spot.id, {
         skip: pageParam as number,
         take: 10
-      }, { next: { revalidate: 60 } } as RequestInit);
+      }, { headers, next: { revalidate: 60 } } as any);
       return res;
     },
     getNextPageParam: (lastPage: any) => {

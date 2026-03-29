@@ -3,6 +3,7 @@ import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query
 import TipsTab from "@/components/spots/tabs/tips-tab";
 import { getSpot } from "@/services/spot";
 import { communityTipsControllerFindBySpot } from "@/api/generated/community-tips/community-tips";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -33,6 +34,12 @@ export default async function TipsPage({
     return <div>Spot not found</div>;
   }
 
+  const supabase = await createServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = session?.access_token 
+    ? { Authorization: `Bearer ${session.access_token}` } 
+    : {};
+
   const queryClient = new QueryClient();
 
   queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
@@ -49,7 +56,7 @@ export default async function TipsPage({
         take: 10,
         type: normalizedType,
         sort: normalizedSort
-      }, { next: { revalidate: 60 } } as RequestInit);
+      }, { headers, next: { revalidate: 60 } } as any);
       return res;
     },
     getNextPageParam: (lastPage: any) => {

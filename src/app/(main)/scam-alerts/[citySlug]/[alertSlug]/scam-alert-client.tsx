@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   useScamAlertBySlug,
   useScamComments,
@@ -121,6 +122,7 @@ export default function ScamAlertClient() {
   };
   const { user } = useAuth();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: alertResponse } = useScamAlertBySlug(
     citySlug === "thailand" ? "" : citySlug,
     alertSlug,
@@ -197,11 +199,41 @@ export default function ScamAlertClient() {
     if (!newComment.trim() || !user || !alertId) return;
 
     try {
-      await createCommentMutation.mutateAsync({
+      const response = await createCommentMutation.mutateAsync({
         scamAlertId: alertId,
         content: newComment.trim(),
       });
+
+      const newCommentData = response?.data || response;
+
+      // Update the infinite query cache to show new comment at index 0
+      queryClient.setQueryData(
+        ['scam-comments', alertId],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          const newPages = [...oldData.pages];
+          if (newPages.length === 0) {
+            newPages[0] = { data: [newCommentData] };
+          } else {
+            const firstPage = { ...newPages[0] };
+            firstPage.data = [newCommentData, ...(firstPage.data || [])];
+            newPages[0] = firstPage;
+          }
+          return { ...oldData, pages: newPages };
+        }
+      );
+
       setNewComment("");
+      setLocalAlert((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          _count: {
+            ...prev._count,
+            comments: (prev._count?.comments || 0) + 1,
+          },
+        };
+      });
       toast.success("Comment posted");
     } catch (err) {
       console.error(err);
@@ -212,11 +244,31 @@ export default function ScamAlertClient() {
   const handleEditSubmit = async (commentId: string) => {
     if (!editContent.trim() || !alertId) return;
     try {
-      await updateCommentMutation.mutateAsync({
+      const response = await updateCommentMutation.mutateAsync({
         id: commentId,
         content: editContent.trim(),
         scamAlertId: alertId,
       });
+
+      const updatedComment = response?.data || response;
+
+      // Update the infinite query cache
+      queryClient.setQueryData(
+        ['scam-comments', alertId],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              data: page.data?.map((comment: AlertComment) => 
+                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text || updatedComment.content } : comment
+              )
+            }))
+          };
+        }
+      );
+
       setEditingCommentId(null);
       toast.success("Comment updated");
     } catch (err) {
@@ -232,6 +284,33 @@ export default function ScamAlertClient() {
         id: commentId,
         scamAlertId: alertId,
       });
+
+      // Update the infinite query cache
+      queryClient.setQueryData(
+        ['scam-comments', alertId],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              data: page.data?.filter((comment: AlertComment) => comment.id !== commentId)
+            }))
+          };
+        }
+      );
+
+      setLocalAlert((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          _count: {
+            ...prev._count,
+            comments: Math.max(0, (prev._count?.comments || 0) - 1),
+          },
+        };
+      });
+
       setCommentToDelete(null);
       toast.success("Comment deleted");
     } catch (err) {

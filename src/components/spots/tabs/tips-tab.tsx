@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } from "@/hooks/use-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import { Zap, Loader2, CheckCircle2, AlertTriangle, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const spotId = spot.id;
+  const queryClient = useQueryClient();
 
   const [showTipModal, setShowTipModal] = useState(false);
   const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
@@ -92,10 +94,33 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const handleSaveEditedTip = async (values: TipFormValues) => {
     if (!editingTip) return;
     try {
-      await updateTipMutation.mutateAsync({ id: editingTip.id, spotId, ...values });
+      const response = await updateTipMutation.mutateAsync({ id: editingTip.id, spotId, ...values });
+      const updatedTip = response?.data || response;
+
+      // Manually update all sort variations of the infinite query cache
+      const sortTypes = ['popular', 'newest'];
+      sortTypes.forEach((sortType) => {
+        queryClient.setQueryData(
+          ['tips-infinite', spotId, editingTip.type, sortType],
+          (oldData: any) => {
+            if (!oldData || !oldData.pages) return oldData;
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                data: page.data?.map((tip: SpotTip) => 
+                  tip.id === editingTip.id ? { ...tip, ...updatedTip } : tip
+                )
+              }))
+            };
+          }
+        );
+      });
+
       setEditingTip(null);
       toast.success("Tip updated");
     } catch (error) {
+      console.error("Update error:", error);
       toast.error("Failed to update tip");
     }
   };
@@ -103,8 +128,31 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const handleDeleteTip = async (tipId: string) => {
     try {
       await deleteTipMutation.mutateAsync({ id: tipId, spotId });
+      
+      // Get the type of the tip being deleted to target the correct cache
+      const deletedTip = tips.find(t => t.id === tipId);
+      if (!deletedTip) return;
+
+      const sortTypes = ['popular', 'newest'];
+      sortTypes.forEach((sortType) => {
+        queryClient.setQueryData(
+          ['tips-infinite', spotId, deletedTip.type, sortType],
+          (oldData: any) => {
+            if (!oldData || !oldData.pages) return oldData;
+            return {
+              ...oldData,
+              pages: oldData.pages.map((page: any) => ({
+                ...page,
+                data: page.data?.filter((tip: SpotTip) => tip.id !== tipId)
+              }))
+            };
+          }
+        );
+      });
+
       toast.success("Tip deleted");
     } catch (error) {
+      console.error("Delete error:", error);
       toast.error("Failed to delete tip");
     }
   };

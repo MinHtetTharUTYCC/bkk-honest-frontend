@@ -9,4 +9,6 @@
 export type ChecklistControllerFindAllParams = {
 status?: string;
 sort?: string;
+skip?: string | number;
+take?: string | number;
 };

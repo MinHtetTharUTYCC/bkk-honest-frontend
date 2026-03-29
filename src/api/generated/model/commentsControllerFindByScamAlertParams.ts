@@ -7,6 +7,6 @@
  */
 
 export type CommentsControllerFindByScamAlertParams = {
-skip?: string;
-take?: string;
+skip?: string | number;
+take?: string | number;
 };

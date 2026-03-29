@@ -4,6 +4,7 @@ import GalleryTab from "@/components/spots/tabs/gallery-tab";
 import { getSpot } from "@/services/spot";
 import { galleryControllerGetGallery } from "@/api/generated/gallery/gallery";
 import { GalleryControllerGetGallerySort } from "@/api/generated/model/galleryControllerGetGallerySort";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -33,6 +34,12 @@ export default async function GalleryPage({
     return <div>Spot not found</div>;
   }
 
+  const supabase = await createServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = session?.access_token 
+    ? { Authorization: `Bearer ${session.access_token}` } 
+    : {};
+
   const queryClient = new QueryClient();
 
   queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
@@ -49,7 +56,7 @@ export default async function GalleryPage({
         skip: pageParam as number,
         take: 12,
         sort: normalizedSort
-      }, { next: { revalidate: 60 } } as RequestInit);
+      }, { headers, next: { revalidate: 60 } } as any);
       return res;
     },
     getNextPageParam: (lastPage: any) => {

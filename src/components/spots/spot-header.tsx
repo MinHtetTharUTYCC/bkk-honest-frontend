@@ -11,7 +11,7 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ReportButton from "@/components/report/report-button";
 import { useAuth } from "@/components/providers/auth-provider";
 import { toast } from "sonner";
-import { useAddMission, useMissions } from "@/hooks/use-api";
+import { useAddMission, useDeleteMission, useMissions } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import SpotStatsGrid from "@/components/spots/spot-stats-grid";
 import { TruncatedTextWithDialog } from "@/components/ui/truncated-text-with-dialog";
@@ -26,21 +26,16 @@ interface SpotHeaderProps {
 export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: SpotHeaderProps) {
   const router = useRouter();
   const { user: authUser } = useAuth();
-  const { data: missionsData } = useMissions();
   const addMission = useAddMission();
+  const deleteMissionMutation = useDeleteMission();
   const { toggleVote: toggleSpotVote } = useVoteToggle("spot");
 
   const spotCategory = spot.category;
   const spotVibeStats = spot.vibeStats;
   const isOwner = authUser?.id === spot.userId;
 
-  const missionsList =
-    missionsData?.pages.flatMap(
-      (page: any) => (page.data as ChecklistItemDto[]) || [],
-    ) || [];
-
-  // Use mission status from SSR data, but fallback to checking the missions list from cache
-  const isInMissions = spot.isInMission ?? missionsList.some((m) => m.spotId === spot.id);
+  const isInMissions = Boolean(spot.isInMission);
+  const isMissionActionLoading = addMission.isPending || deleteMissionMutation.isPending;
 
   const handleAcceptMission = () => {
     if (!authUser) {
@@ -49,6 +44,16 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
     }
     if (!isInMissions) {
       addMission.mutate(spot.id);
+    }
+  };
+
+  const handleRemoveMission = () => {
+    const targetMissionId = (spot as any).missionId;
+    
+    if (targetMissionId) {
+      deleteMissionMutation.mutate(targetMissionId);
+    } else {
+      toast.error("Still syncing mission data...", { description: "Please wait a moment and try again." });
     }
   };
 
@@ -147,8 +152,29 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
               />
             </div>
             <div className="flex w-full items-center justify-between gap-3" onClick={(e) => e.stopPropagation()}>
-              <button onClick={handleAcceptMission} disabled={addMission.isPending || isInMissions} className={cn("flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide", isInMissions ? "bg-emerald-500/80 border-emerald-400 text-white" : "hover:bg-amber-400 border-white/20")}>
-                {addMission.isPending ? <Loader2 size={16} className="animate-spin shrink-0" /> : isInMissions ? <><CheckCircle2 size={16} className="shrink-0" /><span>Accepted</span></> : <><Target size={16} className="shrink-0" /><span>Accept</span></>}
+              <button
+                onClick={() => isInMissions ? handleRemoveMission() : handleAcceptMission()}
+                disabled={isMissionActionLoading}
+                className={cn(
+                  "flex-1 px-4 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide",
+                  isInMissions
+                    ? "bg-emerald-500/80 border-emerald-400 text-white"
+                    : "bg-white/10 backdrop-blur-md text-white hover:bg-amber-400 border-white/20"
+                )}
+              >
+                {isMissionActionLoading ? (
+                  <Loader2 size={16} className="animate-spin shrink-0" />
+                ) : isInMissions ? (
+                  <>
+                    <CheckCircle2 size={16} className="shrink-0" />
+                    <span>Accepted</span>
+                  </>
+                ) : (
+                  <>
+                    <Target size={16} className="shrink-0" />
+                    <span>Accept</span>
+                  </>
+                )}
               </button>
               <button onClick={() => router.push(`/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`)} className="flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide" title="Navigate to this spot">
                 <Navigation size={16} /> Navigate
@@ -199,8 +225,8 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
             {/* Primary Actions */}
             <div className="flex items-center gap-3">
               <button
-                onClick={handleAcceptMission}
-                disabled={addMission.isPending || isInMissions}
+                onClick={() => isInMissions ? handleRemoveMission() : handleAcceptMission()}
+                disabled={isMissionActionLoading}
                 className={cn(
                   "flex-1 px-6 py-4 rounded-2xl transition-all active:scale-95 border shadow-xl flex items-center justify-center gap-2 text-sm font-semibold tracking-wide",
                   isInMissions
@@ -208,7 +234,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
                     : "bg-white/10 backdrop-blur-md text-white hover:bg-amber-400 border-white/20"
                 )}
               >
-                {addMission.isPending ? (
+                {isMissionActionLoading ? (
                   <Loader2 size={18} className="animate-spin shrink-0" />
                 ) : isInMissions ? (
                   <>

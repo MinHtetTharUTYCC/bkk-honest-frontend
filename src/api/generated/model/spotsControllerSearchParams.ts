@@ -7,6 +7,8 @@
  */
 
 export type SpotsControllerSearchParams = {
+skip?: string | number;
+take?: string | number;
 /**
  * Search query
  */

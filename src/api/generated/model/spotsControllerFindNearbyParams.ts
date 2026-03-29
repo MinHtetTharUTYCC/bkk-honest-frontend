@@ -7,6 +7,8 @@
  */
 
 export type SpotsControllerFindNearbyParams = {
+skip?: string | number;
+take?: string | number;
 /**
  * Latitude coordinate
  */

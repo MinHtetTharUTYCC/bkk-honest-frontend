@@ -108,13 +108,25 @@ function MissionsPageContent() {
   const handleConfirmDelete = async () => {
     if (!missionToDelete) return;
     try {
-      await deleteMission.mutateAsync(missionToDelete);
+      await deleteMission.mutateAsync(missionToDelete, statusFilter, sortOrder);
       // Only close dialog after mutation succeeds
       setMissionToDelete(null);
     } catch (error) {
       // Dialog stays open if deletion fails
       console.error('Failed to delete mission:', error);
     }
+  };
+
+  const handleMarkDone = (missionId: string) => {
+    const mission = missions.find(m => m.id === missionId);
+    if (!mission) return;
+    setMissionToUpdate(missionId);
+    updateMission.mutate({
+      id: missionId,
+      completed: !mission.completed,
+      currentStatus: statusFilter,
+      currentSort: sortOrder,
+    });
   };
 
   useEffect(() => {
@@ -382,13 +394,7 @@ function MissionsPageContent() {
 
                 <div className="flex items-center gap-4">
                   <button
-                    onClick={() => {
-                      setMissionToUpdate(mission.id);
-                      updateMission.mutate({
-                        id: mission.id,
-                        completed: !mission.completed,
-                      });
-                    }}
+                    onClick={() => handleMarkDone(mission.id)}
                     disabled={
                       updateMission.isPending && missionToUpdate === mission.id
                     }

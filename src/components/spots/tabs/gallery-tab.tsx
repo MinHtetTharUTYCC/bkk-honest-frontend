@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotGallery, useUploadSpotImage, useDeleteGalleryImage, useFlagGalleryImage } from "@/hooks/use-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import { Camera, Upload, Loader2, User, Calendar, Trash2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,6 +37,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const spotId = spot.id;
+  const queryClient = useQueryClient();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);

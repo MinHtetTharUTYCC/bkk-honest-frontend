@@ -1,6 +1,6 @@
 'use client';
 
-import { useCreateVote, useDeleteVote } from './use-api';
+import { useCreateVote, useDeleteVote } from '@/hooks/api';
 import { Query, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
@@ -30,15 +30,27 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
   const queryClient = useQueryClient();
 
   const getQueryPredicate = () => {
-    if (type === 'image') return (query: Query) => (query.queryKey[0] === 'gallery' || query.queryKey[0] === 'gallery-infinite') && (!spotId || query.queryKey[1] === spotId);
-    if (type === 'tip') return (query: Query) => (query.queryKey[0] === 'tips' || query.queryKey[0] === 'tips-infinite') && (!spotId || query.queryKey[1] === spotId);
+    if (type === 'image') return (query: Query) => {
+      const key = query.queryKey[0];
+      if (typeof key !== 'string') return false;
+      const isGallery = key === 'gallery' || key === 'gallery-infinite' || key.startsWith('/gallery/spot/');
+      return isGallery && (!spotId || query.queryKey.some(k => k === spotId) || key.includes(spotId || ''));
+    };
+    if (type === 'tip') return (query: Query) => {
+      const key = query.queryKey[0];
+      if (typeof key !== 'string') return false;
+      const isTips = key === 'tips' || key === 'tips-infinite' || key.startsWith('/community-tips/spot/');
+      return isTips && (!spotId || query.queryKey.some(k => k === spotId) || key.includes(spotId || ''));
+    };
     if (type === 'alert') return (query: Query) => {
       const key = query.queryKey[0];
-      return typeof key === 'string' && ['scam-alerts', 'scam-alerts-infinite', 'scam-alert'].includes(key);
+      if (typeof key !== 'string') return false;
+      return ['scam-alerts', 'scam-alerts-infinite', 'scam-alert'].includes(key) || key.startsWith('/scam-alerts');
     };
     if (type === 'spot') return (query: Query) => {
       const key = query.queryKey[0];
-      return typeof key === 'string' && ['spots', 'spots-infinite', 'spot', 'spot-search', 'user-spots-infinite', 'spots-nearby'].includes(key);
+      if (typeof key !== 'string') return false;
+      return ['spots', 'spots-infinite', 'spot', 'spot-search', 'user-spots-infinite', 'spots-nearby'].includes(key) || key.startsWith('/spots');
     };
     return () => false;
   };
@@ -55,52 +67,67 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
         votes: Math.max(0, (target._count?.votes || 0) + (isRemoving ? -1 : 1)) } };
   };
 
-  const applyUpdate = (old: CacheNode | CacheNode[] | undefined, item: VoteableItem) => {
+  const applyUpdate = (old: any, item: VoteableItem): any => {
     if (!old) return old;
     if (Array.isArray(old)) return old.map(t => updateItem(t, item));
     if (old.pages) {
       return {
         ...old,
-        pages: old.pages.map((page) => ({
+        pages: old.pages.map((page: any) => ({
           ...page,
-          data: page.data?.map((t) => updateItem(t, item)) ?? [] })) };
+          data: page.data?.map((t: any) => updateItem(t, item)) ?? [] })) };
     }
-    if (old.data && Array.isArray(old.data)) return { ...old, data: old.data.map(t => updateItem(t, item)) };
+    if (old.data) {
+      if (Array.isArray(old.data)) {
+        return { ...old, data: old.data.map((t: any) => updateItem(t, item)) };
+      }
+      return { ...old, data: updateItem(old.data, item) };
+    }
     
     // Single item case (e.g., spot detail query)
     return updateItem(old, item);
   };
 
-  const findItemInCache = (data: CacheNode | CacheNode[] | null | undefined, itemId: string): CacheNode | null => {
+  const findItemInCache = (data: any, itemId: string): CacheNode | null => {
     if (!data) return null;
-    if (Array.isArray(data)) return data.find((t) => t.id === itemId) || null;
+    if (Array.isArray(data)) return data.find((t: any) => t.id === itemId) || null;
     if (data.pages) {
       for (const page of data.pages) {
         const items = page.data || page;
         if (Array.isArray(items)) {
-          const found = items.find((t) => t.id === itemId);
+          const found = items.find((t: any) => t.id === itemId);
           if (found) return found;
         }
       }
     }
-    if (data.data && Array.isArray(data.data)) return data.data.find((t) => t.id === itemId) || null;
+    if (data.data) {
+      if (Array.isArray(data.data)) {
+        return data.data.find((t: any) => t.id === itemId) || null;
+      }
+      return data.data.id === itemId ? data.data : null;
+    }
     
     // Single item case
     return data.id === itemId ? data : null;
   };
 
-  const setItemState = (oldData: CacheNode | CacheNode[] | undefined, itemId: string, newState: Partial<VoteableItem>) => {
+  const setItemState = (oldData: any, itemId: string, newState: Partial<VoteableItem>) => {
     if (!oldData) return oldData;
-    const updateTarget = (target: CacheNode) => target.id === itemId ? { ...target, ...newState } : target;
+    const updateTarget = (target: any) => target.id === itemId ? { ...target, ...newState } : target;
     if (Array.isArray(oldData)) return oldData.map(updateTarget);
     if (oldData.pages) {
       return {
         ...oldData,
-        pages: oldData.pages.map((page) => ({
+        pages: oldData.pages.map((page: any) => ({
           ...page,
           data: page.data?.map(updateTarget) ?? [] })) };
     }
-    if (oldData.data && Array.isArray(oldData.data)) return { ...oldData, data: oldData.data.map(updateTarget) };
+    if (oldData.data) {
+      if (Array.isArray(oldData.data)) {
+        return { ...oldData, data: oldData.data.map(updateTarget) };
+      }
+      return { ...oldData, data: updateTarget(oldData.data) };
+    }
     
     // Single item case
     return updateTarget(oldData);

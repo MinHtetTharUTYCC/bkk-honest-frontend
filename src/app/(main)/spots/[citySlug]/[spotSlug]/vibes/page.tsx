@@ -3,6 +3,7 @@ import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query
 import VibesTab from "@/components/spots/tabs/vibes-tab";
 import { getSpot } from "@/services/spot";
 import { liveVibesControllerFindAll } from "@/api/generated/live-vibes/live-vibes";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -25,6 +26,12 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
     return <div>Spot not found</div>;
   }
 
+  const supabase = await createServerClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const headers = session?.access_token 
+    ? { Authorization: `Bearer ${session.access_token}` } 
+    : {};
+
   const queryClient = new QueryClient();
 
   // Prefetch the spot data so the shared header finds it in cache
@@ -38,7 +45,7 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
         spotId: spot.id,
         skip: pageParam as number,
         take: 10
-      }, { next: { revalidate: 60 } } as RequestInit);
+      }, { headers, next: { revalidate: 60 } } as any);
       return res;
     },
     getNextPageParam: (lastPage: any) => {

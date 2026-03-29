@@ -1,25 +1,27 @@
 import Axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
-import { createClient } from '@/lib/supabase/client';
 
 export const AXIOS_INSTANCE: AxiosInstance = Axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
 });
 
-// Automatically inject Supabase JWT for authenticated requests
-AXIOS_INSTANCE.interceptors.request.use(async (config) => {
-  try {
-    // Client-side auth (works on both client and server via cookies)
-    const supabase = createClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session?.access_token) {
-      config.headers['Authorization'] = `Bearer ${session.access_token}`;
+// Automatically inject Supabase JWT for authenticated requests - ONLY IN BROWSER
+if (typeof window !== 'undefined') {
+  AXIOS_INSTANCE.interceptors.request.use(async (config) => {
+    try {
+      // Dynamic import to avoid SSR issues with client components
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.access_token) {
+        config.headers['Authorization'] = `Bearer ${session.access_token}`;
+      }
+    } catch (e) {
+      console.error('[Orval Mutator] Error fetching Supabase session:', e);
     }
-  } catch (e) {
-    console.error('[Orval Mutator] Error fetching Supabase session:', e);
-  }
-  return config;
-});
+    return config;
+  });
+}
 
 // Custom instance wrapper for Orval
 export const customInstance = <T>(
@@ -29,13 +31,19 @@ export const customInstance = <T>(
   const source = Axios.CancelToken.source();
   
   // Transform body -> data for Axios compatibility
-  const requestConfig = {
+  const requestConfig: AxiosRequestConfig = {
       ...(typeof config === 'string' ? { url: config } : config),
       ...(options || {}),
   };
-  if (requestConfig.body) {
-      requestConfig.data = requestConfig.body;
-      delete requestConfig.body;
+
+  if (requestConfig.data === undefined && (requestConfig as any).body) {
+      requestConfig.data = (requestConfig as any).body;
+      delete (requestConfig as any).body;
+  }
+
+  // Explicitly merge headers if they are provided in options (useful for SSR)
+  if (options?.headers) {
+    requestConfig.headers = { ...requestConfig.headers, ...options.headers };
   }
 
   const promise = AXIOS_INSTANCE({

@@ -7,6 +7,8 @@ import { X, MessageSquare, Send, Loader2, User as UserIcon, Edit2, Trash2 } from
 import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 import ReportButton from '@/components/report/report-button';
@@ -63,6 +65,7 @@ function extractTipComments(page: unknown): TipComment[] {
 
 export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps) {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const { 
     data: commentsResponse, 
     isLoading: commentsLoading,
@@ -103,28 +106,70 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     if (!newComment.trim() || !user) return;
 
     try {
-      await createCommentMutation.mutateAsync({
+      const response = await createCommentMutation.mutateAsync({
         communityTipId: tip.id,
         content: newComment.trim()
       });
+
+      const newCommentData = response?.data || response;
+
+      // Update the infinite query cache to show new comment at index 0
+      queryClient.setQueryData(
+        ['tip-comments', tip.id],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          const newPages = [...oldData.pages];
+          if (newPages.length === 0) {
+            newPages[0] = { data: [newCommentData] };
+          } else {
+            const firstPage = { ...newPages[0] };
+            firstPage.data = [newCommentData, ...(firstPage.data || [])];
+            newPages[0] = firstPage;
+          }
+          return { ...oldData, pages: newPages };
+        }
+      );
+
       setNewComment('');
+      toast.success('Comment posted');
     } catch (err) {
       console.error(err);
-      alert('Failed to post comment');
+      toast.error('Failed to post comment');
     }
   };
 
   const handleEditSubmit = async (commentId: string) => {
     if (!editContent.trim()) return;
     try {
-      await updateCommentMutation.mutateAsync({
+      const response = await updateCommentMutation.mutateAsync({
         id: commentId,
         content: editContent.trim(),
         communityTipId: tip.id });
+
+      const updatedComment = response?.data || response;
+
+      // Update the infinite query cache
+      queryClient.setQueryData(
+        ['tip-comments', tip.id],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              data: page.data?.map((comment: TipComment) => 
+                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text || updatedComment.content } : comment
+              )
+            }))
+          };
+        }
+      );
+
       setEditingCommentId(null);
+      toast.success('Comment updated');
     } catch (err) {
       console.error(err);
-      alert('Failed to update comment');
+      toast.error('Failed to update comment');
     }
   };
 
@@ -132,10 +177,27 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     if (!commentToDelete) return;
     try {
       await deleteCommentMutation.mutateAsync({ id: commentToDelete, communityTipId: tip.id });
+      
+      // Update the infinite query cache
+      queryClient.setQueryData(
+        ['tip-comments', tip.id],
+        (oldData: any) => {
+          if (!oldData || !oldData.pages) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              data: page.data?.filter((comment: TipComment) => comment.id !== commentToDelete)
+            }))
+          };
+        }
+      );
+
       setCommentToDelete(null);
+      toast.success('Comment deleted');
     } catch (err) {
       console.error(err);
-      alert('Failed to delete comment');
+      toast.error('Failed to delete comment');
     }
   };
 
