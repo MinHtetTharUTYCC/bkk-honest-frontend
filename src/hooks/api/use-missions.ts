@@ -29,6 +29,50 @@ export function useMissionStats() {
     return { ...query, data: (query.data?.data as any) };
 }
 
+/**
+ * Robust helper to update spot data in various cache structures (single object or infinite query pages)
+ */
+function updateSpotInCache(old: any, spotId: string, updates: any) {
+    if (!old) return old;
+
+    // Handle Infinite Query structure { pages: { data: Spot[] }[] }
+    if (old.pages && Array.isArray(old.pages)) {
+        return {
+            ...old,
+            pages: old.pages.map((page: any) => ({
+                ...page,
+                data: page.data?.map((spot: any) => 
+                    (spot?.id === spotId) ? { ...spot, ...updates } : spot
+                )
+            }))
+        };
+    }
+
+    // Handle { data: Spot } structure
+    if (old.data && !Array.isArray(old.data)) {
+        if (old.data.id === spotId) {
+            return { ...old, data: { ...old.data, ...updates } };
+        }
+        return old;
+    }
+
+    // Handle { data: Spot[] } or Spot[] structure
+    const dataArray = Array.isArray(old.data) ? old.data : (Array.isArray(old) ? old : null);
+    if (dataArray) {
+        const newData = dataArray.map((spot: any) => 
+            (spot?.id === spotId) ? { ...spot, ...updates } : spot
+        );
+        return Array.isArray(old.data) ? { ...old, data: newData } : newData;
+    }
+
+    // Handle raw Spot object structure
+    if (old.id === spotId) {
+        return { ...old, ...updates };
+    }
+
+    return old;
+}
+
 export function useAddMission() {
     const mutation = useChecklistControllerCreate();
     const queryClient = useQueryClient();
@@ -36,7 +80,7 @@ export function useAddMission() {
         ...mutation,
         mutate: (spotId: string) => mutation.mutate({ data: { spotId } }, {
             onSuccess: (response) => {
-                const newItem = response.data;
+                const newItem = response;
                 
                 // 1. Update all variations of the missions list cache
                 queryClient.setQueriesData({ queryKey: ['missions-infinite'] }, (old: any) => {
@@ -56,23 +100,13 @@ export function useAddMission() {
                 const spotPredicate = (query: any) => {
                     const key = query.queryKey[0];
                     if (typeof key !== 'string') return false;
-                    return key === 'spot' || key.startsWith('/spots');
+                    return key === 'spot' || key === 'spots' || key.startsWith('/spots');
                 };
 
-                queryClient.setQueriesData({ predicate: spotPredicate }, (old: any) => {
-                    if (!old) return old;
-                    const updateSpot = (s: any) => {
-                      if (!s) return s;
-                      const actualSpot = s.data || s;
-                      if (actualSpot.id === spotId) {
-                        return s.data 
-                          ? { ...s, data: { ...s.data, isInMission: true, missionId: newItem.id } }
-                          : { ...s, isInMission: true, missionId: newItem.id };
-                      }
-                      return s;
-                    };
-                    return updateSpot(old);
-                });
+                queryClient.setQueriesData(
+                    { predicate: spotPredicate }, 
+                    (old) => updateSpotInCache(old, spotId, { isInMission: true, missionId: newItem.id })
+                );
 
                 queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
             }
@@ -98,7 +132,7 @@ export function useUpdateMission() {
             currentSort?: string;
         }) => mutation.mutate({ id, data: { completed } }, {
             onSuccess: (response) => {
-                const updatedItem = response.data;
+                const updatedItem = response;
                 const currentKey = ['missions-infinite', 'me', currentStatus, currentSort];
                 
                 // Surgical update: remove from current tab if status changes
@@ -115,7 +149,7 @@ export function useUpdateMission() {
                             ...old,
                             pages: old.pages.map((page: any) => ({
                                 ...page,
-                                data: page.data?.filter((m: any) => m.id !== id)
+                                data: page.data?.filter((m: any) => m?.id !== id)
                             }))
                         };
                     }
@@ -125,7 +159,7 @@ export function useUpdateMission() {
                         ...old,
                         pages: old.pages.map((page: any) => ({
                             ...page,
-                            data: page.data?.map((m: any) => m.id === id ? { ...m, ...updatedItem } : m)
+                            data: page.data?.map((m: any) => m?.id === id ? { ...m, ...updatedItem } : m)
                         }))
                     };
                 });
@@ -170,9 +204,9 @@ export function useDeleteMission() {
                     if (!old || !old.pages) return old;
                     
                     for (const page of old.pages) {
-                        const found = page.data?.find((m: any) => m.id === id);
+                        const found = page.data?.find((m: any) => m?.id === id);
                         if (found) {
-                            deletedSpotId = found.spotId;
+                            deletedSpotId = found.spotId || found.spot?.id;
                             break;
                         }
                     }
@@ -181,7 +215,7 @@ export function useDeleteMission() {
                         ...old,
                         pages: old.pages.map((page: any) => ({
                             ...page,
-                            data: page.data?.filter((m: any) => m.id !== id)
+                            data: page.data?.filter((m: any) => m?.id !== id)
                         }))
                     };
                 });
@@ -195,26 +229,18 @@ export function useDeleteMission() {
                 });
 
                 // 2. Update the specific spot detail cache to set isInMission to false and missionId to null
-                const spotPredicate = (query: any) => {
-                    const key = query.queryKey[0];
-                    if (typeof key !== 'string') return false;
-                    return key === 'spot' || key.startsWith('/spots');
-                };
-
-                queryClient.setQueriesData({ predicate: spotPredicate }, (old: any) => {
-                    if (!old) return old;
-                    const updateSpot = (s: any) => {
-                      if (!s) return s;
-                      const actualSpot = s.data || s;
-                      if (actualSpot.id === deletedSpotId || actualSpot.missionId === id) {
-                         return s.data
-                           ? { ...s, data: { ...s.data, isInMission: false, missionId: null } }
-                           : { ...s, isInMission: false, missionId: null };
-                      }
-                      return s;
+                if (deletedSpotId) {
+                    const spotPredicate = (query: any) => {
+                        const key = query.queryKey[0];
+                        if (typeof key !== 'string') return false;
+                        return key === 'spot' || key === 'spots' || key.startsWith('/spots');
                     };
-                    return updateSpot(old);
-                });
+
+                    queryClient.setQueriesData(
+                        { predicate: spotPredicate }, 
+                        (old) => updateSpotInCache(old, deletedSpotId!, { isInMission: false, missionId: null })
+                    );
+                }
 
                 queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
             }

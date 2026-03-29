@@ -146,7 +146,7 @@ function MissionsPageContent() {
   const missions = useMemo(() => {
     return (
       (missionsData?.pages as Array<{ data?: MissionItem[] }> | undefined)?.flatMap(
-        (page) => page.data || [],
+        (page) => (page.data || []).filter(Boolean),
       ) || []
     );
   }, [missionsData]);
@@ -337,7 +337,7 @@ function MissionsPageContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {missions.map((mission: MissionItem) => (
+            {missions.filter(m => m && m.id).map((mission: MissionItem) => (
               <div
                 key={mission.id}
                 className={cn(
