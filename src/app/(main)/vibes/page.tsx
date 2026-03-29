@@ -1,11 +1,10 @@
 "use client";
-import { Suspense, useState, useEffect, useRef, useCallback } from "react";
-import { Zap, MapPin, Loader2, ArrowLeft, Filter, Search } from "lucide-react";
+import { Suspense, useEffect, useRef, useCallback } from "react";
+import { Zap, MapPin, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useInfiniteLiveVibes, useCategories } from "@/hooks/use-api";
 import { useCity } from "@/components/providers/city-provider";
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getSpotUrl } from "@/lib/slug";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
