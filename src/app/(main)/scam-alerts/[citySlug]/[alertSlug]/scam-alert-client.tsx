@@ -207,17 +207,22 @@ export default function ScamAlertClient() {
       // Update the infinite query cache to show new comment at index 0
       queryClient.setQueryData(
         ['scam-comments', alertId],
-        (oldData: any) => {
-          if (!oldData || !oldData.pages) return oldData;
-          const newPages = [...oldData.pages];
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
+          if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData;
+          const data = oldData as Record<string, unknown>;
+          const oldPages = data.pages;
+          if (!Array.isArray(oldPages)) return oldData;
+          const newPages = [...oldPages];
           if (newPages.length === 0) {
             newPages[0] = { data: [newCommentData] };
           } else {
             const firstPage = { ...newPages[0] };
-            firstPage.data = [newCommentData, ...(firstPage.data || [])];
+            if (typeof firstPage === 'object' && firstPage !== null) {
+              (firstPage as Record<string, unknown>).data = [newCommentData, ...((firstPage as Record<string, unknown>).data as unknown[] || [])];
+            }
             newPages[0] = firstPage;
           }
-          return { ...oldData, pages: newPages };
+          return { ...data, pages: newPages };
         }
       );
 
@@ -253,16 +258,24 @@ export default function ScamAlertClient() {
       // Update the infinite query cache
       queryClient.setQueryData(
         ['scam-comments', alertId],
-        (oldData: any) => {
-          if (!oldData || !oldData.pages) return oldData;
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
+          if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData;
+          const data = oldData as Record<string, unknown>;
+          const oldPages = data.pages;
+          if (!Array.isArray(oldPages)) return oldData;
           return {
-            ...oldData,
-            pages: oldData.pages.map((page: any) => ({
-              ...page,
-              data: page.data?.map((comment: AlertComment) => 
-                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text } : comment
-              )
-            }))
+            ...data,
+            pages: oldPages.map((page: { data?: unknown[] } | unknown) => {
+              if (typeof page !== 'object' || !page) return page;
+              const p = page as Record<string, unknown>;
+              return {
+                ...p,
+                data: (p.data as unknown[])?.map((comment: unknown) => {
+                  const c = comment as Record<string, unknown> & { id?: string };
+                  return c.id === commentId ? { ...c, ...updatedComment, content: updatedComment.text } : comment;
+                })
+              };
+            })
           };
         }
       );
@@ -286,14 +299,24 @@ export default function ScamAlertClient() {
       // Update the infinite query cache
       queryClient.setQueryData(
         ['scam-comments', alertId],
-        (oldData: any) => {
-          if (!oldData || !oldData.pages) return oldData;
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
+          if (!oldData || typeof oldData !== 'object' || !('pages' in oldData)) return oldData;
+          const data = oldData as Record<string, unknown>;
+          const oldPages = data.pages;
+          if (!Array.isArray(oldPages)) return oldData;
           return {
-            ...oldData,
-            pages: oldData.pages.map((page: any) => ({
-              ...page,
-              data: page.data?.filter((comment: AlertComment) => comment.id !== commentId)
-            }))
+            ...data,
+            pages: oldPages.map((page: { data?: unknown[] } | unknown) => {
+              if (typeof page !== 'object' || !page) return page;
+              const p = page as Record<string, unknown>;
+              return {
+                ...p,
+                data: (p.data as unknown[])?.filter((comment: unknown) => {
+                  const c = comment as Record<string, unknown> & { id?: string };
+                  return c.id !== commentId;
+                })
+              };
+            })
           };
         }
       );
@@ -341,7 +364,7 @@ export default function ScamAlertClient() {
       };
     });
 
-    const result = await toggleVote(localAlert as any);
+    const result = await toggleVote(localAlert as LocalAlert);
 
     setLocalAlert((prev) => {
       if (!prev) return prev;

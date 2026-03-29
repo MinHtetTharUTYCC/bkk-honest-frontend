@@ -42,7 +42,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
         sortTypes.forEach((sort) => {
           queryClient.setQueryData(
             ['tips-infinite', spotId, type, sort],
-            (oldData: any) => {
+            (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
               if (!oldData || !oldData.pages) {
                 return oldData;
               }

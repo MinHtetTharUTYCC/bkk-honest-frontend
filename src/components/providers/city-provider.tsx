@@ -45,11 +45,11 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isHydrated || !cities || cities.length === 0) return;
 
-    const isValid = selectedCityId && (cities as City[]).some((c) => c.id === selectedCityId);
+    const isValid = selectedCityId && cities.some((c) => c.id === selectedCityId);
     
     if (!selectedCityId || !isValid) {
-      const bangkok = (cities as City[]).find((c) => c.name.toLowerCase() === 'bangkok');
-      const fallbackId = bangkok ? bangkok.id : (cities as City[])[0].id;
+      const bangkok = cities.find((c) => c.name.toLowerCase() === 'bangkok');
+      const fallbackId = bangkok ? bangkok.id : cities[0].id;
       
       if (selectedCityId !== fallbackId) {
         // Use functional update or guard to reduce cascading render impact

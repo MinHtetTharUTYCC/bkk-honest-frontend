@@ -30,13 +30,7 @@ import { useAuth } from "@/components/providers/auth-provider";
 import LoginRequired from "@/components/auth/login-required";
 import { Textarea } from "@/components/ui/textarea";
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string | string[];
-    };
-  };
-}
+
 
 export default function ReportPage() {
   const { user, loading: authLoading } = useAuth();
@@ -79,12 +73,9 @@ export default function ReportPage() {
   const { data: categoriesResponse } = useCategories();
   const { data: citiesResponse } = useCities();
 
-  const spots =
-    ((spotsResponse as any)?.data || spotsResponse || []) as any[];
-  const categories =
-    ((categoriesResponse as any)?.data || categoriesResponse || []) as any[];
-  const cities =
-    ((citiesResponse as any)?.data || citiesResponse || []) as any[];
+  const spots = spotsResponse || [];
+  const categories = categoriesResponse || [];
+  const cities = citiesResponse || [];
 
   // Mutations
   const createPrice = useCreatePriceReport();
@@ -104,10 +95,10 @@ export default function ReportPage() {
         image: formData.imageFile || undefined,
       });
       setSubmitted(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to create spot:", err);
-      const message = err.response?.data?.message || "Failed to create spot";
-      setError(Array.isArray(message) ? message[0] : message);
+      const message = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) ? err.response.data.message : "Failed to create spot";
+      setError(Array.isArray(message) ? message[0] : typeof message === 'string' ? message : "Failed to create spot");
     }
   };
 
@@ -129,9 +120,9 @@ export default function ReportPage() {
         priceThb: Number(formData.get("priceThb")),
       });
       setSubmitted(true);
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Failed to publish price report";
-      setError(Array.isArray(message) ? message[0] : message);
+    } catch (err: unknown) {
+      const message = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) ? err.response.data.message : "Failed to publish price report";
+      setError(Array.isArray(message) ? message[0] : typeof message === 'string' ? message : "Failed to publish price report");
     }
   };
 
@@ -165,9 +156,9 @@ export default function ReportPage() {
         image: scamImageFile || undefined,
       });
       setSubmitted(true);
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Failed to publish scam alert";
-      setError(Array.isArray(message) ? message[0] : message);
+    } catch (err: unknown) {
+      const message = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) ? err.response.data.message : "Failed to publish scam alert";
+      setError(Array.isArray(message) ? message[0] : typeof message === 'string' ? message : "Failed to publish scam alert");
     }
   };
 

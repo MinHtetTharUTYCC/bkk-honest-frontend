@@ -45,10 +45,10 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
         spotId: spot.id,
         skip: pageParam as number,
         take: 10
-      }, { headers, next: { revalidate: 60 } } as any);
+      }, { headers, next: { revalidate: 60 } } as RequestInit);
       return res;
     },
-    getNextPageParam: (lastPage: any) => {
+    getNextPageParam: (lastPage: { pagination?: { skip?: number; take?: number; total?: number } } | undefined) => {
       const { skip, take, total } = lastPage.pagination || {};
       if (skip === undefined || take === undefined || total === undefined) return undefined;
       const nextSkip = skip + take;
@@ -58,7 +58,7 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <VibesTab spot={spot as any} />
+      <VibesTab spot={spot} />
     </HydrationBoundary>
   );
 }

@@ -48,7 +48,7 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
       // Update the infinite query cache to show new report at index 0
       queryClient.setQueryData(
         ['price-reports-infinite', spotId],
-        (oldData: any) => {
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           const newPages = [...oldData.pages];
           if (newPages.length === 0) {
