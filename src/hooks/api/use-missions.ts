@@ -26,7 +26,7 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
 
 export function useMissionStats() {
     const query = useChecklistControllerGetStats({ query: { queryKey: ['mission-stats'] } });
-    return { ...query, data: (query.data?.data as any) };
+    return { ...query, data: query.data as any };
 }
 
 /**
