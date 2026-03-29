@@ -80,13 +80,11 @@ export default function ReportPage() {
   const { data: citiesResponse } = useCities();
 
   const spots =
-    (spotsResponse as { data?: unknown[] })?.data || spotsResponse || [];
+    ((spotsResponse as any)?.data || spotsResponse || []) as any[];
   const categories =
-    (categoriesResponse as { data?: unknown[] })?.data ||
-    categoriesResponse ||
-    [];
+    ((categoriesResponse as any)?.data || categoriesResponse || []) as any[];
   const cities =
-    (citiesResponse as { data?: unknown[] })?.data || citiesResponse || [];
+    ((citiesResponse as any)?.data || citiesResponse || []) as any[];
 
   // Mutations
   const createPrice = useCreatePriceReport();
