@@ -194,20 +194,23 @@ export function useDeleteMission() {
     const queryClient = useQueryClient();
     return {
         ...mutation,
-        mutate: (id: string, currentStatus = 'all', currentSort = 'newest') => mutation.mutate({ id }, {
+        mutate: (id: string, currentStatus = 'all', currentSort = 'newest', spotId?: string) => mutation.mutate({ id }, {
             onSuccess: () => {
-                let deletedSpotId: string | undefined;
+                let deletedSpotId: string | undefined = spotId;
                 const currentKey = ['missions-infinite', 'me', currentStatus, currentSort];
                 
                 // Surgical update: remove from current tab
                 queryClient.setQueryData(currentKey, (old: any) => {
                     if (!old || !old.pages) return old;
                     
-                    for (const page of old.pages) {
-                        const found = page.data?.find((m: any) => m?.id === id);
-                        if (found) {
-                            deletedSpotId = found.spotId || found.spot?.id;
-                            break;
+                    // If spotId not provided, try to find it from cache
+                    if (!deletedSpotId) {
+                        for (const page of old.pages) {
+                            const found = page.data?.find((m: any) => m?.id === id);
+                            if (found) {
+                                deletedSpotId = found.spotId || found.spot?.id;
+                                break;
+                            }
                         }
                     }
 
@@ -245,6 +248,6 @@ export function useDeleteMission() {
                 queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
             }
         }),
-        mutateAsync: (id: string, currentStatus = 'all', currentSort = 'newest') => mutation.mutateAsync({ id })
+        mutateAsync: (id: string, currentStatus = 'all', currentSort = 'newest', spotId?: string) => mutation.mutateAsync({ id })
     };
 }

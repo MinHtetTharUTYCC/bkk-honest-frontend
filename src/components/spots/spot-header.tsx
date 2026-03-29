@@ -51,7 +51,8 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
     const targetMissionId = (spot as any).missionId;
     
     if (targetMissionId) {
-      deleteMissionMutation.mutate(targetMissionId);
+      // Pass spotId so cache update works even when not on missions page
+      deleteMissionMutation.mutate(targetMissionId, 'all', 'newest', spot.id);
     } else {
       toast.error("Still syncing mission data...", { description: "Please wait a moment and try again." });
     }
