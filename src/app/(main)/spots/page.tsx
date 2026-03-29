@@ -27,7 +27,6 @@ function DiscoveryPageContent() {
   );
 
   const { selectedCityId, selectedCity } = useCity();
-  const queryClient = useQueryClient();
 
   const prefetchCategory = (catId: string | undefined) => {
     // Prefetch is handled by useInfiniteSpots hook itself
