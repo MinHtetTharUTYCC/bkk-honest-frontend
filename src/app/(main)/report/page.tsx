@@ -64,6 +64,8 @@ export default function ReportPage() {
   const [scamPreventionTip, setScamPreventionTip] = useState("");
   const [scamCategory, setScamCategory] = useState("");
   const [scamCity, setScamCity] = useState("");
+  const [scamImageFile, setScamImageFile] = useState<File | null>(null);
+  const [scamImagePreview, setScamImagePreview] = useState("");
 
   // Sync cities when selectedCityId changes, but only if not already set or specifically changed
   useEffect(() => {
