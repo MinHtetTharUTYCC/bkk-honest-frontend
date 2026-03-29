@@ -3,12 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { 
-  Instagram, 
-  Facebook, 
-  Twitter, 
-  Music, 
   Mail, 
-  MapPin, 
   Plus,
   Heart,
   ExternalLink
