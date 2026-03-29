@@ -226,7 +226,7 @@ function MissionsPageContent() {
           <div className="w-full md:w-64 space-y-4">
             <div className="flex justify-between items-end">
               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                Global Progress
+                Current Progress
               </span>
               <span className="text-2xl font-black text-white italic">
                 {completedCount}/{totalCount}
