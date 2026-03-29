@@ -84,7 +84,7 @@ function ProfileLayoutContent({
         <div className="text-center">
           <h2 className="text-2xl font-bold text-white mb-4">Profile Not Found</h2>
           <p className="text-white/60 mb-6">
-            The profile you're looking for doesn't exist or has been deleted.
+            The profile you&apo;re looking for doesn&apos;t exist or has been deleted.
           </p>
           <Link href="/discover" className="text-amber-400 hover:text-amber-300 underline">
             Back to Discover
