@@ -608,6 +608,7 @@ export default function ScamAlertClient() {
                 {localAlert.user?.avatarUrl ? (
                   <img
                     src={localAlert.user.avatarUrl}
+                    alt={localAlert.user?.name || "User Avatar"}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -712,6 +713,7 @@ export default function ScamAlertClient() {
                         {comment.user?.avatarUrl ? (
                           <img
                             src={comment.user.avatarUrl}
+                            alt={comment.user?.name || "User Avatar"}
                             className="w-full h-full object-cover"
                           />
                         ) : (
