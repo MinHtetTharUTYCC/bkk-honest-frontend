@@ -58,7 +58,7 @@ export default async function VibesPage({ params }: { params: Promise<{ citySlug
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <VibesTab spot={spot} />
+      <VibesTab spot={spot as any} />
     </HydrationBoundary>
   );
 }

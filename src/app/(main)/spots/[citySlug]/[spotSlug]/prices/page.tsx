@@ -57,7 +57,7 @@ export default async function PricesPage({ params }: { params: Promise<{ citySlu
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <PricesTab spot={spot} />
+      <PricesTab spot={spot as any} />
     </HydrationBoundary>
   );
 }

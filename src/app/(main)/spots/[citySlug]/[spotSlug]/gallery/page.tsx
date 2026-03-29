@@ -69,7 +69,7 @@ export default async function GalleryPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <GalleryTab spot={spot} />
+      <GalleryTab spot={spot as any} />
     </HydrationBoundary>
   );
 }

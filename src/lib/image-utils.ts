@@ -33,6 +33,15 @@ export interface SafeImageVariant {
 }
 
 /**
+ * Union type for all DTOs that contain image metadata
+ */
+export type ImageObjectDto =
+  | GalleryImageResponseDto
+  | SpotWithStatsResponseDto
+  | ProfileResponseDto
+  | ScamAlertResponseDto;
+
+/**
  * Get a specific image variant safely
  *
  * @param variants - ImageVariantsDto with variant URLs
@@ -142,14 +151,14 @@ export function getHeroImageUrl(
  * const url = getGalleryImageUrl(image.variants);
  */
 export function selectImageVariantSafely(
-  imageData: any
+  imageData: ImageObjectDto | undefined
 ): SafeImageVariant {
   if (!imageData) {
     return {};
   }
 
   return {
-    variants: imageData.imageVariants as ImageVariantsDto | undefined,
+    variants: imageData.imageVariants,
     blurPlaceholder: imageData.blurPlaceholder,
   };
 }
@@ -208,14 +217,14 @@ export function hasValidVariants(
  *   aspectRatio = dimensions.width / dimensions.height;
  * }
  */
-export function getImageDimensions(imageData: any) {
+export function getImageDimensions(imageData: ImageObjectDto | undefined) {
   if (!imageData || !imageData.imageWidth || !imageData.imageHeight) {
     return undefined;
   }
 
   return {
-    width: imageData.imageWidth as number,
-    height: imageData.imageHeight as number,
+    width: imageData.imageWidth,
+    height: imageData.imageHeight,
     aspectRatio: imageData.imageWidth / imageData.imageHeight,
   };
 }
@@ -231,7 +240,7 @@ export function getImageDimensions(imageData: any) {
  *   showQualityWarning();
  * }
  */
-export function isImageDegraded(imageData: any): boolean {
+export function isImageDegraded(imageData: ImageObjectDto | undefined): boolean {
   return imageData?.isDegraded === true;
 }
 
@@ -247,8 +256,8 @@ export function isImageDegraded(imageData: any): boolean {
  *   showLowQualityWarning();
  * }
  */
-export function getImageQualityScore(imageData: any): number | undefined {
-  return imageData?.qualityScore as number | undefined;
+export function getImageQualityScore(imageData: ImageObjectDto | undefined): number | undefined {
+  return imageData?.qualityScore;
 }
 
 /**
@@ -258,6 +267,7 @@ export function getImageQualityScore(imageData: any): number | undefined {
  *
  * @param imageData - Image response object (GalleryImageResponseDto, etc.)
  * @param screenContext - Current screen size context for responsive variant
+ * @param altText - Alternative text for image
  * @returns Complete image object ready for rendering
  *
  * @example
@@ -281,7 +291,7 @@ export interface RenderableImage {
 }
 
 export function buildRenderableImage(
-  imageData: any,
+  imageData: ImageObjectDto | undefined,
   screenContext: ScreenContext = 'desktop',
   altText: string = 'Image'
 ): RenderableImage | undefined {
@@ -293,6 +303,7 @@ export function buildRenderableImage(
   }
 
   const finalUrl =
+    getResponsiveImageVariant(variants, screenContext) ||
     buildImageUrl(variants, 'display') ||
     'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';
 
@@ -321,22 +332,19 @@ export function buildRenderableImage(
  * @returns Image data object with all properties
  */
 export function extractGalleryImageData(galleryImage: GalleryImageResponseDto) {
-  // Cast to any to access optional image metadata fields that backend returns
-  // but generated types don't yet include (imageVariants, blurPlaceholder, dimensions, etc.)
-  const imageData = galleryImage as any;
   return {
     id: galleryImage.id,
     url: galleryImage.url,
-    variants: imageData.imageVariants,
-    blurPlaceholder: imageData.blurPlaceholder,
+    variants: galleryImage.imageVariants,
+    blurPlaceholder: galleryImage.blurPlaceholder,
     dimensions: {
-      width: imageData.imageWidth,
-      height: imageData.imageHeight,
+      width: undefined as number | undefined,
+      height: undefined as number | undefined,
     },
     metadata: {
-      mimeType: imageData.imageMimeType,
-      fileSize: imageData.imageSize,
-      qualityScore: imageData.qualityScore,
+      mimeType: undefined as string | undefined,
+      fileSize: undefined as number | undefined,
+      qualityScore: undefined as number | undefined,
       isDegraded: galleryImage.isDegraded,
     },
   };

@@ -40,25 +40,6 @@ export interface NearestStation {
   walkingTime: number; // estimated walking time in minutes
 }
 
-interface GeoJsonStationFeature {
-  properties: {
-    id?: string;
-    name: string;
-    name_th?: string;
-    line: string;
-    system: 'BTS' | 'MRT' | 'ARL';
-    color: string;
-    interchange?: string[];
-  };
-  geometry: {
-    coordinates: [number, number];
-  };
-}
-
-interface GeoJsonStationCollection {
-  features?: GeoJsonStationFeature[];
-}
-
 /**
  * Calculate distance between two coordinates using Haversine formula
  * @param lat1 Latitude of first point

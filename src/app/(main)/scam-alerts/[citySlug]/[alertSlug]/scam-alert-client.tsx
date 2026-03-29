@@ -152,10 +152,8 @@ export default function ScamAlertClient() {
   } = useScamComments(alertId);
 
   const comments: AlertComment[] =
-    commentsResponse?.pages?.flatMap(
-      (page) =>
-        (page as { data?: AlertComment[] })?.data ||
-        (Array.isArray(page) ? (page as AlertComment[]) : []),
+    (commentsResponse?.pages as unknown as Array<{ data?: AlertComment[] }>)?.flatMap(
+      (page) => page?.data || (Array.isArray(page) ? (page as unknown as AlertComment[]) : []),
     ) || [];
   const createCommentMutation = useCreateComment();
   const { toggleVote, isPending: votePending } = useVoteToggle("alert");
@@ -262,7 +260,7 @@ export default function ScamAlertClient() {
             pages: oldData.pages.map((page: any) => ({
               ...page,
               data: page.data?.map((comment: AlertComment) => 
-                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text || updatedComment.content } : comment
+                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text } : comment
               )
             }))
           };
@@ -343,14 +341,7 @@ export default function ScamAlertClient() {
       };
     });
 
-    const result = await toggleVote({
-      id: localAlert.id,
-      hasVoted: wasVoted,
-      voteId: localAlert.voteId,
-      _count: {
-        votes: localAlert._count?.votes ?? 0,
-      },
-    });
+    const result = await toggleVote(localAlert as any);
 
     setLocalAlert((prev) => {
       if (!prev) return prev;

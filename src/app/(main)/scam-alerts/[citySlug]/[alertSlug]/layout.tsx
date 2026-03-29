@@ -80,7 +80,7 @@ export async function generateMetadata({
         canonical: path,
       },
     };
-  } catch () {
+  } catch (error) {
     return {
       title: "Scam Alert - BKK Honest",
       description: "View scam alert details and community discussion",

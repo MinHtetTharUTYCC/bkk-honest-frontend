@@ -69,7 +69,7 @@ export default async function TipsPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <TipsTab spot={spot} />
+      <TipsTab spot={spot as any} />
     </HydrationBoundary>
   );
 }
