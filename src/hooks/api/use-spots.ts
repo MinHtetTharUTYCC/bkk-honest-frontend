@@ -15,12 +15,14 @@ import { getNextSkipFromPage } from './base';
 
 export function useSpot(id: string) {
     const query = useSpotsControllerFindOne(id, { query: { enabled: !!id } });
-    return { ...query, data: query.data?.data };
+    const data = (query.data as any)?.data || query.data;
+    return { ...query, data };
 }
 
 export function useSpotBySlug(citySlug: string, spotSlug: string) {
     const query = useSpotsControllerFindBySlug(citySlug, spotSlug, { query: { enabled: !!citySlug && !!spotSlug } });
-    return { ...query, data: query.data?.data };
+    const data = (query.data as any)?.data || query.data;
+    return { ...query, data };
 }
 
 export function useSpots(params?: {
@@ -75,7 +77,12 @@ export function useNearbySpots(params: { latitude: number; longitude: number; di
             staleTime: 60_000
         }
     });
-    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
+    
+    // Backend was recently updated to return { data: [], pagination: ... } to match Swagger.
+    // We handle both direct array and wrapped response for robustness.
+    const rawData = query.data as any;
+    const spots = Array.isArray(rawData) ? rawData : (rawData?.data || []);
+    return { ...query, data: spots };
 }
 
 export function useSpotSearch(queryStr: string, cityId?: string, limit: number = 20) {
@@ -89,7 +96,11 @@ export function useSpotSearch(queryStr: string, cityId?: string, limit: number =
             enabled: queryStr.trim().length >= 1
         }
     });
-    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
+    
+    // Handle both direct array and wrapped response
+    const rawData = query.data as any;
+    const spots = Array.isArray(rawData) ? rawData : (rawData?.data || []);
+    return { ...query, data: spots };
 }
 
 export function useCreateSpot() {

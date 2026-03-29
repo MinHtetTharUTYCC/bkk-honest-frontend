@@ -13,7 +13,8 @@ import { getNextSkipFromPage } from './base';
 
 export function useScamAlertBySlug(citySlug: string, alertSlug: string) {
     const query = useScamAlertsControllerFindBySlug(citySlug, alertSlug, { query: { enabled: !!citySlug && !!alertSlug } });
-    return { ...query, data: query.data?.data };
+    const data = (query.data as any)?.data || query.data;
+    return { ...query, data };
 }
 
 export function useScamAlerts(params?: {
