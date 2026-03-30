@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } from "@/hooks/use-api";
 import { useQueryClient, InfiniteData } from "@tanstack/react-query";
@@ -15,6 +15,7 @@ import { useInView } from "react-intersection-observer";
 import { TipFormValues } from "@/lib/validations/tip";
 import { toast } from "sonner";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import {
   Select,
   SelectContent,
@@ -30,6 +31,12 @@ interface TipPageData {
 interface TipsTabProps {
   spot: SpotData;
   initialTips?: InfiniteData<TipPageData>;
+}
+
+function getUpdatedAt(value: unknown): string | undefined {
+  if (typeof value !== "object" || value === null || !("updatedAt" in value)) return undefined;
+  const updatedAt = (value as { updatedAt?: unknown }).updatedAt;
+  return typeof updatedAt === "string" ? updatedAt : undefined;
 }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -104,6 +111,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
     try {
       const response = await updateTipMutation.mutateAsync({ id: editingTip.id, spotId, ...values });
       const updatedTip = response?.data || response;
+      const updatedAt = getUpdatedAt(updatedTip);
 
       // Manually update all sort variations of the infinite query cache
       const sortTypes = ['popular', 'newest'];
@@ -117,7 +125,15 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
               pages: oldData.pages.map((page) => ({
                 ...page,
                 data: page.data?.map((tip: SpotTip) => 
-                  tip.id === editingTip.id ? { ...tip, ...updatedTip } : tip
+                  tip.id === editingTip.id
+                    ? {
+                        ...tip,
+                        title: values.title,
+                        description: values.description,
+                        type: values.type,
+                        ...(updatedAt ? { updatedAt } : {}),
+                      }
+                    : tip
                 )
               }))
             };
@@ -135,7 +151,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
 
   const handleDeleteTip = async (tipId: string) => {
     try {
-      await deleteTipMutation.mutateAsync({ id: tipId, spotId });
+      await deleteTipMutation.mutateAsync({ id: tipId, _spotId: spotId });
       
       // Get the type of the tip being deleted to target the correct cache
       const deletedTip = tips.find(t => t.id === tipId);
@@ -183,7 +199,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
             spotId: spotId,
             content: selectedTip.description,
             type: selectedTip.type as "TRY" | "AVOID",
-            voteId: selectedTip.voteId ?? undefined,
+            voteId: typeof selectedTip.voteId === "string" ? selectedTip.voteId : undefined,
             user: selectedTip.user ? {
               ...selectedTip.user,
               avatarUrl: selectedTip.user.avatarUrl ?? undefined,
