@@ -13,7 +13,12 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
 import type { SpotCardData } from '@/components/spots/spot-card';
-import type { PaginatedSpotsWithStatsResponseDto } from '@/api/generated/model';
+import type { SpotWithStatsResponseDto, PaginationMetaDto } from '@/api/generated/model';
+
+interface SpotPage {
+    data: SpotWithStatsResponseDto[];
+    pagination: PaginationMetaDto;
+}
 
 function DiscoveryPageContent() {
     const router = useRouter();
@@ -111,7 +116,17 @@ function DiscoveryPageContent() {
         categoryId: selectedCategory,
         search: search,
         sort: sort,
-    });
+    }) as {
+        data:
+            | {
+                  pages: { data: SpotPage; status: number }[];
+              }
+            | undefined;
+        isLoading: boolean;
+        fetchNextPage: () => void;
+        hasNextPage: boolean | undefined;
+        isFetchingNextPage: boolean;
+    };
 
     const hasFetchedRef = useRef(false);
 
@@ -129,12 +144,7 @@ function DiscoveryPageContent() {
     }, [inView]);
 
     const spots: SpotCardData[] = useMemo(() => {
-        console.log('Raw spots data from API:', spotsData);
-        return (
-            spotsData?.pages.flatMap(
-                (page) => (page as { data?: PaginatedSpotsWithStatsResponseDto })?.data?.data || [],
-            ) || []
-        );
+        return spotsData?.pages.flatMap((page) => page.data.data || []) || [];
     }, [spotsData]);
 
     return (
