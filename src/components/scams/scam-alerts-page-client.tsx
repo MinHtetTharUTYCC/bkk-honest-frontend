@@ -133,7 +133,7 @@ export default function ScamAlertsPageClient(
 
   const alerts = (data?.pages.flatMap(
     (page) =>
-      (page as unknown as { data?: { data?: ScamAlertData[] } })?.data?.data ||
+      (page as unknown as { data?: ScamAlertData[] })?.data ||
       [],
   ) || []) as ScamAlertData[];
 

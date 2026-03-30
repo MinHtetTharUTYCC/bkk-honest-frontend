@@ -137,10 +137,10 @@ function MissionsPageContent() {
 
   // React Compiler optimization: removed useMemo, let compiler optimize
   const rawPages = missionsData?.pages as unknown as
-    | Array<{ data?: { data?: MissionItem[] } }>
+    | Array<{ data?: MissionItem[] }>
     | undefined;
   const missions =
-    rawPages?.flatMap((page) => (page.data?.data || []).filter(Boolean)) || [];
+    rawPages?.flatMap((page) => (page.data || []).filter(Boolean)) || [];
 
   const statsTyped = stats as unknown as
     | { completed?: number; total?: number }

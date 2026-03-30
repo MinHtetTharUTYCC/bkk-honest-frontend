@@ -87,8 +87,8 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     const rawImages =
       galleryData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: GalleryImageResponseDto[] } })
-            ?.data?.data || [],
+          (page as unknown as { data?: GalleryImageResponseDto[] })
+            ?.data || [],
       ) || [];
     // Deduplicate items just in case
     return Array.from(new Map(rawImages.map((img) => [img.id, img])).values());

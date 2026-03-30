@@ -31,8 +31,8 @@ export default function UserTipsInfiniteTab({
     return (
       tipsData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: CommunityTipResponseDto[] } })
-            ?.data?.data || [],
+          (page as unknown as { data?: CommunityTipResponseDto[] })
+            ?.data || [],
       ) || []
     );
   }, [tipsData]);

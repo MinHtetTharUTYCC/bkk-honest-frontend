@@ -36,8 +36,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
     const rawReports =
       reportsData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: PriceReportDto[] } })?.data
-            ?.data || [],
+          (page as unknown as { data?: PriceReportDto[] })?.data || [],
       ) || [];
 
     return rawReports;

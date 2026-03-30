@@ -9,7 +9,7 @@ import { getSpotUrl } from "@/lib/slug";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
-import type { LiveVibeDto } from "@/api/generated/model";
+import type { LiveVibeDto, PaginatedLiveVibesDto } from "@/api/generated/model";
 
 type VibeItem = LiveVibeDto;
 
@@ -71,7 +71,7 @@ function VibesPageContent() {
 
   const vibes: VibeItem[] =
     vibesData?.pages.flatMap(
-      (page) => (page as { data?: { data?: VibeItem[] } })?.data?.data || [],
+      (page) => (page as { data?: PaginatedLiveVibesDto })?.data?.data || [],
     ) || [];
 
   // Intersection Observer for Infinite Scroll

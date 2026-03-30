@@ -55,7 +55,7 @@ export default function UserScamsInfiniteTab({
     const rawScams =
       scamsData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: ScamAlert[] } })?.data?.data ||
+          (page as unknown as { data?: ScamAlert[] })?.data ||
           [],
       ) || [];
     return rawScams;
@@ -110,7 +110,7 @@ export default function UserScamsInfiniteTab({
             >
               <div className="flex gap-4">
                 {scam.imageVariants && (
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     <OptimizedImage
                       variants={scam.imageVariants}
                       alt={scam.scamName}

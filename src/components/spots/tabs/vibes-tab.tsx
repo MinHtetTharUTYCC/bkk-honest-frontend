@@ -34,8 +34,7 @@ export default function VibesTab({ spot }: VibesTabProps) {
     const rawVibes =
       vibesData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: LiveVibeDto[] } })?.data
-            ?.data || [],
+          (page as unknown as { data?: LiveVibeDto[] })?.data || [],
       ) || [];
 
     return rawVibes;

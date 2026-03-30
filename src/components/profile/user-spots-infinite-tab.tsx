@@ -53,7 +53,7 @@ export default function UserSpotsInfiniteTab({
     const rawSpots =
       spotsData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: Spot[] } })?.data?.data || [],
+          (page as unknown as { data?: Spot[] })?.data || [],
       ) || [];
     return rawSpots;
   }, [spotsData]);
