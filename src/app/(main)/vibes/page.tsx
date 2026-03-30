@@ -9,14 +9,7 @@ import { getSpotUrl } from '@/lib/slug';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
-import type { LiveVibeDto, PaginationMetaDto } from '@/api/generated/model';
-
-type VibeItem = LiveVibeDto;
-
-interface VibePage {
-    data: LiveVibeDto[];
-    pagination: PaginationMetaDto;
-}
+import { LiveVibeDto, PaginatedLiveVibesDto } from '@/api/generated/model';
 
 function VibesPageContent() {
     const router = useRouter();
@@ -72,7 +65,7 @@ function VibesPageContent() {
     }) as {
         data:
             | {
-                  pages: { data: VibePage; status: number }[];
+                  pages: { data: PaginatedLiveVibesDto; status: number }[];
               }
             | undefined;
         isLoading: boolean;
@@ -81,7 +74,7 @@ function VibesPageContent() {
         isFetchingNextPage: boolean;
     };
 
-    const vibes: VibeItem[] = useMemo(
+    const vibes: LiveVibeDto[] = useMemo(
         () => vibesData?.pages.flatMap((page) => page.data.data || []) || [],
         [vibesData],
     );

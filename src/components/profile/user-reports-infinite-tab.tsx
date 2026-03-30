@@ -1,17 +1,10 @@
 'use client';
 
 import { useRef, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/auth-provider';
 import { useInfiniteUserPriceReports } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Loader2, TrendingDown, TrendingUp } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { toast } from 'sonner';
-import { getSpotUrl } from '@/lib/slug';
-import Link from 'next/link';
-import OptimizedImage from '@/components/ui/OptimizedImage';
+import { Loader2 } from 'lucide-react';
+
 import type { PriceReportDto } from '@/api/generated/model';
 import type { PaginatedPriceReportsDto } from '@/api/generated/model';
 
@@ -19,21 +12,7 @@ interface UserReportsInfiniteTabProps {
     userId: string;
 }
 
-interface PriceReportPage {
-    data: PriceReportDto[];
-    total: number;
-    skip: number;
-    take: number;
-}
-
 export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTabProps) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { user: authUser } = useAuth();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const router = useRouter();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const pathname = usePathname();
-
     const {
         data: reportsData,
         fetchNextPage: fetchNextReports,
@@ -43,7 +22,7 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
     } = useInfiniteUserPriceReports(userId) as {
         data:
             | {
-                  pages: { data: PriceReportPage; status: number }[];
+                  pages: { data: PaginatedPriceReportsDto; status: number }[];
               }
             | undefined;
         fetchNextPage: () => void;

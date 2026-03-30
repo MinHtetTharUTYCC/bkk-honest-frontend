@@ -2,8 +2,6 @@
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 
 import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useQueryClient } from '@tanstack/react-query';
 import SpotCard from '@/components/spots/spot-card';
 import { SearchInput } from '@/components/ui/search-input';
 import { Filter, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
@@ -13,12 +11,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
 import type { SpotCardData } from '@/components/spots/spot-card';
-import type { SpotWithStatsResponseDto, PaginationMetaDto } from '@/api/generated/model';
-
-interface SpotPage {
-    data: SpotWithStatsResponseDto[];
-    pagination: PaginationMetaDto;
-}
+import { PaginatedSpotsWithStatsResponseDto } from '@/api/generated/model';
 
 function DiscoveryPageContent() {
     const router = useRouter();
@@ -119,7 +112,7 @@ function DiscoveryPageContent() {
     }) as {
         data:
             | {
-                  pages: { data: SpotPage; status: number }[];
+                  pages: { data: PaginatedSpotsWithStatsResponseDto; status: number }[];
               }
             | undefined;
         isLoading: boolean;

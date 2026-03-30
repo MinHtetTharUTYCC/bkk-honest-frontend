@@ -10,15 +10,9 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { toast } from 'sonner';
 import type { CommunityTipResponseDto } from '@/api/generated/model';
 import type { PaginatedCommunityTipsResponseDto } from '@/api/generated/model';
-import type { PaginationMetaDto } from '@/api/generated/model/paginationMetaDto';
 
 interface UserTipsInfiniteTabProps {
     userId: string;
-}
-
-interface CommunityTipPage {
-    data: CommunityTipResponseDto[];
-    pagination: PaginationMetaDto;
 }
 
 export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps) {
@@ -33,7 +27,7 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
     } = useInfiniteUserCommunityTips(userId) as {
         data:
             | {
-                  pages: { data: CommunityTipPage; status: number }[];
+                  pages: { data: PaginatedCommunityTipsResponseDto; status: number }[];
               }
             | undefined;
         fetchNextPage: () => void;

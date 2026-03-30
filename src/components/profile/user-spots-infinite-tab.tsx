@@ -6,21 +6,16 @@ import { useInfiniteUserSpots } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { toast } from 'sonner';
 import { getSpotUrl } from '@/lib/slug';
 import Link from 'next/link';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import type { SpotWithStatsResponseDto } from '@/api/generated/model';
-import type { PaginationMetaDto } from '@/api/generated/model/paginationMetaDto';
+import type {
+    PaginatedSpotsWithStatsResponseDto,
+    SpotWithStatsResponseDto,
+} from '@/api/generated/model';
 import type { ImageVariantsDto } from '@/api/generated/model';
 interface UserSpotsInfiniteTabProps {
     userId: string;
-}
-
-interface SpotPage {
-    data: SpotWithStatsResponseDto[];
-    pagination: PaginationMetaDto;
 }
 
 export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabProps) {
@@ -40,7 +35,7 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
     } = useInfiniteUserSpots(userId) as {
         data:
             | {
-                  pages: { data: SpotPage; status: number }[];
+                  pages: { data: PaginatedSpotsWithStatsResponseDto; status: number }[];
               }
             | undefined;
         fetchNextPage: () => void;
