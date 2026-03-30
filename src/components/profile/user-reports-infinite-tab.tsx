@@ -12,28 +12,18 @@ import { toast } from 'sonner';
 import { getSpotUrl } from '@/lib/slug';
 import Link from 'next/link';
 import OptimizedImage from '@/components/ui/OptimizedImage';
+import type { PriceReportDto } from '@/api/generated/model';
 import type { PaginatedPriceReportsDto } from '@/api/generated/model';
 
 interface UserReportsInfiniteTabProps {
     userId: string;
 }
 
-interface PriceReport {
-    id: string;
-    price: number;
-    currency: string;
-    priceSource?: string;
-    description?: string;
-    createdAt: string;
-    spot?: {
-        id: string;
-        name: string;
-        slug: string;
-        city?: { id: string; name: string; slug: string };
-        imageVariants?: { thumbnail: string; display: string };
-        imageWidth?: number;
-        imageHeight?: number;
-    };
+interface PriceReportPage {
+    data: PriceReportDto[];
+    total: number;
+    skip: number;
+    take: number;
 }
 
 export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTabProps) {
@@ -50,15 +40,20 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
         hasNextPage: hasNextReports,
         isFetchingNextPage: isFetchingNextReports,
         isLoading: reportsLoading,
-    } = useInfiniteUserPriceReports(userId);
+    } = useInfiniteUserPriceReports(userId) as {
+        data:
+            | {
+                  pages: { data: PriceReportPage; status: number }[];
+              }
+            | undefined;
+        fetchNextPage: () => void;
+        hasNextPage: boolean | undefined;
+        isFetchingNextPage: boolean;
+        isLoading: boolean;
+    };
 
-    const reports: PriceReport[] = useMemo(() => {
-        const rawReports =
-            reportsData?.pages.flatMap(
-                (page) =>
-                    (page as unknown as { data?: PaginatedPriceReportsDto })?.data?.data || [],
-            ) || [];
-        return rawReports as unknown as PriceReport[];
+    const reports: PriceReportDto[] = useMemo(() => {
+        return reportsData?.pages.flatMap((page) => page.data.data || []) || [];
     }, [reportsData]);
 
     const { ref: observerTarget, inView } = useInView({
@@ -95,55 +90,24 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
             ) : (
                 <div className="space-y-2.5 pb-8">
                     {reports.map((report) => (
-                        <Link
+                        <div
                             key={report.id}
-                            href={
-                                report.spot
-                                    ? getSpotUrl(report.spot.slug, report.spot.city?.slug || '')
-                                    : '#'
-                            }
-                            className="block bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all hover:scale-[1.02]"
+                            className="bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all"
                         >
-                            <div className="flex gap-4">
-                                {report.spot?.imageVariants && (
-                                    <div className="shrink-0">
-                                        <OptimizedImage
-                                            variants={report.spot.imageVariants}
-                                            alt={report.spot.name}
-                                            width={report.spot.imageWidth || 64}
-                                            height={report.spot.imageHeight || 64}
-                                            className="w-16 h-16 rounded-lg object-cover"
-                                        />
-                                    </div>
-                                )}
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="font-bold text-sm text-green-400 line-clamp-1">
-                                        {report.spot?.name || 'Unknown Spot'}
-                                    </h3>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className="text-lg font-bold text-green-400">
-                                            {report.currency} {report.price}
-                                        </span>
-                                        {report.priceSource && (
-                                            <span className="text-[10px] bg-green-400/20 text-green-300 px-2 py-1 rounded">
-                                                {report.priceSource}
-                                            </span>
-                                        )}
-                                    </div>
-                                    {report.description && (
-                                        <p className="text-xs text-white/60 line-clamp-2 mt-1">
-                                            {report.description}
-                                        </p>
-                                    )}
-                                    <div className="flex gap-2 mt-2 text-[10px] text-white/40">
-                                        {report.spot?.city && <span>{report.spot.city.name}</span>}
-                                        <span>
-                                            {new Date(report.createdAt).toLocaleDateString()}
-                                        </span>
-                                    </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-bold text-sm text-green-400 line-clamp-1">
+                                    {report.itemName}
+                                </h3>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-lg font-bold text-green-400">
+                                        ฿ {report.priceThb.toFixed(2)}
+                                    </span>
+                                </div>
+                                <div className="flex gap-2 mt-2 text-[10px] text-white/40">
+                                    <span>{new Date(report.createdAt).toLocaleDateString()}</span>
                                 </div>
                             </div>
-                        </Link>
+                        </div>
                     ))}
 
                     <div ref={observerTarget} className="py-6 flex justify-center">

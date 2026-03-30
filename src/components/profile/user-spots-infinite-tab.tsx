@@ -1,153 +1,156 @@
-"use client";
+'use client';
 
-import { useRef, useEffect, useMemo } from "react";
-import { useAuth } from "@/components/providers/auth-provider";
-import { useInfiniteUserSpots } from "@/hooks/use-api";
-import { useInView } from "react-intersection-observer";
-import { Loader2 } from "lucide-react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRef, useEffect, useMemo } from 'react';
+import { useAuth } from '@/components/providers/auth-provider';
+import { useInfiniteUserSpots } from '@/hooks/use-api';
+import { useInView } from 'react-intersection-observer';
+import { Loader2 } from 'lucide-react';
+import { useRouter, usePathname } from 'next/navigation';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { toast } from "sonner";
-import { getSpotUrl } from "@/lib/slug";
-import Link from "next/link";
-import OptimizedImage from "@/components/ui/OptimizedImage";
-import type { ImageVariantsDto } from "@/api/generated/model";
-
+import { toast } from 'sonner';
+import { getSpotUrl } from '@/lib/slug';
+import Link from 'next/link';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import type { SpotWithStatsResponseDto } from '@/api/generated/model';
+import type { PaginationMetaDto } from '@/api/generated/model/paginationMetaDto';
+import type { ImageVariantsDto } from '@/api/generated/model';
 interface UserSpotsInfiniteTabProps {
-  userId: string;
+    userId: string;
 }
 
-interface Spot {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  createdAt: string;
-  city?: { id: string; name: string; slug: string };
-  imageVariants?: { thumbnail: string; display: string };
-  imageWidth?: number;
-  imageHeight?: number;
-  category?: { id: string; name: string };
-  _count?: { tips: number; priceReports: number; visits: number };
+interface SpotPage {
+    data: SpotWithStatsResponseDto[];
+    pagination: PaginationMetaDto;
 }
 
-export default function UserSpotsInfiniteTab({
-  userId,
-}: UserSpotsInfiniteTabProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user: authUser } = useAuth();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const pathname = usePathname();
+export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabProps) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { user: authUser } = useAuth();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const router = useRouter();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const pathname = usePathname();
 
-  const {
-    data: spotsData,
-    fetchNextPage: fetchNextSpots,
-    hasNextPage: hasNextSpots,
-    isFetchingNextPage: isFetchingNextSpots,
-    isLoading: spotsLoading,
-  } = useInfiniteUserSpots(userId);
+    const {
+        data: spotsData,
+        fetchNextPage: fetchNextSpots,
+        hasNextPage: hasNextSpots,
+        isFetchingNextPage: isFetchingNextSpots,
+        isLoading: spotsLoading,
+    } = useInfiniteUserSpots(userId) as {
+        data:
+            | {
+                  pages: { data: SpotPage; status: number }[];
+              }
+            | undefined;
+        fetchNextPage: () => void;
+        hasNextPage: boolean | undefined;
+        isFetchingNextPage: boolean;
+        isLoading: boolean;
+    };
 
-  const spots: Spot[] = useMemo(() => {
-    const rawSpots =
-      spotsData?.pages.flatMap(
-        (page) =>
-          (page as unknown as { data?: Spot[] })?.data || [],
-      ) || [];
-    return rawSpots;
-  }, [spotsData]);
+    const spots: SpotWithStatsResponseDto[] = useMemo(() => {
+        return spotsData?.pages.flatMap((page) => page.data.data || []) || [];
+    }, [spotsData]);
 
-  const { ref: observerTarget, inView } = useInView({
-    threshold: 0.1,
-    rootMargin: "200px",
-  });
-  const hasFetchedSpotsRef = useRef(false);
+    const { ref: observerTarget, inView } = useInView({
+        threshold: 0.1,
+        rootMargin: '200px',
+    });
+    const hasFetchedSpotsRef = useRef(false);
 
-  useEffect(() => {
-    if (
-      inView &&
-      hasNextSpots &&
-      !isFetchingNextSpots &&
-      !hasFetchedSpotsRef.current
-    ) {
-      hasFetchedSpotsRef.current = true;
-      fetchNextSpots();
-    }
-  }, [inView, hasNextSpots, isFetchingNextSpots, fetchNextSpots]);
+    useEffect(() => {
+        if (inView && hasNextSpots && !isFetchingNextSpots && !hasFetchedSpotsRef.current) {
+            hasFetchedSpotsRef.current = true;
+            fetchNextSpots();
+        }
+    }, [inView, hasNextSpots, isFetchingNextSpots, fetchNextSpots]);
 
-  useEffect(() => {
-    if (!inView) hasFetchedSpotsRef.current = false;
-  }, [inView]);
+    useEffect(() => {
+        if (!inView) hasFetchedSpotsRef.current = false;
+    }, [inView]);
 
-  return (
-    <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white">Visited Spots</h2>
-      </div>
+    return (
+        <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">
+            <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white">Visited Spots</h2>
+            </div>
 
-      {spotsLoading ? (
-        <div className="py-20 flex justify-center">
-          <Loader2 size={24} className="text-cyan-400 animate-spin" />
-        </div>
-      ) : spots.length === 0 ? (
-        <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/20 text-xs font-medium text-white/40">
-          No spots visited yet
-        </div>
-      ) : (
-        <div className="space-y-2.5 pb-8">
-          {spots.map((spot) => (
-            <Link
-              key={spot.id}
-              href={getSpotUrl(spot.city?.slug || "bangkok", spot.slug)}
-              className="block bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all hover:scale-[1.02]"
-            >
-              <div className="flex gap-4">
-                {spot.imageVariants && (
-                  <div className="flex-shrink-0">
-                    <OptimizedImage
-                      variants={spot.imageVariants as ImageVariantsDto}
-                      alt={spot.name}
-                      width={64}
-                      height={64}
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-sm text-cyan-400 line-clamp-2">
-                    {spot.name}
-                  </h3>
-                  <p className="text-xs text-white/60 line-clamp-2 mt-1">
-                    {spot.description}
-                  </p>
-                  <div className="flex gap-2 mt-2 text-[10px] text-white/40">
-                    {spot.city && <span>{spot.city.name}</span>}
-                    {spot.category && (
-                      <span className="text-cyan-400/60">
-                        {spot.category.name}
-                      </span>
-                    )}
-                    <span>{new Date(spot.createdAt).toLocaleDateString()}</span>
-                  </div>
+            {spotsLoading ? (
+                <div className="py-20 flex justify-center">
+                    <Loader2 size={24} className="text-cyan-400 animate-spin" />
                 </div>
-              </div>
-            </Link>
-          ))}
-
-          <div ref={observerTarget} className="py-6 flex justify-center">
-            {isFetchingNextSpots ? (
-              <Loader2 size={20} className="text-cyan-400 animate-spin" />
-            ) : hasNextSpots ? (
-              <div className="h-4 w-4" />
+            ) : spots.length === 0 ? (
+                <div className="py-20 text-center bg-white/5 rounded-2xl border border-dashed border-white/20 text-xs font-medium text-white/40">
+                    No spots visited yet
+                </div>
             ) : (
-              <p className="text-[10px] font-semibold text-white/40 tracking-wide">
-                End of spots
-              </p>
+                <div className="space-y-2.5 pb-8">
+                    {spots.map((spot) => (
+                        <Link
+                            key={spot.id}
+                            href={getSpotUrl(
+                                typeof spot.city === 'object' &&
+                                    spot.city !== null &&
+                                    'slug' in spot.city
+                                    ? String(spot.city.slug)
+                                    : 'bangkok',
+                                spot.slug || spot.id,
+                            )}
+                            className="block bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all hover:scale-[1.02]"
+                        >
+                            <div className="flex gap-4">
+                                {spot.imageVariants && (
+                                    <div className="shrink-0">
+                                        <OptimizedImage
+                                            variants={spot.imageVariants as ImageVariantsDto}
+                                            alt={spot.name}
+                                            width={64}
+                                            height={64}
+                                            className="w-16 h-16 rounded-lg object-cover"
+                                        />
+                                    </div>
+                                )}
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-sm text-cyan-400 line-clamp-2">
+                                        {spot.name}
+                                    </h3>
+                                    <p className="text-xs text-white/60 line-clamp-2 mt-1">
+                                        {spot.address}
+                                    </p>
+                                    <div className="flex gap-2 mt-2 text-[10px] text-white/40">
+                                        {typeof spot.city === 'object' &&
+                                            spot.city !== null &&
+                                            'name' in spot.city && (
+                                                <span>{String(spot.city.name)}</span>
+                                            )}
+                                        {typeof spot.category === 'object' &&
+                                            spot.category !== null &&
+                                            'name' in spot.category && (
+                                                <span className="text-cyan-400/60">
+                                                    {String(spot.category.name)}
+                                                </span>
+                                            )}
+                                        <span>{new Date(spot.createdAt).toLocaleDateString()}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    ))}
+
+                    <div ref={observerTarget} className="py-6 flex justify-center">
+                        {isFetchingNextSpots ? (
+                            <Loader2 size={20} className="text-cyan-400 animate-spin" />
+                        ) : hasNextSpots ? (
+                            <div className="h-4 w-4" />
+                        ) : (
+                            <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                                End of spots
+                            </p>
+                        )}
+                    </div>
+                </div>
             )}
-          </div>
         </div>
-      )}
-    </div>
-  );
+    );
 }
