@@ -7,6 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import { X, MessageSquare, Send, Loader2, User as UserIcon, Edit2, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
+import { CommentResponseDto } from '@/api/generated/model';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -156,12 +157,15 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
           if (!oldData || !oldData.pages) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: unknown) => ({
-              ...page,
-              data: page.data?.map((comment: TipComment) => 
-                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text || updatedComment.content } : comment
-              )
-            }))
+            pages: oldData.pages.map((page: unknown) => {
+              const pageData = page as { data?: unknown[] };
+              return {
+                ...pageData,
+                data: (pageData.data as TipComment[])?.map((comment: TipComment) => 
+                  comment.id === commentId ? { ...comment, text: (updatedComment as CommentResponseDto).text, content: (updatedComment as CommentResponseDto).text } : comment
+                )
+              };
+            })
           };
         }
       );
@@ -186,10 +190,13 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
           if (!oldData || !oldData.pages) return oldData;
           return {
             ...oldData,
-            pages: oldData.pages.map((page: unknown) => ({
-              ...page,
-              data: page.data?.filter((comment: TipComment) => comment.id !== commentToDelete)
-            }))
+            pages: oldData.pages.map((page: unknown) => {
+              const pageData = page as { data?: unknown[] };
+              return {
+                ...pageData,
+                data: (pageData.data as TipComment[])?.filter((comment: TipComment) => comment.id !== commentToDelete)
+              };
+            })
           };
         }
       );
@@ -282,7 +289,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts..."
-                    className="w-full bg-black/20 border border-white/20 rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 resize-none min-h-[44px]"
+                    className="w-full bg-black/20 border border-white/20 rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 resize-none min-h-11"
                   />
                   <button 
                     type="submit"

@@ -1,24 +1,24 @@
 'use client';
 
-import { 
-    useSpotsControllerFindOne, 
-    useSpotsControllerFindBySlug, 
-    useSpotsControllerFindAll, 
-    useSpotsControllerFindNearby, 
-    useSpotsControllerSearch, 
+import {
+    useSpotsControllerFindOne,
+    useSpotsControllerFindBySlug,
+    useSpotsControllerFindAll,
+    useSpotsControllerFindNearby,
+    useSpotsControllerSearch,
     useSpotsControllerFindAllInfinite,
     useSpotsControllerCreate,
     useSpotsControllerUpdate,
-    useSpotsControllerReverseGeocode
+    useSpotsControllerReverseGeocode,
 } from '@/api/generated/spots/spots';
-import type { 
+import type {
     SpotWithStatsResponseDto,
     PaginatedSpotsWithStatsResponseDto,
     CreateSpotDto,
     UpdateSpotDto,
     SpotsControllerFindAllParams,
     SpotsControllerFindNearbyParams,
-    SpotsControllerSearchParams
+    SpotsControllerSearchParams,
 } from '@/api/generated/model';
 import { getNextSkipFromPage } from './base';
 
@@ -29,7 +29,9 @@ export function useSpot(id: string) {
 }
 
 export function useSpotBySlug(citySlug: string, spotSlug: string) {
-    const query = useSpotsControllerFindBySlug(citySlug, spotSlug, { query: { enabled: !!citySlug && !!spotSlug } });
+    const query = useSpotsControllerFindBySlug(citySlug, spotSlug, {
+        query: { enabled: !!citySlug && !!spotSlug },
+    });
     const data = (query.data as PaginatedSpotsWithStatsResponseDto | undefined)?.data || query.data;
     return { ...query, data };
 }
@@ -73,23 +75,29 @@ export function useInfiniteSpots(params?: {
             queryKey: ['spots-infinite', cleanParams],
             getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
             staleTime: 5 * 60 * 1000,
-        }
+        },
     });
 }
 
-export function useNearbySpots(params: SpotsControllerFindNearbyParams & { latitude: number; longitude: number }, enabled = true) {
+export function useNearbySpots(
+    params: SpotsControllerFindNearbyParams & { latitude: number; longitude: number },
+    enabled = true,
+) {
     const query = useSpotsControllerFindNearby(params, {
         query: {
-            queryKey: ['spots-nearby', params],
+            queryKey: ['spots-nearby', params] as const,
             enabled: enabled && !!params.latitude && !!params.longitude,
-            placeholderData: (prev: PaginatedSpotsWithStatsResponseDto | undefined) => prev,
-            staleTime: 60_000
-        }
+            placeholderData: (previousData) => previousData,
+            staleTime: 60_000,
+        },
     });
-    
+
     // Backend returns { data: SpotWithStatsResponseDto[] }
-    const rawData = query.data as PaginatedSpotsWithStatsResponseDto | SpotWithStatsResponseDto[] | undefined;
-    const spots = Array.isArray(rawData) ? rawData : (rawData?.data || []);
+    const rawData = query.data as
+        | PaginatedSpotsWithStatsResponseDto
+        | SpotWithStatsResponseDto[]
+        | undefined;
+    const spots = Array.isArray(rawData) ? rawData : rawData?.data || [];
     return { ...query, data: spots };
 }
 
@@ -101,13 +109,16 @@ export function useSpotSearch(queryStr: string, cityId?: string, limit: number =
     const query = useSpotsControllerSearch(params, {
         query: {
             queryKey: ['spot-search', queryStr, cityId],
-            enabled: queryStr.trim().length >= 1
-        }
+            enabled: queryStr.trim().length >= 1,
+        },
     });
-    
+
     // Handle both direct array and wrapped response
-    const rawData = query.data as PaginatedSpotsWithStatsResponseDto | SpotWithStatsResponseDto[] | undefined;
-    const spots = Array.isArray(rawData) ? rawData : (rawData?.data || []);
+    const rawData = query.data as
+        | PaginatedSpotsWithStatsResponseDto
+        | SpotWithStatsResponseDto[]
+        | undefined;
+    const spots = Array.isArray(rawData) ? rawData : rawData?.data || [];
     return { ...query, data: spots };
 }
 
@@ -116,7 +127,7 @@ export function useCreateSpot() {
     return {
         ...mutation,
         mutate: (payload: CreateSpotDto) => mutation.mutate({ data: payload }),
-        mutateAsync: (payload: CreateSpotDto) => mutation.mutateAsync({ data: payload })
+        mutateAsync: (payload: CreateSpotDto) => mutation.mutateAsync({ data: payload }),
     };
 }
 
@@ -127,7 +138,7 @@ export function useUpdateSpot() {
         mutate: ({ id, payload }: { id: string; payload: UpdateSpotDto }) =>
             mutation.mutate({ id, data: payload }),
         mutateAsync: ({ id, payload }: { id: string; payload: UpdateSpotDto }) =>
-            mutation.mutateAsync({ id, data: payload })
+            mutation.mutateAsync({ id, data: payload }),
     };
 }
 
@@ -135,10 +146,8 @@ export function useReverseGeocode() {
     const mutation = useSpotsControllerReverseGeocode();
     return {
         ...mutation,
-        mutate: ({ latitude, longitude }: { latitude: number; longitude: number }) => 
-            mutation.mutate({ data: { latitude, longitude } }),
-        mutateAsync: ({ latitude, longitude }: { latitude: number; longitude: number }) => 
-            mutation.mutateAsync({ data: { latitude, longitude } })
+        mutate: () => mutation.mutate(),
+        mutateAsync: () => mutation.mutateAsync(),
     };
 }
 

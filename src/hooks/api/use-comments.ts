@@ -11,6 +11,7 @@ import {
     useCommentReactionsControllerToggleReaction, 
     useCommentReactionsControllerGetReactionSummary
 } from '@/api/generated/comment-reactions/comment-reactions';
+import type { CreateCommentDto } from '@/api/generated/model';
 import { getNextSkipFromPage } from './base';
 
 export function useTipComments(tipId: string) {
@@ -42,7 +43,7 @@ export function useCreateComment() {
     return {
         ...mutation,
         mutate: (payload: { scamAlertId?: string; communityTipId?: string; content: string }) => {
-            const apiPayload: Record<string, unknown> = { text: payload.content };
+            const apiPayload: CreateCommentDto = { text: payload.content, targetType: 'COMMUNITY_TIP' };
             if (payload.scamAlertId) {
                 apiPayload.targetType = 'SCAM_ALERT';
                 apiPayload.scamAlertId = payload.scamAlertId;
@@ -53,7 +54,7 @@ export function useCreateComment() {
             return mutation.mutate({ data: apiPayload });
         },
         mutateAsync: async (payload: { scamAlertId?: string; communityTipId?: string; content: string }) => {
-            const apiPayload: Record<string, unknown> = { text: payload.content };
+            const apiPayload: CreateCommentDto = { text: payload.content, targetType: 'COMMUNITY_TIP' };
             if (payload.scamAlertId) {
                 apiPayload.targetType = 'SCAM_ALERT';
                 apiPayload.scamAlertId = payload.scamAlertId;

@@ -21,7 +21,8 @@ export function useMyProfile() {
 }
 
 export function useLeaderboard(take = 5) {
-    const query = useProfilesControllerGetLeaderboard({ take }, { query: { staleTime: 5 * 60 * 1000 } });
+    const params = { take: String(take) };
+    const query = useProfilesControllerGetLeaderboard(params, { query: { staleTime: 5 * 60 * 1000 } });
     return { ...query, data: query.data?.data };
 }
 

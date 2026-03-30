@@ -17,7 +17,8 @@ export type PaginationLike = {
 /**
  * Helper to calculate the next skip value for infinite queries.
  */
-export function getNextSkipFromPage(lastPage: unknown, requireHasMore = false): number | undefined {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function getNextSkipFromPage(lastPage: unknown, _requireHasMore?: boolean): number | undefined {
     if (!lastPage || typeof lastPage !== 'object') {
         return undefined;
     }
@@ -31,10 +32,6 @@ export function getNextSkipFromPage(lastPage: unknown, requireHasMore = false): 
     const total = (source as Record<string, unknown>)?.total;
 
     if (typeof skip !== 'number' || typeof take !== 'number' || typeof total !== 'number') {
-        return undefined;
-    }
-
-    if (requireHasMore && source?.hasMore === false) {
         return undefined;
     }
 

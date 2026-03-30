@@ -7,8 +7,6 @@ import ScamAlertCard from '@/components/scams/scam-alert-card';
 import { AlertTriangle, MapPin, TrendingUp, Clock, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { CategorySelector } from '@/components/ui/category-selector';
@@ -22,14 +20,17 @@ type ScamAlertsPageClientProps = {
     };
 };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ScamAlertsPageClient({ searchParams: initialParams }: ScamAlertsPageClientProps = {}) {
+export default function ScamAlertsPageClient(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    props: ScamAlertsPageClientProps = {}
+) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
     // Derived from URL
-    const selectedCategory = searchParams.get('categoryId') || searchParams.get('category') || undefined;
+    const selectedCategory =
+        searchParams.get('categoryId') || searchParams.get('category') || undefined;
     const [search, setSearch] = useState(searchParams.get('q') || '');
     const [sort, setSort] = useState<'newest' | 'popular'>(
         (searchParams.get('sort') as 'newest' | 'popular') || 'newest',
@@ -58,12 +59,17 @@ export default function ScamAlertsPageClient({ searchParams: initialParams }: Sc
 
     // Sync URL when filters change (except search which is handled by debounce)
     const handleCategoryChange = (catId: string | undefined) => {
-        router.push(pathname + '?' + createQueryString({ 
-            categoryId: catId || null,
-            category: null // Cleanup old param
-        }), {
-            scroll: false,
-        });
+        router.push(
+            pathname +
+                '?' +
+                createQueryString({
+                    categoryId: catId || null,
+                    category: null, // Cleanup old param
+                }),
+            {
+                scroll: false,
+            },
+        );
     };
 
     const handleSortChange = (newSort: 'newest' | 'popular') => {
@@ -86,7 +92,7 @@ export default function ScamAlertsPageClient({ searchParams: initialParams }: Sc
     const { data: categoriesResponse } = useCategories();
     const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
         useInfiniteScamAlerts({
             cityId: selectedCityId,
@@ -110,13 +116,9 @@ export default function ScamAlertsPageClient({ searchParams: initialParams }: Sc
         }
     }, [inView]);
 
-    const alerts = (
-        data?.pages.flatMap(
-            (page) =>
-                (page as unknown as { data?: { data?: ScamAlertData[] } })?.data
-                    ?.data || [],
-        ) || []
-    ) as ScamAlertData[];
+    const alerts = (data?.pages.flatMap(
+        (page) => (page as unknown as { data?: { data?: ScamAlertData[] } })?.data?.data || [],
+    ) || []) as ScamAlertData[];
 
     return (
         <div className="space-y-6 pb-24">
@@ -172,7 +174,7 @@ export default function ScamAlertsPageClient({ searchParams: initialParams }: Sc
             </header>
 
             {/* Category Pills */}
-            <CategorySelector 
+            <CategorySelector
                 categories={categories}
                 selectedId={selectedCategory}
                 onSelect={handleCategoryChange}

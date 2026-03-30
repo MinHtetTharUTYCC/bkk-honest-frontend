@@ -8,16 +8,17 @@
 import type { UserSummaryResponseDto } from './userSummaryResponseDto';
 
 export interface CommunityTipResponseDto {
-  id: string;
-  spotId: string;
-  userId: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  updatedAt?: string;
-  user: UserSummaryResponseDto;
-  commentCount: number;
-  voteCount: number;
-  hasVoted?: boolean;
-  voteId?: string;
+    id: string;
+    spotId: string;
+    userId: string;
+    type: 'TRY' | 'AVOID';
+    title: string;
+    description: string;
+    createdAt: string;
+    updatedAt?: string;
+    user: UserSummaryResponseDto;
+    commentCount: number;
+    voteCount: number;
+    hasVoted?: boolean;
+    voteId?: string;
 }

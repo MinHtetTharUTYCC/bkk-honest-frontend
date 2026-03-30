@@ -6,7 +6,6 @@ import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } fro
 import { useQueryClient, InfiniteData } from '@tanstack/react-query';
 import { Zap, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { SpotTip, SpotData } from '@/types/spot';
 import { TipCard } from '@/components/tips/tip-card';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
@@ -23,14 +22,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { CommunityTipResponseDto, SpotWithStatsResponseDto } from '@/api/generated/model';
 
 interface TipPageData {
-    data?: SpotTip[];
-}
-
-interface TipsTabProps {
-    spot: SpotData;
-    initialTips?: InfiniteData<TipPageData>;
+    data?: CommunityTipResponseDto[];
 }
 
 function getUpdatedAt(value: unknown): string | undefined {
@@ -39,7 +34,7 @@ function getUpdatedAt(value: unknown): string | undefined {
     return typeof updatedAt === 'string' ? updatedAt : undefined;
 }
 
-export default function TipsTab({ spot, initialTips }: TipsTabProps) {
+export default function TipsTab({ spot }: { spot: SpotWithStatsResponseDto }) {
     const { user: authUser } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
@@ -48,8 +43,8 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
     const queryClient = useQueryClient();
 
     const [showTipModal, setShowTipModal] = useState(false);
-    const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
-    const [editingTip, setEditingTip] = useState<SpotTip | null>(null);
+    const [selectedTip, setSelectedTip] = useState<CommunityTipResponseDto | null>(null);
+    const [editingTip, setEditingTip] = useState<CommunityTipResponseDto | null>(null);
 
     // Sync state with URL params
     const tipType = (searchParams.get('type') as 'TRY' | 'AVOID') || 'TRY';
@@ -75,11 +70,13 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
         router.push(`${pathname}?${params.toString()}`, { scroll: false });
     };
 
-    const tips: SpotTip[] = useMemo(() => {
+    const tips: CommunityTipResponseDto[] = useMemo(() => {
         // We can merge initialTips with react-query data, but for simplicity we rely on React Query hydration.
         const rawTips =
             tipsData?.pages.flatMap(
-                (page) => (page as unknown as { data?: { data?: SpotTip[] } })?.data?.data || [],
+                (page) =>
+                    (page as unknown as { data?: { data?: CommunityTipResponseDto[] } })?.data
+                        ?.data || [],
             ) || [];
         return rawTips;
     }, [tipsData]);
@@ -102,7 +99,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
     const deleteTipMutation = useDeleteCommunityTip();
     const { toggleVote: toggleTipVote } = useVoteToggle('tip', spotId);
 
-    const handleEditTip = (tip: SpotTip) => setEditingTip(tip);
+    const handleEditTip = (tip: CommunityTipResponseDto) => setEditingTip(tip);
 
     const handleSaveEditedTip = async (values: TipFormValues) => {
         if (!editingTip) return;
@@ -126,7 +123,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
                             ...oldData,
                             pages: oldData.pages.map((page) => ({
                                 ...page,
-                                data: page.data?.map((tip: SpotTip) =>
+                                data: page.data?.map((tip: CommunityTipResponseDto) =>
                                     tip.id === editingTip.id
                                         ? {
                                               ...tip,
@@ -169,7 +166,9 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
                             ...oldData,
                             pages: oldData.pages.map((page) => ({
                                 ...page,
-                                data: page.data?.filter((tip: SpotTip) => tip.id !== tipId),
+                                data: page.data?.filter(
+                                    (tip: CommunityTipResponseDto) => tip.id !== tipId,
+                                ),
                             })),
                         };
                     },
@@ -208,6 +207,9 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
                         user: selectedTip.user
                             ? {
                                   ...selectedTip.user,
+                                  level: selectedTip.user.level
+                                      ? String(selectedTip.user.level)
+                                      : undefined,
                                   avatarUrl: selectedTip.user.avatarUrl ?? undefined,
                               }
                             : undefined,
@@ -235,7 +237,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
                                 <div className="flex items-center gap-2">
                                     <CheckCircle2 size={14} />
                                     <span>
-                                        To Try ({Number((spot.tipStats as any)?.tryCount ?? 0)})
+                                        To Try ({Number((spot.tipStats as Record<string, number>)?.tryCount ?? 0)})
                                     </span>
                                 </div>
                             </SelectItem>
@@ -246,7 +248,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
                                 <div className="flex items-center gap-2">
                                     <AlertTriangle size={14} />
                                     <span>
-                                        To Avoid ({Number((spot.tipStats as any)?.avoidCount ?? 0)})
+                                        To Avoid ({Number((spot.tipStats as Record<string, number>)?.avoidCount ?? 0)})
                                     </span>
                                 </div>
                             </SelectItem>

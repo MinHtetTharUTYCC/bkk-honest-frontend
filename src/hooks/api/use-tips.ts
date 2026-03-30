@@ -10,7 +10,8 @@ import {
 import { getNextSkipFromPage } from './base';
 
 export function useSpotTips(spotId: string) {
-    const query = useCommunityTipsControllerFindBySpot(spotId, {}, { query: { enabled: !!spotId } });
+    const params = { type: 'TRY' as const, sort: 'popular' as const };
+    const query = useCommunityTipsControllerFindBySpot(spotId, params, { query: { enabled: !!spotId } });
     return { ...query, data: query.data?.data?.data || [] };
 }
 

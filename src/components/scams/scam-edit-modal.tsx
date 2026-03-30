@@ -1,15 +1,10 @@
 'use client';
-import OptimizedImage from "@/components/ui/OptimizedImage";
-import type { ImageVariantsDto } from "@/api/generated/model";
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import type { ImageVariantsDto } from '@/api/generated/model';
 
 import { useState, useRef } from 'react';
-import {
-    X,
-    Loader2,
-    Camera,
-    Save,
-} from 'lucide-react';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { X, Loader2, Camera, Save } from 'lucide-react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from '@/lib/utils';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { toast } from 'sonner';
@@ -91,11 +86,14 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                         <h3 className="font-display text-2xl font-bold text-foreground uppercase tracking-tight">
                             Edit Alert
                         </h3>
-                        <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+                        <button
+                            onClick={onClose}
+                            className="p-2 hover:bg-white/5 rounded-full transition-colors"
+                        >
                             <X size={24} className="text-white/40" />
                         </button>
                     </div>
-                    
+
                     <div className="space-y-6">
                         <div className="flex gap-6">
                             <div
@@ -103,9 +101,19 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                 className="w-32 h-32 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                             >
                                 {editPreview ? (
-                                    <img alt="Scam alert" src={editPreview} className="w-full h-full object-cover group-hover:opacity-50" />
-                                ) : alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
-                                    <OptimizedImage variants={alert.imageVariants as ImageVariantsDto} alt="Scam alert" fill className="w-full h-full object-cover group-hover:opacity-50" />
+                                    <img
+                                        alt="Scam alert"
+                                        src={editPreview}
+                                        className="w-full h-full object-cover group-hover:opacity-50"
+                                    />
+                                ) : alert.imageVariants &&
+                                  Object.values(alert.imageVariants).some((v) => v) ? (
+                                    <OptimizedImage
+                                        variants={alert.imageVariants as ImageVariantsDto}
+                                        alt="Scam alert"
+                                        fill
+                                        className="w-full h-full object-cover group-hover:opacity-50"
+                                    />
                                 ) : (
                                     <Camera size={24} className="text-white/20" />
                                 )}
@@ -159,7 +167,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                         <Textarea
                             value={editDesc}
                             onChange={(e) => setEditDesc(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm font-medium text-foreground/70 focus:outline-none focus:border-amber-400 transition-all min-h-[120px] resize-none"
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-4 text-sm font-medium text-foreground/70 focus:outline-none focus:border-amber-400 transition-all min-h-30 resize-none"
                             placeholder="Scam description"
                         />
 
@@ -182,7 +190,7 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                         <button
                             onClick={handleUpdate}
                             disabled={updateScamMutation.isPending}
-                            className="flex-[2] py-4 bg-amber-400 text-black rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-amber-300 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-400/20"
+                            className="flex-2 py-4 bg-amber-400 text-black rounded-xl text-[12px] font-bold uppercase tracking-widest hover:bg-amber-300 transition-colors flex items-center justify-center gap-2 shadow-lg shadow-amber-400/20"
                         >
                             {updateScamMutation.isPending ? (
                                 <Loader2 size={16} className="animate-spin" />

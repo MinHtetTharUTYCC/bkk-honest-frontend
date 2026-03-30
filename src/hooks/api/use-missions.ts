@@ -14,14 +14,18 @@ import type {
 import { getNextSkipFromPage } from './base';
 
 export function useMissions(status: string = 'all', sort: string = 'newest', userId: string = 'me') {
-    return useChecklistControllerFindAllInfinite({
+    const params = {
         status: status === 'all' ? undefined : status,
         sort: sort,
-        take: 10
-    }, {
+        take: '10'
+    };
+    return useChecklistControllerFindAllInfinite(params, {
         query: {
-            queryKey: ['missions-infinite', userId, status, sort],
-            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
+            queryKey: ['missions-infinite', userId, status, sort] as const,
+            getNextPageParam: (lastPage: unknown) => {
+                const skip = getNextSkipFromPage(lastPage);
+                return skip ? String(skip) : undefined;
+            },
             enabled: userId === 'me'
         }
     });
@@ -86,8 +90,9 @@ export function useAddMission() {
     return {
         ...mutation,
         mutate: (spotId: string) => mutation.mutate({ data: { spotId } }, {
-            onSuccess: (response: ChecklistItemDto) => {
-                const newItem = response;
+            onSuccess: (data) => {
+                const newItem = ((data as unknown) as Record<string, unknown>)?.data as ChecklistItemDto || 
+                               ((data as unknown) as ChecklistItemDto);
                 
                 // 1. Update all variations of the missions list cache
                 queryClient.setQueriesData({ queryKey: ['missions-infinite'] }, (old: unknown) => {

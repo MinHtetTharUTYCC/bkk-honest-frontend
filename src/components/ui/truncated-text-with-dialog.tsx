@@ -47,7 +47,7 @@ export function TruncatedTextWithDialog({
           {icon && <div className="shrink-0 mt-1">{icon}</div>}
           <div
             ref={textRef}
-            className={cn("line-clamp-2 break-words w-full", textClassName)}
+            className={cn("line-clamp-2 wrap-break-word w-full", textClassName)}
           >
             {text}
           </div>
@@ -67,7 +67,7 @@ export function TruncatedTextWithDialog({
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          className="fixed inset-0 z-9999 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200"
           onClick={(e) => {
             e.stopPropagation();
             setIsOpen(false);
@@ -90,7 +90,7 @@ export function TruncatedTextWithDialog({
             )}
             <div className="flex items-start gap-3">
               {icon && <div className="shrink-0 mt-1">{icon}</div>}
-              <p className="text-lg text-white font-medium leading-relaxed break-words">
+              <p className="text-lg text-white font-medium leading-relaxed wrap-break-word">
                 {text}
               </p>
             </div>

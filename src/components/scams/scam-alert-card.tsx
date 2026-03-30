@@ -1,7 +1,7 @@
 'use client';
-import Image from "next/image";
-import OptimizedImage from "@/components/ui/OptimizedImage";
-import type { ImageVariantsDto, ScamAlertResponseDto } from "@/api/generated/model";
+import Image from 'next/image';
+import OptimizedImage from '@/components/ui/OptimizedImage';
+import type { ImageVariantsDto, ScamAlertResponseDto } from '@/api/generated/model';
 
 import {
     AlertTriangle,
@@ -48,7 +48,10 @@ type AlertCount = {
     [key: string]: unknown;
 };
 
-export type ScamAlertData = Omit<ScamAlertResponseDto, 'voteId' | '_count' | 'city' | 'category' | 'user'> & {
+export type ScamAlertData = Omit<
+    ScamAlertResponseDto,
+    'voteId' | '_count' | 'city' | 'category' | 'user'
+> & {
     userId?: string;
     categoryId?: string;
     cityId?: string;
@@ -99,15 +102,17 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 setAlert(initialAlert);
             }
         });
-        return () => { mounted = false; };
+        return () => {
+            mounted = false;
+        };
     }, [initialAlert, isEditing]);
 
     const handleUpdate = async () => {
         try {
-                const result = await updateScamMutation.mutateAsync({
-                    id: alert.id,
-                    payload: {
-                        scamName: editName,
+            const result = await updateScamMutation.mutateAsync({
+                id: alert.id,
+                payload: {
+                    scamName: editName,
                     description: editDesc,
                     preventionTip: editPrev,
                     categoryId: editCategory,
@@ -115,15 +120,15 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     image: editFile || undefined,
                 },
             });
-                if (result?.data) {
-                    setAlert(result.data);
-                }
-                setIsEditing(false);
-            } catch (err) {
-                console.error(err);
-                window.alert('Failed to update scam alert');
+            if (result?.data) {
+                setAlert(result.data);
             }
-        };
+            setIsEditing(false);
+        } catch (err) {
+            console.error(err);
+            window.alert('Failed to update scam alert');
+        }
+    };
 
     // const handleDelete = async () => {
     //     if (confirm('Are you sure you want to delete this scam alert?')) {
@@ -166,9 +171,19 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             className="w-24 h-24 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                         >
                             {editPreview ? (
-                                <img alt="" src={editPreview} className="w-full h-full object-cover group-hover:opacity-50" />
-                            ) : alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
-                                <OptimizedImage variants={alert.imageVariants as ImageVariantsDto} alt="" fill className="w-full h-full object-cover group-hover:opacity-50" />
+                                <img
+                                    alt=""
+                                    src={editPreview}
+                                    className="w-full h-full object-cover group-hover:opacity-50"
+                                />
+                            ) : alert.imageVariants &&
+                              Object.values(alert.imageVariants).some((v) => v) ? (
+                                <OptimizedImage
+                                    variants={alert.imageVariants as ImageVariantsDto}
+                                    alt=""
+                                    fill
+                                    className="w-full h-full object-cover group-hover:opacity-50"
+                                />
                             ) : (
                                 <Camera size={20} className="text-white/20" />
                             )}
@@ -222,7 +237,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     <Textarea
                         value={editDesc}
                         onChange={(e) => setEditDesc(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-foreground/70 focus:outline-none focus:border-amber-400 transition-all min-h-[80px] resize-none"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs font-medium text-foreground/70 focus:outline-none focus:border-amber-400 transition-all min-h-20 resize-none"
                         placeholder="Scam description"
                     />
 
@@ -265,18 +280,30 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 const cityName = typeof alert.city?.name === 'string' ? alert.city.name : '';
                 const citySlugFromDto = typeof alert.city?.slug === 'string' ? alert.city.slug : '';
                 const citySlug =
-                    citySlugFromDto ||
-                    cityName.toLowerCase().replace(/\s+/g, '-') ||
-                    'bangkok';
-                const alertSlug = alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-') || alert.id;
+                    citySlugFromDto || cityName.toLowerCase().replace(/\s+/g, '-') || 'bangkok';
+                const alertSlug =
+                    alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-') || alert.id;
                 router.push(`/scam-alerts/${citySlug}/${alertSlug}`);
             }}
             className="bg-card rounded-2xl border border-white/8 shadow-sm overflow-hidden group hover:shadow-black/30 hover:shadow-md transition-all duration-300 flex flex-row relative cursor-pointer active:scale-[0.99] items-stretch"
         >
             {/* Photo — left */}
-            <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8" style={{ aspectRatio: alert.imageHeight && alert.imageWidth ? `${alert.imageWidth}/${alert.imageHeight}` : undefined }}>
-                {alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
-                    <OptimizedImage variants={alert.imageVariants as ImageVariantsDto} alt={alert.scamName || 'Scam alert'} fill className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+            <div
+                className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8"
+                style={{
+                    aspectRatio:
+                        alert.imageHeight && alert.imageWidth
+                            ? `${alert.imageWidth}/${alert.imageHeight}`
+                            : undefined,
+                }}
+            >
+                {alert.imageVariants && Object.values(alert.imageVariants).some((v) => v) ? (
+                    <OptimizedImage
+                        variants={alert.imageVariants as ImageVariantsDto}
+                        alt={alert.scamName || 'Scam alert'}
+                        fill
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
                         <Camera size={24} strokeWidth={1.5} />
@@ -294,8 +321,8 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 </div>
 
                 {/* User Info Overlay — Bottom of Image */}
-                <div 
-                    className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent group/author cursor-pointer pointer-events-auto"
+                <div
+                    className="absolute bottom-0 left-0 right-0 p-3 bg-linear-to-t from-black/90 via-black/50 to-transparent group/author cursor-pointer pointer-events-auto"
                     onClick={(e) => {
                         e.stopPropagation();
                         const profileId =
@@ -310,7 +337,13 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
                             {typeof alert.user?.avatarUrl === 'string' && alert.user.avatarUrl ? (
-                                <Image src={alert.user.avatarUrl} alt="" fill sizes="40px" className="object-cover" />
+                                <Image
+                                    src={alert.user.avatarUrl}
+                                    alt=""
+                                    fill
+                                    sizes="40px"
+                                    className="object-cover"
+                                />
                             ) : (
                                 <User size={16} />
                             )}
@@ -333,10 +366,10 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
             <div className="flex-1 p-5 flex flex-col gap-3 min-w-0">
                 {/* Meta row - Date first */}
                 <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
-                            <Calendar size={10} />
-                            {alert.createdAt ? new Date(alert.createdAt).toLocaleDateString() : ''}
-                        </span>
+                    <span className="text-[10px] font-medium text-white/30 uppercase tracking-widest flex items-center gap-1">
+                        <Calendar size={10} />
+                        {alert.createdAt ? new Date(alert.createdAt).toLocaleDateString() : ''}
+                    </span>
                 </div>
 
                 {/* Title */}
@@ -361,65 +394,63 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 <div className="mt-auto flex items-center justify-end gap-2 pt-2 border-t border-white/8">
                     {(() => {
                         const currentComments =
-                            typeof alert._count?.comments === 'number'
-                                ? alert._count.comments
-                                : 0;
+                            typeof alert._count?.comments === 'number' ? alert._count.comments : 0;
                         const currentVotes =
-                            typeof alert._count?.votes === 'number'
-                                ? alert._count.votes
-                                : 0;
+                            typeof alert._count?.votes === 'number' ? alert._count.votes : 0;
                         return (
                             <>
-                    <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-full bg-white/5 text-xs transition-all duration-200">
-                        <MessageCircle size={14} className="text-white/70" />
-                        <span className="font-medium text-white/70">
-                            {currentComments}
-                        </span>
-                    </div>
-                    <div onClick={(e) => e.stopPropagation()}>
-                        <LikeButton
-                            count={currentVotes}
-                            isVoted={alert.hasVoted}
-                            onVote={async () => {
-                                if (!authUser) {
-                                    toast.error("Join us to like alerts!", {
-                                        description: "Login to help others stay safe.",
-                                    });
-                                    return;
-                                }
-                                const wasVoted = Boolean(alert.hasVoted);
+                                <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-full bg-white/5 text-xs transition-all duration-200">
+                                    <MessageCircle size={14} className="text-white/70" />
+                                    <span className="font-medium text-white/70">
+                                        {currentComments}
+                                    </span>
+                                </div>
+                                <div onClick={(e) => e.stopPropagation()}>
+                                    <LikeButton
+                                        count={currentVotes}
+                                        isVoted={alert.hasVoted}
+                                        onVote={async () => {
+                                            if (!authUser) {
+                                                toast.error('Join us to like alerts!', {
+                                                    description: 'Login to help others stay safe.',
+                                                });
+                                                return;
+                                            }
+                                            const wasVoted = Boolean(alert.hasVoted);
 
-                                setAlert((prev) => ({
-                                    ...prev,
-                                    hasVoted: !wasVoted,
-                                    voteId: wasVoted ? null : 'temp-id',
-                                    _count: {
-                                        ...prev._count,
-                                        votes: Math.max(
-                                            0,
-                                            (typeof prev._count?.votes === 'number'
-                                                ? prev._count.votes
-                                                : 0) + (wasVoted ? -1 : 1),
-                                        ),
-                                    },
-                                }));
+                                            setAlert((prev) => ({
+                                                ...prev,
+                                                hasVoted: !wasVoted,
+                                                voteId: wasVoted ? null : 'temp-id',
+                                                _count: {
+                                                    ...prev._count,
+                                                    votes: Math.max(
+                                                        0,
+                                                        (typeof prev._count?.votes === 'number'
+                                                            ? prev._count.votes
+                                                            : 0) + (wasVoted ? -1 : 1),
+                                                    ),
+                                                },
+                                            }));
 
-                                const result = await toggleVote(alert);
+                                            const result = await toggleVote(alert);
 
-                                setAlert((prev) => ({
-                                    ...prev,
-                                    hasVoted: Boolean(result.voteId),
-                                    voteId: result.voteId,
-                                }));
-                            }}
-                            isPending={votePending}
-                            disabled={votePending}
-                            variant="default"
-                            size="sm"
-                            className="bg-white/5"
-                            title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
-                        />
-                    </div>
+                                            setAlert((prev) => ({
+                                                ...prev,
+                                                hasVoted: Boolean(result.voteId),
+                                                voteId: result.voteId,
+                                            }));
+                                        }}
+                                        isPending={votePending}
+                                        disabled={votePending}
+                                        variant="default"
+                                        size="sm"
+                                        className="bg-white/5"
+                                        title={
+                                            alert.hasVoted ? 'Unlike this alert' : 'Like this alert'
+                                        }
+                                    />
+                                </div>
                             </>
                         );
                     })()}
