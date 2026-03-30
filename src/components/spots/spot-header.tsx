@@ -24,10 +24,7 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ReportButton from "@/components/report/report-button";
 import { useAuth } from "@/components/providers/auth-provider";
 import { toast } from "sonner";
-import {
-  useAddMission,
-  useDeleteMission,
-} from "@/hooks/use-api";
+import { useAddMission, useDeleteMission } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import SpotStatsGrid from "@/components/spots/spot-stats-grid";
 import { TruncatedTextWithDialog } from "@/components/ui/truncated-text-with-dialog";
