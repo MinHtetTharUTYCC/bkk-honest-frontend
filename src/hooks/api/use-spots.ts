@@ -57,7 +57,7 @@ export function useSpots(params?: {
   const query = useSpotsControllerFindAll(cleanParams, {
     query: { staleTime: 5 * 60 * 1000 },
   });
-  return { ...query, data: query.data?.data?.data || [] };
+  return { ...query, data: query.data?.data || [] };
 }
 
 export function useInfiniteSpots(params?: {

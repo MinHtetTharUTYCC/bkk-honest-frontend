@@ -11,7 +11,7 @@ export function useSpotPriceReports(spotId: string) {
   const query = usePriceReportsControllerFindBySpot(spotId, undefined, {
     query: { enabled: !!spotId },
   });
-  return { ...query, data: query.data?.data?.data || [] };
+  return { ...query, data: query.data?.data || [] };
 }
 
 export function useInfiniteSpotPriceReports(spotId: string) {

@@ -26,7 +26,7 @@ export function useSpotGallery(
     { take: limit, sort: normalizedSort },
     { query: { enabled: !!spotId } },
   );
-  return { ...query, data: query.data?.data?.data || [] };
+  return { ...query, data: query.data?.data || [] };
 }
 
 export function useInfiniteSpotGallery(

@@ -20,6 +20,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
 import type { SpotCardData } from "@/components/spots/spot-card";
+import type { PaginatedSpotsWithStatsResponseDto } from "@/api/generated/model";
 
 function DiscoveryPageContent() {
   const router = useRouter();
@@ -145,7 +146,8 @@ function DiscoveryPageContent() {
     return (
       spotsData?.pages.flatMap(
         (page) =>
-          (page as { data?: { data?: SpotCardData[] } })?.data?.data || [],
+          (page as { data?: PaginatedSpotsWithStatsResponseDto })?.data?.data ||
+          [],
       ) || []
     );
   }, [spotsData]);
