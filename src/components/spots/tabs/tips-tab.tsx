@@ -39,7 +39,6 @@ function getUpdatedAt(value: unknown): string | undefined {
   return typeof updatedAt === "string" ? updatedAt : undefined;
 }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const { user: authUser } = useAuth();
   const router = useRouter();
@@ -52,7 +51,8 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
   const [editingTip, setEditingTip] = useState<SpotTip | null>(null);
 
-  // Sync state with URL params  const tipType = (searchParams.get("type") as "TRY" | "AVOID") || "TRY";
+  // Sync state with URL params
+  const tipType = (searchParams.get("type") as "TRY" | "AVOID") || "TRY";
   const tipSort = (searchParams.get("sort") as "popular" | "newest") || "popular";
 
   const {
