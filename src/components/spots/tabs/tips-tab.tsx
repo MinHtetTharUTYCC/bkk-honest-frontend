@@ -52,8 +52,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
   const [editingTip, setEditingTip] = useState<SpotTip | null>(null);
 
-  // Sync state with URL params
-  const tipType = (searchParams.get("type") as "TRY" | "AVOID") || "TRY";
+  // Sync state with URL params  const tipType = (searchParams.get("type") as "TRY" | "AVOID") || "TRY";
   const tipSort = (searchParams.get("sort") as "popular" | "newest") || "popular";
 
   const {
@@ -153,8 +152,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
     try {
       await deleteTipMutation.mutateAsync({ id: tipId, _spotId: spotId });
       
-      // Get the type of the tip being deleted to target the correct cache
-      const deletedTip = tips.find(t => t.id === tipId);
+      // Get the type of the tip being deleted to target the correct cache      const deletedTip = tips.find(t => t.id === tipId);
       if (!deletedTip) return;
 
       const sortTypes = ['popular', 'newest'];
@@ -312,7 +310,7 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
               {isFetchingNextTips ? (
                 <Loader2 size={20} className="text-amber-400 animate-spin" />
               ) : hasNextTips ? (
-                <div className="h-4 w-4" />
+                null
               ) : (
                 <p className="text-[10px] font-semibold text-white/40 tracking-wide">End of tips</p>
               )}
