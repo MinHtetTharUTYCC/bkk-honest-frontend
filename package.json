@@ -68,6 +68,7 @@
     "jest-environment-jsdom": "^30.3.0",
     "openapi-typescript": "^7.13.0",
     "orval": "^8.6.2",
+    "prettier": "^3.8.1",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",

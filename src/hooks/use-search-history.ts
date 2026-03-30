@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export interface SearchHistoryItem {
   q: string;
   categoryId?: string;
-  sort?: 'newest' | 'popular';
+  sort?: "newest" | "popular";
   timestamp: number;
 }
 
-const STORAGE_KEY = 'search_history';
+const STORAGE_KEY = "search_history";
 const MAX_HISTORY = 15;
 
 export function useSearchHistory() {
@@ -30,7 +30,7 @@ export function useSearchHistory() {
     }
   }, []);
 
-  const addSearch = (item: Omit<SearchHistoryItem, 'timestamp'>) => {
+  const addSearch = (item: Omit<SearchHistoryItem, "timestamp">) => {
     setHistory((prev) => {
       // Remove duplicate if exists
       const filtered = prev.filter(
@@ -39,14 +39,14 @@ export function useSearchHistory() {
             h.q === item.q &&
             h.categoryId === item.categoryId &&
             h.sort === item.sort
-          )
+          ),
       );
 
       // Add new item to the beginning
-      const updated = [
-        { ...item, timestamp: Date.now() },
-        ...filtered,
-      ].slice(0, MAX_HISTORY);
+      const updated = [{ ...item, timestamp: Date.now() }, ...filtered].slice(
+        0,
+        MAX_HISTORY,
+      );
 
       // Persist to localStorage
       localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));

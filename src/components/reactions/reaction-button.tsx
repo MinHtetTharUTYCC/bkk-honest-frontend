@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useCommentReaction } from '@/hooks/use-comment-reactions';
-import { LikeButton } from '@/components/ui/like-button';
-import { useAuth } from '@/components/providers/auth-provider';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { useCommentReaction } from "@/hooks/use-comment-reactions";
+import { LikeButton } from "@/components/ui/like-button";
+import { useAuth } from "@/components/providers/auth-provider";
+import { toast } from "sonner";
 
 interface ReactionButtonProps {
   commentId: string;
@@ -31,12 +31,14 @@ export default function ReactionButton({
         setUserReacted(initialUserReacted);
       }
     });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [initialCount, initialUserReacted]);
 
   const handleVote = async () => {
     if (!user) {
-      toast.error('Please join us first to like this!');
+      toast.error("Please join us first to like this!");
       return;
     }
 
@@ -50,13 +52,13 @@ export default function ReactionButton({
     try {
       // Step 1: Optimistic Update (Immediate UI change)
       setUserReacted(!wasReacted);
-      setCount(prev => wasReacted ? prev - 1 : prev + 1);
+      setCount((prev) => (wasReacted ? prev - 1 : prev + 1));
 
       // Step 2: Fire API call
       await toggleMutation.mutateAsync(commentId);
     } catch (error) {
       // Step 3: Rollback on failure
-      console.error('Reaction failed:', error);
+      console.error("Reaction failed:", error);
       setUserReacted(wasReacted);
       setCount(currentCount);
     }
@@ -70,7 +72,7 @@ export default function ReactionButton({
       isPending={toggleMutation.isPending}
       variant="compact"
       size="md"
-      title={userReacted ? 'Unlike this comment' : 'Like this comment'}
+      title={userReacted ? "Unlike this comment" : "Like this comment"}
     />
   );
 }

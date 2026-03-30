@@ -20,10 +20,13 @@ function VibesPageContent() {
 
   const { selectedCityId, selectedCity } = useCity();
   const { data: categoriesResponse } = useCategories();
-  const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
+  const categories = Array.isArray(categoriesResponse)
+    ? categoriesResponse
+    : [];
 
   // Derived from URL
-  const selectedCategory = searchParams.get("categoryId") || searchParams.get("category") || "";
+  const selectedCategory =
+    searchParams.get("categoryId") || searchParams.get("category") || "";
 
   // Function to update URL params
   const createQueryString = useCallback(

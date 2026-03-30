@@ -41,7 +41,7 @@ export interface Tip {
   spotId: string;
   userId: string;
   title?: string;
-  type?: 'TRY' | 'AVOID';
+  type?: "TRY" | "AVOID";
   content: string;
   category?: string;
   price?: number;
@@ -125,7 +125,7 @@ export interface Comment {
   text?: string;
   userId: string;
   entityId?: string;
-  entityType?: 'TIP' | 'SCAM_ALERT';
+  entityType?: "TIP" | "SCAM_ALERT";
   reactionCount?: number;
   userHasReacted?: boolean;
   createdAt?: string;

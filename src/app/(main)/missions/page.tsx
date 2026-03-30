@@ -105,12 +105,12 @@ function MissionsPageContent() {
       setMissionToDelete(null);
     } catch (error) {
       // Dialog stays open if deletion fails
-      console.error('Failed to delete mission:', error);
+      console.error("Failed to delete mission:", error);
     }
   };
 
   const handleMarkDone = (missionId: string) => {
-    const mission = missions.find(m => m.id === missionId);
+    const mission = missions.find((m) => m.id === missionId);
     if (!mission) return;
     setMissionToUpdate(missionId);
     updateMission.mutate({
@@ -136,10 +136,15 @@ function MissionsPageContent() {
   }, [updateMission.isPending, missionToUpdate]);
 
   // React Compiler optimization: removed useMemo, let compiler optimize
-  const rawPages = missionsData?.pages as unknown as Array<{ data?: { data?: MissionItem[] } }> | undefined;
-  const missions = rawPages?.flatMap((page) => (page.data?.data || []).filter(Boolean)) || [];
+  const rawPages = missionsData?.pages as unknown as
+    | Array<{ data?: { data?: MissionItem[] } }>
+    | undefined;
+  const missions =
+    rawPages?.flatMap((page) => (page.data?.data || []).filter(Boolean)) || [];
 
-  const statsTyped = stats as unknown as { completed?: number; total?: number } | undefined;
+  const statsTyped = stats as unknown as
+    | { completed?: number; total?: number }
+    | undefined;
   const completedCount = statsTyped?.completed || 0;
   const totalCount = statsTyped?.total || 0;
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
@@ -205,8 +210,7 @@ function MissionsPageContent() {
               </span>
             </div>
             <h1 className="font-display text-4xl md:text-6xl font-bold text-white tracking-tight">
-              Bangkok{" "}
-              <span className="text-amber-400">Scout</span>
+              Bangkok <span className="text-amber-400">Scout</span>
             </h1>
             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
               Complete missions and enjoy your stay
@@ -300,7 +304,10 @@ function MissionsPageContent() {
         {missionsLoading ? (
           <div className="space-y-4">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-32 bg-white/5 rounded-2xl animate-pulse" />
+              <div
+                key={i}
+                className="h-32 bg-white/5 rounded-2xl animate-pulse"
+              />
             ))}
           </div>
         ) : missions.length === 0 ? (
@@ -327,103 +334,117 @@ function MissionsPageContent() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4">
-            {missions.filter(m => m && m.id).map((mission: MissionItem) => (
-              <div
-                key={mission.id}
-                className={cn(
-                  "group relative bg-card p-6 md:p-8 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden",
-                  mission.completed
-                    ? "border-emerald-500/20 bg-emerald-400/5"
-                    : "border-white/8 shadow-xl shadow-black/20 hover:border-amber-400/30",
-                )}
-              >
-                <div className="flex items-center gap-6">
-                  <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-white/5">
-                    {mission.spot?.imageVariants && Object.values(mission.spot.imageVariants).some(v => v) ? (
-                      <OptimizedImage variants={mission.spot.imageVariants as ImageVariantsDto} alt={mission.spot?.name || ''} fill className="object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
-                        <ImageIcon size={24} strokeWidth={1.5} />
-                        <span className="text-[8px] font-black uppercase tracking-widest">
-                          No Photo
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-1">
-                    <h4
-                      className={cn(
-                        "font-display text-xl md:text-2xl font-bold tracking-tight leading-none",
-                        mission.completed
-                          ? "text-emerald-400/50 line-through"
-                          : "text-foreground",
+            {missions
+              .filter((m) => m && m.id)
+              .map((mission: MissionItem) => (
+                <div
+                  key={mission.id}
+                  className={cn(
+                    "group relative bg-card p-6 md:p-8 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 overflow-hidden",
+                    mission.completed
+                      ? "border-emerald-500/20 bg-emerald-400/5"
+                      : "border-white/8 shadow-xl shadow-black/20 hover:border-amber-400/30",
+                  )}
+                >
+                  <div className="flex items-center gap-6">
+                    <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-white/5">
+                      {mission.spot?.imageVariants &&
+                      Object.values(mission.spot.imageVariants).some(
+                        (v) => v,
+                      ) ? (
+                        <OptimizedImage
+                          variants={
+                            mission.spot.imageVariants as ImageVariantsDto
+                          }
+                          alt={mission.spot?.name || ""}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
+                          <ImageIcon size={24} strokeWidth={1.5} />
+                          <span className="text-[8px] font-black uppercase tracking-widest">
+                            No Photo
+                          </span>
+                        </div>
                       )}
-                    >
-                      {mission.spot?.name}
-                    </h4>
-                    <p className="text-[10px] font-medium text-white/50 uppercase tracking-widest flex items-center gap-1">
-                      <MapPin size={10} /> {mission.spot?.name} Area
-                    </p>
-                    <div className="pt-2 flex gap-2">
-                      <Link
-                        href={getSpotUrl(
-                          mission.spot?.city?.slug || "bangkok",
-                          mission.spot?.slug || "",
+                    </div>
+                    <div className="space-y-1">
+                      <h4
+                        className={cn(
+                          "font-display text-xl md:text-2xl font-bold tracking-tight leading-none",
+                          mission.completed
+                            ? "text-emerald-400/50 line-through"
+                            : "text-foreground",
                         )}
-                        className="text-[12px] font-bold text-amber-400 uppercase tracking-widest hover:underline flex items-center gap-1"
                       >
-                        View Spot <ArrowRight size={10} />
-                      </Link>
+                        {mission.spot?.name}
+                      </h4>
+                      <p className="text-[10px] font-medium text-white/50 uppercase tracking-widest flex items-center gap-1">
+                        <MapPin size={10} /> {mission.spot?.name} Area
+                      </p>
+                      <div className="pt-2 flex gap-2">
+                        <Link
+                          href={getSpotUrl(
+                            mission.spot?.city?.slug || "bangkok",
+                            mission.spot?.slug || "",
+                          )}
+                          className="text-[12px] font-bold text-amber-400 uppercase tracking-widest hover:underline flex items-center gap-1"
+                        >
+                          View Spot <ArrowRight size={10} />
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => handleMarkDone(mission.id)}
-                    disabled={
-                      updateMission.isPending && missionToUpdate === mission.id
-                    }
-                    className={cn(
-                      "flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg",
-                      mission.completed
-                        ? "bg-emerald-400 text-black shadow-emerald-400/20"
-                        : "bg-white/8 text-white/40 hover:bg-white/15 hover:text-white border border-white/8",
-                    )}
-                  >
-                    {updateMission.isPending &&
-                    missionToUpdate === mission.id ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : mission.completed ? (
-                      <>
-                        <CheckCircle2 size={16} strokeWidth={3} />
-                        Completed
-                      </>
-                    ) : (
-                      <>
-                        <Circle size={16} strokeWidth={3} />
-                        Mark Done
-                      </>
-                    )}
-                  </button>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => handleMarkDone(mission.id)}
+                      disabled={
+                        updateMission.isPending &&
+                        missionToUpdate === mission.id
+                      }
+                      className={cn(
+                        "flex-1 md:flex-none flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-lg",
+                        mission.completed
+                          ? "bg-emerald-400 text-black shadow-emerald-400/20"
+                          : "bg-white/8 text-white/40 hover:bg-white/15 hover:text-white border border-white/8",
+                      )}
+                    >
+                      {updateMission.isPending &&
+                      missionToUpdate === mission.id ? (
+                        <Loader2 size={16} className="animate-spin" />
+                      ) : mission.completed ? (
+                        <>
+                          <CheckCircle2 size={16} strokeWidth={3} />
+                          Completed
+                        </>
+                      ) : (
+                        <>
+                          <Circle size={16} strokeWidth={3} />
+                          Mark Done
+                        </>
+                      )}
+                    </button>
 
-                  <button
-                    onClick={() => setMissionToDelete(mission.id)}
-                    disabled={
-                      deleteMission.isPending && missionToDelete === mission.id
-                    }
-                    className="p-4 rounded-2xl bg-red-400/10 text-red-400 hover:bg-red-500 hover:text-white transition-all border border-red-400/20"
-                  >
-                    {deleteMission.isPending &&
-                    missionToDelete === mission.id ? (
-                      <Loader2 size={18} className="animate-spin" />
-                    ) : (
-                      <Trash2 size={18} />
-                    )}
-                  </button>
+                    <button
+                      onClick={() => setMissionToDelete(mission.id)}
+                      disabled={
+                        deleteMission.isPending &&
+                        missionToDelete === mission.id
+                      }
+                      className="p-4 rounded-2xl bg-red-400/10 text-red-400 hover:bg-red-500 hover:text-white transition-all border border-red-400/20"
+                    >
+                      {deleteMission.isPending &&
+                      missionToDelete === mission.id ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={18} />
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
 
             {/* Infinite Scroll Target */}
             <div ref={observerTarget} className="py-12 flex justify-center">

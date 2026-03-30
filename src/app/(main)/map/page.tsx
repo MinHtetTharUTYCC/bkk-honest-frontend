@@ -5,7 +5,7 @@ import { Suspense, useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Map, { Marker, ViewState, MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useNearbySpots, usePopularArea, useCategories } from "@/hooks/use-api";
 import {
   Loader2,
@@ -118,10 +118,10 @@ function MapPageContent() {
     lng: number;
   } | null>(null);
   const [nearMeActive, setNearMeActive] = useState(false);
-  
+
   // Derived from URL (prevents stale state on navigation)
   const activeCategoryId = urlParams.get("cat") || undefined;
-  
+
   const [selectedSpot, setSelectedSpot] = useState<MapSpot | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
   const { transitVisible, toggleTransitVisible, hasHydrated } =
@@ -134,7 +134,7 @@ function MapPageContent() {
     const timestamp = spot.activityStats?.lastActivity;
     if (!timestamp) return null;
     const date = new Date(timestamp);
-     
+
     const now = Date.now();
     const seconds = Math.floor((now - date.getTime()) / 1000);
     if (seconds < 60) return "Just now";
@@ -147,7 +147,11 @@ function MapPageContent() {
   };
 
   const getPulseTotal = (spot: MapSpot) => {
-    return (spot._count?.priceReports || 0) + (spot._count?.vibeChecks || 0) + (spot._count?.communityTips || 0);
+    return (
+      (spot._count?.priceReports || 0) +
+      (spot._count?.vibeChecks || 0) +
+      (spot._count?.communityTips || 0)
+    );
   };
 
   // Skip geolocation if we already have a position from URL (returning user)
@@ -265,7 +269,7 @@ function MapPageContent() {
           setSearchParams({ latitude, longitude, zoom: 15 });
           syncUrl(latitude, longitude, 15, activeCategoryId);
         },
-          (error) => {
+        (error) => {
           console.warn("Geolocation blocked or failed. Using fallback.", error);
           setViewState((prev) => ({
             ...prev,
@@ -599,18 +603,26 @@ function MapPageContent() {
           >
             <div className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 p-5 rounded-3xl shadow-2xl max-w-md mx-auto">
               {/* Spot Image */}
-              {selectedSpot.imageVariants && Object.values(selectedSpot.imageVariants).some(v => v) && (
-                <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-4 bg-white/5">
-                  <OptimizedImage variants={selectedSpot.imageVariants as ImageVariantsDto} alt={selectedSpot.name} fill className="object-cover" />
-                </div>
-              )}
+              {selectedSpot.imageVariants &&
+                Object.values(selectedSpot.imageVariants).some((v) => v) && (
+                  <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-4 bg-white/5">
+                    <OptimizedImage
+                      variants={selectedSpot.imageVariants as ImageVariantsDto}
+                      alt={selectedSpot.name}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1 pr-4">
                   <div className="flex items-center gap-2 mb-1">
                     <span
                       className={cn(
                         "text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-sm",
-                        getCategoryConfig(selectedSpot.category?.name || "default").colors,
+                        getCategoryConfig(
+                          selectedSpot.category?.name || "default",
+                        ).colors,
                       )}
                     >
                       {selectedSpot.category?.name || "Category"}
@@ -657,7 +669,8 @@ function MapPageContent() {
                     Pulse
                   </span>
                   <span className="text-sm font-bold text-white">
-                    {getPulseLabel(selectedSpot) || `${getPulseTotal(selectedSpot)} Updates`}
+                    {getPulseLabel(selectedSpot) ||
+                      `${getPulseTotal(selectedSpot)} Updates`}
                   </span>
                 </div>
               </div>

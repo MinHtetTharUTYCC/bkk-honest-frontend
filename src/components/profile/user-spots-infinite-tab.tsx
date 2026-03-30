@@ -6,7 +6,7 @@ import { useInfiniteUserSpots } from "@/hooks/use-api";
 import { useInView } from "react-intersection-observer";
 import { Loader2 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { toast } from "sonner";
 import { getSpotUrl } from "@/lib/slug";
 import Link from "next/link";
@@ -31,7 +31,9 @@ interface Spot {
   _count?: { tips: number; priceReports: number; visits: number };
 }
 
-export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabProps) {
+export default function UserSpotsInfiniteTab({
+  userId,
+}: UserSpotsInfiniteTabProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user: authUser } = useAuth();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -56,11 +58,19 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
     return rawSpots;
   }, [spotsData]);
 
-  const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
+  const { ref: observerTarget, inView } = useInView({
+    threshold: 0.1,
+    rootMargin: "200px",
+  });
   const hasFetchedSpotsRef = useRef(false);
 
   useEffect(() => {
-    if (inView && hasNextSpots && !isFetchingNextSpots && !hasFetchedSpotsRef.current) {
+    if (
+      inView &&
+      hasNextSpots &&
+      !isFetchingNextSpots &&
+      !hasFetchedSpotsRef.current
+    ) {
       hasFetchedSpotsRef.current = true;
       fetchNextSpots();
     }
@@ -105,11 +115,19 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-sm text-cyan-400 line-clamp-2">{spot.name}</h3>
-                  <p className="text-xs text-white/60 line-clamp-2 mt-1">{spot.description}</p>
+                  <h3 className="font-bold text-sm text-cyan-400 line-clamp-2">
+                    {spot.name}
+                  </h3>
+                  <p className="text-xs text-white/60 line-clamp-2 mt-1">
+                    {spot.description}
+                  </p>
                   <div className="flex gap-2 mt-2 text-[10px] text-white/40">
                     {spot.city && <span>{spot.city.name}</span>}
-                    {spot.category && <span className="text-cyan-400/60">{spot.category.name}</span>}
+                    {spot.category && (
+                      <span className="text-cyan-400/60">
+                        {spot.category.name}
+                      </span>
+                    )}
                     <span>{new Date(spot.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
@@ -123,7 +141,9 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
             ) : hasNextSpots ? (
               <div className="h-4 w-4" />
             ) : (
-              <p className="text-[10px] font-semibold text-white/40 tracking-wide">End of spots</p>
+              <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                End of spots
+              </p>
             )}
           </div>
         </div>

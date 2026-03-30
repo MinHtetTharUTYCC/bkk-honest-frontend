@@ -1,10 +1,10 @@
-import Image from 'next/image';
-import { useState } from 'react';
-import { ImageIcon } from 'lucide-react';
-import type { ImageVariantsDto } from '@/api/generated/model';
-import { getImageVariant } from '@/lib/image-utils';
+import Image from "next/image";
+import { useState } from "react";
+import { ImageIcon } from "lucide-react";
+import type { ImageVariantsDto } from "@/api/generated/model";
+import { getImageVariant } from "@/lib/image-utils";
 
-type VariantSize = 'thumbnail' | 'display';
+type VariantSize = "thumbnail" | "display";
 
 interface OptimizedImageProps {
   variants: ImageVariantsDto;
@@ -16,19 +16,19 @@ interface OptimizedImageProps {
   width?: number;
   height?: number;
   blurDataURL?: string;
-  objectFit?: 'contain' | 'cover';
+  objectFit?: "contain" | "cover";
   onError?: () => void;
 }
 
 /**
  * OptimizedImage Component
- * 
+ *
  * Wrapper around Next.js Image that automatically selects the appropriate
  * image variant based on the size prop. Uses type-safe orval-generated types.
  * Handles loading states, errors, and provides blur placeholders for progressive loading.
- * 
+ *
  * Supports 2-variant structure: thumbnail (small) and display (full).
- * 
+ *
  * @example
  * // With variants (required)
  * <OptimizedImage
@@ -42,14 +42,14 @@ interface OptimizedImageProps {
 export default function OptimizedImage({
   variants,
   alt,
-  size = 'display',
-  className = '',
+  size = "display",
+  className = "",
   priority = false,
   fill = false,
   width,
   height,
   blurDataURL,
-  objectFit = 'cover',
+  objectFit = "cover",
   onError,
 }: OptimizedImageProps) {
   const [hasError, setHasError] = useState(false);
@@ -62,9 +62,9 @@ export default function OptimizedImage({
 
     const variantUrl = getImageVariant(variants, size);
     if (variantUrl) return variantUrl;
-    
+
     // Fallback to other variant if requested not available
-    const fallbackVariant = size === 'thumbnail' ? 'display' : 'thumbnail';
+    const fallbackVariant = size === "thumbnail" ? "display" : "thumbnail";
     const fallbackVariantUrl = getImageVariant(variants, fallbackVariant);
     if (fallbackVariantUrl) return fallbackVariantUrl;
 
@@ -102,7 +102,7 @@ export default function OptimizedImage({
     onError: handleError,
     style: { objectFit },
     ...(blurDataURL && {
-      placeholder: 'blur' as const,
+      placeholder: "blur" as const,
       blurDataURL,
     }),
   };
@@ -118,7 +118,9 @@ export default function OptimizedImage({
   }
 
   // Default: require dimensions
-  console.warn('OptimizedImage: width and height are required when fill is false');
+  console.warn(
+    "OptimizedImage: width and height are required when fill is false",
+  );
   return (
     <div
       className={`flex items-center justify-center bg-gray-100 ${className}`}
@@ -131,7 +133,11 @@ export default function OptimizedImage({
 /**
  * Skeleton loading component for images
  */
-export function SkeletonImage({ className = '', width, height }: {
+export function SkeletonImage({
+  className = "",
+  width,
+  height,
+}: {
   className?: string;
   width?: number;
   height?: number;
@@ -159,7 +165,11 @@ export function SkeletonAvatar({ size = 40 }: { size?: number }) {
 /**
  * Card with image skeleton
  */
-export function SkeletonCard({ aspectRatio = '4/5' }: { aspectRatio?: string }) {
+export function SkeletonCard({
+  aspectRatio = "4/5",
+}: {
+  aspectRatio?: string;
+}) {
   return (
     <div className="w-full" style={{ aspectRatio }}>
       <div className="w-full h-full animate-pulse bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 rounded-lg" />

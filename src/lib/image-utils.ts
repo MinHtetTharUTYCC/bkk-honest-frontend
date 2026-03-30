@@ -12,17 +12,17 @@ import type {
   ProfileResponseDto,
   SpotWithStatsResponseDto,
   ScamAlertResponseDto,
-} from '@/api/generated/model';
+} from "@/api/generated/model";
 
 /**
  * Variant type - represents available image sizes
  */
-export type VariantType = 'thumbnail' | 'display';
+export type VariantType = "thumbnail" | "display";
 
 /**
  * Screen size context for responsive image selection
  */
-export type ScreenContext = 'mobile' | 'tablet' | 'desktop';
+export type ScreenContext = "mobile" | "tablet" | "desktop";
 
 /**
  * Safe image variant - either variants object or blur placeholder
@@ -53,7 +53,7 @@ export type ImageObjectDto =
  */
 export function getImageVariant(
   variants: ImageVariantsDto | undefined,
-  type: VariantType
+  type: VariantType,
 ): string | undefined {
   if (!variants) return undefined;
   return variants[type];
@@ -72,18 +72,18 @@ export function getImageVariant(
  */
 export function getResponsiveImageVariant(
   variants: ImageVariantsDto | undefined,
-  context: ScreenContext
+  context: ScreenContext,
 ): string | undefined {
   if (!variants) return undefined;
 
   switch (context) {
-    case 'mobile':
-    case 'tablet':
-      return getImageVariant(variants, 'thumbnail');
-    case 'desktop':
-      return getImageVariant(variants, 'display');
+    case "mobile":
+    case "tablet":
+      return getImageVariant(variants, "thumbnail");
+    case "desktop":
+      return getImageVariant(variants, "display");
     default:
-      return getImageVariant(variants, 'display');
+      return getImageVariant(variants, "display");
   }
 }
 
@@ -95,9 +95,9 @@ export function getResponsiveImageVariant(
  * @returns The display variant URL
  */
 export function getGalleryImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'display');
+  return getImageVariant(variants, "display");
 }
 
 /**
@@ -108,9 +108,9 @@ export function getGalleryImageUrl(
  * @returns The thumbnail variant URL
  */
 export function getThumbnailImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'thumbnail');
+  return getImageVariant(variants, "thumbnail");
 }
 
 /**
@@ -121,9 +121,9 @@ export function getThumbnailImageUrl(
  * @returns The thumbnail variant URL
  */
 export function getCardImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'thumbnail');
+  return getImageVariant(variants, "thumbnail");
 }
 
 /**
@@ -134,9 +134,9 @@ export function getCardImageUrl(
  * @returns The display variant URL
  */
 export function getHeroImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'display');
+  return getImageVariant(variants, "display");
 }
 
 /**
@@ -151,7 +151,7 @@ export function getHeroImageUrl(
  * const url = getGalleryImageUrl(image.variants);
  */
 export function selectImageVariantSafely(
-  imageData: ImageObjectDto | undefined
+  imageData: ImageObjectDto | undefined,
 ): SafeImageVariant {
   if (!imageData) {
     return {};
@@ -178,7 +178,7 @@ export function selectImageVariantSafely(
  */
 export function buildImageUrl(
   variants: ImageVariantsDto | undefined,
-  variantType: VariantType = 'display'
+  variantType: VariantType = "display",
 ): string | undefined {
   // Use variant
   const variantUrl = getImageVariant(variants, variantType);
@@ -200,9 +200,9 @@ export function buildImageUrl(
  * }
  */
 export function hasValidVariants(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): variants is ImageVariantsDto {
-  return !!variants && 'thumbnail' in variants && 'display' in variants;
+  return !!variants && "thumbnail" in variants && "display" in variants;
 }
 
 /**
@@ -246,7 +246,9 @@ export function getImageDimensions(imageData: ImageObjectDto | undefined) {
  *   showQualityWarning();
  * }
  */
-export function isImageDegraded(imageData: ImageObjectDto | undefined): boolean {
+export function isImageDegraded(
+  imageData: ImageObjectDto | undefined,
+): boolean {
   return imageData?.isDegraded === true;
 }
 
@@ -266,7 +268,9 @@ type ImageWithQuality = ImageObjectDto & {
   qualityScore?: number;
 };
 
-export function getImageQualityScore(imageData: ImageObjectDto | undefined): number | undefined {
+export function getImageQualityScore(
+  imageData: ImageObjectDto | undefined,
+): number | undefined {
   return (imageData as ImageWithQuality | undefined)?.qualityScore;
 }
 
@@ -295,15 +299,15 @@ export interface RenderableImage {
   qualityScore?: number;
   renderProps: {
     alt: string;
-    loading: 'lazy' | 'eager';
-    decoding: 'auto' | 'sync' | 'async';
+    loading: "lazy" | "eager";
+    decoding: "auto" | "sync" | "async";
   };
 }
 
 export function buildRenderableImage(
   imageData: ImageObjectDto | undefined,
-  screenContext: ScreenContext = 'desktop',
-  altText: string = 'Image'
+  screenContext: ScreenContext = "desktop",
+  altText: string = "Image",
 ): RenderableImage | undefined {
   const { variants, blurPlaceholder } = selectImageVariantSafely(imageData);
   const dimensions = getImageDimensions(imageData);
@@ -314,8 +318,8 @@ export function buildRenderableImage(
 
   const finalUrl =
     getResponsiveImageVariant(variants, screenContext) ||
-    buildImageUrl(variants, 'display') ||
-    'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';
+    buildImageUrl(variants, "display") ||
+    "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E";
 
   return {
     url: finalUrl,
@@ -328,8 +332,8 @@ export function buildRenderableImage(
     qualityScore: getImageQualityScore(imageData),
     renderProps: {
       alt: altText,
-      loading: 'lazy' as const,
-      decoding: 'async' as const,
+      loading: "lazy" as const,
+      decoding: "async" as const,
     },
   };
 }

@@ -5,11 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,8 +22,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   CommunityTipResponseDto,
@@ -38,1411 +34,2581 @@ import type {
   CreateCommunityTipDto,
   MessageResponseDto,
   PaginatedCommunityTipsResponseDto,
-  UpdateCommunityTipDto
-} from '../model';
+  UpdateCommunityTipDto,
+} from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Create a community tip
  */
 export type communityTipsControllerCreateResponse201 = {
-  data: CommunityTipResponseDto
-  status: 201
-}
-
-export type communityTipsControllerCreateResponseSuccess = (communityTipsControllerCreateResponse201) & {
-  headers: Headers;
+  data: CommunityTipResponseDto;
+  status: 201;
 };
-;
 
-export type communityTipsControllerCreateResponse = (communityTipsControllerCreateResponseSuccess)
+export type communityTipsControllerCreateResponseSuccess =
+  communityTipsControllerCreateResponse201 & {
+    headers: Headers;
+  };
+export type communityTipsControllerCreateResponse =
+  communityTipsControllerCreateResponseSuccess;
 
 export const getCommunityTipsControllerCreateUrl = () => {
+  return `/community-tips`;
+};
 
+export const communityTipsControllerCreate = async (
+  createCommunityTipDto: CreateCommunityTipDto,
+  options?: RequestInit,
+): Promise<communityTipsControllerCreateResponse> => {
+  const formData = new FormData();
+  formData.append(`spotId`, createCommunityTipDto.spotId);
+  formData.append(`type`, createCommunityTipDto.type);
+  formData.append(`title`, createCommunityTipDto.title);
+  formData.append(`description`, createCommunityTipDto.description);
 
+  return customInstance<communityTipsControllerCreateResponse>(
+    getCommunityTipsControllerCreateUrl(),
+    {
+      ...options,
+      method: "POST",
+      body: formData,
+    },
+  );
+};
 
+export const getCommunityTipsControllerCreateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof communityTipsControllerCreate>>,
+    TError,
+    { data: CreateCommunityTipDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof communityTipsControllerCreate>>,
+  TError,
+  { data: CreateCommunityTipDto },
+  TContext
+> => {
+  const mutationKey = ["communityTipsControllerCreate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
-  return `/community-tips`
-}
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof communityTipsControllerCreate>>,
+    { data: CreateCommunityTipDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const communityTipsControllerCreate = async (createCommunityTipDto: CreateCommunityTipDto, options?: RequestInit): Promise<communityTipsControllerCreateResponse> => {
-    const formData = new FormData();
-formData.append(`spotId`, createCommunityTipDto.spotId);
-formData.append(`type`, createCommunityTipDto.type);
-formData.append(`title`, createCommunityTipDto.title);
-formData.append(`description`, createCommunityTipDto.description);
+    return communityTipsControllerCreate(data);
+  };
 
-  return customInstance<communityTipsControllerCreateResponse>(getCommunityTipsControllerCreateUrl(),
-  {
-    ...options,
-    method: 'POST'
-    ,
-    body:
-      formData,
-  }
-);}
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CommunityTipsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerCreate>>
+>;
+export type CommunityTipsControllerCreateMutationBody = CreateCommunityTipDto;
+export type CommunityTipsControllerCreateMutationError = unknown;
 
-
-
-export const getCommunityTipsControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerCreate>>, TError,{data: CreateCommunityTipDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerCreate>>, TError,{data: CreateCommunityTipDto}, TContext> => {
-
-const mutationKey = ['communityTipsControllerCreate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof communityTipsControllerCreate>>, {data: CreateCommunityTipDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  communityTipsControllerCreate(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommunityTipsControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerCreate>>>
-    export type CommunityTipsControllerCreateMutationBody = CreateCommunityTipDto
-    export type CommunityTipsControllerCreateMutationError = unknown
-
-    /**
+/**
  * @summary Create a community tip
  */
-export const useCommunityTipsControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerCreate>>, TError,{data: CreateCommunityTipDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof communityTipsControllerCreate>>,
-        TError,
-        {data: CreateCommunityTipDto},
-        TContext
-      > => {
-      return useMutation(getCommunityTipsControllerCreateMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommunityTipsControllerCreate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof communityTipsControllerCreate>>,
+      TError,
+      { data: CreateCommunityTipDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof communityTipsControllerCreate>>,
+  TError,
+  { data: CreateCommunityTipDto },
+  TContext
+> => {
+  return useMutation(
+    getCommunityTipsControllerCreateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get all community tips
  */
 export type communityTipsControllerFindAllResponse200 = {
-  data: PaginatedCommunityTipsResponseDto
-  status: 200
-}
-
-export type communityTipsControllerFindAllResponseSuccess = (communityTipsControllerFindAllResponse200) & {
-  headers: Headers;
+  data: PaginatedCommunityTipsResponseDto;
+  status: 200;
 };
-;
 
-export type communityTipsControllerFindAllResponse = (communityTipsControllerFindAllResponseSuccess)
+export type communityTipsControllerFindAllResponseSuccess =
+  communityTipsControllerFindAllResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerFindAllResponse =
+  communityTipsControllerFindAllResponseSuccess;
 
-export const getCommunityTipsControllerFindAllUrl = (params?: CommunityTipsControllerFindAllParams,) => {
+export const getCommunityTipsControllerFindAllUrl = (
+  params?: CommunityTipsControllerFindAllParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/community-tips?${stringifiedParams}` : `/community-tips`
-}
+  return stringifiedParams.length > 0
+    ? `/community-tips?${stringifiedParams}`
+    : `/community-tips`;
+};
 
-export const communityTipsControllerFindAll = async (params?: CommunityTipsControllerFindAllParams, options?: RequestInit): Promise<communityTipsControllerFindAllResponse> => {
+export const communityTipsControllerFindAll = async (
+  params?: CommunityTipsControllerFindAllParams,
+  options?: RequestInit,
+): Promise<communityTipsControllerFindAllResponse> => {
+  return customInstance<communityTipsControllerFindAllResponse>(
+    getCommunityTipsControllerFindAllUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<communityTipsControllerFindAllResponse>(getCommunityTipsControllerFindAllUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommunityTipsControllerFindAllInfiniteQueryKey = (params?: CommunityTipsControllerFindAllParams,) => {
-    return [
-    'infinite', `/community-tips`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getCommunityTipsControllerFindAllQueryKey = (params?: CommunityTipsControllerFindAllParams,) => {
-    return [
-    `/community-tips`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getCommunityTipsControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, CommunityTipsControllerFindAllParams['skip']>, TError = unknown>(params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData, QueryKey, CommunityTipsControllerFindAllParams['skip']>>, }
+export const getCommunityTipsControllerFindAllInfiniteQueryKey = (
+  params?: CommunityTipsControllerFindAllParams,
 ) => {
+  return ["infinite", `/community-tips`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommunityTipsControllerFindAllQueryKey = (
+  params?: CommunityTipsControllerFindAllParams,
+) => {
+  return [`/community-tips`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindAllInfiniteQueryKey(params);
+export const getCommunityTipsControllerFindAllInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    CommunityTipsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindAllParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindAllInfiniteQueryKey(params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    QueryKey,
+    CommunityTipsControllerFindAllParams["skip"]
+  > = ({ signal, pageParam }) =>
+    communityTipsControllerFindAll(
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, QueryKey, CommunityTipsControllerFindAllParams['skip']> = ({ signal, pageParam }) => communityTipsControllerFindAll({...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    TError,
+    TData,
+    QueryKey,
+    CommunityTipsControllerFindAllParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindAllInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindAll>>
+>;
+export type CommunityTipsControllerFindAllInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData, QueryKey, CommunityTipsControllerFindAllParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindAll>>>
-export type CommunityTipsControllerFindAllInfiniteQueryError = unknown
-
-
-export function useCommunityTipsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, CommunityTipsControllerFindAllParams['skip']>, TError = unknown>(
- params: undefined |  CommunityTipsControllerFindAllParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData, QueryKey, CommunityTipsControllerFindAllParams['skip']>> & Pick<
+export function useCommunityTipsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    CommunityTipsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params: undefined | CommunityTipsControllerFindAllParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindAllParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindAll>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, CommunityTipsControllerFindAllParams['skip']>, TError = unknown>(
- params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData, QueryKey, CommunityTipsControllerFindAllParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    CommunityTipsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindAllParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindAll>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, CommunityTipsControllerFindAllParams['skip']>, TError = unknown>(
- params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData, QueryKey, CommunityTipsControllerFindAllParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    CommunityTipsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindAllParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get all community tips
  */
 
-export function useCommunityTipsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, CommunityTipsControllerFindAllParams['skip']>, TError = unknown>(
- params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData, QueryKey, CommunityTipsControllerFindAllParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    CommunityTipsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindAllParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindAllInfiniteQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindAllInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommunityTipsControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError = unknown>(params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData>>, }
+export const getCommunityTipsControllerFindAllQueryOptions = <
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getCommunityTipsControllerFindAllQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindAllQueryKey(params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>
+  > = ({ signal }) => communityTipsControllerFindAll(params, { signal });
 
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindAllQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindAll>>
+>;
+export type CommunityTipsControllerFindAllQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindAll>>> = ({ signal }) => communityTipsControllerFindAll(params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindAll>>>
-export type CommunityTipsControllerFindAllQueryError = unknown
-
-
-export function useCommunityTipsControllerFindAll<TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError = unknown>(
- params: undefined |  CommunityTipsControllerFindAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerFindAll<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+  TError = unknown,
+>(
+  params: undefined | CommunityTipsControllerFindAllParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindAll<TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError = unknown>(
- params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindAll<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindAll<TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError = unknown>(
- params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindAll<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get all community tips
  */
 
-export function useCommunityTipsControllerFindAll<TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError = unknown>(
- params?: CommunityTipsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindAll<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindAllQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindAllQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get community tips for a specific spot
  */
 export type communityTipsControllerFindBySpotResponse200 = {
-  data: PaginatedCommunityTipsResponseDto
-  status: 200
-}
-
-export type communityTipsControllerFindBySpotResponseSuccess = (communityTipsControllerFindBySpotResponse200) & {
-  headers: Headers;
+  data: PaginatedCommunityTipsResponseDto;
+  status: 200;
 };
-;
 
-export type communityTipsControllerFindBySpotResponse = (communityTipsControllerFindBySpotResponseSuccess)
+export type communityTipsControllerFindBySpotResponseSuccess =
+  communityTipsControllerFindBySpotResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerFindBySpotResponse =
+  communityTipsControllerFindBySpotResponseSuccess;
 
-export const getCommunityTipsControllerFindBySpotUrl = (spotId: string,
-    params: CommunityTipsControllerFindBySpotParams,) => {
+export const getCommunityTipsControllerFindBySpotUrl = (
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/community-tips/spot/${spotId}?${stringifiedParams}` : `/community-tips/spot/${spotId}`
-}
+  return stringifiedParams.length > 0
+    ? `/community-tips/spot/${spotId}?${stringifiedParams}`
+    : `/community-tips/spot/${spotId}`;
+};
 
-export const communityTipsControllerFindBySpot = async (spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: RequestInit): Promise<communityTipsControllerFindBySpotResponse> => {
+export const communityTipsControllerFindBySpot = async (
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: RequestInit,
+): Promise<communityTipsControllerFindBySpotResponse> => {
+  return customInstance<communityTipsControllerFindBySpotResponse>(
+    getCommunityTipsControllerFindBySpotUrl(spotId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<communityTipsControllerFindBySpotResponse>(getCommunityTipsControllerFindBySpotUrl(spotId,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommunityTipsControllerFindBySpotInfiniteQueryKey = (spotId: string,
-    params?: CommunityTipsControllerFindBySpotParams,) => {
-    return [
-    'infinite', `/community-tips/spot/${spotId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getCommunityTipsControllerFindBySpotQueryKey = (spotId: string,
-    params?: CommunityTipsControllerFindBySpotParams,) => {
-    return [
-    `/community-tips/spot/${spotId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getCommunityTipsControllerFindBySpotInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, CommunityTipsControllerFindBySpotParams['skip']>, TError = unknown>(spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData, QueryKey, CommunityTipsControllerFindBySpotParams['skip']>>, }
+export const getCommunityTipsControllerFindBySpotInfiniteQueryKey = (
+  spotId: string,
+  params?: CommunityTipsControllerFindBySpotParams,
 ) => {
+  return [
+    "infinite",
+    `/community-tips/spot/${spotId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommunityTipsControllerFindBySpotQueryKey = (
+  spotId: string,
+  params?: CommunityTipsControllerFindBySpotParams,
+) => {
+  return [
+    `/community-tips/spot/${spotId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindBySpotInfiniteQueryKey(spotId,params);
+export const getCommunityTipsControllerFindBySpotInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  >,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindBySpotParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindBySpotInfiniteQueryKey(spotId, params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    QueryKey,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  > = ({ signal, pageParam }) =>
+    communityTipsControllerFindBySpot(
+      spotId,
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, QueryKey, CommunityTipsControllerFindBySpotParams['skip']> = ({ signal, pageParam }) => communityTipsControllerFindBySpot(spotId,{...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!spotId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    TError,
+    TData,
+    QueryKey,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindBySpotInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>
+>;
+export type CommunityTipsControllerFindBySpotInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, enabled: !!(spotId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData, QueryKey, CommunityTipsControllerFindBySpotParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindBySpotInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>>
-export type CommunityTipsControllerFindBySpotInfiniteQueryError = unknown
-
-
-export function useCommunityTipsControllerFindBySpotInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, CommunityTipsControllerFindBySpotParams['skip']>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData, QueryKey, CommunityTipsControllerFindBySpotParams['skip']>> & Pick<
+export function useCommunityTipsControllerFindBySpotInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  >,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindBySpotParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindBySpotInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, CommunityTipsControllerFindBySpotParams['skip']>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData, QueryKey, CommunityTipsControllerFindBySpotParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindBySpotInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  >,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindBySpotParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindBySpotInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, CommunityTipsControllerFindBySpotParams['skip']>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData, QueryKey, CommunityTipsControllerFindBySpotParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindBySpotInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  >,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindBySpotParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get community tips for a specific spot
  */
 
-export function useCommunityTipsControllerFindBySpotInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, CommunityTipsControllerFindBySpotParams['skip']>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData, QueryKey, CommunityTipsControllerFindBySpotParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindBySpotInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    CommunityTipsControllerFindBySpotParams["skip"]
+  >,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindBySpotParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindBySpotInfiniteQueryOptions(
+    spotId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindBySpotInfiniteQueryOptions(spotId,params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommunityTipsControllerFindBySpotQueryOptions = <TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError = unknown>(spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData>>, }
+export const getCommunityTipsControllerFindBySpotQueryOptions = <
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindBySpotQueryKey(spotId, params);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindBySpotQueryKey(spotId,params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>
+  > = ({ signal }) =>
+    communityTipsControllerFindBySpot(spotId, params, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!spotId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindBySpotQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>
+>;
+export type CommunityTipsControllerFindBySpotQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>> = ({ signal }) => communityTipsControllerFindBySpot(spotId,params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(spotId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindBySpotQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>>
-export type CommunityTipsControllerFindBySpotQueryError = unknown
-
-
-export function useCommunityTipsControllerFindBySpot<TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerFindBySpot<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindBySpot<TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindBySpot<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindBySpot<TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindBySpot<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get community tips for a specific spot
  */
 
-export function useCommunityTipsControllerFindBySpot<TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError = unknown>(
- spotId: string,
-    params: CommunityTipsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindBySpot<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+  TError = unknown,
+>(
+  spotId: string,
+  params: CommunityTipsControllerFindBySpotParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindBySpotQueryOptions(
+    spotId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindBySpotQueryOptions(spotId,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get total number of community tips
  */
 export type communityTipsControllerGetTotalTipsResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type communityTipsControllerGetTotalTipsResponseSuccess = (communityTipsControllerGetTotalTipsResponse200) & {
-  headers: Headers;
+  data: unknown;
+  status: 200;
 };
-;
 
-export type communityTipsControllerGetTotalTipsResponse = (communityTipsControllerGetTotalTipsResponseSuccess)
+export type communityTipsControllerGetTotalTipsResponseSuccess =
+  communityTipsControllerGetTotalTipsResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerGetTotalTipsResponse =
+  communityTipsControllerGetTotalTipsResponseSuccess;
 
 export const getCommunityTipsControllerGetTotalTipsUrl = () => {
+  return `/community-tips/stats/total-tips`;
+};
 
-
-
-
-  return `/community-tips/stats/total-tips`
-}
-
-export const communityTipsControllerGetTotalTips = async ( options?: RequestInit): Promise<communityTipsControllerGetTotalTipsResponse> => {
-
-  return customInstance<communityTipsControllerGetTotalTipsResponse>(getCommunityTipsControllerGetTotalTipsUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+export const communityTipsControllerGetTotalTips = async (
+  options?: RequestInit,
+): Promise<communityTipsControllerGetTotalTipsResponse> => {
+  return customInstance<communityTipsControllerGetTotalTipsResponse>(
+    getCommunityTipsControllerGetTotalTipsUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
 export const getCommunityTipsControllerGetTotalTipsInfiniteQueryKey = () => {
-    return [
-    'infinite', `/community-tips/stats/total-tips`
-    ] as const;
-    }
+  return ["infinite", `/community-tips/stats/total-tips`] as const;
+};
 
 export const getCommunityTipsControllerGetTotalTipsQueryKey = () => {
-    return [
-    `/community-tips/stats/total-tips`
-    ] as const;
-    }
+  return [`/community-tips/stats/total-tips`] as const;
+};
 
+export const getCommunityTipsControllerGetTotalTipsInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  >,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
 
-export const getCommunityTipsControllerGetTotalTipsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>>, }
-) => {
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerGetTotalTipsInfiniteQueryKey();
 
-const {query: queryOptions} = options ?? {};
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  > = ({ signal }) => communityTipsControllerGetTotalTips({ signal });
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerGetTotalTipsInfiniteQueryKey();
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerGetTotalTipsInfiniteQueryResult =
+  NonNullable<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>;
+export type CommunityTipsControllerGetTotalTipsInfiniteQueryError = unknown;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>> = ({ signal }) => communityTipsControllerGetTotalTips({ signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerGetTotalTipsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>
-export type CommunityTipsControllerGetTotalTipsInfiniteQueryError = unknown
-
-
-export function useCommunityTipsControllerGetTotalTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>, TError = unknown>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerGetTotalTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  >,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetTotalTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetTotalTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  >,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetTotalTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetTotalTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  >,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get total number of community tips
  */
 
-export function useCommunityTipsControllerGetTotalTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerGetTotalTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  >,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getCommunityTipsControllerGetTotalTipsInfiniteQueryOptions(options);
 
-  const queryOptions = getCommunityTipsControllerGetTotalTipsInfiniteQueryOptions(options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
+export const getCommunityTipsControllerGetTotalTipsQueryOptions = <
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ?? getCommunityTipsControllerGetTotalTipsQueryKey();
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+  > = ({ signal }) => communityTipsControllerGetTotalTips({ signal });
 
-export const getCommunityTipsControllerGetTotalTipsQueryOptions = <TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>>, }
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions} = options ?? {};
+export type CommunityTipsControllerGetTotalTipsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
+>;
+export type CommunityTipsControllerGetTotalTipsQueryError = unknown;
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerGetTotalTipsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>> = ({ signal }) => communityTipsControllerGetTotalTips({ signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerGetTotalTipsQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>>
-export type CommunityTipsControllerGetTotalTipsQueryError = unknown
-
-
-export function useCommunityTipsControllerGetTotalTips<TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerGetTotalTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetTotalTips<TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetTotalTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetTotalTips<TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetTotalTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get total number of community tips
  */
 
-export function useCommunityTipsControllerGetTotalTips<TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerGetTotalTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetTotalTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getCommunityTipsControllerGetTotalTipsQueryOptions(options);
 
-  const queryOptions = getCommunityTipsControllerGetTotalTipsQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get counts for a community tip
  */
 export type communityTipsControllerGetCountsResponse200 = {
-  data: unknown
-  status: 200
-}
-
-export type communityTipsControllerGetCountsResponseSuccess = (communityTipsControllerGetCountsResponse200) & {
-  headers: Headers;
+  data: unknown;
+  status: 200;
 };
-;
 
-export type communityTipsControllerGetCountsResponse = (communityTipsControllerGetCountsResponseSuccess)
+export type communityTipsControllerGetCountsResponseSuccess =
+  communityTipsControllerGetCountsResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerGetCountsResponse =
+  communityTipsControllerGetCountsResponseSuccess;
 
-export const getCommunityTipsControllerGetCountsUrl = (id: string,) => {
+export const getCommunityTipsControllerGetCountsUrl = (id: string) => {
+  return `/community-tips/${id}/counts`;
+};
 
+export const communityTipsControllerGetCounts = async (
+  id: string,
+  options?: RequestInit,
+): Promise<communityTipsControllerGetCountsResponse> => {
+  return customInstance<communityTipsControllerGetCountsResponse>(
+    getCommunityTipsControllerGetCountsUrl(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-
-
-  return `/community-tips/${id}/counts`
-}
-
-export const communityTipsControllerGetCounts = async (id: string, options?: RequestInit): Promise<communityTipsControllerGetCountsResponse> => {
-
-  return customInstance<communityTipsControllerGetCountsResponse>(getCommunityTipsControllerGetCountsUrl(id),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommunityTipsControllerGetCountsInfiniteQueryKey = (id: string,) => {
-    return [
-    'infinite', `/community-tips/${id}/counts`
-    ] as const;
-    }
-
-export const getCommunityTipsControllerGetCountsQueryKey = (id: string,) => {
-    return [
-    `/community-tips/${id}/counts`
-    ] as const;
-    }
-
-
-export const getCommunityTipsControllerGetCountsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>>, }
+export const getCommunityTipsControllerGetCountsInfiniteQueryKey = (
+  id: string,
 ) => {
+  return ["infinite", `/community-tips/${id}/counts`] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommunityTipsControllerGetCountsQueryKey = (id: string) => {
+  return [`/community-tips/${id}/counts`] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerGetCountsInfiniteQueryKey(id);
+export const getCommunityTipsControllerGetCountsInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  >,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerGetCountsInfiniteQueryKey(id);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  > = ({ signal }) => communityTipsControllerGetCounts(id, { signal });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>> = ({ signal }) => communityTipsControllerGetCounts(id, { signal });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerGetCountsInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+>;
+export type CommunityTipsControllerGetCountsInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerGetCountsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>
-export type CommunityTipsControllerGetCountsInfiniteQueryError = unknown
-
-
-export function useCommunityTipsControllerGetCountsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>, TError = unknown>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerGetCountsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  >,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetCountsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetCountsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  >,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetCountsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetCountsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  >,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get counts for a community tip
  */
 
-export function useCommunityTipsControllerGetCountsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerGetCountsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  >,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerGetCountsInfiniteQueryOptions(
+    id,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerGetCountsInfiniteQueryOptions(id,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommunityTipsControllerGetCountsQueryOptions = <TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>>, }
+export const getCommunityTipsControllerGetCountsQueryOptions = <
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getCommunityTipsControllerGetCountsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerGetCountsQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+  > = ({ signal }) => communityTipsControllerGetCounts(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerGetCountsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
+>;
+export type CommunityTipsControllerGetCountsQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>> = ({ signal }) => communityTipsControllerGetCounts(id, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerGetCountsQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>>
-export type CommunityTipsControllerGetCountsQueryError = unknown
-
-
-export function useCommunityTipsControllerGetCounts<TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError = unknown>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerGetCounts<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetCounts<TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetCounts<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerGetCounts>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerGetCounts<TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerGetCounts<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get counts for a community tip
  */
 
-export function useCommunityTipsControllerGetCounts<TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerGetCounts>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerGetCounts<
+  TData = Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerGetCounts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerGetCountsQueryOptions(
+    id,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerGetCountsQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update own community tip
  */
 export type communityTipsControllerUpdateResponse200 = {
-  data: CommunityTipResponseDto
-  status: 200
-}
-
-export type communityTipsControllerUpdateResponseSuccess = (communityTipsControllerUpdateResponse200) & {
-  headers: Headers;
+  data: CommunityTipResponseDto;
+  status: 200;
 };
-;
 
-export type communityTipsControllerUpdateResponse = (communityTipsControllerUpdateResponseSuccess)
+export type communityTipsControllerUpdateResponseSuccess =
+  communityTipsControllerUpdateResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerUpdateResponse =
+  communityTipsControllerUpdateResponseSuccess;
 
-export const getCommunityTipsControllerUpdateUrl = (id: string,) => {
+export const getCommunityTipsControllerUpdateUrl = (id: string) => {
+  return `/community-tips/${id}`;
+};
 
-
-
-
-  return `/community-tips/${id}`
-}
-
-export const communityTipsControllerUpdate = async (id: string,
-    updateCommunityTipDto: UpdateCommunityTipDto, options?: RequestInit): Promise<communityTipsControllerUpdateResponse> => {
-    const formData = new FormData();
-if(updateCommunityTipDto.title !== undefined) {
- formData.append(`title`, updateCommunityTipDto.title);
- }
-if(updateCommunityTipDto.description !== undefined) {
- formData.append(`description`, updateCommunityTipDto.description);
- }
-
-  return customInstance<communityTipsControllerUpdateResponse>(getCommunityTipsControllerUpdateUrl(id),
-  {
-    ...options,
-    method: 'PATCH'
-    ,
-    body:
-      formData,
+export const communityTipsControllerUpdate = async (
+  id: string,
+  updateCommunityTipDto: UpdateCommunityTipDto,
+  options?: RequestInit,
+): Promise<communityTipsControllerUpdateResponse> => {
+  const formData = new FormData();
+  if (updateCommunityTipDto.title !== undefined) {
+    formData.append(`title`, updateCommunityTipDto.title);
   }
-);}
+  if (updateCommunityTipDto.description !== undefined) {
+    formData.append(`description`, updateCommunityTipDto.description);
+  }
 
+  return customInstance<communityTipsControllerUpdateResponse>(
+    getCommunityTipsControllerUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      body: formData,
+    },
+  );
+};
 
+export const getCommunityTipsControllerUpdateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof communityTipsControllerUpdate>>,
+    TError,
+    { id: string; data: UpdateCommunityTipDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof communityTipsControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateCommunityTipDto },
+  TContext
+> => {
+  const mutationKey = ["communityTipsControllerUpdate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof communityTipsControllerUpdate>>,
+    { id: string; data: UpdateCommunityTipDto }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-export const getCommunityTipsControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerUpdate>>, TError,{id: string;data: UpdateCommunityTipDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerUpdate>>, TError,{id: string;data: UpdateCommunityTipDto}, TContext> => {
+    return communityTipsControllerUpdate(id, data);
+  };
 
-const mutationKey = ['communityTipsControllerUpdate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
+  return { mutationFn, ...mutationOptions };
+};
 
+export type CommunityTipsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerUpdate>>
+>;
+export type CommunityTipsControllerUpdateMutationBody = UpdateCommunityTipDto;
+export type CommunityTipsControllerUpdateMutationError = unknown;
 
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof communityTipsControllerUpdate>>, {id: string;data: UpdateCommunityTipDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  communityTipsControllerUpdate(id,data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommunityTipsControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerUpdate>>>
-    export type CommunityTipsControllerUpdateMutationBody = UpdateCommunityTipDto
-    export type CommunityTipsControllerUpdateMutationError = unknown
-
-    /**
+/**
  * @summary Update own community tip
  */
-export const useCommunityTipsControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerUpdate>>, TError,{id: string;data: UpdateCommunityTipDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof communityTipsControllerUpdate>>,
-        TError,
-        {id: string;data: UpdateCommunityTipDto},
-        TContext
-      > => {
-      return useMutation(getCommunityTipsControllerUpdateMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommunityTipsControllerUpdate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof communityTipsControllerUpdate>>,
+      TError,
+      { id: string; data: UpdateCommunityTipDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof communityTipsControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateCommunityTipDto },
+  TContext
+> => {
+  return useMutation(
+    getCommunityTipsControllerUpdateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete own community tip
  */
 export type communityTipsControllerDeleteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type communityTipsControllerDeleteResponseSuccess = (communityTipsControllerDeleteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type communityTipsControllerDeleteResponse = (communityTipsControllerDeleteResponseSuccess)
+export type communityTipsControllerDeleteResponseSuccess =
+  communityTipsControllerDeleteResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerDeleteResponse =
+  communityTipsControllerDeleteResponseSuccess;
 
-export const getCommunityTipsControllerDeleteUrl = (id: string,) => {
+export const getCommunityTipsControllerDeleteUrl = (id: string) => {
+  return `/community-tips/${id}`;
+};
 
+export const communityTipsControllerDelete = async (
+  id: string,
+  options?: RequestInit,
+): Promise<communityTipsControllerDeleteResponse> => {
+  return customInstance<communityTipsControllerDeleteResponse>(
+    getCommunityTipsControllerDeleteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getCommunityTipsControllerDeleteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof communityTipsControllerDelete>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof communityTipsControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["communityTipsControllerDelete"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof communityTipsControllerDelete>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/community-tips/${id}`
-}
+    return communityTipsControllerDelete(id);
+  };
 
-export const communityTipsControllerDelete = async (id: string, options?: RequestInit): Promise<communityTipsControllerDeleteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<communityTipsControllerDeleteResponse>(getCommunityTipsControllerDeleteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type CommunityTipsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerDelete>>
+>;
 
+export type CommunityTipsControllerDeleteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getCommunityTipsControllerDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerDelete>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerDelete>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['communityTipsControllerDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof communityTipsControllerDelete>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  communityTipsControllerDelete(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommunityTipsControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerDelete>>>
-
-    export type CommunityTipsControllerDeleteMutationError = unknown
-
-    /**
+/**
  * @summary Delete own community tip
  */
-export const useCommunityTipsControllerDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof communityTipsControllerDelete>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof communityTipsControllerDelete>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getCommunityTipsControllerDeleteMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommunityTipsControllerDelete = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof communityTipsControllerDelete>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof communityTipsControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getCommunityTipsControllerDeleteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get community tips by user
  */
 export type communityTipsControllerFindByUserResponse200 = {
-  data: PaginatedCommunityTipsResponseDto
-  status: 200
-}
-
-export type communityTipsControllerFindByUserResponseSuccess = (communityTipsControllerFindByUserResponse200) & {
-  headers: Headers;
+  data: PaginatedCommunityTipsResponseDto;
+  status: 200;
 };
-;
 
-export type communityTipsControllerFindByUserResponse = (communityTipsControllerFindByUserResponseSuccess)
+export type communityTipsControllerFindByUserResponseSuccess =
+  communityTipsControllerFindByUserResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerFindByUserResponse =
+  communityTipsControllerFindByUserResponseSuccess;
 
-export const getCommunityTipsControllerFindByUserUrl = (userId: string,
-    params?: CommunityTipsControllerFindByUserParams,) => {
+export const getCommunityTipsControllerFindByUserUrl = (
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/community-tips/user/${userId}?${stringifiedParams}` : `/community-tips/user/${userId}`
-}
+  return stringifiedParams.length > 0
+    ? `/community-tips/user/${userId}?${stringifiedParams}`
+    : `/community-tips/user/${userId}`;
+};
 
-export const communityTipsControllerFindByUser = async (userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: RequestInit): Promise<communityTipsControllerFindByUserResponse> => {
+export const communityTipsControllerFindByUser = async (
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: RequestInit,
+): Promise<communityTipsControllerFindByUserResponse> => {
+  return customInstance<communityTipsControllerFindByUserResponse>(
+    getCommunityTipsControllerFindByUserUrl(userId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<communityTipsControllerFindByUserResponse>(getCommunityTipsControllerFindByUserUrl(userId,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommunityTipsControllerFindByUserInfiniteQueryKey = (userId: string,
-    params?: CommunityTipsControllerFindByUserParams,) => {
-    return [
-    'infinite', `/community-tips/user/${userId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getCommunityTipsControllerFindByUserQueryKey = (userId: string,
-    params?: CommunityTipsControllerFindByUserParams,) => {
-    return [
-    `/community-tips/user/${userId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getCommunityTipsControllerFindByUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, CommunityTipsControllerFindByUserParams['skip']>, TError = unknown>(userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData, QueryKey, CommunityTipsControllerFindByUserParams['skip']>>, }
+export const getCommunityTipsControllerFindByUserInfiniteQueryKey = (
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
 ) => {
+  return [
+    "infinite",
+    `/community-tips/user/${userId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommunityTipsControllerFindByUserQueryKey = (
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+) => {
+  return [
+    `/community-tips/user/${userId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindByUserInfiniteQueryKey(userId,params);
+export const getCommunityTipsControllerFindByUserInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    CommunityTipsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindByUserParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindByUserInfiniteQueryKey(userId, params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    QueryKey,
+    CommunityTipsControllerFindByUserParams["skip"]
+  > = ({ signal, pageParam }) =>
+    communityTipsControllerFindByUser(
+      userId,
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, QueryKey, CommunityTipsControllerFindByUserParams['skip']> = ({ signal, pageParam }) => communityTipsControllerFindByUser(userId,{...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    TError,
+    TData,
+    QueryKey,
+    CommunityTipsControllerFindByUserParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindByUserInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindByUser>>
+>;
+export type CommunityTipsControllerFindByUserInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData, QueryKey, CommunityTipsControllerFindByUserParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindByUserInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>>
-export type CommunityTipsControllerFindByUserInfiniteQueryError = unknown
-
-
-export function useCommunityTipsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, CommunityTipsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params: undefined |  CommunityTipsControllerFindByUserParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData, QueryKey, CommunityTipsControllerFindByUserParams['skip']>> & Pick<
+export function useCommunityTipsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    CommunityTipsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params: undefined | CommunityTipsControllerFindByUserParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindByUserParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, CommunityTipsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData, QueryKey, CommunityTipsControllerFindByUserParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    CommunityTipsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindByUserParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, CommunityTipsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData, QueryKey, CommunityTipsControllerFindByUserParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    CommunityTipsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindByUserParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get community tips by user
  */
 
-export function useCommunityTipsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, CommunityTipsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData, QueryKey, CommunityTipsControllerFindByUserParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    CommunityTipsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindByUserParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindByUserInfiniteQueryOptions(
+    userId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindByUserInfiniteQueryOptions(userId,params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommunityTipsControllerFindByUserQueryOptions = <TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError = unknown>(userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData>>, }
+export const getCommunityTipsControllerFindByUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindByUserQueryKey(userId, params);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindByUserQueryKey(userId,params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>
+  > = ({ signal }) =>
+    communityTipsControllerFindByUser(userId, params, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindByUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindByUser>>
+>;
+export type CommunityTipsControllerFindByUserQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>> = ({ signal }) => communityTipsControllerFindByUser(userId,params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindByUserQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>>
-export type CommunityTipsControllerFindByUserQueryError = unknown
-
-
-export function useCommunityTipsControllerFindByUser<TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params: undefined |  CommunityTipsControllerFindByUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params: undefined | CommunityTipsControllerFindByUserParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindByUser>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindByUser<TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindByUser>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindByUser<TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get community tips by user
  */
 
-export function useCommunityTipsControllerFindByUser<TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params?: CommunityTipsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindByUser>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: CommunityTipsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindByUserQueryOptions(
+    userId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindByUserQueryOptions(userId,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get current user community tips
  */
 export type communityTipsControllerFindMyTipsResponse200 = {
-  data: PaginatedCommunityTipsResponseDto
-  status: 200
-}
-
-export type communityTipsControllerFindMyTipsResponseSuccess = (communityTipsControllerFindMyTipsResponse200) & {
-  headers: Headers;
+  data: PaginatedCommunityTipsResponseDto;
+  status: 200;
 };
-;
 
-export type communityTipsControllerFindMyTipsResponse = (communityTipsControllerFindMyTipsResponseSuccess)
+export type communityTipsControllerFindMyTipsResponseSuccess =
+  communityTipsControllerFindMyTipsResponse200 & {
+    headers: Headers;
+  };
+export type communityTipsControllerFindMyTipsResponse =
+  communityTipsControllerFindMyTipsResponseSuccess;
 
-export const getCommunityTipsControllerFindMyTipsUrl = (params?: CommunityTipsControllerFindMyTipsParams,) => {
+export const getCommunityTipsControllerFindMyTipsUrl = (
+  params?: CommunityTipsControllerFindMyTipsParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/community-tips/mine?${stringifiedParams}` : `/community-tips/mine`
-}
+  return stringifiedParams.length > 0
+    ? `/community-tips/mine?${stringifiedParams}`
+    : `/community-tips/mine`;
+};
 
-export const communityTipsControllerFindMyTips = async (params?: CommunityTipsControllerFindMyTipsParams, options?: RequestInit): Promise<communityTipsControllerFindMyTipsResponse> => {
+export const communityTipsControllerFindMyTips = async (
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: RequestInit,
+): Promise<communityTipsControllerFindMyTipsResponse> => {
+  return customInstance<communityTipsControllerFindMyTipsResponse>(
+    getCommunityTipsControllerFindMyTipsUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<communityTipsControllerFindMyTipsResponse>(getCommunityTipsControllerFindMyTipsUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommunityTipsControllerFindMyTipsInfiniteQueryKey = (params?: CommunityTipsControllerFindMyTipsParams,) => {
-    return [
-    'infinite', `/community-tips/mine`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getCommunityTipsControllerFindMyTipsQueryKey = (params?: CommunityTipsControllerFindMyTipsParams,) => {
-    return [
-    `/community-tips/mine`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getCommunityTipsControllerFindMyTipsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, CommunityTipsControllerFindMyTipsParams['skip']>, TError = unknown>(params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']>>, }
+export const getCommunityTipsControllerFindMyTipsInfiniteQueryKey = (
+  params?: CommunityTipsControllerFindMyTipsParams,
 ) => {
+  return [
+    "infinite",
+    `/community-tips/mine`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommunityTipsControllerFindMyTipsQueryKey = (
+  params?: CommunityTipsControllerFindMyTipsParams,
+) => {
+  return [`/community-tips/mine`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindMyTipsInfiniteQueryKey(params);
+export const getCommunityTipsControllerFindMyTipsInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindMyTipsParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindMyTipsInfiniteQueryKey(params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    QueryKey,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  > = ({ signal, pageParam }) =>
+    communityTipsControllerFindMyTips(
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']> = ({ signal, pageParam }) => communityTipsControllerFindMyTips({...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    TError,
+    TData,
+    QueryKey,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindMyTipsInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>
+>;
+export type CommunityTipsControllerFindMyTipsInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindMyTipsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>>
-export type CommunityTipsControllerFindMyTipsInfiniteQueryError = unknown
-
-
-export function useCommunityTipsControllerFindMyTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, CommunityTipsControllerFindMyTipsParams['skip']>, TError = unknown>(
- params: undefined |  CommunityTipsControllerFindMyTipsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']>> & Pick<
+export function useCommunityTipsControllerFindMyTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params: undefined | CommunityTipsControllerFindMyTipsParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindMyTipsParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindMyTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, CommunityTipsControllerFindMyTipsParams['skip']>, TError = unknown>(
- params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindMyTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindMyTipsParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
           TError,
-          Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindMyTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, CommunityTipsControllerFindMyTipsParams['skip']>, TError = unknown>(
- params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindMyTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindMyTipsParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get current user community tips
  */
 
-export function useCommunityTipsControllerFindMyTipsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, CommunityTipsControllerFindMyTipsParams['skip']>, TError = unknown>(
- params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData, QueryKey, CommunityTipsControllerFindMyTipsParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindMyTipsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    CommunityTipsControllerFindMyTipsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData,
+        QueryKey,
+        CommunityTipsControllerFindMyTipsParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindMyTipsInfiniteQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindMyTipsInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommunityTipsControllerFindMyTipsQueryOptions = <TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError = unknown>(params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData>>, }
+export const getCommunityTipsControllerFindMyTipsQueryOptions = <
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommunityTipsControllerFindMyTipsQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommunityTipsControllerFindMyTipsQueryKey(params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>
+  > = ({ signal }) => communityTipsControllerFindMyTips(params, { signal });
 
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommunityTipsControllerFindMyTipsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>
+>;
+export type CommunityTipsControllerFindMyTipsQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>> = ({ signal }) => communityTipsControllerFindMyTips(params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommunityTipsControllerFindMyTipsQueryResult = NonNullable<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>>
-export type CommunityTipsControllerFindMyTipsQueryError = unknown
-
-
-export function useCommunityTipsControllerFindMyTips<TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError = unknown>(
- params: undefined |  CommunityTipsControllerFindMyTipsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData>> & Pick<
+export function useCommunityTipsControllerFindMyTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+  TError = unknown,
+>(
+  params: undefined | CommunityTipsControllerFindMyTipsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindMyTips<TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError = unknown>(
- params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindMyTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
           TError,
           Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommunityTipsControllerFindMyTips<TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError = unknown>(
- params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommunityTipsControllerFindMyTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get current user community tips
  */
 
-export function useCommunityTipsControllerFindMyTips<TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError = unknown>(
- params?: CommunityTipsControllerFindMyTipsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommunityTipsControllerFindMyTips<
+  TData = Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+  TError = unknown,
+>(
+  params?: CommunityTipsControllerFindMyTipsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof communityTipsControllerFindMyTips>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommunityTipsControllerFindMyTipsQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getCommunityTipsControllerFindMyTipsQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

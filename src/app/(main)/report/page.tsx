@@ -30,8 +30,6 @@ import { useAuth } from "@/components/providers/auth-provider";
 import LoginRequired from "@/components/auth/login-required";
 import { Textarea } from "@/components/ui/textarea";
 
-
-
 export default function ReportPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -88,8 +86,25 @@ export default function ReportPage() {
       setSubmitted(true);
     } catch (err: unknown) {
       console.error("Failed to create spot:", err);
-      const message = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) ? err.response.data.message : "Failed to create spot";
-      setError(Array.isArray(message) ? message[0] : typeof message === 'string' ? message : "Failed to create spot");
+      const message =
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+          ? err.response.data.message
+          : "Failed to create spot";
+      setError(
+        Array.isArray(message)
+          ? message[0]
+          : typeof message === "string"
+            ? message
+            : "Failed to create spot",
+      );
     }
   };
 
@@ -112,8 +127,25 @@ export default function ReportPage() {
       });
       setSubmitted(true);
     } catch (err: unknown) {
-      const message = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) ? err.response.data.message : "Failed to publish price report";
-      setError(Array.isArray(message) ? message[0] : typeof message === 'string' ? message : "Failed to publish price report");
+      const message =
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+          ? err.response.data.message
+          : "Failed to publish price report";
+      setError(
+        Array.isArray(message)
+          ? message[0]
+          : typeof message === "string"
+            ? message
+            : "Failed to publish price report",
+      );
     }
   };
 
@@ -148,8 +180,25 @@ export default function ReportPage() {
       });
       setSubmitted(true);
     } catch (err: unknown) {
-      const message = (err && typeof err === 'object' && 'response' in err && err.response && typeof err.response === 'object' && 'data' in err.response && err.response.data && typeof err.response.data === 'object' && 'message' in err.response.data) ? err.response.data.message : "Failed to publish scam alert";
-      setError(Array.isArray(message) ? message[0] : typeof message === 'string' ? message : "Failed to publish scam alert");
+      const message =
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+          ? err.response.data.message
+          : "Failed to publish scam alert";
+      setError(
+        Array.isArray(message)
+          ? message[0]
+          : typeof message === "string"
+            ? message
+            : "Failed to publish scam alert",
+      );
     }
   };
 

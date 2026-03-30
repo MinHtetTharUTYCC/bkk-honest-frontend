@@ -4,10 +4,10 @@ import { useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteUserPriceReports } from "@/hooks/use-api";
 import { useInView } from "react-intersection-observer";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { toast } from "sonner";
 import { getSpotUrl } from "@/lib/slug";
 import Link from "next/link";
@@ -35,7 +35,9 @@ interface PriceReport {
   };
 }
 
-export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTabProps) {
+export default function UserReportsInfiniteTab({
+  userId,
+}: UserReportsInfiniteTabProps) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user: authUser } = useAuth();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -55,17 +57,25 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
     const rawReports =
       reportsData?.pages.flatMap(
         (page) =>
-          (page as unknown as { data?: { data?: PriceReport[] } })?.data?.data ||
-          [],
+          (page as unknown as { data?: { data?: PriceReport[] } })?.data
+            ?.data || [],
       ) || [];
     return rawReports;
   }, [reportsData]);
 
-  const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
+  const { ref: observerTarget, inView } = useInView({
+    threshold: 0.1,
+    rootMargin: "200px",
+  });
   const hasFetchedReportsRef = useRef(false);
 
   useEffect(() => {
-    if (inView && hasNextReports && !isFetchingNextReports && !hasFetchedReportsRef.current) {
+    if (
+      inView &&
+      hasNextReports &&
+      !isFetchingNextReports &&
+      !hasFetchedReportsRef.current
+    ) {
       hasFetchedReportsRef.current = true;
       fetchNextReports();
     }
@@ -94,7 +104,11 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
           {reports.map((report) => (
             <Link
               key={report.id}
-              href={report.spot ? getSpotUrl(report.spot.slug, report.spot.city?.slug || "") : "#"}
+              href={
+                report.spot
+                  ? getSpotUrl(report.spot.slug, report.spot.city?.slug || "")
+                  : "#"
+              }
               className="block bg-white/5 hover:bg-white/10 border border-border rounded-xl p-4 transition-all hover:scale-[1.02]"
             >
               <div className="flex gap-4">
@@ -124,11 +138,15 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
                     )}
                   </div>
                   {report.description && (
-                    <p className="text-xs text-white/60 line-clamp-2 mt-1">{report.description}</p>
+                    <p className="text-xs text-white/60 line-clamp-2 mt-1">
+                      {report.description}
+                    </p>
                   )}
                   <div className="flex gap-2 mt-2 text-[10px] text-white/40">
                     {report.spot?.city && <span>{report.spot.city.name}</span>}
-                    <span>{new Date(report.createdAt).toLocaleDateString()}</span>
+                    <span>
+                      {new Date(report.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -141,7 +159,9 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
             ) : hasNextReports ? (
               <div className="h-4 w-4" />
             ) : (
-              <p className="text-[10px] font-semibold text-white/40 tracking-wide">End of price reports</p>
+              <p className="text-[10px] font-semibold text-white/40 tracking-wide">
+                End of price reports
+              </p>
             )}
           </div>
         </div>

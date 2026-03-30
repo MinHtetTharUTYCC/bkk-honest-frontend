@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useCreateLiveVibe } from '@/hooks/use-api';
-import { Zap, Loader2 } from 'lucide-react';
-import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
-import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
+import { useState } from "react";
+import { useCreateLiveVibe } from "@/hooks/use-api";
+import { Zap, Loader2 } from "lucide-react";
+import SearchableSpotSelect from "@/components/spots/searchable-spot-select";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CreateVibeFormProps {
   spotId?: string;
@@ -14,15 +14,15 @@ interface CreateVibeFormProps {
   onSuccess?: () => void;
 }
 
-export default function CreateVibeForm({ 
-  spotId: initialSpotId, 
+export default function CreateVibeForm({
+  spotId: initialSpotId,
   cityId,
   showSpotSelect = false,
-  onSuccess 
+  onSuccess,
 }: CreateVibeFormProps) {
-  const [selectedSpotId, setSelectedSpotId] = useState(initialSpotId || '');
+  const [selectedSpotId, setSelectedSpotId] = useState(initialSpotId || "");
   const [crowdLevel, setCrowdLevel] = useState(3);
-  const [waitTime, setWaitTime] = useState('');
+  const [waitTime, setWaitTime] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const createVibeMutation = useCreateLiveVibe();
   const queryClient = useQueryClient();
@@ -45,7 +45,7 @@ export default function CreateVibeForm({
 
       // Update the infinite query cache to show new vibe at index 0
       queryClient.setQueryData(
-        ['live-vibes-infinite', { spotId: finalSpotId }],
+        ["live-vibes-infinite", { spotId: finalSpotId }],
         (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           const newPages = [...oldData.pages];
@@ -57,18 +57,21 @@ export default function CreateVibeForm({
             newPages[0] = firstPage;
           }
           return { ...oldData, pages: newPages };
-        }
+        },
       );
 
-      setWaitTime('');
+      setWaitTime("");
       setCrowdLevel(3);
-      if (showSpotSelect) setSelectedSpotId('');
+      if (showSpotSelect) setSelectedSpotId("");
       onSuccess?.();
       toast.success("Vibe checked in!");
     } catch (err: unknown) {
       console.error(err);
-      const errObj = err as { response?: { data?: { message?: string | string[] } } };
-      const message = errObj.response?.data?.message || "Failed to check in vibe";
+      const errObj = err as {
+        response?: { data?: { message?: string | string[] } };
+      };
+      const message =
+        errObj.response?.data?.message || "Failed to check in vibe";
       toast.error(Array.isArray(message) ? message[0] : message);
     } finally {
       setIsSubmitting(false);
@@ -86,9 +89,11 @@ export default function CreateVibeForm({
           onSelect={(id) => setSelectedSpotId(id)}
         />
       )}
-      
+
       <div className="bg-white/5 rounded-2xl p-6 border border-white/10 space-y-4">
-        <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">Check In Your Vibe</p>
+        <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">
+          Check In Your Vibe
+        </p>
         <div className="space-y-3">
           {/* Crowd Level Slider */}
           <div>
@@ -138,7 +143,7 @@ export default function CreateVibeForm({
             ) : (
               <Zap size={14} fill="currentColor" />
             )}
-            {isSubmitting ? 'Submitting...' : 'Submit Vibe'}
+            {isSubmitting ? "Submitting..." : "Submit Vibe"}
           </button>
         </div>
       </div>

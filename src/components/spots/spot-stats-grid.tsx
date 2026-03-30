@@ -1,21 +1,35 @@
 import { SpotWithStatsResponseDto } from "@/api/generated/model";
 import { cn } from "@/lib/utils";
 
-export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStatsResponseDto; className?: string }) {
+export default function SpotStatsGrid({
+  spot,
+  className,
+}: {
+  spot: SpotWithStatsResponseDto;
+  className?: string;
+}) {
   const { activityStats, priceStats, vibeStats } = spot;
-  const lastActivity =
-    activityStats?.lastActivity;
+  const lastActivity = activityStats?.lastActivity;
   const safeLastActivity =
-    typeof lastActivity === "string" || typeof lastActivity === "number" || lastActivity instanceof Date
+    typeof lastActivity === "string" ||
+    typeof lastActivity === "number" ||
+    lastActivity instanceof Date
       ? lastActivity
       : null;
   const minPrice = typeof priceStats?.min === "number" ? priceStats.min : null;
   const maxPrice = typeof priceStats?.max === "number" ? priceStats.max : null;
-  const avgCrowdLevel = typeof vibeStats?.avgCrowdLevel === "number" ? vibeStats.avgCrowdLevel : null;
+  const avgCrowdLevel =
+    typeof vibeStats?.avgCrowdLevel === "number"
+      ? vibeStats.avgCrowdLevel
+      : null;
   const totalContributors =
-    typeof activityStats?.totalContributors === "number" ? activityStats.totalContributors : 0;
+    typeof activityStats?.totalContributors === "number"
+      ? activityStats.totalContributors
+      : 0;
 
-  const lastPulseDate = safeLastActivity ? new Date(safeLastActivity).getTime() : null;
+  const lastPulseDate = safeLastActivity
+    ? new Date(safeLastActivity).getTime()
+    : null;
   const timeAgo = (timestamp: number | null) => {
     if (!timestamp) return "No Data";
     // eslint-disable-next-line react-hooks/purity
@@ -33,7 +47,12 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
   return (
     <>
       {/* Desktop: Stats grid with height constraint */}
-      <div className={cn("hidden md:grid grid-cols-2 grid-rows-2 gap-3 md:gap-4", className)}>
+      <div
+        className={cn(
+          "hidden md:grid grid-cols-2 grid-rows-2 gap-3 md:gap-4",
+          className,
+        )}
+      >
         <div className="bg-card p-4 md:p-5 rounded-2xl border border-border shadow-xl shadow-black/20 flex flex-col">
           <span className="text-[8px] md:text-[10px] font-medium text-white/50 uppercase tracking-widest block mb-1 md:mb-2">
             Last Pulse
@@ -63,7 +82,9 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Live Vibe
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white">
-            {typeof avgCrowdLevel === "number" ? `${avgCrowdLevel.toFixed(1)} / 5` : "No Data"}
+            {typeof avgCrowdLevel === "number"
+              ? `${avgCrowdLevel.toFixed(1)} / 5`
+              : "No Data"}
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest">
             Crowd Rating
@@ -113,7 +134,9 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Live Vibe
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white">
-            {typeof avgCrowdLevel === "number" ? `${avgCrowdLevel.toFixed(1)} / 5` : "No Data"}
+            {typeof avgCrowdLevel === "number"
+              ? `${avgCrowdLevel.toFixed(1)} / 5`
+              : "No Data"}
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest">
             Crowd Rating

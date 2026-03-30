@@ -1,4 +1,4 @@
-import type { MetadataRoute } from 'next';
+import type { MetadataRoute } from "next";
 
 type SitemapEntity = {
   slug?: string;
@@ -8,8 +8,8 @@ type SitemapEntity = {
   };
 };
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 async function fetchAll(endpoint: string): Promise<SitemapEntity[]> {
   const take = 100;
@@ -17,9 +17,12 @@ async function fetchAll(endpoint: string): Promise<SitemapEntity[]> {
   const all: SitemapEntity[] = [];
 
   for (let i = 0; i < 50; i += 1) {
-    const response = await fetch(`${apiBaseUrl}${endpoint}?skip=${skip}&take=${take}`, {
-      next: { revalidate: 3600 },
-    }).catch(() => null);
+    const response = await fetch(
+      `${apiBaseUrl}${endpoint}?skip=${skip}&take=${take}`,
+      {
+        next: { revalidate: 3600 },
+      },
+    ).catch(() => null);
 
     if (!response?.ok) break;
 
@@ -49,21 +52,71 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const [spots, scamAlerts] = await Promise.all([
-    fetchAll('/spots'),
-    fetchAll('/scam-alerts'),
+    fetchAll("/spots"),
+    fetchAll("/scam-alerts"),
   ]);
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: `${siteUrl}/`, lastModified: now, changeFrequency: 'daily', priority: 1 },
-    { url: `${siteUrl}/spots`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${siteUrl}/scam-alerts`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${siteUrl}/search`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
-    { url: `${siteUrl}/map`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 },
-    { url: `${siteUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${siteUrl}/how-it-works`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
-    { url: `${siteUrl}/community-guidelines`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
-    { url: `${siteUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${siteUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    {
+      url: `${siteUrl}/`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 1,
+    },
+    {
+      url: `${siteUrl}/spots`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/scam-alerts`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/search`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/map`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/about`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${siteUrl}/how-it-works`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    },
+    {
+      url: `${siteUrl}/community-guidelines`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.4,
+    },
+    {
+      url: `${siteUrl}/privacy`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
+    {
+      url: `${siteUrl}/terms`,
+      lastModified: now,
+      changeFrequency: "yearly",
+      priority: 0.3,
+    },
   ];
 
   const spotPages: MetadataRoute.Sitemap = spots
@@ -71,7 +124,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((spot) => ({
       url: `${siteUrl}/spots/${spot.city!.slug}/${spot.slug}`,
       lastModified: spot.updatedAt ? new Date(spot.updatedAt) : now,
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 0.8,
     }));
 
@@ -80,7 +133,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .map((alert) => ({
       url: `${siteUrl}/scam-alerts/${alert.city!.slug}/${alert.slug}`,
       lastModified: alert.updatedAt ? new Date(alert.updatedAt) : now,
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 0.8,
     }));
 

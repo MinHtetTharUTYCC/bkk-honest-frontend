@@ -157,8 +157,8 @@ export default function CommunityGuidelinesPage() {
                     Fake Reviews
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    Don&apos;t post reviews for places you haven&apos;t actually visited
-                    or experiences you haven&apos;t had.
+                    Don&apos;t post reviews for places you haven&apos;t actually
+                    visited or experiences you haven&apos;t had.
                   </p>
                 </div>
 
@@ -177,8 +177,8 @@ export default function CommunityGuidelinesPage() {
                     Promotional Content
                   </h3>
                   <p className="text-muted-foreground text-sm">
-                    Don&apos;t use the platform to advertise your business or promote
-                    specific establishments for profit.
+                    Don&apos;t use the platform to advertise your business or
+                    promote specific establishments for profit.
                   </p>
                 </div>
 
@@ -321,8 +321,8 @@ export default function CommunityGuidelinesPage() {
             Questions About Our Guidelines?
           </h2>
           <p className="text-xl text-amber-100 mb-8">
-            We&apos;re here to help! If you&apos;re unsure about something or need
-            clarification, don&apos;t hesitate to reach out.
+            We&apos;re here to help! If you&apos;re unsure about something or
+            need clarification, don&apos;t hesitate to reach out.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a

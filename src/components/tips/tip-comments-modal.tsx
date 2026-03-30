@@ -1,21 +1,34 @@
-'use client';
+"use client";
 import Image from "next/image";
 import { Tip } from "@/types";
 
-import { useState, useEffect, useRef } from 'react';
-import { useInView } from 'react-intersection-observer';
-import { X, MessageSquare, Send, Loader2, User as UserIcon, Edit2, Trash2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useTipComments, useCreateComment, useUpdateComment, useDeleteComment } from '@/hooks/use-api';
-import { CommentResponseDto } from '@/api/generated/model';
-import { useAuth } from '@/components/providers/auth-provider';
-import { useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Textarea } from '@/components/ui/textarea';
-import ReportButton from '@/components/report/report-button';
-import ReactionButton from '@/components/reactions/reaction-button';
-import Link from 'next/link';
+import { useState, useEffect, useRef } from "react";
+import { useInView } from "react-intersection-observer";
+import {
+  X,
+  MessageSquare,
+  Send,
+  Loader2,
+  User as UserIcon,
+  Edit2,
+  Trash2,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  useTipComments,
+  useCreateComment,
+  useUpdateComment,
+  useDeleteComment,
+} from "@/hooks/use-api";
+import { CommentResponseDto } from "@/api/generated/model";
+import { useAuth } from "@/components/providers/auth-provider";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
+import ReportButton from "@/components/report/report-button";
+import ReactionButton from "@/components/reactions/reaction-button";
+import Link from "next/link";
 
 import {
   AlertDialog,
@@ -25,7 +38,8 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle } from '@/components/ui/alert-dialog';
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface TipCommentsModalProps {
   tip: Tip;
@@ -35,7 +49,7 @@ interface TipCommentsModalProps {
 interface TipCommentUser {
   id?: string;
   name?: string;
-  level?: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU' | string;
+  level?: "NEWBIE" | "EXPLORER" | "LOCAL_GURU" | string;
   avatarUrl?: string | null;
 }
 
@@ -57,7 +71,7 @@ function extractTipComments(page: unknown): TipComment[] {
     return page as TipComment[];
   }
 
-  if (page && typeof page === 'object' && 'data' in page) {
+  if (page && typeof page === "object" && "data" in page) {
     const data = (page as TipCommentsPage).data;
     return Array.isArray(data) ? data : [];
   }
@@ -65,33 +79,41 @@ function extractTipComments(page: unknown): TipComment[] {
   return [];
 }
 
-export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps) {
+export default function TipCommentsModal({
+  tip,
+  onClose,
+}: TipCommentsModalProps) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const { 
-    data: commentsResponse, 
+  const {
+    data: commentsResponse,
     isLoading: commentsLoading,
     fetchNextPage,
     hasNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
   } = useTipComments(tip.id);
 
   const comments = commentsResponse?.pages?.flatMap(extractTipComments) || [];
-  
+
   const createCommentMutation = useCreateComment();
   const updateCommentMutation = useUpdateComment();
   const deleteCommentMutation = useDeleteComment();
-  const [newComment, setNewComment] = useState('');
-  
+  const [newComment, setNewComment] = useState("");
+
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
-  const [editContent, setEditContent] = useState('');
+  const [editContent, setEditContent] = useState("");
   const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
 
   const { ref, inView } = useInView();
   const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedRef.current) {
+    if (
+      inView &&
+      hasNextPage &&
+      !isFetchingNextPage &&
+      !hasFetchedRef.current
+    ) {
       hasFetchedRef.current = true;
       fetchNextPage();
     }
@@ -110,14 +132,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     try {
       const response = await createCommentMutation.mutateAsync({
         communityTipId: tip.id,
-        content: newComment.trim()
+        content: newComment.trim(),
       });
 
       const newCommentData = response?.data || response;
 
       // Update the infinite query cache to show new comment at index 0
       queryClient.setQueryData(
-        ['tip-comments', tip.id],
+        ["tip-comments", tip.id],
         (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           const newPages = [...oldData.pages];
@@ -129,14 +151,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
             newPages[0] = firstPage;
           }
           return { ...oldData, pages: newPages };
-        }
+        },
       );
 
-      setNewComment('');
-      toast.success('Comment posted');
+      setNewComment("");
+      toast.success("Comment posted");
     } catch (err) {
       console.error(err);
-      toast.error('Failed to post comment');
+      toast.error("Failed to post comment");
     }
   };
 
@@ -146,13 +168,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
       const response = await updateCommentMutation.mutateAsync({
         id: commentId,
         content: editContent.trim(),
-        communityTipId: tip.id });
+        communityTipId: tip.id,
+      });
 
       const updatedComment = response?.data || response;
 
       // Update the infinite query cache
       queryClient.setQueryData(
-        ['tip-comments', tip.id],
+        ["tip-comments", tip.id],
         (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           return {
@@ -161,31 +184,41 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
               const pageData = page as { data?: unknown[] };
               return {
                 ...pageData,
-                data: (pageData.data as TipComment[])?.map((comment: TipComment) => 
-                  comment.id === commentId ? { ...comment, text: (updatedComment as CommentResponseDto).text, content: (updatedComment as CommentResponseDto).text } : comment
-                )
+                data: (pageData.data as TipComment[])?.map(
+                  (comment: TipComment) =>
+                    comment.id === commentId
+                      ? {
+                          ...comment,
+                          text: (updatedComment as CommentResponseDto).text,
+                          content: (updatedComment as CommentResponseDto).text,
+                        }
+                      : comment,
+                ),
               };
-            })
+            }),
           };
-        }
+        },
       );
 
       setEditingCommentId(null);
-      toast.success('Comment updated');
+      toast.success("Comment updated");
     } catch (err) {
       console.error(err);
-      toast.error('Failed to update comment');
+      toast.error("Failed to update comment");
     }
   };
 
   const handleConfirmDelete = async () => {
     if (!commentToDelete) return;
     try {
-      await deleteCommentMutation.mutateAsync({ id: commentToDelete, communityTipId: tip.id });
-      
+      await deleteCommentMutation.mutateAsync({
+        id: commentToDelete,
+        communityTipId: tip.id,
+      });
+
       // Update the infinite query cache
       queryClient.setQueryData(
-        ['tip-comments', tip.id],
+        ["tip-comments", tip.id],
         (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           return {
@@ -194,35 +227,38 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
               const pageData = page as { data?: unknown[] };
               return {
                 ...pageData,
-                data: (pageData.data as TipComment[])?.filter((comment: TipComment) => comment.id !== commentToDelete)
+                data: (pageData.data as TipComment[])?.filter(
+                  (comment: TipComment) => comment.id !== commentToDelete,
+                ),
               };
-            })
+            }),
           };
-        }
+        },
       );
 
       setCommentToDelete(null);
-      toast.success('Comment deleted');
+      toast.success("Comment deleted");
     } catch (err) {
       console.error(err);
-      toast.error('Failed to delete comment');
+      toast.error("Failed to delete comment");
     }
   };
 
   // Prevent background scroll
   useEffect(() => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = originalStyle;
     };
   }, []);
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4"
-    >
-      <AlertDialog open={!!commentToDelete} onOpenChange={(open) => !open && setCommentToDelete(null)}>
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-4">
+      <AlertDialog
+        open={!!commentToDelete}
+        onOpenChange={(open) => !open && setCommentToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
@@ -231,8 +267,10 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteCommentMutation.isPending}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogCancel disabled={deleteCommentMutation.isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
                 handleConfirmDelete();
@@ -249,22 +287,41 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
         </AlertDialogContent>
       </AlertDialog>
 
-      <div className="absolute inset-0" onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }} />
+      <div
+        className="absolute inset-0"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onClose();
+        }}
+      />
 
-        <div 
-          className={cn(
-            "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain",
-            "h-[80vh] md:h-[85vh] md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
-            "rounded-t-[24px] md:rounded-b-[24px]"
-          )}
-          onClick={(e) => e.stopPropagation()}
-        >
+      <div
+        className={cn(
+          "relative bg-background w-full shadow-2xl border border-border flex flex-col transition-all duration-300 animate-in overscroll-contain",
+          "h-[80vh] md:h-[85vh] md:max-h-[85vh] md:max-w-lg md:rounded-[24px]",
+          "rounded-t-[24px] md:rounded-b-[24px]",
+        )}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="md:hidden flex justify-center py-4">
           <div className="w-12 h-1.5 bg-white/10 rounded-full" />
         </div>
 
-        <button 
-          onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onClose();
+          }}
+          onTouchEnd={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onClose();
+          }}
           className="hidden md:flex absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors z-10"
         >
           <X size={20} className="text-white/50" />
@@ -272,10 +329,19 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
 
         <div className="px-6 py-4 md:px-8 md:pt-8 md:pb-6 border-b border-border flex items-center justify-between bg-black/20">
           <div className="flex items-center gap-3 text-white">
-            <MessageSquare size={20} className={tip.type === 'AVOID' ? 'text-red-400' : 'text-emerald-400'} />
+            <MessageSquare
+              size={20}
+              className={
+                tip.type === "AVOID" ? "text-red-400" : "text-emerald-400"
+              }
+            />
             <div className="flex flex-col pr-8 overflow-hidden">
-              <h3 className="text-xl font-display font-bold truncate">Comments ({tip._count?.comments || 0})</h3>
-              <p className="text-sm font-semibold text-white/50 tracking-wide truncate">{tip.title}</p>
+              <h3 className="text-xl font-display font-bold truncate">
+                Comments ({tip._count?.comments || 0})
+              </h3>
+              <p className="text-sm font-semibold text-white/50 tracking-wide truncate">
+                {tip.title}
+              </p>
             </div>
           </div>
         </div>
@@ -285,95 +351,149 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
             <div className="space-y-6">
               {user ? (
                 <form onSubmit={handleSendComment} className="relative group">
-                  <Textarea 
+                  <Textarea
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your thoughts..."
                     className="w-full bg-black/20 border border-white/20 rounded-xl px-4 py-3 pr-12 text-sm text-white focus:outline-none focus:border-amber-400 transition-all placeholder:text-white/30 resize-none min-h-11"
                   />
-                  <button 
+                  <button
                     type="submit"
-                    disabled={createCommentMutation.isPending || !newComment.trim()}
+                    disabled={
+                      createCommentMutation.isPending || !newComment.trim()
+                    }
                     className="absolute right-2 bottom-3 p-1.5 bg-amber-500 text-black rounded-lg hover:bg-amber-400 transition-all active:scale-95 disabled:opacity-50 disabled:bg-white/10 disabled:text-white/30"
                   >
-                    {createCommentMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                    {createCommentMutation.isPending ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Send size={14} />
+                    )}
                   </button>
                 </form>
               ) : (
                 <div className="bg-white/5 border border-border rounded-xl p-4 text-center">
-                  <p className="text-xs font-semibold text-white/50 tracking-wide">Log in to join the discussion</p>
+                  <p className="text-xs font-semibold text-white/50 tracking-wide">
+                    Log in to join the discussion
+                  </p>
                 </div>
               )}
 
               <div className="space-y-4">
                 {commentsLoading ? (
                   <div className="flex justify-center py-8">
-                    <Loader2 size={24} className="animate-spin text-amber-400" />
+                    <Loader2
+                      size={24}
+                      className="animate-spin text-amber-400"
+                    />
                   </div>
                 ) : comments?.length > 0 ? (
                   comments.map((comment: TipComment) => (
-                    <div key={comment.id} className="flex gap-3 items-start group">
-                      <Link 
+                    <div
+                      key={comment.id}
+                      className="flex gap-3 items-start group"
+                    >
+                      <Link
                         href={`/profile/${comment.userId}`}
                         className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
                       >
-                         {comment.user?.avatarUrl ? (
-                            <Image src={comment.user.avatarUrl} alt="" fill sizes="32px" className="object-cover" />
-                          ) : (
-                            <UserIcon size={16} />
-                          )}
+                        {comment.user?.avatarUrl ? (
+                          <Image
+                            src={comment.user.avatarUrl}
+                            alt=""
+                            fill
+                            sizes="32px"
+                            className="object-cover"
+                          />
+                        ) : (
+                          <UserIcon size={16} />
+                        )}
                       </Link>
                       <div className="flex-1 space-y-1">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <Link 
+                            <Link
                               href={`/profile/${comment.userId}`}
                               className="text-xs font-bold text-white/80 hover:text-amber-400 transition-colors"
                             >
-                              {comment.user?.name || 'Local'}
+                              {comment.user?.name || "Local"}
                             </Link>
                             {comment.user?.level && (
-                               <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white/10 text-white/60">
-                                Lvl {comment.user.level === 'LOCAL_GURU' ? '3' : comment.user.level === 'EXPLORER' ? '2' : '1'}
-                               </span>
+                              <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white/10 text-white/60">
+                                Lvl{" "}
+                                {comment.user.level === "LOCAL_GURU"
+                                  ? "3"
+                                  : comment.user.level === "EXPLORER"
+                                    ? "2"
+                                    : "1"}
+                              </span>
                             )}
                             <span className="text-[10px] font-medium text-white/50">
-                              {comment.createdAt ? new Date(comment.createdAt).toLocaleDateString() : ''}
+                              {comment.createdAt
+                                ? new Date(
+                                    comment.createdAt,
+                                  ).toLocaleDateString()
+                                : ""}
                             </span>
                           </div>
 
                           {user?.id === comment.userId && (
-                             <div className="flex items-center gap-2">
-                               <button onClick={() => { setEditingCommentId(comment.id); setEditContent(comment.content || comment.text || ''); }} className="text-white/40 hover:text-amber-400 p-1"><Edit2 size={18} /></button>
-                               <button 
-                                 onClick={() => setCommentToDelete(comment.id)} 
-                                 disabled={deleteCommentMutation.isPending && commentToDelete === comment.id}
-                                 className="text-white/40 hover:text-red-400 p-1"
-                               >
-                                 {deleteCommentMutation.isPending && commentToDelete === comment.id ? (
-                                   <Loader2 size={18} className="animate-spin" />
-                                 ) : (
-                                   <Trash2 size={18} />
-                                 )}
-                               </button>
-                             </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  setEditingCommentId(comment.id);
+                                  setEditContent(
+                                    comment.content || comment.text || "",
+                                  );
+                                }}
+                                className="text-white/40 hover:text-amber-400 p-1"
+                              >
+                                <Edit2 size={18} />
+                              </button>
+                              <button
+                                onClick={() => setCommentToDelete(comment.id)}
+                                disabled={
+                                  deleteCommentMutation.isPending &&
+                                  commentToDelete === comment.id
+                                }
+                                className="text-white/40 hover:text-red-400 p-1"
+                              >
+                                {deleteCommentMutation.isPending &&
+                                commentToDelete === comment.id ? (
+                                  <Loader2 size={18} className="animate-spin" />
+                                ) : (
+                                  <Trash2 size={18} />
+                                )}
+                              </button>
+                            </div>
                           )}
                         </div>
-                        
+
                         {editingCommentId === comment.id ? (
-                           <div className="mt-2 space-y-2">
-                             <Textarea 
-                               value={editContent}
-                               onChange={(e) => setEditContent(e.target.value)}
-                               className="w-full bg-black/40 border border-white/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 resize-none"
-                             />
-                             <div className="flex gap-2 justify-end mt-1">
-                               <button onClick={() => setEditingCommentId(null)} className="text-xs px-2 py-1 font-semibold text-white/50 hover:text-white transition-colors">Cancel</button>
-                               <button onClick={() => handleEditSubmit(comment.id)} disabled={updateCommentMutation.isPending} className="text-xs px-2 py-1 font-semibold text-amber-400 hover:text-amber-300 transition-colors">
-                                 {updateCommentMutation.isPending ? 'Saving...' : 'Save'}
-                               </button>
-                             </div>
-                           </div>
+                          <div className="mt-2 space-y-2">
+                            <Textarea
+                              value={editContent}
+                              onChange={(e) => setEditContent(e.target.value)}
+                              className="w-full bg-black/40 border border-white/20 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 resize-none"
+                            />
+                            <div className="flex gap-2 justify-end mt-1">
+                              <button
+                                onClick={() => setEditingCommentId(null)}
+                                className="text-xs px-2 py-1 font-semibold text-white/50 hover:text-white transition-colors"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => handleEditSubmit(comment.id)}
+                                disabled={updateCommentMutation.isPending}
+                                className="text-xs px-2 py-1 font-semibold text-amber-400 hover:text-amber-300 transition-colors"
+                              >
+                                {updateCommentMutation.isPending
+                                  ? "Saving..."
+                                  : "Save"}
+                              </button>
+                            </div>
+                          </div>
                         ) : (
                           <div className="space-y-2">
                             <div className="bg-white/5 border border-border rounded-xl rounded-tl-none p-3">
@@ -382,12 +502,14 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                               </p>
                             </div>
                             <div className="flex items-center justify-between px-1">
-                              <ReactionButton 
+                              <ReactionButton
                                 commentId={comment.id}
                                 initialCount={comment.reactionCount || 0}
-                                initialUserReacted={comment.userHasReacted || false}
+                                initialUserReacted={
+                                  comment.userHasReacted || false
+                                }
                               />
-                              <ReportButton 
+                              <ReportButton
                                 targetId={comment.id}
                                 reportType="COMMENT"
                                 size="sm"
@@ -400,18 +522,30 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                   ))
                 ) : (
                   <div className="py-12 text-center bg-black/20 rounded-2xl border border-dashed border-border">
-                    <p className="text-xs font-semibold text-white/40 tracking-wide">No comments yet. Start the conversation!</p>
+                    <p className="text-xs font-semibold text-white/40 tracking-wide">
+                      No comments yet. Start the conversation!
+                    </p>
                   </div>
                 )}
 
                 {/* Infinite Scroll Trigger + End State */}
-                <div ref={hasNextPage ? ref : undefined} className="py-4 flex justify-center">
+                <div
+                  ref={hasNextPage ? ref : undefined}
+                  className="py-4 flex justify-center"
+                >
                   {isFetchingNextPage ? (
-                    <Loader2 size={24} className="animate-spin text-amber-400" />
+                    <Loader2
+                      size={24}
+                      className="animate-spin text-amber-400"
+                    />
                   ) : hasNextPage ? (
-                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">Scroll for more</span>
+                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">
+                      Scroll for more
+                    </span>
                   ) : comments.length > 0 ? (
-                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">End of comments</span>
+                    <span className="text-[10px] text-white/30 uppercase tracking-widest font-bold">
+                      End of comments
+                    </span>
                   ) : null}
                 </div>
               </div>
@@ -420,8 +554,16 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
         </ScrollArea>
 
         <div className="md:hidden p-4 border-t border-border bg-background/80 backdrop-blur-md">
-          <button 
-            onClick={(e) => { e.stopPropagation(); onClose(); }} onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
             className="w-full py-3 rounded-xl bg-white/10 text-white font-bold text-xs active:scale-95 transition-all"
           >
             Close Comments

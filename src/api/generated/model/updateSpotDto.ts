@@ -10,27 +10,27 @@ export interface UpdateSpotDto {
   /** City ID (cuid) */
   cityId?: string;
   /**
-     * Spot name
-     * @maxLength 100
-     */
+   * Spot name
+   * @maxLength 100
+   */
   name?: string;
   /**
-     * Full street address
-     * @maxLength 200
-     */
+   * Full street address
+   * @maxLength 200
+   */
   address?: string;
   /** Category ID (cuid) */
   categoryId?: string;
   /**
-     * Latitude coordinate
-     * @minimum -90
-     * @maximum 90
-     */
+   * Latitude coordinate
+   * @minimum -90
+   * @maximum 90
+   */
   latitude?: number;
   /**
-     * Longitude coordinate
-     * @minimum -180
-     * @maximum 180
-     */
+   * Longitude coordinate
+   * @minimum -180
+   * @maximum 180
+   */
   longitude?: number;
 }

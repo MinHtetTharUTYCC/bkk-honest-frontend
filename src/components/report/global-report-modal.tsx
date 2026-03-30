@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import ReportModal from './report-modal';
+import { useState, useEffect } from "react";
+import ReportModal from "./report-modal";
 
 interface ReportData {
   targetId: string;
-  reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
+  reportType: "SPOT" | "COMMUNITY_TIP" | "SCAM_ALERT" | "COMMENT" | "PROFILE";
 }
 
 export function GlobalReportModal() {
@@ -17,8 +17,8 @@ export function GlobalReportModal() {
       setData(customEvent.detail);
     };
 
-    window.addEventListener('OPEN_REPORT_MODAL', handleOpen);
-    return () => window.removeEventListener('OPEN_REPORT_MODAL', handleOpen);
+    window.addEventListener("OPEN_REPORT_MODAL", handleOpen);
+    return () => window.removeEventListener("OPEN_REPORT_MODAL", handleOpen);
   }, []);
 
   if (!data) return null;

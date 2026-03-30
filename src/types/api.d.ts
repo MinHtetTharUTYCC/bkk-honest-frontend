@@ -4,2486 +4,2486 @@
  */
 
 export interface paths {
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["AppController_getHealth"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/profiles": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ProfilesController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["AppController_getHealth"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/profiles": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/profiles/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ProfilesController_getMe"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["ProfilesController_update"];
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["ProfilesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/profiles/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/profiles/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ProfilesController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["ProfilesController_getMe"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["ProfilesController_update"];
+    trace?: never;
+  };
+  "/profiles/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/profiles/{id}/reputation": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ProfilesController_getReputationStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["ProfilesController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/profiles/{id}/reputation": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["CategoriesController_findAll"];
-        put?: never;
-        post: operations["CategoriesController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["ProfilesController_getReputationStats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/categories": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/categories/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["CategoriesController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch: operations["CategoriesController_update"];
-        trace?: never;
+    get: operations["CategoriesController_findAll"];
+    put?: never;
+    post: operations["CategoriesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/categories/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/cities": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["CitiesController_findAll"];
-        put?: never;
-        post: operations["CitiesController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["CategoriesController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["CategoriesController_update"];
+    trace?: never;
+  };
+  "/cities": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/cities/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["CitiesController_findOne"];
-        put?: never;
-        post?: never;
-        delete: operations["CitiesController_delete"];
-        options?: never;
-        head?: never;
-        patch: operations["CitiesController_update"];
-        trace?: never;
+    get: operations["CitiesController_findAll"];
+    put?: never;
+    post: operations["CitiesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cities/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all spots */
-        get: operations["SpotsController_findAll"];
-        put?: never;
-        /** Create a new spot */
-        post: operations["SpotsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["CitiesController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["CitiesController_delete"];
+    options?: never;
+    head?: never;
+    patch: operations["CitiesController_update"];
+    trace?: never;
+  };
+  "/spots": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots/stats/total-spots": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get total number of spots */
-        get: operations["SpotsController_getTotalSpots"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get all spots */
+    get: operations["SpotsController_findAll"];
+    put?: never;
+    /** Create a new spot */
+    post: operations["SpotsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/spots/stats/total-spots": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots/nearby": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Find nearby spots */
-        get: operations["SpotsController_findNearby"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get total number of spots */
+    get: operations["SpotsController_getTotalSpots"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/spots/nearby": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/spots/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a single spot */
-        get: operations["SpotsController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Update a spot */
-        patch: operations["SpotsController_update"];
-        trace?: never;
+    /** Find nearby spots */
+    get: operations["SpotsController_findNearby"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/spots/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/price-reports": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["PriceReportsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get a single spot */
+    get: operations["SpotsController_findOne"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update a spot */
+    patch: operations["SpotsController_update"];
+    trace?: never;
+  };
+  "/price-reports": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/price-reports/spot/{spotId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["PriceReportsController_findBySpot"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["PriceReportsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/price-reports/spot/{spotId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/price-reports/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["PriceReportsController_delete"];
-        options?: never;
-        head?: never;
-        patch: operations["PriceReportsController_update"];
-        trace?: never;
+    get: operations["PriceReportsController_findBySpot"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/price-reports/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/community-tips": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all community tips */
-        get: operations["CommunityTipsController_findAll"];
-        put?: never;
-        /** Create a community tip */
-        post: operations["CommunityTipsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["PriceReportsController_delete"];
+    options?: never;
+    head?: never;
+    patch: operations["PriceReportsController_update"];
+    trace?: never;
+  };
+  "/community-tips": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/community-tips/spot/{spotId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get community tips for a specific spot */
-        get: operations["CommunityTipsController_findBySpot"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get all community tips */
+    get: operations["CommunityTipsController_findAll"];
+    put?: never;
+    /** Create a community tip */
+    post: operations["CommunityTipsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/community-tips/spot/{spotId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/community-tips/stats/total-tips": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get total number of community tips */
-        get: operations["CommunityTipsController_getTotalTips"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get community tips for a specific spot */
+    get: operations["CommunityTipsController_findBySpot"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/community-tips/stats/total-tips": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/community-tips/{id}/counts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get counts for a community tip */
-        get: operations["CommunityTipsController_getCounts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get total number of community tips */
+    get: operations["CommunityTipsController_getTotalTips"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/community-tips/{id}/counts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/community-tips/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Delete own community tip */
-        delete: operations["CommunityTipsController_delete"];
-        options?: never;
-        head?: never;
-        /** Update own community tip */
-        patch: operations["CommunityTipsController_update"];
-        trace?: never;
+    /** Get counts for a community tip */
+    get: operations["CommunityTipsController_getCounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/community-tips/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/votes/tip": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create a community tip vote */
-        post: operations["VotesController_createTipVote"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete own community tip */
+    delete: operations["CommunityTipsController_delete"];
+    options?: never;
+    head?: never;
+    /** Update own community tip */
+    patch: operations["CommunityTipsController_update"];
+    trace?: never;
+  };
+  "/votes/tip": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/votes/alert": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create a scam alert vote */
-        post: operations["VotesController_createAlertVote"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Create a community tip vote */
+    post: operations["VotesController_createTipVote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/votes/alert": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/votes/image": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create a gallery image vote */
-        post: operations["VotesController_createImageVote"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Create a scam alert vote */
+    post: operations["VotesController_createAlertVote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/votes/image": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/votes/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Delete a vote (unvote) */
-        delete: operations["VotesController_deleteVote"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Create a gallery image vote */
+    post: operations["VotesController_createImageVote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/votes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/comments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CommentsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Delete a vote (unvote) */
+    delete: operations["VotesController_deleteVote"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/comments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/comments/tip/{communityTipId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["CommentsController_findByTip"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["CommentsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/comments/tip/{communityTipId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/comments/alert/{scamAlertId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["CommentsController_findByScamAlert"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["CommentsController_findByTip"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/comments/alert/{scamAlertId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/comments/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["CommentsController_delete"];
-        options?: never;
-        head?: never;
-        patch: operations["CommentsController_update"];
-        trace?: never;
+    get: operations["CommentsController_findByScamAlert"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/comments/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/live-vibes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["LiveVibesController_findAll"];
-        put?: never;
-        post: operations["LiveVibesController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["CommentsController_delete"];
+    options?: never;
+    head?: never;
+    patch: operations["CommentsController_update"];
+    trace?: never;
+  };
+  "/live-vibes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/live-vibes/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["LiveVibesController_findOne"];
-        put?: never;
-        post?: never;
-        delete: operations["LiveVibesController_delete"];
-        options?: never;
-        head?: never;
-        patch: operations["LiveVibesController_update"];
-        trace?: never;
+    get: operations["LiveVibesController_findAll"];
+    put?: never;
+    post: operations["LiveVibesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/live-vibes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/checklist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ChecklistController_findAll"];
-        put?: never;
-        post: operations["ChecklistController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["LiveVibesController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["LiveVibesController_delete"];
+    options?: never;
+    head?: never;
+    patch: operations["LiveVibesController_update"];
+    trace?: never;
+  };
+  "/checklist": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/checklist/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ChecklistController_getStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["ChecklistController_findAll"];
+    put?: never;
+    post: operations["ChecklistController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/checklist/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/checklist/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ChecklistController_findOne"];
-        put?: never;
-        post?: never;
-        delete: operations["ChecklistController_delete"];
-        options?: never;
-        head?: never;
-        patch: operations["ChecklistController_update"];
-        trace?: never;
+    get: operations["ChecklistController_getStats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/checklist/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/scam-alerts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get all scam alerts */
-        get: operations["ScamAlertsController_findAll"];
-        put?: never;
-        /** Create a scam alert */
-        post: operations["ScamAlertsController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["ChecklistController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["ChecklistController_delete"];
+    options?: never;
+    head?: never;
+    patch: operations["ChecklistController_update"];
+    trace?: never;
+  };
+  "/scam-alerts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/scam-alerts/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get a single scam alert */
-        get: operations["ScamAlertsController_findOne"];
-        put?: never;
-        post?: never;
-        /** Delete own scam alert */
-        delete: operations["ScamAlertsController_delete"];
-        options?: never;
-        head?: never;
-        /** Update own scam alert */
-        patch: operations["ScamAlertsController_update"];
-        trace?: never;
+    /** Get all scam alerts */
+    get: operations["ScamAlertsController_findAll"];
+    put?: never;
+    /** Create a scam alert */
+    post: operations["ScamAlertsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/scam-alerts/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/gallery/upload/{spotId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Upload image to spot gallery */
-        post: operations["GalleryController_uploadImage"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get a single scam alert */
+    get: operations["ScamAlertsController_findOne"];
+    put?: never;
+    post?: never;
+    /** Delete own scam alert */
+    delete: operations["ScamAlertsController_delete"];
+    options?: never;
+    head?: never;
+    /** Update own scam alert */
+    patch: operations["ScamAlertsController_update"];
+    trace?: never;
+  };
+  "/gallery/upload/{spotId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/gallery/spot/{spotId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get gallery images for a spot */
-        get: operations["GalleryController_getGallery"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Upload image to spot gallery */
+    post: operations["GalleryController_uploadImage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/gallery/spot/{spotId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/gallery/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get single gallery image */
-        get: operations["GalleryController_getImage"];
-        put?: never;
-        post?: never;
-        /** Delete own gallery image */
-        delete: operations["GalleryController_deleteImage"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get gallery images for a spot */
+    get: operations["GalleryController_getGallery"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/gallery/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/gallery/{id}/flag": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Report inappropriate gallery image */
-        post: operations["GalleryController_flagImage"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Get single gallery image */
+    get: operations["GalleryController_getImage"];
+    put?: never;
+    post?: never;
+    /** Delete own gallery image */
+    delete: operations["GalleryController_deleteImage"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/gallery/{id}/flag": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/gallery/spot/{spotId}/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get gallery statistics for a spot */
-        get: operations["GalleryController_getStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Report inappropriate gallery image */
+    post: operations["GalleryController_flagImage"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/gallery/spot/{spotId}/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /** Get gallery statistics for a spot */
+    get: operations["GalleryController_getStats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        CreateProfileDto: Record<string, never>;
-        UpdateProfileDto: Record<string, never>;
-        CreateCategoryDto: Record<string, never>;
-        UpdateCategoryDto: Record<string, never>;
-        CreateCityDto: Record<string, never>;
-        UpdateCityDto: Record<string, never>;
-        CreateSpotDto: {
-            /**
-             * @description City ID (cuid)
-             * @example clx4qyxxx0000xxxaabbccdd1
-             */
-            cityId: string;
-            /**
-             * @description Category ID (cuid)
-             * @example clx4qyxxx0000xxxaabbccdd1
-             */
-            categoryId: string;
-            /**
-             * @description Spot name
-             * @example Jazz Bar Downtown
-             */
-            name: string;
-            /**
-             * @description Full street address
-             * @example 123 Main St, Bangkok
-             */
-            address: string;
-            /**
-             * @description Latitude coordinate
-             * @example 13.7563
-             */
-            latitude: number;
-            /**
-             * @description Longitude coordinate
-             * @example 100.5018
-             */
-            longitude: number;
-        };
-        SpotWithStatsResponseDto: {
-            /**
-             * @description Spot ID (cuid)
-             * @example clx4qyxxx0000xxxaabbccdd
-             */
-            id: string;
-            /**
-             * @description Spot name
-             * @example Jazz Bar Downtown
-             */
-            name: string;
-            /**
-             * @description Full street address
-             * @example 123 Main St, Bangkok
-             */
-            address: string;
-            /**
-             * @description Spot image URL
-             * @example https://cdn.example.com/spots/jazz-bar.webp
-             */
-            imageUrl?: string;
-            /**
-             * @description Latitude coordinate
-             * @example 13.7563
-             */
-            latitude: number;
-            /**
-             * @description Longitude coordinate
-             * @example 100.5018
-             */
-            longitude: number;
-            /**
-             * @description Owner user ID (uuid)
-             * @example d0c7a6e6-afb8-40ec-9b0e-84092da694c4
-             */
-            userId: string;
-            /**
-             * @description Owning user summary
-             * @example {
-             *       "id": "d0c7a6e6-afb8-40ec-9b0e-84092da694c4",
-             *       "name": "John",
-             *       "avatarUrl": null
-             *     }
-             */
-            user: Record<string, never>;
-            /**
-             * @description City the spot belongs to
-             * @example {
-             *       "id": "clx4qyxxx0000xxxaabbccdd",
-             *       "name": "Bangkok"
-             *     }
-             */
-            city: Record<string, never>;
-            /**
-             * @description Category the spot belongs to
-             * @example {
-             *       "id": "clx4qyxxx0000xxxaabbccdd",
-             *       "name": "Bar"
-             *     }
-             */
-            category: Record<string, never>;
-            /**
-             * @description Raw activity counts
-             * @example {
-             *       "priceReports": 5,
-             *       "vibeChecks": 12,
-             *       "communityTips": 3,
-             *       "missions": 7
-             *     }
-             */
-            _count: Record<string, never>;
-            /**
-             * Format: date-time
-             * @description Creation timestamp
-             * @example 2025-01-01T00:00:00.000Z
-             */
-            createdAt: string;
-            /**
-             * @description Aggregated price statistics from all price reports for this spot
-             * @example {
-             *       "avg": 150,
-             *       "min": 80,
-             *       "max": 250,
-             *       "count": 12
-             *     }
-             */
-            priceStats: Record<string, never>;
-            /**
-             * @description Aggregated vibe statistics from all live vibe check-ins
-             * @example {
-             *       "avgCrowdLevel": 3.2,
-             *       "count": 8
-             *     }
-             */
-            vibeStats: Record<string, never>;
-            /** @description Whether the spot is in the current user's mission checklist (only present when authenticated) */
-            isInMission?: boolean;
-            /**
-             * @description ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
-             * @example clx4qyxxx0000xxxaabbccdd
-             */
-            missionId?: Record<string, never> | null;
-        };
-        PaginationMetaDto: Record<string, never>;
-        PaginatedSpotsWithStatsResponseDto: {
-            data: components["schemas"]["SpotWithStatsResponseDto"][];
-            pagination: components["schemas"]["PaginationMetaDto"];
-        };
-        UpdateSpotDto: {
-            /**
-             * @description Spot name
-             * @example Updated Bar Name
-             */
-            name?: string;
-            /**
-             * @description Full street address
-             * @example 456 New St
-             */
-            address?: string;
-            /**
-             * @description Category ID (cuid)
-             * @example clx4qyxxx0000xxxaabbccdd1
-             */
-            categoryId?: string;
-            /**
-             * @description Latitude coordinate
-             * @example 13.7563
-             */
-            latitude?: number;
-            /**
-             * @description Longitude coordinate
-             * @example 100.5018
-             */
-            longitude?: number;
-        };
-        CreatePriceReportDto: Record<string, never>;
-        UpdatePriceReportDto: Record<string, never>;
-        CreateCommunityTipDto: {
-            /**
-             * @description Spot ID
-             * @example spot-123
-             */
-            spotId: string;
-            /**
-             * @description Tip type
-             * @example TRY
-             * @enum {string}
-             */
-            type: "TRY" | "AVOID";
-            /**
-             * @description Tip title
-             * @example Great happy hour deals
-             */
-            title: string;
-            /**
-             * @description Tip description
-             * @example Best drink prices from 4-6 PM on weekdays
-             */
-            description: string;
-        };
-        CommunityTipResponseDto: Record<string, never>;
-        PaginatedCommunityTipsResponseDto: Record<string, never>;
-        UpdateCommunityTipDto: {
-            /**
-             * @description Tip title
-             * @example Updated title
-             */
-            title?: string;
-            /**
-             * @description Tip description
-             * @example Updated description
-             */
-            description?: string;
-        };
-        MessageResponseDto: Record<string, never>;
-        TipVoteDto: Record<string, never>;
-        CreateVoteResponseDto: {
-            /**
-             * @description Vote ID (cuid)
-             * @example clx4qyxxx0000xxxaabbccdd
-             */
-            voteId: string;
-            /**
-             * @description Vote target type
-             * @enum {string}
-             */
-            voteType: "tip" | "alert" | "image";
-        };
-        AlertVoteDto: Record<string, never>;
-        ImageVoteDto: Record<string, never>;
-        CreateCommentDto: Record<string, never>;
-        UpdateCommentDto: Record<string, never>;
-        CreateLiveVibeDto: Record<string, never>;
-        UpdateLiveVibeDto: Record<string, never>;
-        CreateChecklistItemDto: Record<string, never>;
-        UpdateChecklistItemDto: Record<string, never>;
-        CreateScamAlertDto: {
-            /**
-             * @description City ID
-             * @example city-123
-             */
-            cityId: string;
-            /**
-             * @description Category ID
-             * @example cat-456
-             */
-            categoryId: string;
-            /**
-             * @description Scam name
-             * @example Fake tourism agency
-             */
-            scamName: string;
-            /**
-             * @description Scam description
-             * @example Fraudulent tour booking site asking for deposits
-             */
-            description: string;
-            /**
-             * @description Prevention tip
-             * @example Always book through official tourism boards
-             */
-            preventionTip: string;
-            /**
-             * Format: binary
-             * @description Scam alert image (JPG, PNG, WebP - max 10MB, optional)
-             */
-            image?: string;
-        };
-        ScamAlertResponseDto: {
-            /**
-             * @description Scam alert ID (cuid)
-             * @example clx4qyxxx0000xxxaabbccdd
-             */
-            id: string;
-            /**
-             * @description Name of the scam
-             * @example Tuk-tuk gem scam
-             */
-            scamName: string;
-            /**
-             * @description Detailed description of the scam
-             * @example Driver takes you to overpriced gem store...
-             */
-            description: string;
-            /**
-             * @description Tips to avoid the scam
-             * @example Refuse all unsolicited detours.
-             */
-            preventionTip: string;
-            /**
-             * @description Warning/example image URL
-             * @example https://cdn.example.com/scam-alerts/tuk-tuk.webp
-             */
-            imageUrl?: string;
-            /**
-             * Format: date-time
-             * @description Creation timestamp
-             * @example 2025-01-01T00:00:00.000Z
-             */
-            createdAt: string;
-            /**
-             * @description Category the scam belongs to
-             * @example {
-             *       "id": "clx4qyxxx0000xxxaabbccdd",
-             *       "name": "Transport"
-             *     }
-             */
-            category: Record<string, never>;
-            /**
-             * @description City the scam was reported in
-             * @example {
-             *       "id": "clx4qyxxx0000xxxaabbccdd",
-             *       "name": "Bangkok"
-             *     }
-             */
-            city: Record<string, never>;
-            /**
-             * @description User who reported the scam
-             * @example {
-             *       "id": "d0c7a6e6-afb8-40ec-9b0e-84092da694c4",
-             *       "name": "John",
-             *       "avatarUrl": null,
-             *       "level": "EXPLORER"
-             *     }
-             */
-            user: Record<string, never>;
-            /**
-             * @description Counts of related comments and votes
-             * @example {
-             *       "comments": 10,
-             *       "votes": 50
-             *     }
-             */
-            _count: Record<string, never>;
-            /** @description Whether the current user has voted (only present when authenticated) */
-            hasVoted?: boolean;
-            /**
-             * @description Vote ID (cuid) if user has voted, null otherwise
-             * @example clx4qyxxx0000xxxaabbccdd
-             */
-            voteId?: Record<string, never> | null;
-        };
-        PaginatedScamAlertsResponseDto: {
-            data: components["schemas"]["ScamAlertResponseDto"][];
-            pagination: components["schemas"]["PaginationMetaDto"];
-        };
-        UpdateScamAlertDto: {
-            /**
-             * @description City ID
-             * @example city-123
-             */
-            cityId?: string;
-            /**
-             * @description Category ID
-             * @example cat-456
-             */
-            categoryId?: string;
-            /**
-             * @description Scam name
-             * @example Updated scam name
-             */
-            scamName?: string;
-            /**
-             * @description Scam description
-             * @example Updated description
-             */
-            description?: string;
-            /**
-             * @description Prevention tip
-             * @example Updated prevention tip
-             */
-            preventionTip?: string;
-            /**
-             * Format: binary
-             * @description Scam alert image (JPG, PNG, WebP - max 10MB, optional)
-             */
-            image?: string;
-        };
-        GalleryImageResponseDto: Record<string, never>;
-        PaginatedGalleryImagesResponseDto: Record<string, never>;
-        GalleryStatsResponseDto: Record<string, never>;
+  schemas: {
+    CreateProfileDto: Record<string, never>;
+    UpdateProfileDto: Record<string, never>;
+    CreateCategoryDto: Record<string, never>;
+    UpdateCategoryDto: Record<string, never>;
+    CreateCityDto: Record<string, never>;
+    UpdateCityDto: Record<string, never>;
+    CreateSpotDto: {
+      /**
+       * @description City ID (cuid)
+       * @example clx4qyxxx0000xxxaabbccdd1
+       */
+      cityId: string;
+      /**
+       * @description Category ID (cuid)
+       * @example clx4qyxxx0000xxxaabbccdd1
+       */
+      categoryId: string;
+      /**
+       * @description Spot name
+       * @example Jazz Bar Downtown
+       */
+      name: string;
+      /**
+       * @description Full street address
+       * @example 123 Main St, Bangkok
+       */
+      address: string;
+      /**
+       * @description Latitude coordinate
+       * @example 13.7563
+       */
+      latitude: number;
+      /**
+       * @description Longitude coordinate
+       * @example 100.5018
+       */
+      longitude: number;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    SpotWithStatsResponseDto: {
+      /**
+       * @description Spot ID (cuid)
+       * @example clx4qyxxx0000xxxaabbccdd
+       */
+      id: string;
+      /**
+       * @description Spot name
+       * @example Jazz Bar Downtown
+       */
+      name: string;
+      /**
+       * @description Full street address
+       * @example 123 Main St, Bangkok
+       */
+      address: string;
+      /**
+       * @description Spot image URL
+       * @example https://cdn.example.com/spots/jazz-bar.webp
+       */
+      imageUrl?: string;
+      /**
+       * @description Latitude coordinate
+       * @example 13.7563
+       */
+      latitude: number;
+      /**
+       * @description Longitude coordinate
+       * @example 100.5018
+       */
+      longitude: number;
+      /**
+       * @description Owner user ID (uuid)
+       * @example d0c7a6e6-afb8-40ec-9b0e-84092da694c4
+       */
+      userId: string;
+      /**
+       * @description Owning user summary
+       * @example {
+       *       "id": "d0c7a6e6-afb8-40ec-9b0e-84092da694c4",
+       *       "name": "John",
+       *       "avatarUrl": null
+       *     }
+       */
+      user: Record<string, never>;
+      /**
+       * @description City the spot belongs to
+       * @example {
+       *       "id": "clx4qyxxx0000xxxaabbccdd",
+       *       "name": "Bangkok"
+       *     }
+       */
+      city: Record<string, never>;
+      /**
+       * @description Category the spot belongs to
+       * @example {
+       *       "id": "clx4qyxxx0000xxxaabbccdd",
+       *       "name": "Bar"
+       *     }
+       */
+      category: Record<string, never>;
+      /**
+       * @description Raw activity counts
+       * @example {
+       *       "priceReports": 5,
+       *       "vibeChecks": 12,
+       *       "communityTips": 3,
+       *       "missions": 7
+       *     }
+       */
+      _count: Record<string, never>;
+      /**
+       * Format: date-time
+       * @description Creation timestamp
+       * @example 2025-01-01T00:00:00.000Z
+       */
+      createdAt: string;
+      /**
+       * @description Aggregated price statistics from all price reports for this spot
+       * @example {
+       *       "avg": 150,
+       *       "min": 80,
+       *       "max": 250,
+       *       "count": 12
+       *     }
+       */
+      priceStats: Record<string, never>;
+      /**
+       * @description Aggregated vibe statistics from all live vibe check-ins
+       * @example {
+       *       "avgCrowdLevel": 3.2,
+       *       "count": 8
+       *     }
+       */
+      vibeStats: Record<string, never>;
+      /** @description Whether the spot is in the current user's mission checklist (only present when authenticated) */
+      isInMission?: boolean;
+      /**
+       * @description ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
+       * @example clx4qyxxx0000xxxaabbccdd
+       */
+      missionId?: Record<string, never> | null;
+    };
+    PaginationMetaDto: Record<string, never>;
+    PaginatedSpotsWithStatsResponseDto: {
+      data: components["schemas"]["SpotWithStatsResponseDto"][];
+      pagination: components["schemas"]["PaginationMetaDto"];
+    };
+    UpdateSpotDto: {
+      /**
+       * @description Spot name
+       * @example Updated Bar Name
+       */
+      name?: string;
+      /**
+       * @description Full street address
+       * @example 456 New St
+       */
+      address?: string;
+      /**
+       * @description Category ID (cuid)
+       * @example clx4qyxxx0000xxxaabbccdd1
+       */
+      categoryId?: string;
+      /**
+       * @description Latitude coordinate
+       * @example 13.7563
+       */
+      latitude?: number;
+      /**
+       * @description Longitude coordinate
+       * @example 100.5018
+       */
+      longitude?: number;
+    };
+    CreatePriceReportDto: Record<string, never>;
+    UpdatePriceReportDto: Record<string, never>;
+    CreateCommunityTipDto: {
+      /**
+       * @description Spot ID
+       * @example spot-123
+       */
+      spotId: string;
+      /**
+       * @description Tip type
+       * @example TRY
+       * @enum {string}
+       */
+      type: "TRY" | "AVOID";
+      /**
+       * @description Tip title
+       * @example Great happy hour deals
+       */
+      title: string;
+      /**
+       * @description Tip description
+       * @example Best drink prices from 4-6 PM on weekdays
+       */
+      description: string;
+    };
+    CommunityTipResponseDto: Record<string, never>;
+    PaginatedCommunityTipsResponseDto: Record<string, never>;
+    UpdateCommunityTipDto: {
+      /**
+       * @description Tip title
+       * @example Updated title
+       */
+      title?: string;
+      /**
+       * @description Tip description
+       * @example Updated description
+       */
+      description?: string;
+    };
+    MessageResponseDto: Record<string, never>;
+    TipVoteDto: Record<string, never>;
+    CreateVoteResponseDto: {
+      /**
+       * @description Vote ID (cuid)
+       * @example clx4qyxxx0000xxxaabbccdd
+       */
+      voteId: string;
+      /**
+       * @description Vote target type
+       * @enum {string}
+       */
+      voteType: "tip" | "alert" | "image";
+    };
+    AlertVoteDto: Record<string, never>;
+    ImageVoteDto: Record<string, never>;
+    CreateCommentDto: Record<string, never>;
+    UpdateCommentDto: Record<string, never>;
+    CreateLiveVibeDto: Record<string, never>;
+    UpdateLiveVibeDto: Record<string, never>;
+    CreateChecklistItemDto: Record<string, never>;
+    UpdateChecklistItemDto: Record<string, never>;
+    CreateScamAlertDto: {
+      /**
+       * @description City ID
+       * @example city-123
+       */
+      cityId: string;
+      /**
+       * @description Category ID
+       * @example cat-456
+       */
+      categoryId: string;
+      /**
+       * @description Scam name
+       * @example Fake tourism agency
+       */
+      scamName: string;
+      /**
+       * @description Scam description
+       * @example Fraudulent tour booking site asking for deposits
+       */
+      description: string;
+      /**
+       * @description Prevention tip
+       * @example Always book through official tourism boards
+       */
+      preventionTip: string;
+      /**
+       * Format: binary
+       * @description Scam alert image (JPG, PNG, WebP - max 10MB, optional)
+       */
+      image?: string;
+    };
+    ScamAlertResponseDto: {
+      /**
+       * @description Scam alert ID (cuid)
+       * @example clx4qyxxx0000xxxaabbccdd
+       */
+      id: string;
+      /**
+       * @description Name of the scam
+       * @example Tuk-tuk gem scam
+       */
+      scamName: string;
+      /**
+       * @description Detailed description of the scam
+       * @example Driver takes you to overpriced gem store...
+       */
+      description: string;
+      /**
+       * @description Tips to avoid the scam
+       * @example Refuse all unsolicited detours.
+       */
+      preventionTip: string;
+      /**
+       * @description Warning/example image URL
+       * @example https://cdn.example.com/scam-alerts/tuk-tuk.webp
+       */
+      imageUrl?: string;
+      /**
+       * Format: date-time
+       * @description Creation timestamp
+       * @example 2025-01-01T00:00:00.000Z
+       */
+      createdAt: string;
+      /**
+       * @description Category the scam belongs to
+       * @example {
+       *       "id": "clx4qyxxx0000xxxaabbccdd",
+       *       "name": "Transport"
+       *     }
+       */
+      category: Record<string, never>;
+      /**
+       * @description City the scam was reported in
+       * @example {
+       *       "id": "clx4qyxxx0000xxxaabbccdd",
+       *       "name": "Bangkok"
+       *     }
+       */
+      city: Record<string, never>;
+      /**
+       * @description User who reported the scam
+       * @example {
+       *       "id": "d0c7a6e6-afb8-40ec-9b0e-84092da694c4",
+       *       "name": "John",
+       *       "avatarUrl": null,
+       *       "level": "EXPLORER"
+       *     }
+       */
+      user: Record<string, never>;
+      /**
+       * @description Counts of related comments and votes
+       * @example {
+       *       "comments": 10,
+       *       "votes": 50
+       *     }
+       */
+      _count: Record<string, never>;
+      /** @description Whether the current user has voted (only present when authenticated) */
+      hasVoted?: boolean;
+      /**
+       * @description Vote ID (cuid) if user has voted, null otherwise
+       * @example clx4qyxxx0000xxxaabbccdd
+       */
+      voteId?: Record<string, never> | null;
+    };
+    PaginatedScamAlertsResponseDto: {
+      data: components["schemas"]["ScamAlertResponseDto"][];
+      pagination: components["schemas"]["PaginationMetaDto"];
+    };
+    UpdateScamAlertDto: {
+      /**
+       * @description City ID
+       * @example city-123
+       */
+      cityId?: string;
+      /**
+       * @description Category ID
+       * @example cat-456
+       */
+      categoryId?: string;
+      /**
+       * @description Scam name
+       * @example Updated scam name
+       */
+      scamName?: string;
+      /**
+       * @description Scam description
+       * @example Updated description
+       */
+      description?: string;
+      /**
+       * @description Prevention tip
+       * @example Updated prevention tip
+       */
+      preventionTip?: string;
+      /**
+       * Format: binary
+       * @description Scam alert image (JPG, PNG, WebP - max 10MB, optional)
+       */
+      image?: string;
+    };
+    GalleryImageResponseDto: Record<string, never>;
+    PaginatedGalleryImagesResponseDto: Record<string, never>;
+    GalleryStatsResponseDto: Record<string, never>;
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    AppController_getHealth: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  AppController_getHealth: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    ProfilesController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateProfileDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    ProfilesController_getMe: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  ProfilesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    ProfilesController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateProfileDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateProfileDto"];
+      };
     };
-    ProfilesController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    ProfilesController_getReputationStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  ProfilesController_getMe: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CategoriesController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    CategoriesController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCategoryDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  ProfilesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CategoriesController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateProfileDto"];
+      };
     };
-    CategoriesController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCategoryDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    CitiesController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  ProfilesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    CitiesController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCityDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    CitiesController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  ProfilesController_getReputationStats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    CitiesController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    CitiesController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCityDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  CategoriesController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    SpotsController_findAll: {
-        parameters: {
-            query?: {
-                /** @description Search text */
-                search?: string;
-                /** @description Filter by category ID */
-                categoryId?: string;
-                /** @description Filter by city ID */
-                cityId?: string;
-                /** @description Sort order */
-                sort?: "newest" | "popular";
-                /** @description Items per page */
-                take?: number;
-                /** @description Items to skip */
-                skip?: unknown;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns paginated spots */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    SpotsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["CreateSpotDto"];
-            };
-        };
-        responses: {
-            /** @description Spot created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
-                };
-            };
-            /** @description Invalid file or validation error */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  CategoriesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    SpotsController_getTotalSpots: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns total count */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCategoryDto"];
+      };
     };
-    SpotsController_findNearby: {
-        parameters: {
-            query: {
-                /** @description Latitude coordinate */
-                latitude: number;
-                /** @description Longitude coordinate */
-                longitude: number;
-                /** @description Search distance in km (default: 5) */
-                distance?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns nearby spots */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    SpotsController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Spot ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns spot details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
-                };
-            };
-        };
+  };
+  CategoriesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    SpotsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Spot ID */
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["UpdateSpotDto"];
-            };
-        };
-        responses: {
-            /** @description Spot updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    PriceReportsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreatePriceReportDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  CategoriesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    PriceReportsController_findBySpot: {
-        parameters: {
-            query: {
-                skip: string;
-                take: string;
-            };
-            header?: never;
-            path: {
-                spotId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCategoryDto"];
+      };
     };
-    PriceReportsController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+        content?: never;
+      };
     };
-    PriceReportsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdatePriceReportDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  CitiesController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CommunityTipsController_findAll: {
-        parameters: {
-            query?: {
-                /** @description Items per page */
-                take?: number;
-                /** @description Items to skip */
-                skip?: unknown;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns paginated community tips */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    CommunityTipsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["CreateCommunityTipDto"];
-            };
-        };
-        responses: {
-            /** @description Community tip created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CommunityTipResponseDto"];
-                };
-            };
-        };
+  };
+  CitiesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CommunityTipsController_findBySpot: {
-        parameters: {
-            query?: {
-                /** @description Items to skip */
-                skip?: string;
-                /** @description Items per page */
-                take?: number;
-            };
-            header?: never;
-            path: {
-                /** @description Spot ID */
-                spotId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns community tips for the spot */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCityDto"];
+      };
     };
-    CommunityTipsController_getTotalTips: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns total count */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    CommunityTipsController_getCounts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Community Tip ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns tip counts */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+  };
+  CitiesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    CommunityTipsController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Community Tip ID */
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Community tip deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    CommunityTipsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Community Tip ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["UpdateCommunityTipDto"];
-            };
-        };
-        responses: {
-            /** @description Community tip updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CommunityTipResponseDto"];
-                };
-            };
-        };
+  };
+  CitiesController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    VotesController_createTipVote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TipVoteDto"];
-            };
-        };
-        responses: {
-            /** @description Tip vote created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateVoteResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    VotesController_createAlertVote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AlertVoteDto"];
-            };
-        };
-        responses: {
-            /** @description Alert vote created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateVoteResponseDto"];
-                };
-            };
-        };
+  };
+  CitiesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    VotesController_createImageVote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ImageVoteDto"];
-            };
-        };
-        responses: {
-            /** @description Image vote created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateVoteResponseDto"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCityDto"];
+      };
     };
-    VotesController_deleteVote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Vote deleted */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    CommentsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCommentDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  SpotsController_findAll: {
+    parameters: {
+      query?: {
+        /** @description Search text */
+        search?: string;
+        /** @description Filter by category ID */
+        categoryId?: string;
+        /** @description Filter by city ID */
+        cityId?: string;
+        /** @description Sort order */
+        sort?: "newest" | "popular";
+        /** @description Items per page */
+        take?: number;
+        /** @description Items to skip */
+        skip?: unknown;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CommentsController_findByTip: {
-        parameters: {
-            query: {
-                skip: string;
-                take: string;
-            };
-            header?: never;
-            path: {
-                communityTipId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Returns paginated spots */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
         };
+      };
     };
-    CommentsController_findByScamAlert: {
-        parameters: {
-            query: {
-                skip: string;
-                take: string;
-            };
-            header?: never;
-            path: {
-                scamAlertId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  SpotsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CommentsController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["CreateSpotDto"];
+      };
     };
-    CommentsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Spot created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCommentDto"];
-            };
+        content: {
+          "application/json": components["schemas"]["SpotWithStatsResponseDto"];
         };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+      };
+      /** @description Invalid file or validation error */
+      400: {
+        headers: {
+          [name: string]: unknown;
         };
+        content?: never;
+      };
     };
-    LiveVibesController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  SpotsController_getTotalSpots: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    LiveVibesController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Returns total count */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateLiveVibeDto"];
-            };
+        content: {
+          "application/json": unknown;
         };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+      };
     };
-    LiveVibesController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  SpotsController_findNearby: {
+    parameters: {
+      query: {
+        /** @description Latitude coordinate */
+        latitude: number;
+        /** @description Longitude coordinate */
+        longitude: number;
+        /** @description Search distance in km (default: 5) */
+        distance?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    LiveVibesController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Returns nearby spots */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
         };
+      };
     };
-    LiveVibesController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateLiveVibeDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  SpotsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Spot ID */
+        id: string;
+      };
+      cookie?: never;
     };
-    ChecklistController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Returns spot details */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "application/json": components["schemas"]["SpotWithStatsResponseDto"];
         };
+      };
     };
-    ChecklistController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateChecklistItemDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  SpotsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Spot ID */
+        id: string;
+      };
+      cookie?: never;
     };
-    ChecklistController_getStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["UpdateSpotDto"];
+      };
     };
-    ChecklistController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Spot updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "application/json": components["schemas"]["SpotWithStatsResponseDto"];
         };
+      };
     };
-    ChecklistController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  PriceReportsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    ChecklistController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateChecklistItemDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreatePriceReportDto"];
+      };
     };
-    ScamAlertsController_findAll: {
-        parameters: {
-            query?: {
-                /** @description Search text */
-                search?: unknown;
-                /** @description Sort order */
-                sort?: "newest" | "popular";
-                /** @description Filter by city ID */
-                cityId?: unknown;
-                /** @description Filter by category ID */
-                categoryId?: unknown;
-                /** @description Items per page */
-                take?: number;
-                /** @description Items to skip */
-                skip?: unknown;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns paginated scam alerts */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedScamAlertsResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    ScamAlertsController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["CreateScamAlertDto"];
-            };
-        };
-        responses: {
-            /** @description Scam alert created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScamAlertResponseDto"];
-                };
-            };
-        };
+  };
+  PriceReportsController_findBySpot: {
+    parameters: {
+      query: {
+        skip: string;
+        take: string;
+      };
+      header?: never;
+      path: {
+        spotId: string;
+      };
+      cookie?: never;
     };
-    ScamAlertsController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Scam Alert ID */
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns scam alert details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScamAlertResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    ScamAlertsController_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Scam Alert ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Scam alert deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-        };
+  };
+  PriceReportsController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    ScamAlertsController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Scam Alert ID */
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["UpdateScamAlertDto"];
-            };
-        };
-        responses: {
-            /** @description Scam alert updated successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScamAlertResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    GalleryController_uploadImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                spotId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Image uploaded successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GalleryImageResponseDto"];
-                };
-            };
-            /** @description Invalid file or spot not found */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  PriceReportsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
     };
-    GalleryController_getGallery: {
-        parameters: {
-            query?: {
-                /** @description Sort order */
-                sort?: "newest" | "popular";
-                /** @description Items per page */
-                take?: number;
-                /** @description Items to skip */
-                skip?: unknown;
-            };
-            header?: never;
-            path: {
-                /** @description Spot ID */
-                spotId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns paginated gallery images */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginatedGalleryImagesResponseDto"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdatePriceReportDto"];
+      };
     };
-    GalleryController_getImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Image ID */
-                id: string;
-            };
-            cookie?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Returns image details */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GalleryImageResponseDto"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    GalleryController_deleteImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Image ID */
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Image deleted successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
-        };
+  };
+  CommunityTipsController_findAll: {
+    parameters: {
+      query?: {
+        /** @description Items per page */
+        take?: number;
+        /** @description Items to skip */
+        skip?: unknown;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    GalleryController_flagImage: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Image ID */
-                id: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Returns paginated community tips */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Image reported successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MessageResponseDto"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
         };
+      };
     };
-    GalleryController_getStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Spot ID */
-                spotId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns gallery stats */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GalleryStatsResponseDto"];
-                };
-            };
-        };
+  };
+  CommunityTipsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["CreateCommunityTipDto"];
+      };
+    };
+    responses: {
+      /** @description Community tip created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CommunityTipResponseDto"];
+        };
+      };
+    };
+  };
+  CommunityTipsController_findBySpot: {
+    parameters: {
+      query?: {
+        /** @description Items to skip */
+        skip?: string;
+        /** @description Items per page */
+        take?: number;
+      };
+      header?: never;
+      path: {
+        /** @description Spot ID */
+        spotId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns community tips for the spot */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
+        };
+      };
+    };
+  };
+  CommunityTipsController_getTotalTips: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns total count */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  CommunityTipsController_getCounts: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Community Tip ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns tip counts */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  CommunityTipsController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Community Tip ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Community tip deleted successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageResponseDto"];
+        };
+      };
+    };
+  };
+  CommunityTipsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Community Tip ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["UpdateCommunityTipDto"];
+      };
+    };
+    responses: {
+      /** @description Community tip updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CommunityTipResponseDto"];
+        };
+      };
+    };
+  };
+  VotesController_createTipVote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TipVoteDto"];
+      };
+    };
+    responses: {
+      /** @description Tip vote created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateVoteResponseDto"];
+        };
+      };
+    };
+  };
+  VotesController_createAlertVote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AlertVoteDto"];
+      };
+    };
+    responses: {
+      /** @description Alert vote created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateVoteResponseDto"];
+        };
+      };
+    };
+  };
+  VotesController_createImageVote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ImageVoteDto"];
+      };
+    };
+    responses: {
+      /** @description Image vote created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateVoteResponseDto"];
+        };
+      };
+    };
+  };
+  VotesController_deleteVote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Vote deleted */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageResponseDto"];
+        };
+      };
+    };
+  };
+  CommentsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCommentDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CommentsController_findByTip: {
+    parameters: {
+      query: {
+        skip: string;
+        take: string;
+      };
+      header?: never;
+      path: {
+        communityTipId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CommentsController_findByScamAlert: {
+    parameters: {
+      query: {
+        skip: string;
+        take: string;
+      };
+      header?: never;
+      path: {
+        scamAlertId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CommentsController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  CommentsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCommentDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LiveVibesController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LiveVibesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateLiveVibeDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LiveVibesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LiveVibesController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  LiveVibesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateLiveVibeDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateChecklistItemDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistController_getStats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ChecklistController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateChecklistItemDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  ScamAlertsController_findAll: {
+    parameters: {
+      query?: {
+        /** @description Search text */
+        search?: unknown;
+        /** @description Sort order */
+        sort?: "newest" | "popular";
+        /** @description Filter by city ID */
+        cityId?: unknown;
+        /** @description Filter by category ID */
+        categoryId?: unknown;
+        /** @description Items per page */
+        take?: number;
+        /** @description Items to skip */
+        skip?: unknown;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns paginated scam alerts */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedScamAlertsResponseDto"];
+        };
+      };
+    };
+  };
+  ScamAlertsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["CreateScamAlertDto"];
+      };
+    };
+    responses: {
+      /** @description Scam alert created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScamAlertResponseDto"];
+        };
+      };
+    };
+  };
+  ScamAlertsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Scam Alert ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns scam alert details */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScamAlertResponseDto"];
+        };
+      };
+    };
+  };
+  ScamAlertsController_delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Scam Alert ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Scam alert deleted successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageResponseDto"];
+        };
+      };
+    };
+  };
+  ScamAlertsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Scam Alert ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": components["schemas"]["UpdateScamAlertDto"];
+      };
+    };
+    responses: {
+      /** @description Scam alert updated successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScamAlertResponseDto"];
+        };
+      };
+    };
+  };
+  GalleryController_uploadImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        spotId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Image uploaded successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GalleryImageResponseDto"];
+        };
+      };
+      /** @description Invalid file or spot not found */
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  GalleryController_getGallery: {
+    parameters: {
+      query?: {
+        /** @description Sort order */
+        sort?: "newest" | "popular";
+        /** @description Items per page */
+        take?: number;
+        /** @description Items to skip */
+        skip?: unknown;
+      };
+      header?: never;
+      path: {
+        /** @description Spot ID */
+        spotId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns paginated gallery images */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedGalleryImagesResponseDto"];
+        };
+      };
+    };
+  };
+  GalleryController_getImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Image ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns image details */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GalleryImageResponseDto"];
+        };
+      };
+    };
+  };
+  GalleryController_deleteImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Image ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Image deleted successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageResponseDto"];
+        };
+      };
+    };
+  };
+  GalleryController_flagImage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Image ID */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Image reported successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["MessageResponseDto"];
+        };
+      };
+    };
+  };
+  GalleryController_getStats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description Spot ID */
+        spotId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Returns gallery stats */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GalleryStatsResponseDto"];
+        };
+      };
+    };
+  };
 }

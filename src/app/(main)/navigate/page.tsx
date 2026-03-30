@@ -79,38 +79,36 @@ function NavigatePageContent() {
 
   const mapRef = useRef<MapRef>(null);
 
-  const fetchRoute = useCallback(async (
-    fromLat: number,
-    fromLng: number,
-    toLat: number,
-    toLng: number,
-  ) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${fromLng},${fromLat};${toLng},${toLat}?alternatives=false&steps=true&geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`,
-      );
+  const fetchRoute = useCallback(
+    async (fromLat: number, fromLng: number, toLat: number, toLng: number) => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await fetch(
+          `https://api.mapbox.com/directions/v5/mapbox/driving/${fromLng},${fromLat};${toLng},${toLat}?alternatives=false&steps=true&geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`,
+        );
 
-      if (!response.ok) throw new Error("Failed to fetch route");
+        if (!response.ok) throw new Error("Failed to fetch route");
 
-      const data = await response.json();
-      if (data.routes && data.routes.length > 0) {
-        const mainRoute = data.routes[0];
-        setRoute({
-          ...mainRoute,
-          steps: mainRoute.legs?.[0]?.steps || [],
-        });
-      } else {
-        setError("No route found");
+        const data = await response.json();
+        if (data.routes && data.routes.length > 0) {
+          const mainRoute = data.routes[0];
+          setRoute({
+            ...mainRoute,
+            steps: mainRoute.legs?.[0]?.steps || [],
+          });
+        } else {
+          setError("No route found");
+        }
+      } catch (_err) {
+        console.error("Route fetch error:", _err);
+        setError("Failed to calculate route");
+      } finally {
+        setIsLoading(false);
       }
-    } catch (_err) {
-      console.error("Route fetch error:", _err);
-      setError("Failed to calculate route");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [],
+  );
 
   const attemptGeolocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
@@ -186,7 +184,6 @@ function NavigatePageContent() {
       document.body.style.overflow = "";
     };
   }, [destLat, destLng, checkGeolocationPermission]);
-
 
   const handleCloseManualLocation = () => {
     setShowManualLocation(false);

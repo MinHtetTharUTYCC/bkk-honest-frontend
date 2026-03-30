@@ -83,15 +83,20 @@ export default async function ScamAlertsPage({
       return data;
     },
     getNextPageParam: (lastPage: unknown) => {
-      if (!lastPage || typeof lastPage !== 'object') return undefined;
+      if (!lastPage || typeof lastPage !== "object") return undefined;
       const p = lastPage as Record<string, unknown>;
       const pagination = p.pagination;
-      if (!pagination || typeof pagination !== 'object') return undefined;
-      const pag = pagination as { skip?: number; take?: number; total?: number };
+      if (!pagination || typeof pagination !== "object") return undefined;
+      const pag = pagination as {
+        skip?: number;
+        take?: number;
+        total?: number;
+      };
       const skip = pag.skip as number | undefined;
       const take = pag.take as number | undefined;
       const total = pag.total as number | undefined;
-      if (skip === undefined || take === undefined || total === undefined) return undefined;
+      if (skip === undefined || take === undefined || total === undefined)
+        return undefined;
       const nextSkip = skip + take;
       return nextSkip < total ? Math.floor(nextSkip / take) : undefined;
     },

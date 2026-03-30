@@ -10,16 +10,18 @@ import { createClient as createServerClient } from "@/lib/supabase/server";
 export const getSpot = cache(async (citySlug: string, spotSlug: string) => {
   try {
     const supabase = await createServerClient();
-    const { data: { session } } = await supabase.auth.getSession();
-    const headers = session?.access_token 
-      ? { Authorization: `Bearer ${session.access_token}` } 
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const headers = session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
       : {};
 
     const res = await spotsControllerFindBySlug(citySlug, spotSlug, {
       cache: "no-store",
       headers,
     } as RequestInit);
-    
+
     return res.data;
   } catch (error) {
     console.error(`[getSpot] Error fetching ${citySlug}/${spotSlug}:`, error);

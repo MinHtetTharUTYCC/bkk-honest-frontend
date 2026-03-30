@@ -7,7 +7,7 @@ interface StationFeatureProperties {
   name: string;
   name_th?: string;
   line: string;
-  system: 'BTS' | 'MRT' | 'ARL';
+  system: "BTS" | "MRT" | "ARL";
   color: string;
   interchange?: string[];
 }
@@ -29,7 +29,7 @@ export interface Station {
   name_th?: string;
   coordinates: [number, number]; // [lng, lat]
   line: string;
-  system: 'BTS' | 'MRT' | 'ARL';
+  system: "BTS" | "MRT" | "ARL";
   color: string;
   interchange?: string[];
 }
@@ -52,7 +52,7 @@ export function calculateDistance(
   lat1: number,
   lng1: number,
   lat2: number,
-  lng2: number
+  lng2: number,
 ): number {
   const R = 6371000; // Earth's radius in meters
   const φ1 = (lat1 * Math.PI) / 180;
@@ -79,23 +79,25 @@ export function estimateWalkingTime(distance: number): number {
   return Math.ceil(distance / walkingSpeedMPerMin);
 }
 
-export function isStationFeatureCollection(value: unknown): value is StationFeatureCollection {
+export function isStationFeatureCollection(
+  value: unknown,
+): value is StationFeatureCollection {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
-    'features' in value &&
+    "features" in value &&
     Array.isArray((value as StationFeatureCollection).features) &&
     (value as StationFeatureCollection).features.every(
       (f) =>
-        typeof f === 'object' &&
+        typeof f === "object" &&
         f !== null &&
-        'properties' in f &&
-        typeof (f as StationFeature).properties === 'object' &&
+        "properties" in f &&
+        typeof (f as StationFeature).properties === "object" &&
         (f as StationFeature).properties !== null &&
-        'geometry' in f &&
-        typeof (f as StationFeature).geometry === 'object' &&
+        "geometry" in f &&
+        typeof (f as StationFeature).geometry === "object" &&
         (f as StationFeature).geometry !== null &&
-        'coordinates' in (f as StationFeature).geometry
+        "coordinates" in (f as StationFeature).geometry,
     )
   );
 }
@@ -118,7 +120,8 @@ export function parseStationsFromGeoJSON(stationsGeoJSON: unknown): Station[] {
     line: feature.properties.line,
     system: feature.properties.system,
     color: feature.properties.color,
-    interchange: feature.properties.interchange || [] }));
+    interchange: feature.properties.interchange || [],
+  }));
 }
 
 /**
@@ -131,7 +134,7 @@ export function parseStationsFromGeoJSON(stationsGeoJSON: unknown): Station[] {
 export function findNearestStation(
   lat: number,
   lng: number,
-  stations: Station[]
+  stations: Station[],
 ): NearestStation | null {
   if (!stations.length) {
     return null;
@@ -145,7 +148,7 @@ export function findNearestStation(
       lat,
       lng,
       station.coordinates[1], // lat is at index 1
-      station.coordinates[0]  // lng is at index 0
+      station.coordinates[0], // lng is at index 0
     );
 
     if (distance < minDistance) {
@@ -161,7 +164,8 @@ export function findNearestStation(
   return {
     station: nearestStation,
     distance: minDistance,
-    walkingTime: estimateWalkingTime(minDistance) };
+    walkingTime: estimateWalkingTime(minDistance),
+  };
 }
 
 /**
@@ -176,7 +180,7 @@ export function findNearestStations(
   lat: number,
   lng: number,
   stations: Station[],
-  count: number = 3
+  count: number = 3,
 ): NearestStation[] {
   if (!stations.length) {
     return [];
@@ -187,13 +191,14 @@ export function findNearestStations(
       lat,
       lng,
       station.coordinates[1],
-      station.coordinates[0]
+      station.coordinates[0],
     );
 
     return {
       station,
       distance,
-      walkingTime: estimateWalkingTime(distance) };
+      walkingTime: estimateWalkingTime(distance),
+    };
   });
 
   // Sort by distance and return the nearest N stations
@@ -228,16 +233,16 @@ export function formatWalkingTime(minutes: number): string {
  * @param system Transit system type
  * @returns Color string
  */
-export function getSystemColor(system: 'BTS' | 'MRT' | 'ARL'): string {
+export function getSystemColor(system: "BTS" | "MRT" | "ARL"): string {
   switch (system) {
-    case 'BTS':
-      return '#00A651'; // BTS Green
-    case 'MRT':
-      return '#0047AB'; // MRT Blue
-    case 'ARL':
-      return '#FF0000'; // ARL Red
+    case "BTS":
+      return "#00A651"; // BTS Green
+    case "MRT":
+      return "#0047AB"; // MRT Blue
+    case "ARL":
+      return "#FF0000"; // ARL Red
     default:
-      return '#FFFFFF';
+      return "#FFFFFF";
   }
 }
 
@@ -246,14 +251,14 @@ export function getSystemColor(system: 'BTS' | 'MRT' | 'ARL'): string {
  * @param system Transit system type
  * @returns Display name
  */
-export function getSystemDisplayName(system: 'BTS' | 'MRT' | 'ARL'): string {
+export function getSystemDisplayName(system: "BTS" | "MRT" | "ARL"): string {
   switch (system) {
-    case 'BTS':
-      return 'BTS Skytrain';
-    case 'MRT':
-      return 'MRT Subway';
-    case 'ARL':
-      return 'Airport Link';
+    case "BTS":
+      return "BTS Skytrain";
+    case "MRT":
+      return "MRT Subway";
+    case "ARL":
+      return "Airport Link";
     default:
       return system;
   }

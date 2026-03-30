@@ -21,7 +21,8 @@ export default async function MyScamsPage() {
   const queryClient = new QueryClient();
 
   // Prefetch infinite query using 'me' as the userId
-  const infiniteQueryOptions = getScamAlertsControllerFindByUserInfiniteQueryOptions("me", { take: 10 });
+  const infiniteQueryOptions =
+    getScamAlertsControllerFindByUserInfiniteQueryOptions("me", { take: 10 });
 
   await queryClient.prefetchInfiniteQuery(infiniteQueryOptions);
 

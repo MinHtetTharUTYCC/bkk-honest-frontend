@@ -5,11 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,8 +22,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   CommentResponseDto,
@@ -35,661 +31,1147 @@ import type {
   CommentsControllerFindByTipParams,
   CreateCommentDto,
   PaginatedCommentsDto,
-  UpdateCommentDto
-} from '../model';
+  UpdateCommentDto,
+} from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Create a comment
  */
 export type commentsControllerCreateResponse201 = {
-  data: CommentResponseDto
-  status: 201
-}
-
-export type commentsControllerCreateResponseSuccess = (commentsControllerCreateResponse201) & {
-  headers: Headers;
+  data: CommentResponseDto;
+  status: 201;
 };
-;
 
-export type commentsControllerCreateResponse = (commentsControllerCreateResponseSuccess)
+export type commentsControllerCreateResponseSuccess =
+  commentsControllerCreateResponse201 & {
+    headers: Headers;
+  };
+export type commentsControllerCreateResponse =
+  commentsControllerCreateResponseSuccess;
 
 export const getCommentsControllerCreateUrl = () => {
+  return `/comments`;
+};
 
+export const commentsControllerCreate = async (
+  createCommentDto: CreateCommentDto,
+  options?: RequestInit,
+): Promise<commentsControllerCreateResponse> => {
+  return customInstance<commentsControllerCreateResponse>(
+    getCommentsControllerCreateUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(createCommentDto),
+    },
+  );
+};
 
+export const getCommentsControllerCreateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerCreate>>,
+    TError,
+    { data: CreateCommentDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerCreate>>,
+  TError,
+  { data: CreateCommentDto },
+  TContext
+> => {
+  const mutationKey = ["commentsControllerCreate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerCreate>>,
+    { data: CreateCommentDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/comments`
-}
+    return commentsControllerCreate(data);
+  };
 
-export const commentsControllerCreate = async (createCommentDto: CreateCommentDto, options?: RequestInit): Promise<commentsControllerCreateResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<commentsControllerCreateResponse>(getCommentsControllerCreateUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createCommentDto,)
-  }
-);}
+export type CommentsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerCreate>>
+>;
+export type CommentsControllerCreateMutationBody = CreateCommentDto;
+export type CommentsControllerCreateMutationError = unknown;
 
-
-
-
-export const getCommentsControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentsControllerCreate>>, TError,{data: CreateCommentDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof commentsControllerCreate>>, TError,{data: CreateCommentDto}, TContext> => {
-
-const mutationKey = ['commentsControllerCreate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentsControllerCreate>>, {data: CreateCommentDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  commentsControllerCreate(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommentsControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof commentsControllerCreate>>>
-    export type CommentsControllerCreateMutationBody = CreateCommentDto
-    export type CommentsControllerCreateMutationError = unknown
-
-    /**
+/**
  * @summary Create a comment
  */
-export const useCommentsControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentsControllerCreate>>, TError,{data: CreateCommentDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof commentsControllerCreate>>,
-        TError,
-        {data: CreateCommentDto},
-        TContext
-      > => {
-      return useMutation(getCommentsControllerCreateMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommentsControllerCreate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerCreate>>,
+      TError,
+      { data: CreateCommentDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerCreate>>,
+  TError,
+  { data: CreateCommentDto },
+  TContext
+> => {
+  return useMutation(
+    getCommentsControllerCreateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get comments by tip ID
  */
 export type commentsControllerFindByTipResponse200 = {
-  data: PaginatedCommentsDto
-  status: 200
-}
-
-export type commentsControllerFindByTipResponseSuccess = (commentsControllerFindByTipResponse200) & {
-  headers: Headers;
+  data: PaginatedCommentsDto;
+  status: 200;
 };
-;
 
-export type commentsControllerFindByTipResponse = (commentsControllerFindByTipResponseSuccess)
+export type commentsControllerFindByTipResponseSuccess =
+  commentsControllerFindByTipResponse200 & {
+    headers: Headers;
+  };
+export type commentsControllerFindByTipResponse =
+  commentsControllerFindByTipResponseSuccess;
 
-export const getCommentsControllerFindByTipUrl = (communityTipId: string,
-    params?: CommentsControllerFindByTipParams,) => {
+export const getCommentsControllerFindByTipUrl = (
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/comments/tip/${communityTipId}?${stringifiedParams}` : `/comments/tip/${communityTipId}`
-}
+  return stringifiedParams.length > 0
+    ? `/comments/tip/${communityTipId}?${stringifiedParams}`
+    : `/comments/tip/${communityTipId}`;
+};
 
-export const commentsControllerFindByTip = async (communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: RequestInit): Promise<commentsControllerFindByTipResponse> => {
+export const commentsControllerFindByTip = async (
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: RequestInit,
+): Promise<commentsControllerFindByTipResponse> => {
+  return customInstance<commentsControllerFindByTipResponse>(
+    getCommentsControllerFindByTipUrl(communityTipId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<commentsControllerFindByTipResponse>(getCommentsControllerFindByTipUrl(communityTipId,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommentsControllerFindByTipInfiniteQueryKey = (communityTipId: string,
-    params?: CommentsControllerFindByTipParams,) => {
-    return [
-    'infinite', `/comments/tip/${communityTipId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getCommentsControllerFindByTipQueryKey = (communityTipId: string,
-    params?: CommentsControllerFindByTipParams,) => {
-    return [
-    `/comments/tip/${communityTipId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getCommentsControllerFindByTipInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>>, }
+export const getCommentsControllerFindByTipInfiniteQueryKey = (
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
 ) => {
+  return [
+    "infinite",
+    `/comments/tip/${communityTipId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommentsControllerFindByTipQueryKey = (
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+) => {
+  return [
+    `/comments/tip/${communityTipId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommentsControllerFindByTipInfiniteQueryKey(communityTipId,params);
+export const getCommentsControllerFindByTipInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    CommentsControllerFindByTipParams["skip"]
+  >,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByTipParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommentsControllerFindByTipInfiniteQueryKey(communityTipId, params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    QueryKey,
+    CommentsControllerFindByTipParams["skip"]
+  > = ({ signal, pageParam }) =>
+    commentsControllerFindByTip(
+      communityTipId,
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerFindByTip>>, QueryKey, CommentsControllerFindByTipParams['skip']> = ({ signal, pageParam }) => commentsControllerFindByTip(communityTipId,{...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!communityTipId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    TError,
+    TData,
+    QueryKey,
+    CommentsControllerFindByTipParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommentsControllerFindByTipInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerFindByTip>>
+>;
+export type CommentsControllerFindByTipInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, enabled: !!(communityTipId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommentsControllerFindByTipInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentsControllerFindByTip>>>
-export type CommentsControllerFindByTipInfiniteQueryError = unknown
-
-
-export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
- communityTipId: string,
-    params: undefined |  CommentsControllerFindByTipParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>> & Pick<
+export function useCommentsControllerFindByTipInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    CommentsControllerFindByTipParams["skip"]
+  >,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params: undefined | CommentsControllerFindByTipParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByTipParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByTip>>,
           TError,
-          Awaited<ReturnType<typeof commentsControllerFindByTip>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
- communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByTipInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    CommentsControllerFindByTipParams["skip"]
+  >,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByTipParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByTip>>,
           TError,
-          Awaited<ReturnType<typeof commentsControllerFindByTip>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
- communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByTipInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    CommentsControllerFindByTipParams["skip"]
+  >,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByTipParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get comments by tip ID
  */
 
-export function useCommentsControllerFindByTipInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByTip>>, CommentsControllerFindByTipParams['skip']>, TError = unknown>(
- communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData, QueryKey, CommentsControllerFindByTipParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommentsControllerFindByTipInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    CommentsControllerFindByTipParams["skip"]
+  >,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByTipParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommentsControllerFindByTipInfiniteQueryOptions(
+    communityTipId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommentsControllerFindByTipInfiniteQueryOptions(communityTipId,params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommentsControllerFindByTipQueryOptions = <TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError = unknown>(communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData>>, }
+export const getCommentsControllerFindByTipQueryOptions = <
+  TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommentsControllerFindByTipQueryKey(communityTipId, params);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommentsControllerFindByTipQueryKey(communityTipId,params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>
+  > = ({ signal }) =>
+    commentsControllerFindByTip(communityTipId, params, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!communityTipId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommentsControllerFindByTipQueryResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerFindByTip>>
+>;
+export type CommentsControllerFindByTipQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerFindByTip>>> = ({ signal }) => commentsControllerFindByTip(communityTipId,params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(communityTipId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommentsControllerFindByTipQueryResult = NonNullable<Awaited<ReturnType<typeof commentsControllerFindByTip>>>
-export type CommentsControllerFindByTipQueryError = unknown
-
-
-export function useCommentsControllerFindByTip<TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError = unknown>(
- communityTipId: string,
-    params: undefined |  CommentsControllerFindByTipParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData>> & Pick<
+export function useCommentsControllerFindByTip<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params: undefined | CommentsControllerFindByTipParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByTip>>,
           TError,
           Awaited<ReturnType<typeof commentsControllerFindByTip>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByTip<TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError = unknown>(
- communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByTip<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByTip>>,
           TError,
           Awaited<ReturnType<typeof commentsControllerFindByTip>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByTip<TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError = unknown>(
- communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByTip<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get comments by tip ID
  */
 
-export function useCommentsControllerFindByTip<TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError = unknown>(
- communityTipId: string,
-    params?: CommentsControllerFindByTipParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByTip>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommentsControllerFindByTip<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+  TError = unknown,
+>(
+  communityTipId: string,
+  params?: CommentsControllerFindByTipParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByTip>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommentsControllerFindByTipQueryOptions(
+    communityTipId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommentsControllerFindByTipQueryOptions(communityTipId,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get comments by scam alert ID
  */
 export type commentsControllerFindByScamAlertResponse200 = {
-  data: PaginatedCommentsDto
-  status: 200
-}
-
-export type commentsControllerFindByScamAlertResponseSuccess = (commentsControllerFindByScamAlertResponse200) & {
-  headers: Headers;
+  data: PaginatedCommentsDto;
+  status: 200;
 };
-;
 
-export type commentsControllerFindByScamAlertResponse = (commentsControllerFindByScamAlertResponseSuccess)
+export type commentsControllerFindByScamAlertResponseSuccess =
+  commentsControllerFindByScamAlertResponse200 & {
+    headers: Headers;
+  };
+export type commentsControllerFindByScamAlertResponse =
+  commentsControllerFindByScamAlertResponseSuccess;
 
-export const getCommentsControllerFindByScamAlertUrl = (scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams,) => {
+export const getCommentsControllerFindByScamAlertUrl = (
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/comments/alert/${scamAlertId}?${stringifiedParams}` : `/comments/alert/${scamAlertId}`
-}
+  return stringifiedParams.length > 0
+    ? `/comments/alert/${scamAlertId}?${stringifiedParams}`
+    : `/comments/alert/${scamAlertId}`;
+};
 
-export const commentsControllerFindByScamAlert = async (scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: RequestInit): Promise<commentsControllerFindByScamAlertResponse> => {
+export const commentsControllerFindByScamAlert = async (
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: RequestInit,
+): Promise<commentsControllerFindByScamAlertResponse> => {
+  return customInstance<commentsControllerFindByScamAlertResponse>(
+    getCommentsControllerFindByScamAlertUrl(scamAlertId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<commentsControllerFindByScamAlertResponse>(getCommentsControllerFindByScamAlertUrl(scamAlertId,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommentsControllerFindByScamAlertInfiniteQueryKey = (scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams,) => {
-    return [
-    'infinite', `/comments/alert/${scamAlertId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getCommentsControllerFindByScamAlertQueryKey = (scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams,) => {
-    return [
-    `/comments/alert/${scamAlertId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getCommentsControllerFindByScamAlertInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>>, }
+export const getCommentsControllerFindByScamAlertInfiniteQueryKey = (
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
 ) => {
+  return [
+    "infinite",
+    `/comments/alert/${scamAlertId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getCommentsControllerFindByScamAlertQueryKey = (
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+) => {
+  return [
+    `/comments/alert/${scamAlertId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommentsControllerFindByScamAlertInfiniteQueryKey(scamAlertId,params);
+export const getCommentsControllerFindByScamAlertInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    CommentsControllerFindByScamAlertParams["skip"]
+  >,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByScamAlertParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommentsControllerFindByScamAlertInfiniteQueryKey(scamAlertId, params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    QueryKey,
+    CommentsControllerFindByScamAlertParams["skip"]
+  > = ({ signal, pageParam }) =>
+    commentsControllerFindByScamAlert(
+      scamAlertId,
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, QueryKey, CommentsControllerFindByScamAlertParams['skip']> = ({ signal, pageParam }) => commentsControllerFindByScamAlert(scamAlertId,{...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!scamAlertId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    TError,
+    TData,
+    QueryKey,
+    CommentsControllerFindByScamAlertParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommentsControllerFindByScamAlertInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>
+>;
+export type CommentsControllerFindByScamAlertInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, enabled: !!(scamAlertId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommentsControllerFindByScamAlertInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>>
-export type CommentsControllerFindByScamAlertInfiniteQueryError = unknown
-
-
-export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
- scamAlertId: string,
-    params: undefined |  CommentsControllerFindByScamAlertParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>> & Pick<
+export function useCommentsControllerFindByScamAlertInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    CommentsControllerFindByScamAlertParams["skip"]
+  >,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params: undefined | CommentsControllerFindByScamAlertParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByScamAlertParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
           TError,
-          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
- scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByScamAlertInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    CommentsControllerFindByScamAlertParams["skip"]
+  >,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByScamAlertParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
           TError,
-          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
- scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByScamAlertInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    CommentsControllerFindByScamAlertParams["skip"]
+  >,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByScamAlertParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get comments by scam alert ID
  */
 
-export function useCommentsControllerFindByScamAlertInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, CommentsControllerFindByScamAlertParams['skip']>, TError = unknown>(
- scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData, QueryKey, CommentsControllerFindByScamAlertParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommentsControllerFindByScamAlertInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    CommentsControllerFindByScamAlertParams["skip"]
+  >,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData,
+        QueryKey,
+        CommentsControllerFindByScamAlertParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommentsControllerFindByScamAlertInfiniteQueryOptions(
+    scamAlertId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommentsControllerFindByScamAlertInfiniteQueryOptions(scamAlertId,params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommentsControllerFindByScamAlertQueryOptions = <TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError = unknown>(scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData>>, }
+export const getCommentsControllerFindByScamAlertQueryOptions = <
+  TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommentsControllerFindByScamAlertQueryKey(scamAlertId, params);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommentsControllerFindByScamAlertQueryKey(scamAlertId,params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>
+  > = ({ signal }) =>
+    commentsControllerFindByScamAlert(scamAlertId, params, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!scamAlertId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommentsControllerFindByScamAlertQueryResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>
+>;
+export type CommentsControllerFindByScamAlertQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>> = ({ signal }) => commentsControllerFindByScamAlert(scamAlertId,params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(scamAlertId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommentsControllerFindByScamAlertQueryResult = NonNullable<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>>
-export type CommentsControllerFindByScamAlertQueryError = unknown
-
-
-export function useCommentsControllerFindByScamAlert<TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError = unknown>(
- scamAlertId: string,
-    params: undefined |  CommentsControllerFindByScamAlertParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData>> & Pick<
+export function useCommentsControllerFindByScamAlert<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params: undefined | CommentsControllerFindByScamAlertParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
           TError,
           Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByScamAlert<TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError = unknown>(
- scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByScamAlert<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
           TError,
           Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentsControllerFindByScamAlert<TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError = unknown>(
- scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentsControllerFindByScamAlert<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get comments by scam alert ID
  */
 
-export function useCommentsControllerFindByScamAlert<TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError = unknown>(
- scamAlertId: string,
-    params?: CommentsControllerFindByScamAlertParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommentsControllerFindByScamAlert<
+  TData = Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+  TError = unknown,
+>(
+  scamAlertId: string,
+  params?: CommentsControllerFindByScamAlertParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof commentsControllerFindByScamAlert>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCommentsControllerFindByScamAlertQueryOptions(
+    scamAlertId,
+    params,
+    options,
+  );
 
-  const queryOptions = getCommentsControllerFindByScamAlertQueryOptions(scamAlertId,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update a comment
  */
 export type commentsControllerUpdateResponse200 = {
-  data: CommentResponseDto
-  status: 200
-}
-
-export type commentsControllerUpdateResponseSuccess = (commentsControllerUpdateResponse200) & {
-  headers: Headers;
+  data: CommentResponseDto;
+  status: 200;
 };
-;
 
-export type commentsControllerUpdateResponse = (commentsControllerUpdateResponseSuccess)
+export type commentsControllerUpdateResponseSuccess =
+  commentsControllerUpdateResponse200 & {
+    headers: Headers;
+  };
+export type commentsControllerUpdateResponse =
+  commentsControllerUpdateResponseSuccess;
 
-export const getCommentsControllerUpdateUrl = (id: string,) => {
+export const getCommentsControllerUpdateUrl = (id: string) => {
+  return `/comments/${id}`;
+};
 
+export const commentsControllerUpdate = async (
+  id: string,
+  updateCommentDto: UpdateCommentDto,
+  options?: RequestInit,
+): Promise<commentsControllerUpdateResponse> => {
+  return customInstance<commentsControllerUpdateResponse>(
+    getCommentsControllerUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(updateCommentDto),
+    },
+  );
+};
 
+export const getCommentsControllerUpdateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerUpdate>>,
+    TError,
+    { id: string; data: UpdateCommentDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateCommentDto },
+  TContext
+> => {
+  const mutationKey = ["commentsControllerUpdate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerUpdate>>,
+    { id: string; data: UpdateCommentDto }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-  return `/comments/${id}`
-}
+    return commentsControllerUpdate(id, data);
+  };
 
-export const commentsControllerUpdate = async (id: string,
-    updateCommentDto: UpdateCommentDto, options?: RequestInit): Promise<commentsControllerUpdateResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<commentsControllerUpdateResponse>(getCommentsControllerUpdateUrl(id),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateCommentDto,)
-  }
-);}
+export type CommentsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerUpdate>>
+>;
+export type CommentsControllerUpdateMutationBody = UpdateCommentDto;
+export type CommentsControllerUpdateMutationError = unknown;
 
-
-
-
-export const getCommentsControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentsControllerUpdate>>, TError,{id: string;data: UpdateCommentDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof commentsControllerUpdate>>, TError,{id: string;data: UpdateCommentDto}, TContext> => {
-
-const mutationKey = ['commentsControllerUpdate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentsControllerUpdate>>, {id: string;data: UpdateCommentDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  commentsControllerUpdate(id,data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommentsControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof commentsControllerUpdate>>>
-    export type CommentsControllerUpdateMutationBody = UpdateCommentDto
-    export type CommentsControllerUpdateMutationError = unknown
-
-    /**
+/**
  * @summary Update a comment
  */
-export const useCommentsControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentsControllerUpdate>>, TError,{id: string;data: UpdateCommentDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof commentsControllerUpdate>>,
-        TError,
-        {id: string;data: UpdateCommentDto},
-        TContext
-      > => {
-      return useMutation(getCommentsControllerUpdateMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommentsControllerUpdate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerUpdate>>,
+      TError,
+      { id: string; data: UpdateCommentDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateCommentDto },
+  TContext
+> => {
+  return useMutation(
+    getCommentsControllerUpdateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a comment
  */
 export type commentsControllerDeleteResponse200 = {
-  data: void
-  status: 200
-}
-
-export type commentsControllerDeleteResponseSuccess = (commentsControllerDeleteResponse200) & {
-  headers: Headers;
+  data: void;
+  status: 200;
 };
-;
 
-export type commentsControllerDeleteResponse = (commentsControllerDeleteResponseSuccess)
+export type commentsControllerDeleteResponseSuccess =
+  commentsControllerDeleteResponse200 & {
+    headers: Headers;
+  };
+export type commentsControllerDeleteResponse =
+  commentsControllerDeleteResponseSuccess;
 
-export const getCommentsControllerDeleteUrl = (id: string,) => {
+export const getCommentsControllerDeleteUrl = (id: string) => {
+  return `/comments/${id}`;
+};
 
+export const commentsControllerDelete = async (
+  id: string,
+  options?: RequestInit,
+): Promise<commentsControllerDeleteResponse> => {
+  return customInstance<commentsControllerDeleteResponse>(
+    getCommentsControllerDeleteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getCommentsControllerDeleteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentsControllerDelete>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentsControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["commentsControllerDelete"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentsControllerDelete>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/comments/${id}`
-}
+    return commentsControllerDelete(id);
+  };
 
-export const commentsControllerDelete = async (id: string, options?: RequestInit): Promise<commentsControllerDeleteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<commentsControllerDeleteResponse>(getCommentsControllerDeleteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type CommentsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof commentsControllerDelete>>
+>;
 
+export type CommentsControllerDeleteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getCommentsControllerDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentsControllerDelete>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof commentsControllerDelete>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['commentsControllerDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentsControllerDelete>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  commentsControllerDelete(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommentsControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof commentsControllerDelete>>>
-
-    export type CommentsControllerDeleteMutationError = unknown
-
-    /**
+/**
  * @summary Delete a comment
  */
-export const useCommentsControllerDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentsControllerDelete>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof commentsControllerDelete>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getCommentsControllerDeleteMutationOptions(options), queryClient);
-    }
+export const useCommentsControllerDelete = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentsControllerDelete>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentsControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getCommentsControllerDeleteMutationOptions(options),
+    queryClient,
+  );
+};

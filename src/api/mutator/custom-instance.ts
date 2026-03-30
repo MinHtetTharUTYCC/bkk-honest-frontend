@@ -1,23 +1,25 @@
-import Axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import Axios, { AxiosRequestConfig, AxiosInstance } from "axios";
 
 export const AXIOS_INSTANCE: AxiosInstance = Axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
 });
 
 // Automatically inject Supabase JWT for authenticated requests - ONLY IN BROWSER
-if (typeof window !== 'undefined') {
+if (typeof window !== "undefined") {
   AXIOS_INSTANCE.interceptors.request.use(async (config) => {
     try {
       // Dynamic import to avoid SSR issues with client components
-      const { createClient } = await import('@/lib/supabase/client');
+      const { createClient } = await import("@/lib/supabase/client");
       const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (session?.access_token) {
-        config.headers['Authorization'] = `Bearer ${session.access_token}`;
+        config.headers["Authorization"] = `Bearer ${session.access_token}`;
       }
     } catch (e) {
-      console.error('[Orval Mutator] Error fetching Supabase session:', e);
+      console.error("[Orval Mutator] Error fetching Supabase session:", e);
     }
     return config;
   });
@@ -33,23 +35,26 @@ export function customInstance<T>(
   options?: Record<string, unknown>,
 ): PromiseWithCancel<T> {
   const source = Axios.CancelToken.source();
-  
+
   // Transform body -> data for Axios compatibility
   const requestConfig: AxiosRequestConfig = {
-      ...(typeof config === 'string' ? { url: config } : config),
-      ...(options || {}),
+    ...(typeof config === "string" ? { url: config } : config),
+    ...(options || {}),
   };
 
   const bodyConfig = requestConfig as AxiosRequestConfig & { body?: unknown };
   if (requestConfig.data === undefined && bodyConfig.body) {
-      requestConfig.data = bodyConfig.body;
-      delete bodyConfig.body;
+    requestConfig.data = bodyConfig.body;
+    delete bodyConfig.body;
   }
 
   // Explicitly merge headers if they are provided in options (useful for SSR)
-  if (options?.headers && typeof options.headers === 'object') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    requestConfig.headers = { ...requestConfig.headers, ...(options.headers as any) };
+  if (options?.headers && typeof options.headers === "object") {
+    requestConfig.headers = {
+      ...requestConfig.headers,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(options.headers as any),
+    };
   }
 
   const promise = AXIOS_INSTANCE({
@@ -58,7 +63,7 @@ export function customInstance<T>(
   }).then(({ data }) => data) as PromiseWithCancel<T>;
 
   promise.cancel = () => {
-    source.cancel('Query was cancelled');
+    source.cancel("Query was cancelled");
   };
 
   return promise;

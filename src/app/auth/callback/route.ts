@@ -1,14 +1,15 @@
-import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
-  const code = requestUrl.searchParams.get('code');
-  const next = requestUrl.searchParams.get('redirectTo') ?? '/';
-  
+  const code = requestUrl.searchParams.get("code");
+  const next = requestUrl.searchParams.get("redirectTo") ?? "/";
+
   // Use the public origin from headers if available (for reverse proxy)
-  const host = request.headers.get('x-forwarded-host') || request.headers.get('host');
-  const protocol = request.headers.get('x-forwarded-proto') || 'http';
+  const host =
+    request.headers.get("x-forwarded-host") || request.headers.get("host");
+  const protocol = request.headers.get("x-forwarded-proto") || "http";
   const origin = `${protocol}://${host}`;
 
   if (code) {
@@ -16,9 +17,11 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       // Ensure we redirect within the basePath
-      let redirectPath = next.startsWith('/bkk-honest') ? next : `/bkk-honest${next}`;
+      let redirectPath = next.startsWith("/bkk-honest")
+        ? next
+        : `/bkk-honest${next}`;
       // Ensure trailing slash for consistent routing
-      if (!redirectPath.endsWith('/')) {
+      if (!redirectPath.endsWith("/")) {
         redirectPath = `${redirectPath}/`;
       }
       return NextResponse.redirect(`${origin}${redirectPath}`);
@@ -26,7 +29,9 @@ export async function GET(request: Request) {
   }
 
   // return the user to an error page within the basePath
-  return NextResponse.redirect(`${origin}/bkk-honest/login/?error=Authentication failed`);
+  return NextResponse.redirect(
+    `${origin}/bkk-honest/login/?error=Authentication failed`,
+  );
 }
 
 export async function POST(request: Request) {

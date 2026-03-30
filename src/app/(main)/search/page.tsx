@@ -6,7 +6,10 @@ import { SearchInput } from "@/components/ui/search-input";
 import { SearchFilters } from "@/components/search/search-filters";
 import { SearchHistoryDropdown } from "@/components/search/search-history-dropdown";
 import { SearchResultsTabs } from "@/components/search/search-results-tabs";
-import { useSearchHistory, SearchHistoryItem } from "@/hooks/use-search-history";
+import {
+  useSearchHistory,
+  SearchHistoryItem,
+} from "@/hooks/use-search-history";
 import { useCity } from "@/components/providers/city-provider";
 import { MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";

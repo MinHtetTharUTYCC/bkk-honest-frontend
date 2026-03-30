@@ -5,11 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,625 +22,946 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import type {
-  CityDto,
-  CreateCityDto,
-  UpdateCityDto
-} from '../model';
+import type { CityDto, CreateCityDto, UpdateCityDto } from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Create a city
  */
 export type citiesControllerCreateResponse201 = {
-  data: CityDto
-  status: 201
-}
-
-export type citiesControllerCreateResponseSuccess = (citiesControllerCreateResponse201) & {
-  headers: Headers;
+  data: CityDto;
+  status: 201;
 };
-;
 
-export type citiesControllerCreateResponse = (citiesControllerCreateResponseSuccess)
+export type citiesControllerCreateResponseSuccess =
+  citiesControllerCreateResponse201 & {
+    headers: Headers;
+  };
+export type citiesControllerCreateResponse =
+  citiesControllerCreateResponseSuccess;
 
 export const getCitiesControllerCreateUrl = () => {
+  return `/cities`;
+};
 
+export const citiesControllerCreate = async (
+  createCityDto: CreateCityDto,
+  options?: RequestInit,
+): Promise<citiesControllerCreateResponse> => {
+  return customInstance<citiesControllerCreateResponse>(
+    getCitiesControllerCreateUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(createCityDto),
+    },
+  );
+};
 
+export const getCitiesControllerCreateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof citiesControllerCreate>>,
+    TError,
+    { data: CreateCityDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof citiesControllerCreate>>,
+  TError,
+  { data: CreateCityDto },
+  TContext
+> => {
+  const mutationKey = ["citiesControllerCreate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof citiesControllerCreate>>,
+    { data: CreateCityDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/cities`
-}
+    return citiesControllerCreate(data);
+  };
 
-export const citiesControllerCreate = async (createCityDto: CreateCityDto, options?: RequestInit): Promise<citiesControllerCreateResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<citiesControllerCreateResponse>(getCitiesControllerCreateUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createCityDto,)
-  }
-);}
+export type CitiesControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerCreate>>
+>;
+export type CitiesControllerCreateMutationBody = CreateCityDto;
+export type CitiesControllerCreateMutationError = unknown;
 
-
-
-
-export const getCitiesControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext> => {
-
-const mutationKey = ['citiesControllerCreate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof citiesControllerCreate>>, {data: CreateCityDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  citiesControllerCreate(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CitiesControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof citiesControllerCreate>>>
-    export type CitiesControllerCreateMutationBody = CreateCityDto
-    export type CitiesControllerCreateMutationError = unknown
-
-    /**
+/**
  * @summary Create a city
  */
-export const useCitiesControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof citiesControllerCreate>>,
-        TError,
-        {data: CreateCityDto},
-        TContext
-      > => {
-      return useMutation(getCitiesControllerCreateMutationOptions(options), queryClient);
-    }
-    /**
+export const useCitiesControllerCreate = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof citiesControllerCreate>>,
+      TError,
+      { data: CreateCityDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof citiesControllerCreate>>,
+  TError,
+  { data: CreateCityDto },
+  TContext
+> => {
+  return useMutation(
+    getCitiesControllerCreateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get all cities
  */
 export type citiesControllerFindAllResponse200 = {
-  data: CityDto[]
-  status: 200
-}
-
-export type citiesControllerFindAllResponseSuccess = (citiesControllerFindAllResponse200) & {
-  headers: Headers;
+  data: CityDto[];
+  status: 200;
 };
-;
 
-export type citiesControllerFindAllResponse = (citiesControllerFindAllResponseSuccess)
+export type citiesControllerFindAllResponseSuccess =
+  citiesControllerFindAllResponse200 & {
+    headers: Headers;
+  };
+export type citiesControllerFindAllResponse =
+  citiesControllerFindAllResponseSuccess;
 
 export const getCitiesControllerFindAllUrl = () => {
+  return `/cities`;
+};
 
-
-
-
-  return `/cities`
-}
-
-export const citiesControllerFindAll = async ( options?: RequestInit): Promise<citiesControllerFindAllResponse> => {
-
-  return customInstance<citiesControllerFindAllResponse>(getCitiesControllerFindAllUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+export const citiesControllerFindAll = async (
+  options?: RequestInit,
+): Promise<citiesControllerFindAllResponse> => {
+  return customInstance<citiesControllerFindAllResponse>(
+    getCitiesControllerFindAllUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
 export const getCitiesControllerFindAllInfiniteQueryKey = () => {
-    return [
-    'infinite', `/cities`
-    ] as const;
-    }
+  return ["infinite", `/cities`] as const;
+};
 
 export const getCitiesControllerFindAllQueryKey = () => {
-    return [
-    `/cities`
-    ] as const;
-    }
+  return [`/cities`] as const;
+};
 
+export const getCitiesControllerFindAllInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof citiesControllerFindAll>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
 
-export const getCitiesControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, }
-) => {
+  const queryKey =
+    queryOptions?.queryKey ?? getCitiesControllerFindAllInfiniteQueryKey();
 
-const {query: queryOptions} = options ?? {};
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof citiesControllerFindAll>>
+  > = ({ signal }) => citiesControllerFindAll({ signal });
 
-  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindAllInfiniteQueryKey();
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof citiesControllerFindAll>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CitiesControllerFindAllInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerFindAll>>
+>;
+export type CitiesControllerFindAllInfiniteQueryError = unknown;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindAll>>> = ({ signal }) => citiesControllerFindAll({ signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CitiesControllerFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindAll>>>
-export type CitiesControllerFindAllInfiniteQueryError = unknown
-
-
-export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+export function useCitiesControllerFindAllInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindAllInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindAllInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get all cities
  */
 
-export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCitiesControllerFindAllInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCitiesControllerFindAllInfiniteQueryOptions(options);
 
-  const queryOptions = getCitiesControllerFindAllInfiniteQueryOptions(options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
+export const getCitiesControllerFindAllQueryOptions = <
+  TData = Awaited<ReturnType<typeof citiesControllerFindAll>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof citiesControllerFindAll>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ?? getCitiesControllerFindAllQueryKey();
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof citiesControllerFindAll>>
+  > = ({ signal }) => citiesControllerFindAll({ signal });
 
-export const getCitiesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, }
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof citiesControllerFindAll>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions} = options ?? {};
+export type CitiesControllerFindAllQueryResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerFindAll>>
+>;
+export type CitiesControllerFindAllQueryError = unknown;
 
-  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindAllQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindAll>>> = ({ signal }) => citiesControllerFindAll({ signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CitiesControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindAll>>>
-export type CitiesControllerFindAllQueryError = unknown
-
-
-export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+export function useCitiesControllerFindAll<
+  TData = Awaited<ReturnType<typeof citiesControllerFindAll>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindAll<
+  TData = Awaited<ReturnType<typeof citiesControllerFindAll>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindAll<
+  TData = Awaited<ReturnType<typeof citiesControllerFindAll>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get all cities
  */
 
-export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCitiesControllerFindAll<
+  TData = Awaited<ReturnType<typeof citiesControllerFindAll>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCitiesControllerFindAllQueryOptions(options);
 
-  const queryOptions = getCitiesControllerFindAllQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get city by ID
  */
 export type citiesControllerFindOneResponse200 = {
-  data: CityDto
-  status: 200
-}
-
-export type citiesControllerFindOneResponseSuccess = (citiesControllerFindOneResponse200) & {
-  headers: Headers;
+  data: CityDto;
+  status: 200;
 };
-;
 
-export type citiesControllerFindOneResponse = (citiesControllerFindOneResponseSuccess)
+export type citiesControllerFindOneResponseSuccess =
+  citiesControllerFindOneResponse200 & {
+    headers: Headers;
+  };
+export type citiesControllerFindOneResponse =
+  citiesControllerFindOneResponseSuccess;
 
-export const getCitiesControllerFindOneUrl = (id: string,) => {
+export const getCitiesControllerFindOneUrl = (id: string) => {
+  return `/cities/${id}`;
+};
 
+export const citiesControllerFindOne = async (
+  id: string,
+  options?: RequestInit,
+): Promise<citiesControllerFindOneResponse> => {
+  return customInstance<citiesControllerFindOneResponse>(
+    getCitiesControllerFindOneUrl(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
+export const getCitiesControllerFindOneInfiniteQueryKey = (id: string) => {
+  return ["infinite", `/cities/${id}`] as const;
+};
 
+export const getCitiesControllerFindOneQueryKey = (id: string) => {
+  return [`/cities/${id}`] as const;
+};
 
-  return `/cities/${id}`
-}
-
-export const citiesControllerFindOne = async (id: string, options?: RequestInit): Promise<citiesControllerFindOneResponse> => {
-
-  return customInstance<citiesControllerFindOneResponse>(getCitiesControllerFindOneUrl(id),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCitiesControllerFindOneInfiniteQueryKey = (id: string,) => {
-    return [
-    'infinite', `/cities/${id}`
-    ] as const;
-    }
-
-export const getCitiesControllerFindOneQueryKey = (id: string,) => {
-    return [
-    `/cities/${id}`
-    ] as const;
-    }
-
-
-export const getCitiesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, }
+export const getCitiesControllerFindOneInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getCitiesControllerFindOneInfiniteQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindOneInfiniteQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof citiesControllerFindOne>>
+  > = ({ signal }) => citiesControllerFindOne(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof citiesControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CitiesControllerFindOneInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerFindOne>>
+>;
+export type CitiesControllerFindOneInfiniteQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindOne>>> = ({ signal }) => citiesControllerFindOne(id, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CitiesControllerFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindOne>>>
-export type CitiesControllerFindOneInfiniteQueryError = unknown
-
-
-export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+export function useCitiesControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get city by ID
  */
 
-export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCitiesControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCitiesControllerFindOneInfiniteQueryOptions(
+    id,
+    options,
+  );
 
-  const queryOptions = getCitiesControllerFindOneInfiniteQueryOptions(id,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCitiesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, }
+export const getCitiesControllerFindOneQueryOptions = <
+  TData = Awaited<ReturnType<typeof citiesControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getCitiesControllerFindOneQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindOneQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof citiesControllerFindOne>>
+  > = ({ signal }) => citiesControllerFindOne(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof citiesControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CitiesControllerFindOneQueryResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerFindOne>>
+>;
+export type CitiesControllerFindOneQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindOne>>> = ({ signal }) => citiesControllerFindOne(id, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CitiesControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindOne>>>
-export type CitiesControllerFindOneQueryError = unknown
-
-
-export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = unknown>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+export function useCitiesControllerFindOne<
+  TData = Awaited<ReturnType<typeof citiesControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindOne<
+  TData = Awaited<ReturnType<typeof citiesControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof citiesControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof citiesControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCitiesControllerFindOne<
+  TData = Awaited<ReturnType<typeof citiesControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get city by ID
  */
 
-export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCitiesControllerFindOne<
+  TData = Awaited<ReturnType<typeof citiesControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof citiesControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getCitiesControllerFindOneQueryOptions(id, options);
 
-  const queryOptions = getCitiesControllerFindOneQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update a city
  */
 export type citiesControllerUpdateResponse200 = {
-  data: CityDto
-  status: 200
-}
-
-export type citiesControllerUpdateResponseSuccess = (citiesControllerUpdateResponse200) & {
-  headers: Headers;
+  data: CityDto;
+  status: 200;
 };
-;
 
-export type citiesControllerUpdateResponse = (citiesControllerUpdateResponseSuccess)
+export type citiesControllerUpdateResponseSuccess =
+  citiesControllerUpdateResponse200 & {
+    headers: Headers;
+  };
+export type citiesControllerUpdateResponse =
+  citiesControllerUpdateResponseSuccess;
 
-export const getCitiesControllerUpdateUrl = (id: string,) => {
+export const getCitiesControllerUpdateUrl = (id: string) => {
+  return `/cities/${id}`;
+};
 
+export const citiesControllerUpdate = async (
+  id: string,
+  updateCityDto: UpdateCityDto,
+  options?: RequestInit,
+): Promise<citiesControllerUpdateResponse> => {
+  return customInstance<citiesControllerUpdateResponse>(
+    getCitiesControllerUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(updateCityDto),
+    },
+  );
+};
 
+export const getCitiesControllerUpdateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof citiesControllerUpdate>>,
+    TError,
+    { id: string; data: UpdateCityDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof citiesControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateCityDto },
+  TContext
+> => {
+  const mutationKey = ["citiesControllerUpdate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof citiesControllerUpdate>>,
+    { id: string; data: UpdateCityDto }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-  return `/cities/${id}`
-}
+    return citiesControllerUpdate(id, data);
+  };
 
-export const citiesControllerUpdate = async (id: string,
-    updateCityDto: UpdateCityDto, options?: RequestInit): Promise<citiesControllerUpdateResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<citiesControllerUpdateResponse>(getCitiesControllerUpdateUrl(id),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateCityDto,)
-  }
-);}
+export type CitiesControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerUpdate>>
+>;
+export type CitiesControllerUpdateMutationBody = UpdateCityDto;
+export type CitiesControllerUpdateMutationError = unknown;
 
-
-
-
-export const getCitiesControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext> => {
-
-const mutationKey = ['citiesControllerUpdate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof citiesControllerUpdate>>, {id: string;data: UpdateCityDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  citiesControllerUpdate(id,data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CitiesControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof citiesControllerUpdate>>>
-    export type CitiesControllerUpdateMutationBody = UpdateCityDto
-    export type CitiesControllerUpdateMutationError = unknown
-
-    /**
+/**
  * @summary Update a city
  */
-export const useCitiesControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof citiesControllerUpdate>>,
-        TError,
-        {id: string;data: UpdateCityDto},
-        TContext
-      > => {
-      return useMutation(getCitiesControllerUpdateMutationOptions(options), queryClient);
-    }
-    /**
+export const useCitiesControllerUpdate = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof citiesControllerUpdate>>,
+      TError,
+      { id: string; data: UpdateCityDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof citiesControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateCityDto },
+  TContext
+> => {
+  return useMutation(
+    getCitiesControllerUpdateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a city
  */
 export type citiesControllerDeleteResponse200 = {
-  data: void
-  status: 200
-}
-
-export type citiesControllerDeleteResponseSuccess = (citiesControllerDeleteResponse200) & {
-  headers: Headers;
+  data: void;
+  status: 200;
 };
-;
 
-export type citiesControllerDeleteResponse = (citiesControllerDeleteResponseSuccess)
+export type citiesControllerDeleteResponseSuccess =
+  citiesControllerDeleteResponse200 & {
+    headers: Headers;
+  };
+export type citiesControllerDeleteResponse =
+  citiesControllerDeleteResponseSuccess;
 
-export const getCitiesControllerDeleteUrl = (id: string,) => {
+export const getCitiesControllerDeleteUrl = (id: string) => {
+  return `/cities/${id}`;
+};
 
+export const citiesControllerDelete = async (
+  id: string,
+  options?: RequestInit,
+): Promise<citiesControllerDeleteResponse> => {
+  return customInstance<citiesControllerDeleteResponse>(
+    getCitiesControllerDeleteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getCitiesControllerDeleteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof citiesControllerDelete>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof citiesControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["citiesControllerDelete"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof citiesControllerDelete>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/cities/${id}`
-}
+    return citiesControllerDelete(id);
+  };
 
-export const citiesControllerDelete = async (id: string, options?: RequestInit): Promise<citiesControllerDeleteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<citiesControllerDeleteResponse>(getCitiesControllerDeleteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type CitiesControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof citiesControllerDelete>>
+>;
 
+export type CitiesControllerDeleteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getCitiesControllerDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['citiesControllerDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof citiesControllerDelete>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  citiesControllerDelete(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CitiesControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof citiesControllerDelete>>>
-
-    export type CitiesControllerDeleteMutationError = unknown
-
-    /**
+/**
  * @summary Delete a city
  */
-export const useCitiesControllerDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof citiesControllerDelete>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getCitiesControllerDeleteMutationOptions(options), queryClient);
-    }
+export const useCitiesControllerDelete = <TError = unknown, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof citiesControllerDelete>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof citiesControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getCitiesControllerDeleteMutationOptions(options),
+    queryClient,
+  );
+};

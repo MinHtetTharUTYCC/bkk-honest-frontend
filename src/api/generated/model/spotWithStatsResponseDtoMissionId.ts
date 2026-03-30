@@ -10,4 +10,6 @@
  * ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
  * @nullable
  */
-export type SpotWithStatsResponseDtoMissionId = { [key: string]: unknown } | null;
+export type SpotWithStatsResponseDtoMissionId = {
+  [key: string]: unknown;
+} | null;

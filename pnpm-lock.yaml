@@ -167,7 +167,10 @@ importers:
         version: 7.13.0(typescript@5.9.3)
       orval:
         specifier: ^8.6.2
-        version: 8.6.2(@faker-js/faker@10.4.0)(typescript@5.9.3)
+        version: 8.6.2(@faker-js/faker@10.4.0)(prettier@3.8.1)(typescript@5.9.3)
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
       shadcn:
         specifier: ^3.8.5
         version: 3.8.5(@types/node@20.19.37)(typescript@5.9.3)
@@ -5111,6 +5114,11 @@ packages:
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
+
+  prettier@3.8.1:
+    resolution: {integrity: sha512-UOnG6LftzbdaHZcKoPFtOcCKztrQ57WkHDeRD9t/PTQtmT0NHSeWWepj6pS0z/N7+08BHFDQVUrfmfMRcZwbMg==}
+    engines: {node: '>=14'}
+    hasBin: true
 
   pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
@@ -11475,7 +11483,7 @@ snapshots:
       string-width: 7.2.0
       strip-ansi: 7.2.0
 
-  orval@8.6.2(@faker-js/faker@10.4.0)(typescript@5.9.3):
+  orval@8.6.2(@faker-js/faker@10.4.0)(prettier@3.8.1)(typescript@5.9.3):
     dependencies:
       '@commander-js/extra-typings': 14.0.0(commander@14.0.3)
       '@orval/angular': 8.6.2(@faker-js/faker@10.4.0)(typescript@5.9.3)
@@ -11506,6 +11514,8 @@ snapshots:
       typedoc: 0.28.18(typescript@5.9.3)
       typedoc-plugin-coverage: 4.0.2(typedoc@0.28.18(typescript@5.9.3))
       typedoc-plugin-markdown: 4.11.0(typedoc@0.28.18(typescript@5.9.3))
+    optionalDependencies:
+      prettier: 3.8.1
     transitivePeerDependencies:
       - '@faker-js/faker'
       - supports-color
@@ -11668,6 +11678,8 @@ snapshots:
   powershell-utils@0.1.0: {}
 
   prelude-ls@1.2.1: {}
+
+  prettier@3.8.1: {}
 
   pretty-format@27.5.1:
     dependencies:

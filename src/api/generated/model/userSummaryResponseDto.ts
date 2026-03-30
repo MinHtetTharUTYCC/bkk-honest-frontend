@@ -7,8 +7,8 @@
  */
 
 export interface UserSummaryResponseDto {
-    id: string;
-    name: string;
-    avatarUrl?: string;
-    level?: number;
+  id: string;
+  name: string;
+  avatarUrl?: string;
+  level?: number;
 }

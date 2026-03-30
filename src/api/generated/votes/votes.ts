@@ -5,15 +5,13 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useMutation
-} from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 import type {
   MutationFunction,
   QueryClient,
   UseMutationOptions,
-  UseMutationResult
-} from '@tanstack/react-query';
+  UseMutationResult,
+} from "@tanstack/react-query";
 
 import type {
   AlertVoteDto,
@@ -21,827 +19,1040 @@ import type {
   ImageVoteDto,
   MessageResponseDto,
   SpotVoteDto,
-  TipVoteDto
-} from '../model';
+  TipVoteDto,
+} from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Create a community tip vote
  */
 export type votesControllerCreateTipVoteResponse201 = {
-  data: CreateVoteResponseDto
-  status: 201
-}
-
-export type votesControllerCreateTipVoteResponseSuccess = (votesControllerCreateTipVoteResponse201) & {
-  headers: Headers;
+  data: CreateVoteResponseDto;
+  status: 201;
 };
-;
 
-export type votesControllerCreateTipVoteResponse = (votesControllerCreateTipVoteResponseSuccess)
+export type votesControllerCreateTipVoteResponseSuccess =
+  votesControllerCreateTipVoteResponse201 & {
+    headers: Headers;
+  };
+export type votesControllerCreateTipVoteResponse =
+  votesControllerCreateTipVoteResponseSuccess;
 
 export const getVotesControllerCreateTipVoteUrl = () => {
+  return `/votes/tip`;
+};
 
+export const votesControllerCreateTipVote = async (
+  tipVoteDto: TipVoteDto,
+  options?: RequestInit,
+): Promise<votesControllerCreateTipVoteResponse> => {
+  return customInstance<votesControllerCreateTipVoteResponse>(
+    getVotesControllerCreateTipVoteUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(tipVoteDto),
+    },
+  );
+};
 
+export const getVotesControllerCreateTipVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
+    TError,
+    { data: TipVoteDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
+  TError,
+  { data: TipVoteDto },
+  TContext
+> => {
+  const mutationKey = ["votesControllerCreateTipVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
+    { data: TipVoteDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/votes/tip`
-}
+    return votesControllerCreateTipVote(data);
+  };
 
-export const votesControllerCreateTipVote = async (tipVoteDto: TipVoteDto, options?: RequestInit): Promise<votesControllerCreateTipVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerCreateTipVoteResponse>(getVotesControllerCreateTipVoteUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      tipVoteDto,)
-  }
-);}
+export type VotesControllerCreateTipVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerCreateTipVote>>
+>;
+export type VotesControllerCreateTipVoteMutationBody = TipVoteDto;
+export type VotesControllerCreateTipVoteMutationError = unknown;
 
-
-
-
-export const getVotesControllerCreateTipVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext> => {
-
-const mutationKey = ['votesControllerCreateTipVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, {data: TipVoteDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  votesControllerCreateTipVote(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerCreateTipVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerCreateTipVote>>>
-    export type VotesControllerCreateTipVoteMutationBody = TipVoteDto
-    export type VotesControllerCreateTipVoteMutationError = unknown
-
-    /**
+/**
  * @summary Create a community tip vote
  */
-export const useVotesControllerCreateTipVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
-        TError,
-        {data: TipVoteDto},
-        TContext
-      > => {
-      return useMutation(getVotesControllerCreateTipVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerCreateTipVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
+      TError,
+      { data: TipVoteDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
+  TError,
+  { data: TipVoteDto },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerCreateTipVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Create a scam alert vote
  */
 export type votesControllerCreateAlertVoteResponse201 = {
-  data: CreateVoteResponseDto
-  status: 201
-}
-
-export type votesControllerCreateAlertVoteResponseSuccess = (votesControllerCreateAlertVoteResponse201) & {
-  headers: Headers;
+  data: CreateVoteResponseDto;
+  status: 201;
 };
-;
 
-export type votesControllerCreateAlertVoteResponse = (votesControllerCreateAlertVoteResponseSuccess)
+export type votesControllerCreateAlertVoteResponseSuccess =
+  votesControllerCreateAlertVoteResponse201 & {
+    headers: Headers;
+  };
+export type votesControllerCreateAlertVoteResponse =
+  votesControllerCreateAlertVoteResponseSuccess;
 
 export const getVotesControllerCreateAlertVoteUrl = () => {
+  return `/votes/alert`;
+};
 
+export const votesControllerCreateAlertVote = async (
+  alertVoteDto: AlertVoteDto,
+  options?: RequestInit,
+): Promise<votesControllerCreateAlertVoteResponse> => {
+  return customInstance<votesControllerCreateAlertVoteResponse>(
+    getVotesControllerCreateAlertVoteUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(alertVoteDto),
+    },
+  );
+};
 
+export const getVotesControllerCreateAlertVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
+    TError,
+    { data: AlertVoteDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
+  TError,
+  { data: AlertVoteDto },
+  TContext
+> => {
+  const mutationKey = ["votesControllerCreateAlertVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
+    { data: AlertVoteDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/votes/alert`
-}
+    return votesControllerCreateAlertVote(data);
+  };
 
-export const votesControllerCreateAlertVote = async (alertVoteDto: AlertVoteDto, options?: RequestInit): Promise<votesControllerCreateAlertVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerCreateAlertVoteResponse>(getVotesControllerCreateAlertVoteUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      alertVoteDto,)
-  }
-);}
+export type VotesControllerCreateAlertVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerCreateAlertVote>>
+>;
+export type VotesControllerCreateAlertVoteMutationBody = AlertVoteDto;
+export type VotesControllerCreateAlertVoteMutationError = unknown;
 
-
-
-
-export const getVotesControllerCreateAlertVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext> => {
-
-const mutationKey = ['votesControllerCreateAlertVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, {data: AlertVoteDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  votesControllerCreateAlertVote(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerCreateAlertVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>>
-    export type VotesControllerCreateAlertVoteMutationBody = AlertVoteDto
-    export type VotesControllerCreateAlertVoteMutationError = unknown
-
-    /**
+/**
  * @summary Create a scam alert vote
  */
-export const useVotesControllerCreateAlertVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
-        TError,
-        {data: AlertVoteDto},
-        TContext
-      > => {
-      return useMutation(getVotesControllerCreateAlertVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerCreateAlertVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
+      TError,
+      { data: AlertVoteDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
+  TError,
+  { data: AlertVoteDto },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerCreateAlertVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Create a gallery image vote
  */
 export type votesControllerCreateImageVoteResponse201 = {
-  data: CreateVoteResponseDto
-  status: 201
-}
-
-export type votesControllerCreateImageVoteResponseSuccess = (votesControllerCreateImageVoteResponse201) & {
-  headers: Headers;
+  data: CreateVoteResponseDto;
+  status: 201;
 };
-;
 
-export type votesControllerCreateImageVoteResponse = (votesControllerCreateImageVoteResponseSuccess)
+export type votesControllerCreateImageVoteResponseSuccess =
+  votesControllerCreateImageVoteResponse201 & {
+    headers: Headers;
+  };
+export type votesControllerCreateImageVoteResponse =
+  votesControllerCreateImageVoteResponseSuccess;
 
 export const getVotesControllerCreateImageVoteUrl = () => {
+  return `/votes/image`;
+};
 
+export const votesControllerCreateImageVote = async (
+  imageVoteDto: ImageVoteDto,
+  options?: RequestInit,
+): Promise<votesControllerCreateImageVoteResponse> => {
+  return customInstance<votesControllerCreateImageVoteResponse>(
+    getVotesControllerCreateImageVoteUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(imageVoteDto),
+    },
+  );
+};
 
+export const getVotesControllerCreateImageVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
+    TError,
+    { data: ImageVoteDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
+  TError,
+  { data: ImageVoteDto },
+  TContext
+> => {
+  const mutationKey = ["votesControllerCreateImageVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
+    { data: ImageVoteDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/votes/image`
-}
+    return votesControllerCreateImageVote(data);
+  };
 
-export const votesControllerCreateImageVote = async (imageVoteDto: ImageVoteDto, options?: RequestInit): Promise<votesControllerCreateImageVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerCreateImageVoteResponse>(getVotesControllerCreateImageVoteUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      imageVoteDto,)
-  }
-);}
+export type VotesControllerCreateImageVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerCreateImageVote>>
+>;
+export type VotesControllerCreateImageVoteMutationBody = ImageVoteDto;
+export type VotesControllerCreateImageVoteMutationError = unknown;
 
-
-
-
-export const getVotesControllerCreateImageVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext> => {
-
-const mutationKey = ['votesControllerCreateImageVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, {data: ImageVoteDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  votesControllerCreateImageVote(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerCreateImageVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerCreateImageVote>>>
-    export type VotesControllerCreateImageVoteMutationBody = ImageVoteDto
-    export type VotesControllerCreateImageVoteMutationError = unknown
-
-    /**
+/**
  * @summary Create a gallery image vote
  */
-export const useVotesControllerCreateImageVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
-        TError,
-        {data: ImageVoteDto},
-        TContext
-      > => {
-      return useMutation(getVotesControllerCreateImageVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerCreateImageVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
+      TError,
+      { data: ImageVoteDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
+  TError,
+  { data: ImageVoteDto },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerCreateImageVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Create a spot vote
  */
 export type votesControllerCreateSpotVoteResponse201 = {
-  data: CreateVoteResponseDto
-  status: 201
-}
-
-export type votesControllerCreateSpotVoteResponseSuccess = (votesControllerCreateSpotVoteResponse201) & {
-  headers: Headers;
+  data: CreateVoteResponseDto;
+  status: 201;
 };
-;
 
-export type votesControllerCreateSpotVoteResponse = (votesControllerCreateSpotVoteResponseSuccess)
+export type votesControllerCreateSpotVoteResponseSuccess =
+  votesControllerCreateSpotVoteResponse201 & {
+    headers: Headers;
+  };
+export type votesControllerCreateSpotVoteResponse =
+  votesControllerCreateSpotVoteResponseSuccess;
 
 export const getVotesControllerCreateSpotVoteUrl = () => {
+  return `/votes/spot`;
+};
 
+export const votesControllerCreateSpotVote = async (
+  spotVoteDto: SpotVoteDto,
+  options?: RequestInit,
+): Promise<votesControllerCreateSpotVoteResponse> => {
+  return customInstance<votesControllerCreateSpotVoteResponse>(
+    getVotesControllerCreateSpotVoteUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(spotVoteDto),
+    },
+  );
+};
 
+export const getVotesControllerCreateSpotVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
+    TError,
+    { data: SpotVoteDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
+  TError,
+  { data: SpotVoteDto },
+  TContext
+> => {
+  const mutationKey = ["votesControllerCreateSpotVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
+    { data: SpotVoteDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/votes/spot`
-}
+    return votesControllerCreateSpotVote(data);
+  };
 
-export const votesControllerCreateSpotVote = async (spotVoteDto: SpotVoteDto, options?: RequestInit): Promise<votesControllerCreateSpotVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerCreateSpotVoteResponse>(getVotesControllerCreateSpotVoteUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      spotVoteDto,)
-  }
-);}
+export type VotesControllerCreateSpotVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerCreateSpotVote>>
+>;
+export type VotesControllerCreateSpotVoteMutationBody = SpotVoteDto;
+export type VotesControllerCreateSpotVoteMutationError = unknown;
 
-
-
-
-export const getVotesControllerCreateSpotVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext> => {
-
-const mutationKey = ['votesControllerCreateSpotVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, {data: SpotVoteDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  votesControllerCreateSpotVote(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerCreateSpotVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>>
-    export type VotesControllerCreateSpotVoteMutationBody = SpotVoteDto
-    export type VotesControllerCreateSpotVoteMutationError = unknown
-
-    /**
+/**
  * @summary Create a spot vote
  */
-export const useVotesControllerCreateSpotVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
-        TError,
-        {data: SpotVoteDto},
-        TContext
-      > => {
-      return useMutation(getVotesControllerCreateSpotVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerCreateSpotVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
+      TError,
+      { data: SpotVoteDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
+  TError,
+  { data: SpotVoteDto },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerCreateSpotVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a vote (unvote)
  */
 export type votesControllerDeleteVoteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type votesControllerDeleteVoteResponseSuccess = (votesControllerDeleteVoteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type votesControllerDeleteVoteResponse = (votesControllerDeleteVoteResponseSuccess)
+export type votesControllerDeleteVoteResponseSuccess =
+  votesControllerDeleteVoteResponse200 & {
+    headers: Headers;
+  };
+export type votesControllerDeleteVoteResponse =
+  votesControllerDeleteVoteResponseSuccess;
 
-export const getVotesControllerDeleteVoteUrl = (id: string,) => {
+export const getVotesControllerDeleteVoteUrl = (id: string) => {
+  return `/votes/${id}`;
+};
 
+export const votesControllerDeleteVote = async (
+  id: string,
+  options?: RequestInit,
+): Promise<votesControllerDeleteVoteResponse> => {
+  return customInstance<votesControllerDeleteVoteResponse>(
+    getVotesControllerDeleteVoteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getVotesControllerDeleteVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerDeleteVote>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerDeleteVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["votesControllerDeleteVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerDeleteVote>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/votes/${id}`
-}
+    return votesControllerDeleteVote(id);
+  };
 
-export const votesControllerDeleteVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerDeleteVoteResponse>(getVotesControllerDeleteVoteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type VotesControllerDeleteVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerDeleteVote>>
+>;
 
+export type VotesControllerDeleteVoteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getVotesControllerDeleteVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['votesControllerDeleteVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteVote>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  votesControllerDeleteVote(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerDeleteVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerDeleteVote>>>
-
-    export type VotesControllerDeleteVoteMutationError = unknown
-
-    /**
+/**
  * @summary Delete a vote (unvote)
  */
-export const useVotesControllerDeleteVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerDeleteVote>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getVotesControllerDeleteVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerDeleteVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerDeleteVote>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerDeleteVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerDeleteVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete an image vote (unvote)
  */
 export type votesControllerDeleteImageVoteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type votesControllerDeleteImageVoteResponseSuccess = (votesControllerDeleteImageVoteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type votesControllerDeleteImageVoteResponse = (votesControllerDeleteImageVoteResponseSuccess)
+export type votesControllerDeleteImageVoteResponseSuccess =
+  votesControllerDeleteImageVoteResponse200 & {
+    headers: Headers;
+  };
+export type votesControllerDeleteImageVoteResponse =
+  votesControllerDeleteImageVoteResponseSuccess;
 
-export const getVotesControllerDeleteImageVoteUrl = (id: string,) => {
+export const getVotesControllerDeleteImageVoteUrl = (id: string) => {
+  return `/votes/image/${id}`;
+};
 
+export const votesControllerDeleteImageVote = async (
+  id: string,
+  options?: RequestInit,
+): Promise<votesControllerDeleteImageVoteResponse> => {
+  return customInstance<votesControllerDeleteImageVoteResponse>(
+    getVotesControllerDeleteImageVoteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getVotesControllerDeleteImageVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["votesControllerDeleteImageVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/votes/image/${id}`
-}
+    return votesControllerDeleteImageVote(id);
+  };
 
-export const votesControllerDeleteImageVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteImageVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerDeleteImageVoteResponse>(getVotesControllerDeleteImageVoteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type VotesControllerDeleteImageVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerDeleteImageVote>>
+>;
 
+export type VotesControllerDeleteImageVoteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getVotesControllerDeleteImageVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['votesControllerDeleteImageVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  votesControllerDeleteImageVote(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerDeleteImageVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>>
-
-    export type VotesControllerDeleteImageVoteMutationError = unknown
-
-    /**
+/**
  * @summary Delete an image vote (unvote)
  */
-export const useVotesControllerDeleteImageVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getVotesControllerDeleteImageVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerDeleteImageVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerDeleteImageVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a tip vote (unvote)
  */
 export type votesControllerDeleteTipVoteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type votesControllerDeleteTipVoteResponseSuccess = (votesControllerDeleteTipVoteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type votesControllerDeleteTipVoteResponse = (votesControllerDeleteTipVoteResponseSuccess)
+export type votesControllerDeleteTipVoteResponseSuccess =
+  votesControllerDeleteTipVoteResponse200 & {
+    headers: Headers;
+  };
+export type votesControllerDeleteTipVoteResponse =
+  votesControllerDeleteTipVoteResponseSuccess;
 
-export const getVotesControllerDeleteTipVoteUrl = (id: string,) => {
+export const getVotesControllerDeleteTipVoteUrl = (id: string) => {
+  return `/votes/tip/${id}`;
+};
 
+export const votesControllerDeleteTipVote = async (
+  id: string,
+  options?: RequestInit,
+): Promise<votesControllerDeleteTipVoteResponse> => {
+  return customInstance<votesControllerDeleteTipVoteResponse>(
+    getVotesControllerDeleteTipVoteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getVotesControllerDeleteTipVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["votesControllerDeleteTipVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/votes/tip/${id}`
-}
+    return votesControllerDeleteTipVote(id);
+  };
 
-export const votesControllerDeleteTipVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteTipVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerDeleteTipVoteResponse>(getVotesControllerDeleteTipVoteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type VotesControllerDeleteTipVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerDeleteTipVote>>
+>;
 
+export type VotesControllerDeleteTipVoteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getVotesControllerDeleteTipVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['votesControllerDeleteTipVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  votesControllerDeleteTipVote(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerDeleteTipVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>>
-
-    export type VotesControllerDeleteTipVoteMutationError = unknown
-
-    /**
+/**
  * @summary Delete a tip vote (unvote)
  */
-export const useVotesControllerDeleteTipVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getVotesControllerDeleteTipVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerDeleteTipVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerDeleteTipVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a scam alert vote (unvote)
  */
 export type votesControllerDeleteAlertVoteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type votesControllerDeleteAlertVoteResponseSuccess = (votesControllerDeleteAlertVoteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type votesControllerDeleteAlertVoteResponse = (votesControllerDeleteAlertVoteResponseSuccess)
+export type votesControllerDeleteAlertVoteResponseSuccess =
+  votesControllerDeleteAlertVoteResponse200 & {
+    headers: Headers;
+  };
+export type votesControllerDeleteAlertVoteResponse =
+  votesControllerDeleteAlertVoteResponseSuccess;
 
-export const getVotesControllerDeleteAlertVoteUrl = (id: string,) => {
+export const getVotesControllerDeleteAlertVoteUrl = (id: string) => {
+  return `/votes/alert/${id}`;
+};
 
+export const votesControllerDeleteAlertVote = async (
+  id: string,
+  options?: RequestInit,
+): Promise<votesControllerDeleteAlertVoteResponse> => {
+  return customInstance<votesControllerDeleteAlertVoteResponse>(
+    getVotesControllerDeleteAlertVoteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getVotesControllerDeleteAlertVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["votesControllerDeleteAlertVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/votes/alert/${id}`
-}
+    return votesControllerDeleteAlertVote(id);
+  };
 
-export const votesControllerDeleteAlertVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteAlertVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerDeleteAlertVoteResponse>(getVotesControllerDeleteAlertVoteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type VotesControllerDeleteAlertVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>
+>;
 
+export type VotesControllerDeleteAlertVoteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getVotesControllerDeleteAlertVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['votesControllerDeleteAlertVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  votesControllerDeleteAlertVote(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerDeleteAlertVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>>
-
-    export type VotesControllerDeleteAlertVoteMutationError = unknown
-
-    /**
+/**
  * @summary Delete a scam alert vote (unvote)
  */
-export const useVotesControllerDeleteAlertVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getVotesControllerDeleteAlertVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerDeleteAlertVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerDeleteAlertVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a spot vote (unvote)
  */
 export type votesControllerDeleteSpotVoteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type votesControllerDeleteSpotVoteResponseSuccess = (votesControllerDeleteSpotVoteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type votesControllerDeleteSpotVoteResponse = (votesControllerDeleteSpotVoteResponseSuccess)
+export type votesControllerDeleteSpotVoteResponseSuccess =
+  votesControllerDeleteSpotVoteResponse200 & {
+    headers: Headers;
+  };
+export type votesControllerDeleteSpotVoteResponse =
+  votesControllerDeleteSpotVoteResponseSuccess;
 
-export const getVotesControllerDeleteSpotVoteUrl = (id: string,) => {
+export const getVotesControllerDeleteSpotVoteUrl = (id: string) => {
+  return `/votes/spot/${id}`;
+};
 
+export const votesControllerDeleteSpotVote = async (
+  id: string,
+  options?: RequestInit,
+): Promise<votesControllerDeleteSpotVoteResponse> => {
+  return customInstance<votesControllerDeleteSpotVoteResponse>(
+    getVotesControllerDeleteSpotVoteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getVotesControllerDeleteSpotVoteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["votesControllerDeleteSpotVote"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/votes/spot/${id}`
-}
+    return votesControllerDeleteSpotVote(id);
+  };
 
-export const votesControllerDeleteSpotVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteSpotVoteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerDeleteSpotVoteResponse>(getVotesControllerDeleteSpotVoteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type VotesControllerDeleteSpotVoteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>
+>;
 
+export type VotesControllerDeleteSpotVoteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getVotesControllerDeleteSpotVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['votesControllerDeleteSpotVote'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  votesControllerDeleteSpotVote(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerDeleteSpotVoteMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>>
-
-    export type VotesControllerDeleteSpotVoteMutationError = unknown
-
-    /**
+/**
  * @summary Delete a spot vote (unvote)
  */
-export const useVotesControllerDeleteSpotVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getVotesControllerDeleteSpotVoteMutationOptions(options), queryClient);
-    }
-    /**
+export const useVotesControllerDeleteSpotVote = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerDeleteSpotVoteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete a vote by type and id (unvote)
  */
 export type votesControllerDeleteVoteByTypeResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type votesControllerDeleteVoteByTypeResponseSuccess = (votesControllerDeleteVoteByTypeResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type votesControllerDeleteVoteByTypeResponse = (votesControllerDeleteVoteByTypeResponseSuccess)
+export type votesControllerDeleteVoteByTypeResponseSuccess =
+  votesControllerDeleteVoteByTypeResponse200 & {
+    headers: Headers;
+  };
+export type votesControllerDeleteVoteByTypeResponse =
+  votesControllerDeleteVoteByTypeResponseSuccess;
 
-export const getVotesControllerDeleteVoteByTypeUrl = (type: string,
-    id: string,) => {
+export const getVotesControllerDeleteVoteByTypeUrl = (
+  type: string,
+  id: string,
+) => {
+  return `/votes/${type}/${id}`;
+};
 
+export const votesControllerDeleteVoteByType = async (
+  type: string,
+  id: string,
+  options?: RequestInit,
+): Promise<votesControllerDeleteVoteByTypeResponse> => {
+  return customInstance<votesControllerDeleteVoteByTypeResponse>(
+    getVotesControllerDeleteVoteByTypeUrl(type, id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getVotesControllerDeleteVoteByTypeMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
+    TError,
+    { type: string; id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
+  TError,
+  { type: string; id: string },
+  TContext
+> => {
+  const mutationKey = ["votesControllerDeleteVoteByType"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
+    { type: string; id: string }
+  > = (props) => {
+    const { type, id } = props ?? {};
 
-  return `/votes/${type}/${id}`
-}
+    return votesControllerDeleteVoteByType(type, id);
+  };
 
-export const votesControllerDeleteVoteByType = async (type: string,
-    id: string, options?: RequestInit): Promise<votesControllerDeleteVoteByTypeResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<votesControllerDeleteVoteByTypeResponse>(getVotesControllerDeleteVoteByTypeUrl(type,id),
-  {
-    ...options,
-    method: 'DELETE'
+export type VotesControllerDeleteVoteByTypeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>
+>;
 
+export type VotesControllerDeleteVoteByTypeMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getVotesControllerDeleteVoteByTypeMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext> => {
-
-const mutationKey = ['votesControllerDeleteVoteByType'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, {type: string;id: string}> = (props) => {
-          const {type,id} = props ?? {};
-
-          return  votesControllerDeleteVoteByType(type,id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type VotesControllerDeleteVoteByTypeMutationResult = NonNullable<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>>
-
-    export type VotesControllerDeleteVoteByTypeMutationError = unknown
-
-    /**
+/**
  * @summary Delete a vote by type and id (unvote)
  */
-export const useVotesControllerDeleteVoteByType = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
-        TError,
-        {type: string;id: string},
-        TContext
-      > => {
-      return useMutation(getVotesControllerDeleteVoteByTypeMutationOptions(options), queryClient);
-    }
+export const useVotesControllerDeleteVoteByType = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
+      TError,
+      { type: string; id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
+  TError,
+  { type: string; id: string },
+  TContext
+> => {
+  return useMutation(
+    getVotesControllerDeleteVoteByTypeMutationOptions(options),
+    queryClient,
+  );
+};

@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useCreatePriceReport } from '@/hooks/use-api';
-import { DollarSign, Loader2, Send, X, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import { useQueryClient } from '@tanstack/react-query';
+import { useState } from "react";
+import { useCreatePriceReport } from "@/hooks/use-api";
+import { DollarSign, Loader2, Send, X, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CreatePriceModalProps {
   spotId: string;
@@ -20,8 +20,11 @@ interface ApiError {
   };
 }
 
-export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalProps) {
-  const [itemName, setItemName] = useState('');
+export default function CreatePriceModal({
+  spotId,
+  onClose,
+}: CreatePriceModalProps) {
+  const [itemName, setItemName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const createPrice = useCreatePriceReport();
   const queryClient = useQueryClient();
@@ -31,7 +34,7 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
     setError(null);
 
     if (itemName.length > 100) {
-      setError('Item name cannot exceed 100 characters');
+      setError("Item name cannot exceed 100 characters");
       return;
     }
 
@@ -40,14 +43,14 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
       const response = await createPrice.mutateAsync({
         spotId,
         itemName,
-        priceThb: Number(formData.get('priceThb')),
+        priceThb: Number(formData.get("priceThb")),
       });
 
       const newReport = response?.data || response;
 
       // Update the infinite query cache to show new report at index 0
       queryClient.setQueryData(
-        ['price-reports-infinite', spotId],
+        ["price-reports-infinite", spotId],
         (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
           if (!oldData || !oldData.pages) return oldData;
           const newPages = [...oldData.pages];
@@ -59,15 +62,16 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
             newPages[0] = firstPage;
           }
           return { ...oldData, pages: newPages };
-        }
+        },
       );
 
-      toast.success('Price report added successfully');
+      toast.success("Price report added successfully");
       onClose();
     } catch (err: unknown) {
       const apiError = err as ApiError;
-      const message = apiError?.response?.data?.message || 'Failed to publish price report';
-      setError(Array.isArray(message) ? message.join(', ') : message);
+      const message =
+        apiError?.response?.data?.message || "Failed to publish price report";
+      setError(Array.isArray(message) ? message.join(", ") : message);
     }
   };
 
@@ -123,14 +127,19 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
                   placeholder="e.g. Pad Thai"
                   className={cn(
                     "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
-                    (itemName?.length || 0) > 100 && "border-red-500/50 ring-1 ring-red-500/20"
+                    (itemName?.length || 0) > 100 &&
+                      "border-red-500/50 ring-1 ring-red-500/20",
                   )}
                 />
                 <div className="flex justify-end">
-                  <span className={cn(
-                    "text-[9px] font-bold tracking-normal transition-colors",
-                    (itemName?.length || 0) > 100 ? "text-red-400" : "text-white/30"
-                  )}>
+                  <span
+                    className={cn(
+                      "text-[9px] font-bold tracking-normal transition-colors",
+                      (itemName?.length || 0) > 100
+                        ? "text-red-400"
+                        : "text-white/30",
+                    )}
+                  >
                     {itemName?.length || 0}/100
                   </span>
                 </div>
@@ -154,8 +163,12 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
               disabled={createPrice.isPending || itemName.length > 100}
               className="w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50"
             >
-              {createPrice.isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-              {createPrice.isPending ? 'Publishing...' : 'Publish Price Report'}
+              {createPrice.isPending ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Send size={16} />
+              )}
+              {createPrice.isPending ? "Publishing..." : "Publish Price Report"}
             </button>
           </form>
         </div>

@@ -5,11 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,8 +22,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   ChecklistControllerFindAllParams,
@@ -35,807 +31,1332 @@ import type {
   ChecklistStatsDto,
   CreateChecklistItemDto,
   PaginatedChecklistItemResponseDto,
-  UpdateChecklistItemDto
-} from '../model';
+  UpdateChecklistItemDto,
+} from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Add a spot to checklist
  */
 export type checklistControllerCreateResponse201 = {
-  data: ChecklistItemDto
-  status: 201
-}
-
-export type checklistControllerCreateResponseSuccess = (checklistControllerCreateResponse201) & {
-  headers: Headers;
+  data: ChecklistItemDto;
+  status: 201;
 };
-;
 
-export type checklistControllerCreateResponse = (checklistControllerCreateResponseSuccess)
+export type checklistControllerCreateResponseSuccess =
+  checklistControllerCreateResponse201 & {
+    headers: Headers;
+  };
+export type checklistControllerCreateResponse =
+  checklistControllerCreateResponseSuccess;
 
 export const getChecklistControllerCreateUrl = () => {
+  return `/checklist`;
+};
 
+export const checklistControllerCreate = async (
+  createChecklistItemDto: CreateChecklistItemDto,
+  options?: RequestInit,
+): Promise<checklistControllerCreateResponse> => {
+  return customInstance<checklistControllerCreateResponse>(
+    getChecklistControllerCreateUrl(),
+    {
+      ...options,
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(createChecklistItemDto),
+    },
+  );
+};
 
+export const getChecklistControllerCreateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof checklistControllerCreate>>,
+    TError,
+    { data: CreateChecklistItemDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof checklistControllerCreate>>,
+  TError,
+  { data: CreateChecklistItemDto },
+  TContext
+> => {
+  const mutationKey = ["checklistControllerCreate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof checklistControllerCreate>>,
+    { data: CreateChecklistItemDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-  return `/checklist`
-}
+    return checklistControllerCreate(data);
+  };
 
-export const checklistControllerCreate = async (createChecklistItemDto: CreateChecklistItemDto, options?: RequestInit): Promise<checklistControllerCreateResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<checklistControllerCreateResponse>(getChecklistControllerCreateUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createChecklistItemDto,)
-  }
-);}
+export type ChecklistControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerCreate>>
+>;
+export type ChecklistControllerCreateMutationBody = CreateChecklistItemDto;
+export type ChecklistControllerCreateMutationError = unknown;
 
-
-
-
-export const getChecklistControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checklistControllerCreate>>, TError,{data: CreateChecklistItemDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof checklistControllerCreate>>, TError,{data: CreateChecklistItemDto}, TContext> => {
-
-const mutationKey = ['checklistControllerCreate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof checklistControllerCreate>>, {data: CreateChecklistItemDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  checklistControllerCreate(data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ChecklistControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof checklistControllerCreate>>>
-    export type ChecklistControllerCreateMutationBody = CreateChecklistItemDto
-    export type ChecklistControllerCreateMutationError = unknown
-
-    /**
+/**
  * @summary Add a spot to checklist
  */
-export const useChecklistControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checklistControllerCreate>>, TError,{data: CreateChecklistItemDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof checklistControllerCreate>>,
-        TError,
-        {data: CreateChecklistItemDto},
-        TContext
-      > => {
-      return useMutation(getChecklistControllerCreateMutationOptions(options), queryClient);
-    }
-    /**
+export const useChecklistControllerCreate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof checklistControllerCreate>>,
+      TError,
+      { data: CreateChecklistItemDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof checklistControllerCreate>>,
+  TError,
+  { data: CreateChecklistItemDto },
+  TContext
+> => {
+  return useMutation(
+    getChecklistControllerCreateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get current user checklist
  */
 export type checklistControllerFindAllResponse200 = {
-  data: PaginatedChecklistItemResponseDto
-  status: 200
-}
-
-export type checklistControllerFindAllResponseSuccess = (checklistControllerFindAllResponse200) & {
-  headers: Headers;
+  data: PaginatedChecklistItemResponseDto;
+  status: 200;
 };
-;
 
-export type checklistControllerFindAllResponse = (checklistControllerFindAllResponseSuccess)
+export type checklistControllerFindAllResponseSuccess =
+  checklistControllerFindAllResponse200 & {
+    headers: Headers;
+  };
+export type checklistControllerFindAllResponse =
+  checklistControllerFindAllResponseSuccess;
 
-export const getChecklistControllerFindAllUrl = (params?: ChecklistControllerFindAllParams,) => {
+export const getChecklistControllerFindAllUrl = (
+  params?: ChecklistControllerFindAllParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/checklist?${stringifiedParams}` : `/checklist`
-}
+  return stringifiedParams.length > 0
+    ? `/checklist?${stringifiedParams}`
+    : `/checklist`;
+};
 
-export const checklistControllerFindAll = async (params?: ChecklistControllerFindAllParams, options?: RequestInit): Promise<checklistControllerFindAllResponse> => {
+export const checklistControllerFindAll = async (
+  params?: ChecklistControllerFindAllParams,
+  options?: RequestInit,
+): Promise<checklistControllerFindAllResponse> => {
+  return customInstance<checklistControllerFindAllResponse>(
+    getChecklistControllerFindAllUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<checklistControllerFindAllResponse>(getChecklistControllerFindAllUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getChecklistControllerFindAllInfiniteQueryKey = (params?: ChecklistControllerFindAllParams,) => {
-    return [
-    'infinite', `/checklist`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getChecklistControllerFindAllQueryKey = (params?: ChecklistControllerFindAllParams,) => {
-    return [
-    `/checklist`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getChecklistControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindAll>>, ChecklistControllerFindAllParams['skip']>, TError = unknown>(params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData, QueryKey, ChecklistControllerFindAllParams['skip']>>, }
+export const getChecklistControllerFindAllInfiniteQueryKey = (
+  params?: ChecklistControllerFindAllParams,
 ) => {
+  return ["infinite", `/checklist`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions} = options ?? {};
+export const getChecklistControllerFindAllQueryKey = (
+  params?: ChecklistControllerFindAllParams,
+) => {
+  return [`/checklist`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getChecklistControllerFindAllInfiniteQueryKey(params);
+export const getChecklistControllerFindAllInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    ChecklistControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ChecklistControllerFindAllParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getChecklistControllerFindAllInfiniteQueryKey(params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    QueryKey,
+    ChecklistControllerFindAllParams["skip"]
+  > = ({ signal, pageParam }) =>
+    checklistControllerFindAll(
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checklistControllerFindAll>>, QueryKey, ChecklistControllerFindAllParams['skip']> = ({ signal, pageParam }) => checklistControllerFindAll({...params, 'skip': pageParam || params?.['skip']}, { signal });
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    TError,
+    TData,
+    QueryKey,
+    ChecklistControllerFindAllParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ChecklistControllerFindAllInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerFindAll>>
+>;
+export type ChecklistControllerFindAllInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData, QueryKey, ChecklistControllerFindAllParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChecklistControllerFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof checklistControllerFindAll>>>
-export type ChecklistControllerFindAllInfiniteQueryError = unknown
-
-
-export function useChecklistControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindAll>>, ChecklistControllerFindAllParams['skip']>, TError = unknown>(
- params: undefined |  ChecklistControllerFindAllParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData, QueryKey, ChecklistControllerFindAllParams['skip']>> & Pick<
+export function useChecklistControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    ChecklistControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params: undefined | ChecklistControllerFindAllParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ChecklistControllerFindAllParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindAll>>,
           TError,
-          Awaited<ReturnType<typeof checklistControllerFindAll>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindAll>>, ChecklistControllerFindAllParams['skip']>, TError = unknown>(
- params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData, QueryKey, ChecklistControllerFindAllParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof checklistControllerFindAll>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    ChecklistControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ChecklistControllerFindAllParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindAll>>,
           TError,
-          Awaited<ReturnType<typeof checklistControllerFindAll>>, QueryKey
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindAll>>, ChecklistControllerFindAllParams['skip']>, TError = unknown>(
- params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData, QueryKey, ChecklistControllerFindAllParams['skip']>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof checklistControllerFindAll>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    ChecklistControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ChecklistControllerFindAllParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get current user checklist
  */
 
-export function useChecklistControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindAll>>, ChecklistControllerFindAllParams['skip']>, TError = unknown>(
- params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData, QueryKey, ChecklistControllerFindAllParams['skip']>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useChecklistControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    ChecklistControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ChecklistControllerFindAllParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getChecklistControllerFindAllInfiniteQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getChecklistControllerFindAllInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getChecklistControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof checklistControllerFindAll>>, TError = unknown>(params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData>>, }
+export const getChecklistControllerFindAllQueryOptions = <
+  TData = Awaited<ReturnType<typeof checklistControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getChecklistControllerFindAllQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getChecklistControllerFindAllQueryKey(params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>
+  > = ({ signal }) => checklistControllerFindAll(params, { signal });
 
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof checklistControllerFindAll>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ChecklistControllerFindAllQueryResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerFindAll>>
+>;
+export type ChecklistControllerFindAllQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checklistControllerFindAll>>> = ({ signal }) => checklistControllerFindAll(params, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChecklistControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof checklistControllerFindAll>>>
-export type ChecklistControllerFindAllQueryError = unknown
-
-
-export function useChecklistControllerFindAll<TData = Awaited<ReturnType<typeof checklistControllerFindAll>>, TError = unknown>(
- params: undefined |  ChecklistControllerFindAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData>> & Pick<
+export function useChecklistControllerFindAll<
+  TData = Awaited<ReturnType<typeof checklistControllerFindAll>>,
+  TError = unknown,
+>(
+  params: undefined | ChecklistControllerFindAllParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindAll<TData = Awaited<ReturnType<typeof checklistControllerFindAll>>, TError = unknown>(
- params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindAll<
+  TData = Awaited<ReturnType<typeof checklistControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerFindAll>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindAll<TData = Awaited<ReturnType<typeof checklistControllerFindAll>>, TError = unknown>(
- params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindAll<
+  TData = Awaited<ReturnType<typeof checklistControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get current user checklist
  */
 
-export function useChecklistControllerFindAll<TData = Awaited<ReturnType<typeof checklistControllerFindAll>>, TError = unknown>(
- params?: ChecklistControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindAll>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useChecklistControllerFindAll<
+  TData = Awaited<ReturnType<typeof checklistControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ChecklistControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getChecklistControllerFindAllQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getChecklistControllerFindAllQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get checklist stats
  */
 export type checklistControllerGetStatsResponse200 = {
-  data: ChecklistStatsDto
-  status: 200
-}
-
-export type checklistControllerGetStatsResponseSuccess = (checklistControllerGetStatsResponse200) & {
-  headers: Headers;
+  data: ChecklistStatsDto;
+  status: 200;
 };
-;
 
-export type checklistControllerGetStatsResponse = (checklistControllerGetStatsResponseSuccess)
+export type checklistControllerGetStatsResponseSuccess =
+  checklistControllerGetStatsResponse200 & {
+    headers: Headers;
+  };
+export type checklistControllerGetStatsResponse =
+  checklistControllerGetStatsResponseSuccess;
 
 export const getChecklistControllerGetStatsUrl = () => {
+  return `/checklist/stats`;
+};
 
-
-
-
-  return `/checklist/stats`
-}
-
-export const checklistControllerGetStats = async ( options?: RequestInit): Promise<checklistControllerGetStatsResponse> => {
-
-  return customInstance<checklistControllerGetStatsResponse>(getChecklistControllerGetStatsUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+export const checklistControllerGetStats = async (
+  options?: RequestInit,
+): Promise<checklistControllerGetStatsResponse> => {
+  return customInstance<checklistControllerGetStatsResponse>(
+    getChecklistControllerGetStatsUrl(),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
 export const getChecklistControllerGetStatsInfiniteQueryKey = () => {
-    return [
-    'infinite', `/checklist/stats`
-    ] as const;
-    }
+  return ["infinite", `/checklist/stats`] as const;
+};
 
 export const getChecklistControllerGetStatsQueryKey = () => {
-    return [
-    `/checklist/stats`
-    ] as const;
-    }
+  return [`/checklist/stats`] as const;
+};
 
+export const getChecklistControllerGetStatsInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof checklistControllerGetStats>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
 
-export const getChecklistControllerGetStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>>, }
-) => {
+  const queryKey =
+    queryOptions?.queryKey ?? getChecklistControllerGetStatsInfiniteQueryKey();
 
-const {query: queryOptions} = options ?? {};
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof checklistControllerGetStats>>
+  > = ({ signal }) => checklistControllerGetStats({ signal });
 
-  const queryKey =  queryOptions?.queryKey ?? getChecklistControllerGetStatsInfiniteQueryKey();
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof checklistControllerGetStats>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ChecklistControllerGetStatsInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerGetStats>>
+>;
+export type ChecklistControllerGetStatsInfiniteQueryError = unknown;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checklistControllerGetStats>>> = ({ signal }) => checklistControllerGetStats({ signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChecklistControllerGetStatsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof checklistControllerGetStats>>>
-export type ChecklistControllerGetStatsInfiniteQueryError = unknown
-
-
-export function useChecklistControllerGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>, TError = unknown>(
-  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>> & Pick<
+export function useChecklistControllerGetStatsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerGetStats>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerGetStats>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerGetStatsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerGetStats>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerGetStats>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerGetStatsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get checklist stats
  */
 
-export function useChecklistControllerGetStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useChecklistControllerGetStatsInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerGetStats>>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getChecklistControllerGetStatsInfiniteQueryOptions(options);
 
-  const queryOptions = getChecklistControllerGetStatsInfiniteQueryOptions(options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
+export const getChecklistControllerGetStatsQueryOptions = <
+  TData = Awaited<ReturnType<typeof checklistControllerGetStats>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof checklistControllerGetStats>>,
+      TError,
+      TData
+    >
+  >;
+}) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ?? getChecklistControllerGetStatsQueryKey();
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof checklistControllerGetStats>>
+  > = ({ signal }) => checklistControllerGetStats({ signal });
 
-export const getChecklistControllerGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof checklistControllerGetStats>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>>, }
-) => {
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof checklistControllerGetStats>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
-const {query: queryOptions} = options ?? {};
+export type ChecklistControllerGetStatsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerGetStats>>
+>;
+export type ChecklistControllerGetStatsQueryError = unknown;
 
-  const queryKey =  queryOptions?.queryKey ?? getChecklistControllerGetStatsQueryKey();
-
-
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checklistControllerGetStats>>> = ({ signal }) => checklistControllerGetStats({ signal });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChecklistControllerGetStatsQueryResult = NonNullable<Awaited<ReturnType<typeof checklistControllerGetStats>>>
-export type ChecklistControllerGetStatsQueryError = unknown
-
-
-export function useChecklistControllerGetStats<TData = Awaited<ReturnType<typeof checklistControllerGetStats>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>> & Pick<
+export function useChecklistControllerGetStats<
+  TData = Awaited<ReturnType<typeof checklistControllerGetStats>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerGetStats>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerGetStats>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerGetStats<TData = Awaited<ReturnType<typeof checklistControllerGetStats>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerGetStats<
+  TData = Awaited<ReturnType<typeof checklistControllerGetStats>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerGetStats>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerGetStats>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerGetStats<TData = Awaited<ReturnType<typeof checklistControllerGetStats>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerGetStats<
+  TData = Awaited<ReturnType<typeof checklistControllerGetStats>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get checklist stats
  */
 
-export function useChecklistControllerGetStats<TData = Awaited<ReturnType<typeof checklistControllerGetStats>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerGetStats>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useChecklistControllerGetStats<
+  TData = Awaited<ReturnType<typeof checklistControllerGetStats>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerGetStats>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getChecklistControllerGetStatsQueryOptions(options);
 
-  const queryOptions = getChecklistControllerGetStatsQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get a checklist item
  */
 export type checklistControllerFindOneResponse200 = {
-  data: ChecklistItemDto
-  status: 200
-}
-
-export type checklistControllerFindOneResponseSuccess = (checklistControllerFindOneResponse200) & {
-  headers: Headers;
+  data: ChecklistItemDto;
+  status: 200;
 };
-;
 
-export type checklistControllerFindOneResponse = (checklistControllerFindOneResponseSuccess)
+export type checklistControllerFindOneResponseSuccess =
+  checklistControllerFindOneResponse200 & {
+    headers: Headers;
+  };
+export type checklistControllerFindOneResponse =
+  checklistControllerFindOneResponseSuccess;
 
-export const getChecklistControllerFindOneUrl = (id: string,) => {
+export const getChecklistControllerFindOneUrl = (id: string) => {
+  return `/checklist/${id}`;
+};
 
+export const checklistControllerFindOne = async (
+  id: string,
+  options?: RequestInit,
+): Promise<checklistControllerFindOneResponse> => {
+  return customInstance<checklistControllerFindOneResponse>(
+    getChecklistControllerFindOneUrl(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
+export const getChecklistControllerFindOneInfiniteQueryKey = (id: string) => {
+  return ["infinite", `/checklist/${id}`] as const;
+};
 
+export const getChecklistControllerFindOneQueryKey = (id: string) => {
+  return [`/checklist/${id}`] as const;
+};
 
-  return `/checklist/${id}`
-}
-
-export const checklistControllerFindOne = async (id: string, options?: RequestInit): Promise<checklistControllerFindOneResponse> => {
-
-  return customInstance<checklistControllerFindOneResponse>(getChecklistControllerFindOneUrl(id),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getChecklistControllerFindOneInfiniteQueryKey = (id: string,) => {
-    return [
-    'infinite', `/checklist/${id}`
-    ] as const;
-    }
-
-export const getChecklistControllerFindOneQueryKey = (id: string,) => {
-    return [
-    `/checklist/${id}`
-    ] as const;
-    }
-
-
-export const getChecklistControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>>, }
+export const getChecklistControllerFindOneInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getChecklistControllerFindOneInfiniteQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getChecklistControllerFindOneInfiniteQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof checklistControllerFindOne>>
+  > = ({ signal }) => checklistControllerFindOne(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof checklistControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ChecklistControllerFindOneInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerFindOne>>
+>;
+export type ChecklistControllerFindOneInfiniteQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checklistControllerFindOne>>> = ({ signal }) => checklistControllerFindOne(id, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChecklistControllerFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof checklistControllerFindOne>>>
-export type ChecklistControllerFindOneInfiniteQueryError = unknown
-
-
-export function useChecklistControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>, TError = unknown>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>> & Pick<
+export function useChecklistControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get a checklist item
  */
 
-export function useChecklistControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useChecklistControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof checklistControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getChecklistControllerFindOneInfiniteQueryOptions(
+    id,
+    options,
+  );
 
-  const queryOptions = getChecklistControllerFindOneInfiniteQueryOptions(id,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getChecklistControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof checklistControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>>, }
+export const getChecklistControllerFindOneQueryOptions = <
+  TData = Awaited<ReturnType<typeof checklistControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getChecklistControllerFindOneQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getChecklistControllerFindOneQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof checklistControllerFindOne>>
+  > = ({ signal }) => checklistControllerFindOne(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof checklistControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ChecklistControllerFindOneQueryResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerFindOne>>
+>;
+export type ChecklistControllerFindOneQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checklistControllerFindOne>>> = ({ signal }) => checklistControllerFindOne(id, { signal });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ChecklistControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof checklistControllerFindOne>>>
-export type ChecklistControllerFindOneQueryError = unknown
-
-
-export function useChecklistControllerFindOne<TData = Awaited<ReturnType<typeof checklistControllerFindOne>>, TError = unknown>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>> & Pick<
+export function useChecklistControllerFindOne<
+  TData = Awaited<ReturnType<typeof checklistControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindOne<TData = Awaited<ReturnType<typeof checklistControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindOne<
+  TData = Awaited<ReturnType<typeof checklistControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checklistControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof checklistControllerFindOne>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useChecklistControllerFindOne<TData = Awaited<ReturnType<typeof checklistControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useChecklistControllerFindOne<
+  TData = Awaited<ReturnType<typeof checklistControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get a checklist item
  */
 
-export function useChecklistControllerFindOne<TData = Awaited<ReturnType<typeof checklistControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof checklistControllerFindOne>>, TError, TData>>, }
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useChecklistControllerFindOne<
+  TData = Awaited<ReturnType<typeof checklistControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof checklistControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getChecklistControllerFindOneQueryOptions(id, options);
 
-  const queryOptions = getChecklistControllerFindOneQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update a checklist item
  */
 export type checklistControllerUpdateResponse200 = {
-  data: ChecklistItemDto
-  status: 200
-}
-
-export type checklistControllerUpdateResponseSuccess = (checklistControllerUpdateResponse200) & {
-  headers: Headers;
+  data: ChecklistItemDto;
+  status: 200;
 };
-;
 
-export type checklistControllerUpdateResponse = (checklistControllerUpdateResponseSuccess)
+export type checklistControllerUpdateResponseSuccess =
+  checklistControllerUpdateResponse200 & {
+    headers: Headers;
+  };
+export type checklistControllerUpdateResponse =
+  checklistControllerUpdateResponseSuccess;
 
-export const getChecklistControllerUpdateUrl = (id: string,) => {
+export const getChecklistControllerUpdateUrl = (id: string) => {
+  return `/checklist/${id}`;
+};
 
+export const checklistControllerUpdate = async (
+  id: string,
+  updateChecklistItemDto: UpdateChecklistItemDto,
+  options?: RequestInit,
+): Promise<checklistControllerUpdateResponse> => {
+  return customInstance<checklistControllerUpdateResponse>(
+    getChecklistControllerUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      body: JSON.stringify(updateChecklistItemDto),
+    },
+  );
+};
 
+export const getChecklistControllerUpdateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof checklistControllerUpdate>>,
+    TError,
+    { id: string; data: UpdateChecklistItemDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof checklistControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateChecklistItemDto },
+  TContext
+> => {
+  const mutationKey = ["checklistControllerUpdate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof checklistControllerUpdate>>,
+    { id: string; data: UpdateChecklistItemDto }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-  return `/checklist/${id}`
-}
+    return checklistControllerUpdate(id, data);
+  };
 
-export const checklistControllerUpdate = async (id: string,
-    updateChecklistItemDto: UpdateChecklistItemDto, options?: RequestInit): Promise<checklistControllerUpdateResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<checklistControllerUpdateResponse>(getChecklistControllerUpdateUrl(id),
-  {
-    ...options,
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      updateChecklistItemDto,)
-  }
-);}
+export type ChecklistControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerUpdate>>
+>;
+export type ChecklistControllerUpdateMutationBody = UpdateChecklistItemDto;
+export type ChecklistControllerUpdateMutationError = unknown;
 
-
-
-
-export const getChecklistControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checklistControllerUpdate>>, TError,{id: string;data: UpdateChecklistItemDto}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof checklistControllerUpdate>>, TError,{id: string;data: UpdateChecklistItemDto}, TContext> => {
-
-const mutationKey = ['checklistControllerUpdate'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof checklistControllerUpdate>>, {id: string;data: UpdateChecklistItemDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  checklistControllerUpdate(id,data,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ChecklistControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof checklistControllerUpdate>>>
-    export type ChecklistControllerUpdateMutationBody = UpdateChecklistItemDto
-    export type ChecklistControllerUpdateMutationError = unknown
-
-    /**
+/**
  * @summary Update a checklist item
  */
-export const useChecklistControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checklistControllerUpdate>>, TError,{id: string;data: UpdateChecklistItemDto}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof checklistControllerUpdate>>,
-        TError,
-        {id: string;data: UpdateChecklistItemDto},
-        TContext
-      > => {
-      return useMutation(getChecklistControllerUpdateMutationOptions(options), queryClient);
-    }
-    /**
+export const useChecklistControllerUpdate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof checklistControllerUpdate>>,
+      TError,
+      { id: string; data: UpdateChecklistItemDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof checklistControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateChecklistItemDto },
+  TContext
+> => {
+  return useMutation(
+    getChecklistControllerUpdateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Remove a spot from checklist
  */
 export type checklistControllerDeleteResponse200 = {
-  data: void
-  status: 200
-}
-
-export type checklistControllerDeleteResponseSuccess = (checklistControllerDeleteResponse200) & {
-  headers: Headers;
+  data: void;
+  status: 200;
 };
-;
 
-export type checklistControllerDeleteResponse = (checklistControllerDeleteResponseSuccess)
+export type checklistControllerDeleteResponseSuccess =
+  checklistControllerDeleteResponse200 & {
+    headers: Headers;
+  };
+export type checklistControllerDeleteResponse =
+  checklistControllerDeleteResponseSuccess;
 
-export const getChecklistControllerDeleteUrl = (id: string,) => {
+export const getChecklistControllerDeleteUrl = (id: string) => {
+  return `/checklist/${id}`;
+};
 
+export const checklistControllerDelete = async (
+  id: string,
+  options?: RequestInit,
+): Promise<checklistControllerDeleteResponse> => {
+  return customInstance<checklistControllerDeleteResponse>(
+    getChecklistControllerDeleteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getChecklistControllerDeleteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof checklistControllerDelete>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof checklistControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["checklistControllerDelete"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof checklistControllerDelete>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/checklist/${id}`
-}
+    return checklistControllerDelete(id);
+  };
 
-export const checklistControllerDelete = async (id: string, options?: RequestInit): Promise<checklistControllerDeleteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<checklistControllerDeleteResponse>(getChecklistControllerDeleteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type ChecklistControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof checklistControllerDelete>>
+>;
 
+export type ChecklistControllerDeleteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getChecklistControllerDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checklistControllerDelete>>, TError,{id: string}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof checklistControllerDelete>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['checklistControllerDelete'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof checklistControllerDelete>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  checklistControllerDelete(id,)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ChecklistControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof checklistControllerDelete>>>
-
-    export type ChecklistControllerDeleteMutationError = unknown
-
-    /**
+/**
  * @summary Remove a spot from checklist
  */
-export const useChecklistControllerDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof checklistControllerDelete>>, TError,{id: string}, TContext>, }
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof checklistControllerDelete>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getChecklistControllerDeleteMutationOptions(options), queryClient);
-    }
+export const useChecklistControllerDelete = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof checklistControllerDelete>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof checklistControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getChecklistControllerDeleteMutationOptions(options),
+    queryClient,
+  );
+};

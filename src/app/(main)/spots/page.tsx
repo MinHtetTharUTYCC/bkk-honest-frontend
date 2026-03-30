@@ -1,8 +1,15 @@
 "use client";
-import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from "react";
+import {
+  Suspense,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useMemo,
+} from "react";
 
 import { useInfiniteSpots, useCategories } from "@/hooks/use-api";
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useQueryClient } from "@tanstack/react-query";
 import SpotCard from "@/components/spots/spot-card";
 import { SearchInput } from "@/components/ui/search-input";
@@ -21,7 +28,8 @@ function DiscoveryPageContent() {
   const { ref, inView } = useInView();
 
   // Derived from URL
-  const selectedCategory = searchParams.get("categoryId") || searchParams.get("category") || undefined;
+  const selectedCategory =
+    searchParams.get("categoryId") || searchParams.get("category") || undefined;
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [sort, setSort] = useState<"newest" | "popular">(
     (searchParams.get("sort") as "newest" | "popular") || "popular",
@@ -96,7 +104,9 @@ function DiscoveryPageContent() {
   }, [search, pathname, createQueryString, searchParams, router]);
 
   const { data: categoriesResponse } = useCategories();
-  const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
+  const categories = Array.isArray(categoriesResponse)
+    ? categoriesResponse
+    : [];
 
   const {
     data: spotsData,
@@ -132,9 +142,12 @@ function DiscoveryPageContent() {
   }, [inView]);
 
   const spots: SpotCardData[] = useMemo(() => {
-    return spotsData?.pages.flatMap(
-      (page) => (page as { data?: { data?: SpotCardData[] } })?.data?.data || [],
-    ) || [];
+    return (
+      spotsData?.pages.flatMap(
+        (page) =>
+          (page as { data?: { data?: SpotCardData[] } })?.data?.data || [],
+      ) || []
+    );
   }, [spotsData]);
 
   return (

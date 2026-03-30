@@ -29,7 +29,7 @@ interface ProfileData {
 function unwrapProfileData(payload: unknown): ProfileData | null {
   const unwrapped =
     payload && typeof payload === "object" && "data" in payload
-      ? (payload as { data?: unknown }).data ?? payload
+      ? ((payload as { data?: unknown }).data ?? payload)
       : payload;
 
   if (!unwrapped || typeof unwrapped !== "object") {
@@ -82,11 +82,17 @@ function ProfileLayoutContent({
     return (
       <div className="min-h-screen bg-linear-to-b from-black via-slate-950 to-black pt-20 px-4 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Profile Not Found</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Profile Not Found
+          </h2>
           <p className="text-white/60 mb-6">
-            The profile you&apo;re looking for doesn&apos;t exist or has been deleted.
+            The profile you&apo;re looking for doesn&apos;t exist or has been
+            deleted.
           </p>
-          <Link href="/discover" className="text-amber-400 hover:text-amber-300 underline">
+          <Link
+            href="/discover"
+            className="text-amber-400 hover:text-amber-300 underline"
+          >
             Back to Discover
           </Link>
         </div>

@@ -1,34 +1,35 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Share2, Copy, Twitter, Facebook, Check, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import * as React from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Share2, Copy, Twitter, Facebook, Check, Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface ShareButtonProps {
   title: string;
   text?: string;
   url?: string;
   className?: string;
-  variant?: 'default' | 'ghost' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
+  variant?: "default" | "ghost" | "outline";
+  size?: "sm" | "md" | "lg";
 }
 
-export function ShareButton({ 
-  title, 
-  text, 
-  url, 
-  className, 
-  variant = 'default',
-  size = 'md'
+export function ShareButton({
+  title,
+  text,
+  url,
+  className,
+  variant = "default",
+  size = "md",
 }: ShareButtonProps) {
   const [copied, setCopied] = React.useState(false);
-  const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+  const shareUrl =
+    url || (typeof window !== "undefined" ? window.location.href : "");
   const shareText = text || `Check out ${title} on BKK Honest!`;
 
   const handleShare = async () => {
-    if (typeof navigator !== 'undefined' && navigator.share) {
+    if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({
           title,
@@ -36,14 +37,18 @@ export function ShareButton({
           url: shareUrl,
         });
       } catch (err) {
-        console.log('Error sharing:', err);
+        console.log("Error sharing:", err);
       }
     }
   };
 
   const copyToClipboard = async () => {
     try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      if (
+        typeof navigator !== "undefined" &&
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+      ) {
         await navigator.clipboard.writeText(shareUrl);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -58,60 +63,68 @@ export function ShareButton({
         document.body.appendChild(textArea);
         textArea.focus();
         textArea.select();
-        
+
         try {
-          const successful = document.execCommand('copy');
+          const successful = document.execCommand("copy");
           if (successful) {
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
           }
         } catch (err) {
-          console.error('Fallback copy failed:', err);
+          console.error("Fallback copy failed:", err);
         }
-        
+
         document.body.removeChild(textArea);
       }
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
   const shareToTwitter = () => {
     const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-    window.open(twitterUrl, '_blank');
+    window.open(twitterUrl, "_blank");
   };
 
   const shareToFacebook = () => {
     const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-    window.open(fbUrl, '_blank');
+    window.open(fbUrl, "_blank");
   };
 
   const sizes = {
-    sm: 'p-1.5 text-xs',
-    md: 'p-2.5 text-sm',
-    lg: 'p-4 text-base',
+    sm: "p-1.5 text-xs",
+    md: "p-2.5 text-sm",
+    lg: "p-4 text-base",
   };
 
   const variants = {
-    default: 'bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white',
-    ghost: 'bg-transparent hover:bg-white/5 text-white/50 hover:text-white',
-    outline: 'bg-transparent border border-white/20 hover:border-amber-400 text-white/50 hover:text-amber-400',
+    default:
+      "bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white",
+    ghost: "bg-transparent hover:bg-white/5 text-white/50 hover:text-white",
+    outline:
+      "bg-transparent border border-white/20 hover:border-amber-400 text-white/50 hover:text-amber-400",
   };
 
   const buttonContent = (
-    <div className={cn(
-      "rounded-full transition-all flex items-center justify-center gap-2",
-      sizes[size],
-      variants[variant],
-      className
-    )}>
-      <Share2 size={size === 'sm' ? 14 : size === 'lg' ? 20 : 16} />
-      {size === 'lg' && <span className="font-bold uppercase tracking-widest text-[10px]">Share</span>}
+    <div
+      className={cn(
+        "rounded-full transition-all flex items-center justify-center gap-2",
+        sizes[size],
+        variants[variant],
+        className,
+      )}
+    >
+      <Share2 size={size === "sm" ? 14 : size === "lg" ? 20 : 16} />
+      {size === "lg" && (
+        <span className="font-bold uppercase tracking-widest text-[10px]">
+          Share
+        </span>
+      )}
     </div>
   );
 
   // If mobile and supports native share, use that
-  if (typeof navigator !== 'undefined' && !!navigator.share) {
+  if (typeof navigator !== "undefined" && !!navigator.share) {
     return (
       <button onClick={handleShare} className="focus:outline-none">
         {buttonContent}

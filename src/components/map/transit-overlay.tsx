@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import type { FeatureCollection, Geometry, Point } from 'geojson';
-import TransitLines from './transit-lines';
-import TransitStations from './transit-stations';
+import { useState, useEffect } from "react";
+import type { FeatureCollection, Geometry, Point } from "geojson";
+import TransitLines from "./transit-lines";
+import TransitStations from "./transit-stations";
 
 interface TransitOverlayProps {
   visible?: boolean;
@@ -19,11 +19,11 @@ interface TransitData {
   stations: FeatureCollection<Point>;
 }
 
-export default function TransitOverlay({ 
-  visible = false, 
+export default function TransitOverlay({
+  visible = false,
   zoom,
   onLoading,
-  onError
+  onError,
 }: TransitOverlayProps) {
   const [transitData, setTransitData] = useState<TransitData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -36,33 +36,38 @@ export default function TransitOverlay({
       setLoading(true);
       onLoading?.(true);
       onError?.(null);
-      
+
       try {
-        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/bkk-honest';
-        
+        const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "/bkk-honest";
+
         // Helper to fetch and check response
-        const fetchGeoJSON = async <T extends Geometry>(path: string): Promise<FeatureCollection<T>> => {
+        const fetchGeoJSON = async <T extends Geometry>(
+          path: string,
+        ): Promise<FeatureCollection<T>> => {
           const res = await fetch(`${basePath}${path}`);
-          if (!res.ok) throw new Error(`Failed to load ${path}: ${res.statusText}`);
+          if (!res.ok)
+            throw new Error(`Failed to load ${path}: ${res.statusText}`);
           return res.json() as Promise<FeatureCollection<T>>;
         };
 
         const [btsLines, mrtLines, arlLines, stations] = await Promise.all([
-          fetchGeoJSON<Geometry>('/data/transit/bts-lines.geojson'),
-          fetchGeoJSON<Geometry>('/data/transit/mrt-lines.geojson'),
-          fetchGeoJSON<Geometry>('/data/transit/arl-lines.geojson'),
-          fetchGeoJSON<Point>('/data/transit/stations.geojson')
+          fetchGeoJSON<Geometry>("/data/transit/bts-lines.geojson"),
+          fetchGeoJSON<Geometry>("/data/transit/mrt-lines.geojson"),
+          fetchGeoJSON<Geometry>("/data/transit/arl-lines.geojson"),
+          fetchGeoJSON<Point>("/data/transit/stations.geojson"),
         ]);
 
         setTransitData({
           btsLines,
           mrtLines,
           arlLines,
-          stations
+          stations,
         });
       } catch (err) {
-        console.error('Error loading transit data:', err);
-        onError?.(err instanceof Error ? err.message : 'Failed to load transit data');
+        console.error("Error loading transit data:", err);
+        onError?.(
+          err instanceof Error ? err.message : "Failed to load transit data",
+        );
       } finally {
         setLoading(false);
         onLoading?.(false);
@@ -90,7 +95,7 @@ export default function TransitOverlay({
           <TransitLines id="arl" data={transitData.arlLines} />
         </>
       )}
-      
+
       {/* Transit Stations - visible at zoom 13+ */}
       {shouldShowStations && (
         <TransitStations id="stations" data={transitData.stations} />

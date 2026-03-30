@@ -68,7 +68,8 @@ export default function TermsPage() {
                       User Responsibility
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      You&apos;re responsible for your content and account security
+                      You&apos;re responsible for your content and account
+                      security
                     </p>
                   </div>
                 </div>
@@ -100,9 +101,9 @@ export default function TermsPage() {
                 1. Acceptance of Terms
               </h2>
               <p className="text-muted-foreground">
-                By accessing or using BKK Honest (&quot;the Platform&quot;), you agree to
-                be bound by these Terms of Service. If you do not agree to these
-                terms, please do not use our platform.
+                By accessing or using BKK Honest (&quot;the Platform&quot;), you
+                agree to be bound by these Terms of Service. If you do not agree
+                to these terms, please do not use our platform.
               </p>
               <p className="text-muted-foreground mt-4">
                 These terms apply to all users, including visitors, registered
@@ -287,9 +288,9 @@ export default function TermsPage() {
                       No Warranty
                     </h3>
                     <p className="text-muted-foreground text-sm">
-                      The platform is provided &quot;as is&quot; without warranties. We do
-                      not guarantee accuracy, completeness, or reliability of
-                      any information.
+                      The platform is provided &quot;as is&quot; without
+                      warranties. We do not guarantee accuracy, completeness, or
+                      reliability of any information.
                     </p>
                   </div>
                   <div>
@@ -360,8 +361,8 @@ export default function TermsPage() {
               </h2>
               <p className="text-muted-foreground mb-4">
                 We may update these terms occasionally to reflect changes in our
-                service or legal requirements. We&apos;ll notify users of significant
-                changes via email or platform notifications.
+                service or legal requirements. We&apos;ll notify users of
+                significant changes via email or platform notifications.
               </p>
               <p className="text-muted-foreground italic">
                 Continued use of the platform after changes constitutes

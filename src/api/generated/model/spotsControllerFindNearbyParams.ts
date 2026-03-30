@@ -7,28 +7,28 @@
  */
 
 export type SpotsControllerFindNearbyParams = {
-/**
- * Latitude coordinate
- */
-latitude: number;
-/**
- * Longitude coordinate
- */
-longitude: number;
-/**
- * Search distance in km (default: 5)
- */
-distance?: number;
-/**
- * Filter spots by category ID
- */
-categoryId?: string;
-/**
- * Max number of spots to return
- */
-limit?: number;
-/**
- * Items to skip (for pagination)
- */
-skip?: number;
+  /**
+   * Latitude coordinate
+   */
+  latitude: number;
+  /**
+   * Longitude coordinate
+   */
+  longitude: number;
+  /**
+   * Search distance in km (default: 5)
+   */
+  distance?: number;
+  /**
+   * Filter spots by category ID
+   */
+  categoryId?: string;
+  /**
+   * Max number of spots to return
+   */
+  limit?: number;
+  /**
+   * Items to skip (for pagination)
+   */
+  skip?: number;
 };

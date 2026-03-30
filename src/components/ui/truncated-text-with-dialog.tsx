@@ -27,7 +27,7 @@ export function TruncatedTextWithDialog({
     const checkTruncation = () => {
       const element = textRef.current;
       if (!element) return;
-      
+
       // Compare scrollHeight (actual content height) to clientHeight (visible height)
       // We add a small 2px buffer to avoid false positives from sub-pixel rendering
       setIsTruncated(element.scrollHeight > element.clientHeight + 2);
