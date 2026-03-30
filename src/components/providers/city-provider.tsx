@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useCities } from '@/hooks/use-api';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { useCities } from "@/hooks/use-api";
 
 interface City {
   id: string;
@@ -17,51 +17,62 @@ interface CityContextType {
 const CityContext = createContext<CityContextType | undefined>(undefined);
 
 export function CityProvider({ children }: { children: React.ReactNode }) {
-  const [selectedCityId, setSelectedCityId] = useState<string | undefined>(undefined);
+  const [selectedCityId, setSelectedCityId] = useState<string | undefined>(
+    () => {
+      // Initialize from localStorage
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem("selectedCityId");
+        return saved || undefined;
+      }
+      return undefined;
+    },
+  );
   const [isHydrated, setIsHydrated] = useState(false);
   const { data: cities } = useCities();
 
-  // Load from localStorage on mount
+  // Mark as hydrated after initial mount
   useEffect(() => {
-    const saved = localStorage.getItem('selectedCityId');
-    if (saved) {
-      setSelectedCityId(saved);
-    }
-    setIsHydrated(true);
+    requestAnimationFrame(() => setIsHydrated(true));
   }, []);
 
-  // Save to localStorage when changed
+  // Save to localStorage when changed (only after hydration)
   useEffect(() => {
     if (!isHydrated) return;
-    
+
     if (selectedCityId) {
-      localStorage.setItem('selectedCityId', selectedCityId);
+      localStorage.setItem("selectedCityId", selectedCityId);
     } else {
-      localStorage.removeItem('selectedCityId');
+      localStorage.removeItem("selectedCityId");
     }
   }, [selectedCityId, isHydrated]);
 
-  // Try to pick a default if none selected (e.g. Bangkok) or if the saved city doesn't exist anymore
-  useEffect(() => {
-    if (!isHydrated || !cities || cities.length === 0) return;
+  // Derive fallback city based on current state
+  const fallbackCityId = React.useMemo(() => {
+    if (!isHydrated || !cities || cities.length === 0) return undefined;
 
-    const isValid = selectedCityId && (cities as City[]).some((c) => c.id === selectedCityId);
-    
-    if (!selectedCityId || !isValid) {
-      const bangkok = (cities as City[]).find((c) => c.name.toLowerCase() === 'bangkok');
-      const fallbackId = bangkok ? bangkok.id : (cities as City[])[0].id;
-      
-      if (selectedCityId !== fallbackId) {
-        // Use functional update or guard to reduce cascading render impact
-        setSelectedCityId(fallbackId);
-      }
-    }
+    const isValid =
+      selectedCityId && cities.some((c) => c.id === selectedCityId);
+    if (isValid) return undefined; // Current selection is valid
+
+    const bangkok = cities.find((c) => c.name.toLowerCase() === "bangkok");
+    return bangkok ? bangkok.id : cities[0].id;
   }, [cities, selectedCityId, isHydrated]);
 
-  const selectedCity = (cities as City[] | undefined)?.find((c) => c.id === selectedCityId);
+  // Apply fallback if needed (outside of render)
+  useEffect(() => {
+    if (fallbackCityId) {
+      requestAnimationFrame(() => setSelectedCityId(fallbackCityId));
+    }
+  }, [fallbackCityId]);
+
+  const selectedCity = (cities as City[] | undefined)?.find(
+    (c) => c.id === selectedCityId,
+  );
 
   return (
-    <CityContext.Provider value={{ selectedCityId, setSelectedCityId, selectedCity }}>
+    <CityContext.Provider
+      value={{ selectedCityId, setSelectedCityId, selectedCity }}
+    >
       {children}
     </CityContext.Provider>
   );
@@ -70,7 +81,7 @@ export function CityProvider({ children }: { children: React.ReactNode }) {
 export function useCity() {
   const context = useContext(CityContext);
   if (context === undefined) {
-    throw new Error('useCity must be used within a CityProvider');
+    throw new Error("useCity must be used within a CityProvider");
   }
   return context;
 }

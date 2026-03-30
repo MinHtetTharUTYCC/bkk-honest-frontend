@@ -1,15 +1,17 @@
-'use client';
+"use client";
 
-import { useRef, useState } from 'react';
-import Map, { Marker } from 'react-map-gl/mapbox';
-import type { MapMouseEvent, MapRef } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { MapPin, Navigation, AlertCircle, Loader } from 'lucide-react';
-import { motion } from 'framer-motion';
-
+import { useRef, useState } from "react";
+import Map, { Marker } from "react-map-gl/mapbox";
+import type { MapMouseEvent, MapRef } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { MapPin, Navigation, AlertCircle, Loader } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface LocationPickerProps {
-  onLocationSelected: (location: { latitude: number; longitude: number }) => void;
+  onLocationSelected: (location: {
+    latitude: number;
+    longitude: number;
+  }) => void;
   initialLocation?: { latitude: number; longitude: number };
 }
 
@@ -18,14 +20,16 @@ const DEFAULT_ZOOM = 13;
 
 export default function LocationPicker({
   onLocationSelected,
-  initialLocation }: LocationPickerProps) {
+  initialLocation,
+}: LocationPickerProps) {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState({
     latitude: initialLocation?.latitude ?? BANGKOK_CENTER.latitude,
     longitude: initialLocation?.longitude ?? BANGKOK_CENTER.longitude,
     zoom: DEFAULT_ZOOM,
     bearing: 0,
-    pitch: 0 });
+    pitch: 0,
+  });
 
   const [selectedLocation, setSelectedLocation] = useState<{
     latitude: number;
@@ -38,8 +42,8 @@ export default function LocationPicker({
   } | null>(null);
 
   const [geolocationStatus, setGeolocationStatus] = useState<
-    'idle' | 'requesting' | 'granted' | 'denied'
-  >('idle');
+    "idle" | "requesting" | "granted" | "denied"
+  >("idle");
 
   const [error, setError] = useState<string | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -47,12 +51,12 @@ export default function LocationPicker({
   const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
   const handleRequestGeolocation = () => {
-    setGeolocationStatus('requesting');
+    setGeolocationStatus("requesting");
     setError(null);
 
     if (!navigator.geolocation) {
-      setError('Geolocation is not supported by your browser');
-      setGeolocationStatus('denied');
+      setError("Geolocation is not supported by your browser");
+      setGeolocationStatus("denied");
       return;
     }
 
@@ -64,29 +68,39 @@ export default function LocationPicker({
           ...prev,
           latitude,
           longitude,
-          zoom: DEFAULT_ZOOM }));
-        setGeolocationStatus('granted');
+          zoom: DEFAULT_ZOOM,
+        }));
+        setGeolocationStatus("granted");
       },
       (err) => {
-        setGeolocationStatus('denied');
+        setGeolocationStatus("denied");
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            setError('Location permission denied. Please select your location on the map.');
+            setError(
+              "Location permission denied. Please select your location on the map.",
+            );
             break;
           case err.POSITION_UNAVAILABLE:
-            setError('Your device could not determine your location. Please select on the map.');
+            setError(
+              "Your device could not determine your location. Please select on the map.",
+            );
             break;
           case err.TIMEOUT:
-            setError('Location request timed out. Please select your location on the map.');
+            setError(
+              "Location request timed out. Please select your location on the map.",
+            );
             break;
           default:
-            setError('Unable to access your location. Please select on the map.');
+            setError(
+              "Unable to access your location. Please select on the map.",
+            );
         }
       },
       {
         enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 0 }
+        maximumAge: 0,
+      },
     );
   };
 
@@ -108,7 +122,7 @@ export default function LocationPicker({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && selectedLocation) {
+    if (e.key === "Enter" && selectedLocation) {
       handleConfirm();
     }
   };
@@ -117,11 +131,13 @@ export default function LocationPicker({
     <div className="w-full h-full flex flex-col bg-zinc-950 rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
       {/* Header */}
       <div className="p-6 border-b border-white/5 bg-zinc-900/50 backdrop-blur">
-        <h2 className="text-white font-bold text-lg tracking-tight">Select Location</h2>
+        <h2 className="text-white font-bold text-lg tracking-tight">
+          Select Location
+        </h2>
         <p className="text-white/40 text-sm mt-1">
           {selectedLocation
-            ? 'Tap confirm to save this location'
-            : 'Click on map to select or use your current location'}
+            ? "Tap confirm to save this location"
+            : "Click on map to select or use your current location"}
         </p>
       </div>
 
@@ -134,14 +150,17 @@ export default function LocationPicker({
             onMove={(evt) => setViewState(evt.viewState)}
             onClick={handleMapClick}
             mapboxAccessToken={MAPBOX_TOKEN}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: "100%", height: "100%" }}
             mapStyle="mapbox://styles/mapbox/dark-v11"
             attributionControl={false}
             aria-label="Location selection map"
           >
             {/*  location marker (blue) */}
             {userLocation && (
-              <Marker latitude={userLocation.latitude} longitude={userLocation.longitude}>
+              <Marker
+                latitude={userLocation.latitude}
+                longitude={userLocation.longitude}
+              >
                 <div
                   className="relative flex items-center justify-center"
                   aria-label={`Your location: ${userLocation.latitude.toFixed(4)}, ${userLocation.longitude.toFixed(4)}`}
@@ -154,7 +173,10 @@ export default function LocationPicker({
 
             {/* Selected location marker (amber) */}
             {selectedLocation && (
-              <Marker latitude={selectedLocation.latitude} longitude={selectedLocation.longitude}>
+              <Marker
+                latitude={selectedLocation.latitude}
+                longitude={selectedLocation.longitude}
+              >
                 <div
                   className="w-8 h-8 bg-amber-400 rounded-full shadow-lg shadow-amber-400/50 border-2 border-white flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
                   aria-label={`Selected location: ${selectedLocation.latitude.toFixed(4)}, ${selectedLocation.longitude.toFixed(4)}`}
@@ -174,7 +196,7 @@ export default function LocationPicker({
         )}
 
         {/* Geolocation Button */}
-        {geolocationStatus === 'idle' && (
+        {geolocationStatus === "idle" && (
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -189,7 +211,7 @@ export default function LocationPicker({
         )}
 
         {/* Loading Indicator for Geolocation */}
-        {geolocationStatus === 'requesting' && (
+        {geolocationStatus === "requesting" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -236,7 +258,7 @@ export default function LocationPicker({
                   Confirming...
                 </span>
               ) : (
-                'Confirm Location'
+                "Confirm Location"
               )}
             </button>
           </motion.div>

@@ -5,11 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,8 +22,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
 import type {
   CreateScamAlertDto,
@@ -37,1241 +33,2220 @@ import type {
   ScamAlertsControllerFindAllParams,
   ScamAlertsControllerFindByUserParams,
   ScamAlertsControllerFindMyAlertsParams,
-  UpdateScamAlertDto
-} from '../model';
+  UpdateScamAlertDto,
+} from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Create a scam alert
  */
 export type scamAlertsControllerCreateResponse201 = {
-  data: ScamAlertResponseDto
-  status: 201
-}
-
-export type scamAlertsControllerCreateResponseSuccess = (scamAlertsControllerCreateResponse201) & {
-  headers: Headers;
+  data: ScamAlertResponseDto;
+  status: 201;
 };
-;
 
-export type scamAlertsControllerCreateResponse = (scamAlertsControllerCreateResponseSuccess)
+export type scamAlertsControllerCreateResponseSuccess =
+  scamAlertsControllerCreateResponse201 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerCreateResponse =
+  scamAlertsControllerCreateResponseSuccess;
 
 export const getScamAlertsControllerCreateUrl = () => {
+  return `/scam-alerts`;
+};
 
-
-
-
-  return `/scam-alerts`
-}
-
-export const scamAlertsControllerCreate = async (createScamAlertDto: CreateScamAlertDto, options?: RequestInit): Promise<scamAlertsControllerCreateResponse> => {
-    const formData = new FormData();
-formData.append(`cityId`, createScamAlertDto.cityId);
-formData.append(`categoryId`, createScamAlertDto.categoryId);
-formData.append(`scamName`, createScamAlertDto.scamName);
-formData.append(`description`, createScamAlertDto.description);
-formData.append(`preventionTip`, createScamAlertDto.preventionTip);
-if(createScamAlertDto.image !== undefined) {
- formData.append(`image`, createScamAlertDto.image);
- }
-
-  return customInstance<scamAlertsControllerCreateResponse>(getScamAlertsControllerCreateUrl(),
-  {
-    ...options,
-    method: 'POST'
-    ,
-    body:
-      formData,
+export const scamAlertsControllerCreate = async (
+  createScamAlertDto: CreateScamAlertDto,
+  options?: RequestInit,
+): Promise<scamAlertsControllerCreateResponse> => {
+  const formData = new FormData();
+  formData.append(`cityId`, createScamAlertDto.cityId);
+  formData.append(`categoryId`, createScamAlertDto.categoryId);
+  formData.append(`scamName`, createScamAlertDto.scamName);
+  formData.append(`description`, createScamAlertDto.description);
+  formData.append(`preventionTip`, createScamAlertDto.preventionTip);
+  if (createScamAlertDto.image !== undefined) {
+    formData.append(`image`, createScamAlertDto.image);
   }
-);}
 
+  return customInstance<scamAlertsControllerCreateResponse>(
+    getScamAlertsControllerCreateUrl(),
+    {
+      ...options,
+      method: "POST",
+      body: formData,
+    },
+  );
+};
 
+export const getScamAlertsControllerCreateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerCreate>>,
+    TError,
+    { data: CreateScamAlertDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof scamAlertsControllerCreate>>,
+  TError,
+  { data: CreateScamAlertDto },
+  TContext
+> => {
+  const mutationKey = ["scamAlertsControllerCreate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerCreate>>,
+    { data: CreateScamAlertDto }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export const getScamAlertsControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerCreate>>, TError,{data: CreateScamAlertDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerCreate>>, TError,{data: CreateScamAlertDto}, TContext> => {
+    return scamAlertsControllerCreate(data);
+  };
 
-const mutationKey = ['scamAlertsControllerCreate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
+export type ScamAlertsControllerCreateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerCreate>>
+>;
+export type ScamAlertsControllerCreateMutationBody = CreateScamAlertDto;
+export type ScamAlertsControllerCreateMutationError = unknown;
 
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scamAlertsControllerCreate>>, {data: CreateScamAlertDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  scamAlertsControllerCreate(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScamAlertsControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerCreate>>>
-    export type ScamAlertsControllerCreateMutationBody = CreateScamAlertDto
-    export type ScamAlertsControllerCreateMutationError = unknown
-
-    /**
+/**
  * @summary Create a scam alert
  */
-export const useScamAlertsControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerCreate>>, TError,{data: CreateScamAlertDto}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof scamAlertsControllerCreate>>,
-        TError,
-        {data: CreateScamAlertDto},
-        TContext
-      > => {
-      return useMutation(getScamAlertsControllerCreateMutationOptions(options), queryClient);
-    }
-    /**
+export const useScamAlertsControllerCreate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof scamAlertsControllerCreate>>,
+      TError,
+      { data: CreateScamAlertDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof scamAlertsControllerCreate>>,
+  TError,
+  { data: CreateScamAlertDto },
+  TContext
+> => {
+  return useMutation(
+    getScamAlertsControllerCreateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get all scam alerts
  */
 export type scamAlertsControllerFindAllResponse200 = {
-  data: PaginatedScamAlertsResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerFindAllResponseSuccess = (scamAlertsControllerFindAllResponse200) & {
-  headers: Headers;
+  data: PaginatedScamAlertsResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerFindAllResponse = (scamAlertsControllerFindAllResponseSuccess)
+export type scamAlertsControllerFindAllResponseSuccess =
+  scamAlertsControllerFindAllResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerFindAllResponse =
+  scamAlertsControllerFindAllResponseSuccess;
 
-export const getScamAlertsControllerFindAllUrl = (params?: ScamAlertsControllerFindAllParams,) => {
+export const getScamAlertsControllerFindAllUrl = (
+  params?: ScamAlertsControllerFindAllParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/scam-alerts?${stringifiedParams}` : `/scam-alerts`
-}
+  return stringifiedParams.length > 0
+    ? `/scam-alerts?${stringifiedParams}`
+    : `/scam-alerts`;
+};
 
-export const scamAlertsControllerFindAll = async (params?: ScamAlertsControllerFindAllParams, options?: RequestInit): Promise<scamAlertsControllerFindAllResponse> => {
+export const scamAlertsControllerFindAll = async (
+  params?: ScamAlertsControllerFindAllParams,
+  options?: RequestInit,
+): Promise<scamAlertsControllerFindAllResponse> => {
+  return customInstance<scamAlertsControllerFindAllResponse>(
+    getScamAlertsControllerFindAllUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<scamAlertsControllerFindAllResponse>(getScamAlertsControllerFindAllUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getScamAlertsControllerFindAllInfiniteQueryKey = (params?: ScamAlertsControllerFindAllParams,) => {
-    return [
-    'infinite', `/scam-alerts`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getScamAlertsControllerFindAllQueryKey = (params?: ScamAlertsControllerFindAllParams,) => {
-    return [
-    `/scam-alerts`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getScamAlertsControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, ScamAlertsControllerFindAllParams['skip']>, TError = unknown>(params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData, QueryKey, ScamAlertsControllerFindAllParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindAllInfiniteQueryKey = (
+  params?: ScamAlertsControllerFindAllParams,
 ) => {
+  return ["infinite", `/scam-alerts`, ...(params ? [params] : [])] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getScamAlertsControllerFindAllQueryKey = (
+  params?: ScamAlertsControllerFindAllParams,
+) => {
+  return [`/scam-alerts`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindAllInfiniteQueryKey(params);
+export const getScamAlertsControllerFindAllInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    ScamAlertsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindAllParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindAllInfiniteQueryKey(params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    QueryKey,
+    ScamAlertsControllerFindAllParams["skip"]
+  > = ({ signal, pageParam }) =>
+    scamAlertsControllerFindAll(
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, QueryKey, ScamAlertsControllerFindAllParams['skip']> = ({ signal, pageParam }) => scamAlertsControllerFindAll({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    TError,
+    TData,
+    QueryKey,
+    ScamAlertsControllerFindAllParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindAllInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindAll>>
+>;
+export type ScamAlertsControllerFindAllInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData, QueryKey, ScamAlertsControllerFindAllParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>>
-export type ScamAlertsControllerFindAllInfiniteQueryError = unknown
-
-
-export function useScamAlertsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, ScamAlertsControllerFindAllParams['skip']>, TError = unknown>(
- params: undefined |  ScamAlertsControllerFindAllParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData, QueryKey, ScamAlertsControllerFindAllParams['skip']>> & Pick<
+export function useScamAlertsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    ScamAlertsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params: undefined | ScamAlertsControllerFindAllParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindAllParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
           TError,
-          Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, QueryKey
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, ScamAlertsControllerFindAllParams['skip']>, TError = unknown>(
- params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData, QueryKey, ScamAlertsControllerFindAllParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    ScamAlertsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindAllParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
           TError,
-          Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, QueryKey
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, ScamAlertsControllerFindAllParams['skip']>, TError = unknown>(
- params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData, QueryKey, ScamAlertsControllerFindAllParams['skip']>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    ScamAlertsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindAllParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get all scam alerts
  */
 
-export function useScamAlertsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, ScamAlertsControllerFindAllParams['skip']>, TError = unknown>(
- params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData, QueryKey, ScamAlertsControllerFindAllParams['skip']>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindAllInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    ScamAlertsControllerFindAllParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindAllParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindAllInfiniteQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindAllInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getScamAlertsControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError = unknown>(params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindAllQueryOptions = <
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getScamAlertsControllerFindAllQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindAllQueryKey(params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>
+  > = ({ signal }) => scamAlertsControllerFindAll(params, { signal });
 
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindAllQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindAll>>
+>;
+export type ScamAlertsControllerFindAllQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>> = ({ signal }) => scamAlertsControllerFindAll(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>>
-export type ScamAlertsControllerFindAllQueryError = unknown
-
-
-export function useScamAlertsControllerFindAll<TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError = unknown>(
- params: undefined |  ScamAlertsControllerFindAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindAll<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+  TError = unknown,
+>(
+  params: undefined | ScamAlertsControllerFindAllParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindAll>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindAll<TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError = unknown>(
- params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindAll<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindAll>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindAll<TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError = unknown>(
- params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindAll<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get all scam alerts
  */
 
-export function useScamAlertsControllerFindAll<TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError = unknown>(
- params?: ScamAlertsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindAll<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindAllParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindAll>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindAllQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindAllQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get current user scam alerts
  */
 export type scamAlertsControllerFindMyAlertsResponse200 = {
-  data: PaginatedScamAlertsResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerFindMyAlertsResponseSuccess = (scamAlertsControllerFindMyAlertsResponse200) & {
-  headers: Headers;
+  data: PaginatedScamAlertsResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerFindMyAlertsResponse = (scamAlertsControllerFindMyAlertsResponseSuccess)
+export type scamAlertsControllerFindMyAlertsResponseSuccess =
+  scamAlertsControllerFindMyAlertsResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerFindMyAlertsResponse =
+  scamAlertsControllerFindMyAlertsResponseSuccess;
 
-export const getScamAlertsControllerFindMyAlertsUrl = (params?: ScamAlertsControllerFindMyAlertsParams,) => {
+export const getScamAlertsControllerFindMyAlertsUrl = (
+  params?: ScamAlertsControllerFindMyAlertsParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/scam-alerts/mine?${stringifiedParams}` : `/scam-alerts/mine`
-}
+  return stringifiedParams.length > 0
+    ? `/scam-alerts/mine?${stringifiedParams}`
+    : `/scam-alerts/mine`;
+};
 
-export const scamAlertsControllerFindMyAlerts = async (params?: ScamAlertsControllerFindMyAlertsParams, options?: RequestInit): Promise<scamAlertsControllerFindMyAlertsResponse> => {
+export const scamAlertsControllerFindMyAlerts = async (
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: RequestInit,
+): Promise<scamAlertsControllerFindMyAlertsResponse> => {
+  return customInstance<scamAlertsControllerFindMyAlertsResponse>(
+    getScamAlertsControllerFindMyAlertsUrl(params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<scamAlertsControllerFindMyAlertsResponse>(getScamAlertsControllerFindMyAlertsUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getScamAlertsControllerFindMyAlertsInfiniteQueryKey = (params?: ScamAlertsControllerFindMyAlertsParams,) => {
-    return [
-    'infinite', `/scam-alerts/mine`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getScamAlertsControllerFindMyAlertsQueryKey = (params?: ScamAlertsControllerFindMyAlertsParams,) => {
-    return [
-    `/scam-alerts/mine`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getScamAlertsControllerFindMyAlertsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, ScamAlertsControllerFindMyAlertsParams['skip']>, TError = unknown>(params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindMyAlertsInfiniteQueryKey = (
+  params?: ScamAlertsControllerFindMyAlertsParams,
 ) => {
+  return [
+    "infinite",
+    `/scam-alerts/mine`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getScamAlertsControllerFindMyAlertsQueryKey = (
+  params?: ScamAlertsControllerFindMyAlertsParams,
+) => {
+  return [`/scam-alerts/mine`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindMyAlertsInfiniteQueryKey(params);
+export const getScamAlertsControllerFindMyAlertsInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindMyAlertsParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindMyAlertsInfiniteQueryKey(params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    QueryKey,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  > = ({ signal, pageParam }) =>
+    scamAlertsControllerFindMyAlerts(
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']> = ({ signal, pageParam }) => scamAlertsControllerFindMyAlerts({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    TError,
+    TData,
+    QueryKey,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindMyAlertsInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>
+>;
+export type ScamAlertsControllerFindMyAlertsInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindMyAlertsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>>
-export type ScamAlertsControllerFindMyAlertsInfiniteQueryError = unknown
-
-
-export function useScamAlertsControllerFindMyAlertsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, ScamAlertsControllerFindMyAlertsParams['skip']>, TError = unknown>(
- params: undefined |  ScamAlertsControllerFindMyAlertsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']>> & Pick<
+export function useScamAlertsControllerFindMyAlertsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params: undefined | ScamAlertsControllerFindMyAlertsParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindMyAlertsParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
           TError,
-          Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, QueryKey
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindMyAlertsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, ScamAlertsControllerFindMyAlertsParams['skip']>, TError = unknown>(
- params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindMyAlertsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindMyAlertsParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
           TError,
-          Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, QueryKey
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindMyAlertsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, ScamAlertsControllerFindMyAlertsParams['skip']>, TError = unknown>(
- params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindMyAlertsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindMyAlertsParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get current user scam alerts
  */
 
-export function useScamAlertsControllerFindMyAlertsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, ScamAlertsControllerFindMyAlertsParams['skip']>, TError = unknown>(
- params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData, QueryKey, ScamAlertsControllerFindMyAlertsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindMyAlertsInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    ScamAlertsControllerFindMyAlertsParams["skip"]
+  >,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindMyAlertsParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindMyAlertsInfiniteQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindMyAlertsInfiniteQueryOptions(params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getScamAlertsControllerFindMyAlertsQueryOptions = <TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError = unknown>(params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindMyAlertsQueryOptions = <
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindMyAlertsQueryKey(params);
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindMyAlertsQueryKey(params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>
+  > = ({ signal }) => scamAlertsControllerFindMyAlerts(params, { signal });
 
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindMyAlertsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>
+>;
+export type ScamAlertsControllerFindMyAlertsQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>> = ({ signal }) => scamAlertsControllerFindMyAlerts(params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindMyAlertsQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>>
-export type ScamAlertsControllerFindMyAlertsQueryError = unknown
-
-
-export function useScamAlertsControllerFindMyAlerts<TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError = unknown>(
- params: undefined |  ScamAlertsControllerFindMyAlertsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindMyAlerts<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+  TError = unknown,
+>(
+  params: undefined | ScamAlertsControllerFindMyAlertsParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindMyAlerts<TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError = unknown>(
- params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindMyAlerts<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindMyAlerts<TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError = unknown>(
- params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindMyAlerts<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get current user scam alerts
  */
 
-export function useScamAlertsControllerFindMyAlerts<TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError = unknown>(
- params?: ScamAlertsControllerFindMyAlertsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindMyAlerts<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+  TError = unknown,
+>(
+  params?: ScamAlertsControllerFindMyAlertsParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindMyAlerts>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindMyAlertsQueryOptions(
+    params,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindMyAlertsQueryOptions(params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get scam alerts by user ID
  */
 export type scamAlertsControllerFindByUserResponse200 = {
-  data: PaginatedScamAlertsResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerFindByUserResponseSuccess = (scamAlertsControllerFindByUserResponse200) & {
-  headers: Headers;
+  data: PaginatedScamAlertsResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerFindByUserResponse = (scamAlertsControllerFindByUserResponseSuccess)
+export type scamAlertsControllerFindByUserResponseSuccess =
+  scamAlertsControllerFindByUserResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerFindByUserResponse =
+  scamAlertsControllerFindByUserResponseSuccess;
 
-export const getScamAlertsControllerFindByUserUrl = (userId: string,
-    params?: ScamAlertsControllerFindByUserParams,) => {
+export const getScamAlertsControllerFindByUserUrl = (
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
+      normalizedParams.append(key, value === null ? "null" : value.toString());
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `/scam-alerts/user/${userId}?${stringifiedParams}` : `/scam-alerts/user/${userId}`
-}
+  return stringifiedParams.length > 0
+    ? `/scam-alerts/user/${userId}?${stringifiedParams}`
+    : `/scam-alerts/user/${userId}`;
+};
 
-export const scamAlertsControllerFindByUser = async (userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: RequestInit): Promise<scamAlertsControllerFindByUserResponse> => {
+export const scamAlertsControllerFindByUser = async (
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: RequestInit,
+): Promise<scamAlertsControllerFindByUserResponse> => {
+  return customInstance<scamAlertsControllerFindByUserResponse>(
+    getScamAlertsControllerFindByUserUrl(userId, params),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  return customInstance<scamAlertsControllerFindByUserResponse>(getScamAlertsControllerFindByUserUrl(userId,params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getScamAlertsControllerFindByUserInfiniteQueryKey = (userId: string,
-    params?: ScamAlertsControllerFindByUserParams,) => {
-    return [
-    'infinite', `/scam-alerts/user/${userId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-export const getScamAlertsControllerFindByUserQueryKey = (userId: string,
-    params?: ScamAlertsControllerFindByUserParams,) => {
-    return [
-    `/scam-alerts/user/${userId}`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getScamAlertsControllerFindByUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, ScamAlertsControllerFindByUserParams['skip']>, TError = unknown>(userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData, QueryKey, ScamAlertsControllerFindByUserParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindByUserInfiniteQueryKey = (
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
 ) => {
+  return [
+    "infinite",
+    `/scam-alerts/user/${userId}`,
+    ...(params ? [params] : []),
+  ] as const;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const getScamAlertsControllerFindByUserQueryKey = (
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+) => {
+  return [`/scam-alerts/user/${userId}`, ...(params ? [params] : [])] as const;
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindByUserInfiniteQueryKey(userId,params);
+export const getScamAlertsControllerFindByUserInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    ScamAlertsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindByUserParams["skip"]
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindByUserInfiniteQueryKey(userId, params);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    QueryKey,
+    ScamAlertsControllerFindByUserParams["skip"]
+  > = ({ signal, pageParam }) =>
+    scamAlertsControllerFindByUser(
+      userId,
+      { ...params, skip: pageParam || params?.["skip"] },
+      { signal },
+    );
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, QueryKey, ScamAlertsControllerFindByUserParams['skip']> = ({ signal, pageParam }) => scamAlertsControllerFindByUser(userId,{...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    TError,
+    TData,
+    QueryKey,
+    ScamAlertsControllerFindByUserParams["skip"]
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindByUserInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>
+>;
+export type ScamAlertsControllerFindByUserInfiniteQueryError = unknown;
 
-
-
-
-   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData, QueryKey, ScamAlertsControllerFindByUserParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindByUserInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>>
-export type ScamAlertsControllerFindByUserInfiniteQueryError = unknown
-
-
-export function useScamAlertsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, ScamAlertsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params: undefined |  ScamAlertsControllerFindByUserParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData, QueryKey, ScamAlertsControllerFindByUserParams['skip']>> & Pick<
+export function useScamAlertsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    ScamAlertsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params: undefined | ScamAlertsControllerFindByUserParams,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindByUserParams["skip"]
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
           TError,
-          Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, QueryKey
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, ScamAlertsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData, QueryKey, ScamAlertsControllerFindByUserParams['skip']>> & Pick<
+          Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    ScamAlertsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindByUserParams["skip"]
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
           TError,
-          Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, QueryKey
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, ScamAlertsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData, QueryKey, ScamAlertsControllerFindByUserParams['skip']>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+          QueryKey
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    ScamAlertsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindByUserParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get scam alerts by user ID
  */
 
-export function useScamAlertsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, ScamAlertsControllerFindByUserParams['skip']>, TError = unknown>(
- userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData, QueryKey, ScamAlertsControllerFindByUserParams['skip']>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindByUserInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    ScamAlertsControllerFindByUserParams["skip"]
+  >,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData,
+        QueryKey,
+        ScamAlertsControllerFindByUserParams["skip"]
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindByUserInfiniteQueryOptions(
+    userId,
+    params,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindByUserInfiniteQueryOptions(userId,params,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getScamAlertsControllerFindByUserQueryOptions = <TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError = unknown>(userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindByUserQueryOptions = <
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindByUserQueryKey(userId, params);
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindByUserQueryKey(userId,params);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>
+  > = ({ signal }) =>
+    scamAlertsControllerFindByUser(userId, params, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!userId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindByUserQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>
+>;
+export type ScamAlertsControllerFindByUserQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>> = ({ signal }) => scamAlertsControllerFindByUser(userId,params, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindByUserQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>>
-export type ScamAlertsControllerFindByUserQueryError = unknown
-
-
-export function useScamAlertsControllerFindByUser<TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params: undefined |  ScamAlertsControllerFindByUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params: undefined | ScamAlertsControllerFindByUserParams,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindByUser<TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindByUser<TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get scam alerts by user ID
  */
 
-export function useScamAlertsControllerFindByUser<TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError = unknown>(
- userId: string,
-    params?: ScamAlertsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindByUser<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+  TError = unknown,
+>(
+  userId: string,
+  params?: ScamAlertsControllerFindByUserParams,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindByUser>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindByUserQueryOptions(
+    userId,
+    params,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindByUserQueryOptions(userId,params,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get a single scam alert
  */
 export type scamAlertsControllerFindOneResponse200 = {
-  data: ScamAlertResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerFindOneResponseSuccess = (scamAlertsControllerFindOneResponse200) & {
-  headers: Headers;
+  data: ScamAlertResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerFindOneResponse = (scamAlertsControllerFindOneResponseSuccess)
+export type scamAlertsControllerFindOneResponseSuccess =
+  scamAlertsControllerFindOneResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerFindOneResponse =
+  scamAlertsControllerFindOneResponseSuccess;
 
-export const getScamAlertsControllerFindOneUrl = (id: string,) => {
+export const getScamAlertsControllerFindOneUrl = (id: string) => {
+  return `/scam-alerts/${id}`;
+};
 
+export const scamAlertsControllerFindOne = async (
+  id: string,
+  options?: RequestInit,
+): Promise<scamAlertsControllerFindOneResponse> => {
+  return customInstance<scamAlertsControllerFindOneResponse>(
+    getScamAlertsControllerFindOneUrl(id),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
+export const getScamAlertsControllerFindOneInfiniteQueryKey = (id: string) => {
+  return ["infinite", `/scam-alerts/${id}`] as const;
+};
 
+export const getScamAlertsControllerFindOneQueryKey = (id: string) => {
+  return [`/scam-alerts/${id}`] as const;
+};
 
-  return `/scam-alerts/${id}`
-}
-
-export const scamAlertsControllerFindOne = async (id: string, options?: RequestInit): Promise<scamAlertsControllerFindOneResponse> => {
-
-  return customInstance<scamAlertsControllerFindOneResponse>(getScamAlertsControllerFindOneUrl(id),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getScamAlertsControllerFindOneInfiniteQueryKey = (id: string,) => {
-    return [
-    'infinite', `/scam-alerts/${id}`
-    ] as const;
-    }
-
-export const getScamAlertsControllerFindOneQueryKey = (id: string,) => {
-    return [
-    `/scam-alerts/${id}`
-    ] as const;
-    }
-
-
-export const getScamAlertsControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindOneInfiniteQueryOptions = <
+  TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindOneInfiniteQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindOneInfiniteQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
+  > = ({ signal }) => scamAlertsControllerFindOne(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindOneInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
+>;
+export type ScamAlertsControllerFindOneInfiniteQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>> = ({ signal }) => scamAlertsControllerFindOne(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>
-export type ScamAlertsControllerFindOneInfiniteQueryError = unknown
-
-
-export function useScamAlertsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>, TError = unknown>(
- id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get a single scam alert
  */
 
-export function useScamAlertsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindOneInfinite<
+  TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindOneInfiniteQueryOptions(
+    id,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindOneInfiniteQueryOptions(id,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getScamAlertsControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindOneQueryOptions = <
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ?? getScamAlertsControllerFindOneQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindOneQueryKey(id);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
+  > = ({ signal }) => scamAlertsControllerFindOne(id, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!id,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindOneQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
+>;
+export type ScamAlertsControllerFindOneQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>> = ({ signal }) => scamAlertsControllerFindOne(id, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>>
-export type ScamAlertsControllerFindOneQueryError = unknown
-
-
-export function useScamAlertsControllerFindOne<TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError = unknown>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindOne<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindOne<TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindOne<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindOne>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindOne<TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindOne<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get a single scam alert
  */
 
-export function useScamAlertsControllerFindOne<TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindOne<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+  TError = unknown,
+>(
+  id: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindOne>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindOneQueryOptions(id, options);
 
-  const queryOptions = getScamAlertsControllerFindOneQueryOptions(id,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update own scam alert
  */
 export type scamAlertsControllerUpdateResponse200 = {
-  data: ScamAlertResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerUpdateResponseSuccess = (scamAlertsControllerUpdateResponse200) & {
-  headers: Headers;
+  data: ScamAlertResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerUpdateResponse = (scamAlertsControllerUpdateResponseSuccess)
+export type scamAlertsControllerUpdateResponseSuccess =
+  scamAlertsControllerUpdateResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerUpdateResponse =
+  scamAlertsControllerUpdateResponseSuccess;
 
-export const getScamAlertsControllerUpdateUrl = (id: string,) => {
+export const getScamAlertsControllerUpdateUrl = (id: string) => {
+  return `/scam-alerts/${id}`;
+};
 
-
-
-
-  return `/scam-alerts/${id}`
-}
-
-export const scamAlertsControllerUpdate = async (id: string,
-    updateScamAlertDto: UpdateScamAlertDto, options?: RequestInit): Promise<scamAlertsControllerUpdateResponse> => {
-    const formData = new FormData();
-if(updateScamAlertDto.cityId !== undefined) {
- formData.append(`cityId`, updateScamAlertDto.cityId);
- }
-if(updateScamAlertDto.categoryId !== undefined) {
- formData.append(`categoryId`, updateScamAlertDto.categoryId);
- }
-if(updateScamAlertDto.scamName !== undefined) {
- formData.append(`scamName`, updateScamAlertDto.scamName);
- }
-if(updateScamAlertDto.description !== undefined) {
- formData.append(`description`, updateScamAlertDto.description);
- }
-if(updateScamAlertDto.preventionTip !== undefined) {
- formData.append(`preventionTip`, updateScamAlertDto.preventionTip);
- }
-if(updateScamAlertDto.image !== undefined) {
- formData.append(`image`, updateScamAlertDto.image);
- }
-
-  return customInstance<scamAlertsControllerUpdateResponse>(getScamAlertsControllerUpdateUrl(id),
-  {
-    ...options,
-    method: 'PATCH'
-    ,
-    body:
-      formData,
+export const scamAlertsControllerUpdate = async (
+  id: string,
+  updateScamAlertDto: UpdateScamAlertDto,
+  options?: RequestInit,
+): Promise<scamAlertsControllerUpdateResponse> => {
+  const formData = new FormData();
+  if (updateScamAlertDto.cityId !== undefined) {
+    formData.append(`cityId`, updateScamAlertDto.cityId);
   }
-);}
+  if (updateScamAlertDto.categoryId !== undefined) {
+    formData.append(`categoryId`, updateScamAlertDto.categoryId);
+  }
+  if (updateScamAlertDto.scamName !== undefined) {
+    formData.append(`scamName`, updateScamAlertDto.scamName);
+  }
+  if (updateScamAlertDto.description !== undefined) {
+    formData.append(`description`, updateScamAlertDto.description);
+  }
+  if (updateScamAlertDto.preventionTip !== undefined) {
+    formData.append(`preventionTip`, updateScamAlertDto.preventionTip);
+  }
+  if (updateScamAlertDto.image !== undefined) {
+    formData.append(`image`, updateScamAlertDto.image);
+  }
 
+  return customInstance<scamAlertsControllerUpdateResponse>(
+    getScamAlertsControllerUpdateUrl(id),
+    {
+      ...options,
+      method: "PATCH",
+      body: formData,
+    },
+  );
+};
 
+export const getScamAlertsControllerUpdateMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerUpdate>>,
+    TError,
+    { id: string; data: UpdateScamAlertDto },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof scamAlertsControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateScamAlertDto },
+  TContext
+> => {
+  const mutationKey = ["scamAlertsControllerUpdate"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerUpdate>>,
+    { id: string; data: UpdateScamAlertDto }
+  > = (props) => {
+    const { id, data } = props ?? {};
 
-export const getScamAlertsControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerUpdate>>, TError,{id: string;data: UpdateScamAlertDto}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerUpdate>>, TError,{id: string;data: UpdateScamAlertDto}, TContext> => {
+    return scamAlertsControllerUpdate(id, data);
+  };
 
-const mutationKey = ['scamAlertsControllerUpdate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+  return { mutationFn, ...mutationOptions };
+};
 
+export type ScamAlertsControllerUpdateMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerUpdate>>
+>;
+export type ScamAlertsControllerUpdateMutationBody = UpdateScamAlertDto;
+export type ScamAlertsControllerUpdateMutationError = unknown;
 
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scamAlertsControllerUpdate>>, {id: string;data: UpdateScamAlertDto}> = (props) => {
-          const {id,data} = props ?? {};
-
-          return  scamAlertsControllerUpdate(id,data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScamAlertsControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerUpdate>>>
-    export type ScamAlertsControllerUpdateMutationBody = UpdateScamAlertDto
-    export type ScamAlertsControllerUpdateMutationError = unknown
-
-    /**
+/**
  * @summary Update own scam alert
  */
-export const useScamAlertsControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerUpdate>>, TError,{id: string;data: UpdateScamAlertDto}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof scamAlertsControllerUpdate>>,
-        TError,
-        {id: string;data: UpdateScamAlertDto},
-        TContext
-      > => {
-      return useMutation(getScamAlertsControllerUpdateMutationOptions(options), queryClient);
-    }
-    /**
+export const useScamAlertsControllerUpdate = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof scamAlertsControllerUpdate>>,
+      TError,
+      { id: string; data: UpdateScamAlertDto },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof scamAlertsControllerUpdate>>,
+  TError,
+  { id: string; data: UpdateScamAlertDto },
+  TContext
+> => {
+  return useMutation(
+    getScamAlertsControllerUpdateMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Delete own scam alert
  */
 export type scamAlertsControllerDeleteResponse200 = {
-  data: MessageResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerDeleteResponseSuccess = (scamAlertsControllerDeleteResponse200) & {
-  headers: Headers;
+  data: MessageResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerDeleteResponse = (scamAlertsControllerDeleteResponseSuccess)
+export type scamAlertsControllerDeleteResponseSuccess =
+  scamAlertsControllerDeleteResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerDeleteResponse =
+  scamAlertsControllerDeleteResponseSuccess;
 
-export const getScamAlertsControllerDeleteUrl = (id: string,) => {
+export const getScamAlertsControllerDeleteUrl = (id: string) => {
+  return `/scam-alerts/${id}`;
+};
 
+export const scamAlertsControllerDelete = async (
+  id: string,
+  options?: RequestInit,
+): Promise<scamAlertsControllerDeleteResponse> => {
+  return customInstance<scamAlertsControllerDeleteResponse>(
+    getScamAlertsControllerDeleteUrl(id),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getScamAlertsControllerDeleteMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerDelete>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof scamAlertsControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ["scamAlertsControllerDelete"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerDelete>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
 
-  return `/scam-alerts/${id}`
-}
+    return scamAlertsControllerDelete(id);
+  };
 
-export const scamAlertsControllerDelete = async (id: string, options?: RequestInit): Promise<scamAlertsControllerDeleteResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<scamAlertsControllerDeleteResponse>(getScamAlertsControllerDeleteUrl(id),
-  {
-    ...options,
-    method: 'DELETE'
+export type ScamAlertsControllerDeleteMutationResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerDelete>>
+>;
 
+export type ScamAlertsControllerDeleteMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getScamAlertsControllerDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerDelete>>, TError,{id: string}, TContext> => {
-
-const mutationKey = ['scamAlertsControllerDelete'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof scamAlertsControllerDelete>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
-
-          return  scamAlertsControllerDelete(id,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ScamAlertsControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerDelete>>>
-
-    export type ScamAlertsControllerDeleteMutationError = unknown
-
-    /**
+/**
  * @summary Delete own scam alert
  */
-export const useScamAlertsControllerDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof scamAlertsControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof scamAlertsControllerDelete>>,
-        TError,
-        {id: string},
-        TContext
-      > => {
-      return useMutation(getScamAlertsControllerDeleteMutationOptions(options), queryClient);
-    }
-    /**
+export const useScamAlertsControllerDelete = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof scamAlertsControllerDelete>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof scamAlertsControllerDelete>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getScamAlertsControllerDeleteMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get scam alert by city and slug (SEO-friendly URL)
  */
 export type scamAlertsControllerFindBySlugResponse200 = {
-  data: ScamAlertResponseDto
-  status: 200
-}
-
-export type scamAlertsControllerFindBySlugResponseSuccess = (scamAlertsControllerFindBySlugResponse200) & {
-  headers: Headers;
+  data: ScamAlertResponseDto;
+  status: 200;
 };
-;
 
-export type scamAlertsControllerFindBySlugResponse = (scamAlertsControllerFindBySlugResponseSuccess)
+export type scamAlertsControllerFindBySlugResponseSuccess =
+  scamAlertsControllerFindBySlugResponse200 & {
+    headers: Headers;
+  };
+export type scamAlertsControllerFindBySlugResponse =
+  scamAlertsControllerFindBySlugResponseSuccess;
 
-export const getScamAlertsControllerFindBySlugUrl = (citySlug: string,
-    alertSlug: string,) => {
-
-
-
-
-  return `/scam-alerts/by-slug/${citySlug}/${alertSlug}`
-}
-
-export const scamAlertsControllerFindBySlug = async (citySlug: string,
-    alertSlug: string, options?: RequestInit): Promise<scamAlertsControllerFindBySlugResponse> => {
-
-  return customInstance<scamAlertsControllerFindBySlugResponse>(getScamAlertsControllerFindBySlugUrl(citySlug,alertSlug),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getScamAlertsControllerFindBySlugInfiniteQueryKey = (citySlug: string,
-    alertSlug: string,) => {
-    return [
-    'infinite', `/scam-alerts/by-slug/${citySlug}/${alertSlug}`
-    ] as const;
-    }
-
-export const getScamAlertsControllerFindBySlugQueryKey = (citySlug: string,
-    alertSlug: string,) => {
-    return [
-    `/scam-alerts/by-slug/${citySlug}/${alertSlug}`
-    ] as const;
-    }
-
-
-export const getScamAlertsControllerFindBySlugInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>, TError = unknown>(citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindBySlugUrl = (
+  citySlug: string,
+  alertSlug: string,
 ) => {
+  return `/scam-alerts/by-slug/${citySlug}/${alertSlug}`;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const scamAlertsControllerFindBySlug = async (
+  citySlug: string,
+  alertSlug: string,
+  options?: RequestInit,
+): Promise<scamAlertsControllerFindBySlugResponse> => {
+  return customInstance<scamAlertsControllerFindBySlugResponse>(
+    getScamAlertsControllerFindBySlugUrl(citySlug, alertSlug),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindBySlugInfiniteQueryKey(citySlug,alertSlug);
+export const getScamAlertsControllerFindBySlugInfiniteQueryKey = (
+  citySlug: string,
+  alertSlug: string,
+) => {
+  return ["infinite", `/scam-alerts/by-slug/${citySlug}/${alertSlug}`] as const;
+};
 
+export const getScamAlertsControllerFindBySlugQueryKey = (
+  citySlug: string,
+  alertSlug: string,
+) => {
+  return [`/scam-alerts/by-slug/${citySlug}/${alertSlug}`] as const;
+};
 
+export const getScamAlertsControllerFindBySlugInfiniteQueryOptions = <
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  >,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+) => {
+  const { query: queryOptions } = options ?? {};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>> = ({ signal }) => scamAlertsControllerFindBySlug(citySlug,alertSlug, { signal, ...requestOptions });
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindBySlugInfiniteQueryKey(citySlug, alertSlug);
 
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  > = ({ signal }) =>
+    scamAlertsControllerFindBySlug(citySlug, alertSlug, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!(citySlug && alertSlug),
+    ...queryOptions,
+  } as UseInfiniteQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindBySlugInfiniteQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+>;
+export type ScamAlertsControllerFindBySlugInfiniteQueryError = unknown;
 
-
-   return  { queryKey, queryFn, enabled: !!(citySlug && alertSlug), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindBySlugInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>
-export type ScamAlertsControllerFindBySlugInfiniteQueryError = unknown
-
-
-export function useScamAlertsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindBySlugInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  >,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindBySlugInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  >,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindBySlugInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  >,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get scam alert by city and slug (SEO-friendly URL)
  */
 
-export function useScamAlertsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindBySlugInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  >,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindBySlugInfiniteQueryOptions(
+    citySlug,
+    alertSlug,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindBySlugInfiniteQueryOptions(citySlug,alertSlug,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getScamAlertsControllerFindBySlugQueryOptions = <TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError = unknown>(citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getScamAlertsControllerFindBySlugQueryOptions = <
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getScamAlertsControllerFindBySlugQueryKey(citySlug, alertSlug);
 
-  const queryKey =  queryOptions?.queryKey ?? getScamAlertsControllerFindBySlugQueryKey(citySlug,alertSlug);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+  > = ({ signal }) =>
+    scamAlertsControllerFindBySlug(citySlug, alertSlug, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!(citySlug && alertSlug),
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ScamAlertsControllerFindBySlugQueryResult = NonNullable<
+  Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
+>;
+export type ScamAlertsControllerFindBySlugQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>> = ({ signal }) => scamAlertsControllerFindBySlug(citySlug,alertSlug, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(citySlug && alertSlug), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ScamAlertsControllerFindBySlugQueryResult = NonNullable<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>>
-export type ScamAlertsControllerFindBySlugQueryError = unknown
-
-
-export function useScamAlertsControllerFindBySlug<TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>> & Pick<
+export function useScamAlertsControllerFindBySlug<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindBySlug<TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>> & Pick<
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindBySlug<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
           TError,
           Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useScamAlertsControllerFindBySlug<TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useScamAlertsControllerFindBySlug<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get scam alert by city and slug (SEO-friendly URL)
  */
 
-export function useScamAlertsControllerFindBySlug<TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError = unknown>(
- citySlug: string,
-    alertSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useScamAlertsControllerFindBySlug<
+  TData = Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+  TError = unknown,
+>(
+  citySlug: string,
+  alertSlug: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof scamAlertsControllerFindBySlug>>,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions = getScamAlertsControllerFindBySlugQueryOptions(
+    citySlug,
+    alertSlug,
+    options,
+  );
 
-  const queryOptions = getScamAlertsControllerFindBySlugQueryOptions(citySlug,alertSlug,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

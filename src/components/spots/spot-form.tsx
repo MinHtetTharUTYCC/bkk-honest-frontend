@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useCallback, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Upload, X, MapPin } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import LocationPicker from '@/components/spots/location-picker';
-import { Dropdown } from '@/components/ui/dropdown';
-import { spotSchema, SpotFormValues } from '@/lib/validations/spot';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useState, useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Upload, X, MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
+import LocationPicker from "@/components/spots/location-picker";
+import { Dropdown } from "@/components/ui/dropdown";
+import { spotSchema, SpotFormValues } from "@/lib/validations/spot";
 import {
   Form,
   FormControl,
@@ -15,9 +16,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+} from "@/components/ui/form";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export interface SpotFormData extends SpotFormValues {
   imageFile?: File | null;
@@ -27,7 +29,7 @@ interface SpotFormProps {
   initialData?: Partial<SpotFormData>;
   onSubmit: (data: SpotFormData) => Promise<void>;
   isLoading: boolean;
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
   categories: Array<{ id: string; name: string }>;
   cities: Array<{ id: string; name: string }>;
 }
@@ -41,77 +43,96 @@ export default function SpotForm({
   cities,
 }: SpotFormProps) {
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
+  const [imagePreview, setImagePreview] = useState<string>("");
   const [isFetchingAddress, setIsFetchingAddress] = useState(false);
 
   const form = useForm<SpotFormValues>({
     resolver: zodResolver(spotSchema),
     defaultValues: {
-      name: initialData?.name || '',
-      address: initialData?.address || '',
-      categoryId: initialData?.categoryId || '',
-      cityId: initialData?.cityId || '',
+      name: initialData?.name || "",
+      address: initialData?.address || "",
+      categoryId: initialData?.categoryId || "",
+      cityId: initialData?.cityId || "",
       latitude: initialData?.latitude,
       longitude: initialData?.longitude,
     },
   });
 
-  const { setValue, watch, control, handleSubmit, formState: { errors } } = form;
+  const {
+    setValue,
+    watch,
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = form;
 
-  const fetchAddressFromLocation = useCallback(async (lat: number, lng: number) => {
-    setIsFetchingAddress(true);
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/spots/reverse-geocode`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude: lat, longitude: lng }),
-      });
+  const fetchAddressFromLocation = useCallback(
+    async (lat: number, lng: number) => {
+      setIsFetchingAddress(true);
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/spots/reverse-geocode`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ latitude: lat, longitude: lng }),
+          },
+        );
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch address');
+        if (!response.ok) {
+          throw new Error("Failed to fetch address");
+        }
+
+        const data = await response.json();
+        if (data.address) {
+          setValue("address", data.address, { shouldValidate: true });
+        }
+      } catch (error) {
+        console.error("Failed to fetch address:", error);
+      } finally {
+        setIsFetchingAddress(false);
       }
-
-      const data = await response.json();
-      if (data.address) {
-        setValue('address', data.address, { shouldValidate: true });
-      }
-    } catch (error) {
-      console.error('Failed to fetch address:', error);
-    } finally {
-      setIsFetchingAddress(false);
-    }
-  }, [setValue]);
+    },
+    [setValue],
+  );
 
   const handleLocationSelect = useCallback(
     (selectedLocation: { latitude: number; longitude: number }) => {
-      setValue('latitude', selectedLocation.latitude, { shouldValidate: true });
-      setValue('longitude', selectedLocation.longitude, { shouldValidate: true });
-      fetchAddressFromLocation(selectedLocation.latitude, selectedLocation.longitude);
+      setValue("latitude", selectedLocation.latitude, { shouldValidate: true });
+      setValue("longitude", selectedLocation.longitude, {
+        shouldValidate: true,
+      });
+      fetchAddressFromLocation(
+        selectedLocation.latitude,
+        selectedLocation.longitude,
+      );
     },
-    [setValue, fetchAddressFromLocation]
+    [setValue, fetchAddressFromLocation],
   );
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 10 * 1024 * 1024) {
-        form.setError('image', { message: 'Image size must be less than 10MB' });
+        form.setError("image", {
+          message: "Image size must be less than 10MB",
+        });
         return;
       }
 
       setImageFile(file);
       const preview = URL.createObjectURL(file);
       setImagePreview(preview);
-      form.clearErrors('image');
+      form.clearErrors("image");
     }
   };
 
   const handleRemoveImage = () => {
     setImageFile(null);
-    if (imagePreview && imagePreview.startsWith('blob:')) {
+    if (imagePreview && imagePreview.startsWith("blob:")) {
       URL.revokeObjectURL(imagePreview);
     }
-    setImagePreview('');
+    setImagePreview("");
   };
 
   const onFormSubmit = async (values: SpotFormValues) => {
@@ -121,13 +142,16 @@ export default function SpotForm({
         imageFile,
       });
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
     }
   };
 
-  const currentLat = watch('latitude');
-  const currentLng = watch('longitude');
-  const location = currentLat && currentLng ? { latitude: currentLat, longitude: currentLng } : null;
+  const currentLat = watch("latitude");
+  const currentLng = watch("longitude");
+  const location =
+    currentLat && currentLng
+      ? { latitude: currentLat, longitude: currentLng }
+      : null;
 
   return (
     <Form {...form}>
@@ -142,21 +166,26 @@ export default function SpotForm({
                 Spot Name <span className="text-amber-400">*</span>
               </FormLabel>
               <FormControl>
-                <input 
-                  placeholder="e.g., Jazz Bar Downtown" 
-                  disabled={isLoading} 
-                  {...field} 
+                <input
+                  placeholder="e.g., Jazz Bar Downtown"
+                  disabled={isLoading}
+                  {...field}
                   className={cn(
                     "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none",
-                    (field.value?.length || 0) > 100 && "border-red-500/50 ring-1 ring-red-500/20"
+                    (field.value?.length || 0) > 100 &&
+                      "border-red-500/50 ring-1 ring-red-500/20",
                   )}
                 />
               </FormControl>
               <div className="flex justify-end">
-                <span className={cn(
-                  "text-xs font-bold tracking-normal transition-colors",
-                  (field.value?.length || 0) > 100 ? "text-red-400" : "text-white/30"
-                )}>
+                <span
+                  className={cn(
+                    "text-xs font-bold tracking-normal transition-colors",
+                    (field.value?.length || 0) > 100
+                      ? "text-red-400"
+                      : "text-white/30",
+                  )}
+                >
                   {field.value?.length || 0}/100
                 </span>
               </div>
@@ -176,10 +205,10 @@ export default function SpotForm({
               </FormLabel>
               <FormControl>
                 <div className="rounded-2xl overflow-hidden h-125 border border-white/10 shadow-lg">
-                    <LocationPicker
-                        onLocationSelected={handleLocationSelect}
-                        initialLocation={location || undefined}
-                    />
+                  <LocationPicker
+                    onLocationSelected={handleLocationSelect}
+                    initialLocation={location || undefined}
+                  />
                 </div>
               </FormControl>
               <FormMessage />
@@ -196,33 +225,42 @@ export default function SpotForm({
               <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
                 Address
                 <span className="text-white/60 text-[12px] ml-2">
-                    (Auto-populated, editable) <span className="text-amber-400">*</span>
+                  (Auto-populated, editable){" "}
+                  <span className="text-amber-400">*</span>
                 </span>
               </FormLabel>
               <FormControl>
                 <div className="relative">
-                  <Textarea 
-                    placeholder="e.g. 25 Mangkon Rd, Bangkok" 
-                    disabled={isLoading || isFetchingAddress} 
-                    {...field} 
+                  <Textarea
+                    placeholder="e.g. 25 Mangkon Rd, Bangkok"
+                    disabled={isLoading || isFetchingAddress}
+                    {...field}
                     rows={3}
                     className={cn(
                       "w-full bg-white/5 border border-white/10 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/20 transition-all rounded-2xl px-5 py-4 text-sm font-medium text-foreground placeholder:text-white/20 outline-none resize-none",
-                      (field.value?.length || 0) > 200 && "border-red-500/50 ring-1 ring-red-500/20"
+                      (field.value?.length || 0) > 200 &&
+                        "border-red-500/50 ring-1 ring-red-500/20",
                     )}
                   />
                   {isFetchingAddress && (
                     <div className="absolute right-3 top-4">
-                      <Loader2 size={16} className="text-amber-400 animate-spin" />
+                      <Loader2
+                        size={16}
+                        className="text-amber-400 animate-spin"
+                      />
                     </div>
                   )}
                 </div>
               </FormControl>
               <div className="flex justify-end">
-                <span className={cn(
-                  "text-xs font-bold tracking-normal transition-colors",
-                  (field.value?.length || 0) > 200 ? "text-red-400" : "text-white/30"
-                )}>
+                <span
+                  className={cn(
+                    "text-xs font-bold tracking-normal transition-colors",
+                    (field.value?.length || 0) > 200
+                      ? "text-red-400"
+                      : "text-white/30",
+                  )}
+                >
                   {field.value?.length || 0}/200
                 </span>
               </div>
@@ -233,53 +271,53 @@ export default function SpotForm({
 
         {/* Grid for Category and City */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Category Selector */}
-            <FormField
+          {/* Category Selector */}
+          <FormField
             control={control}
             name="categoryId"
             render={({ field }) => (
-                <FormItem className="space-y-4">
+              <FormItem className="space-y-4">
                 <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                    Category <span className="text-amber-400">*</span>
+                  Category <span className="text-amber-400">*</span>
                 </FormLabel>
                 <FormControl>
-                    <Dropdown
+                  <Dropdown
                     options={categories}
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="Select category..."
                     name="category"
                     disabled={isLoading}
-                    />
+                  />
                 </FormControl>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
+          />
 
-            {/* City Selector */}
-            <FormField
+          {/* City Selector */}
+          <FormField
             control={control}
             name="cityId"
             render={({ field }) => (
-                <FormItem className="space-y-4">
+              <FormItem className="space-y-4">
                 <FormLabel className="block text-[10px] font-medium uppercase tracking-widest text-white/40 ml-1">
-                    City <span className="text-amber-400">*</span>
+                  City <span className="text-amber-400">*</span>
                 </FormLabel>
                 <FormControl>
-                    <Dropdown
+                  <Dropdown
                     options={cities}
                     value={field.value}
                     onChange={field.onChange}
                     placeholder="Select city..."
                     name="city"
                     disabled={isLoading}
-                    />
+                  />
                 </FormControl>
                 <FormMessage />
-                </FormItem>
+              </FormItem>
             )}
-            />
+          />
         </div>
 
         {/* Image Upload */}
@@ -315,12 +353,19 @@ export default function SpotForm({
                 className="hidden"
                 aria-label="Upload image"
               />
-              <div className={cn(
-                "border-2 border-dashed rounded-2xl p-8 text-center transition-all",
-                "hover:bg-white/5 hover:border-amber-400/50",
-                isLoading ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
-              )}>
-                <Upload size={24} className="text-white/50 group-hover:text-amber-400 mx-auto mb-2 transition-colors" />
+              <div
+                className={cn(
+                  "border-2 border-dashed rounded-2xl p-8 text-center transition-all",
+                  "hover:bg-white/5 hover:border-amber-400/50",
+                  isLoading
+                    ? "opacity-50 cursor-not-allowed"
+                    : "cursor-pointer",
+                )}
+              >
+                <Upload
+                  size={24}
+                  className="text-white/50 group-hover:text-amber-400 mx-auto mb-2 transition-colors"
+                />
                 <p className="text-sm text-white/70">
                   Click to upload or drag and drop
                 </p>
@@ -330,27 +375,36 @@ export default function SpotForm({
               </div>
             </label>
           )}
-          {errors.image && <p className="text-xs text-red-400">{String(errors.image.message)}</p>}
+          {errors.image && (
+            <p className="text-xs text-red-400">
+              {String(errors.image.message)}
+            </p>
+          )}
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isLoading || isFetchingAddress || (watch('name')?.length || 0) > 100 || (watch('address')?.length || 0) > 200}
+          disabled={
+            isLoading ||
+            isFetchingAddress ||
+            (watch("name")?.length || 0) > 100 ||
+            (watch("address")?.length || 0) > 200
+          }
           className={cn(
             "w-full bg-amber-400 text-black py-5 rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-amber-300 transition-all flex items-center justify-center gap-3 shadow-xl shadow-amber-400/20 active:scale-[0.98] disabled:opacity-50",
-            "disabled:cursor-not-allowed"
+            "disabled:cursor-not-allowed",
           )}
         >
           {isLoading ? (
             <>
               <Loader2 size={16} className="animate-spin" />
-              {mode === 'create' ? 'Creating Spot...' : 'Updating Spot...'}
+              {mode === "create" ? "Creating Spot..." : "Updating Spot..."}
             </>
           ) : (
             <>
-                <MapPin size={16} />
-                {mode === 'create' ? 'Create Spot' : 'Update Spot'}
+              <MapPin size={16} />
+              {mode === "create" ? "Create Spot" : "Update Spot"}
             </>
           )}
         </button>

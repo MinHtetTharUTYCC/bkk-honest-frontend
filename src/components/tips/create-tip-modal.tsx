@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Zap, X } from 'lucide-react';
-import { useCreateCommunityTip } from '@/hooks/use-api';
-import { toast } from 'sonner';
-import TipForm from './tip-form';
-import { TipFormValues } from '@/lib/validations/tip';
-import { useQueryClient } from '@tanstack/react-query';
+import { Zap, X } from "lucide-react";
+import { useCreateCommunityTip } from "@/hooks/use-api";
+import { toast } from "sonner";
+import TipForm from "./tip-form";
+import { TipFormValues } from "@/lib/validations/tip";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface CreateTipModalProps {
   spotId: string;
@@ -21,7 +21,10 @@ interface ApiError {
   };
 }
 
-export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps) {
+export default function CreateTipModal({
+  spotId,
+  onClose,
+}: CreateTipModalProps) {
   const createMutation = useCreateCommunityTip();
   const queryClient = useQueryClient();
 
@@ -29,20 +32,21 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
     try {
       const response = await createMutation.mutateAsync({
         spotId,
-        ...values });
-      
+        ...values,
+      });
+
       const newTip = response?.data || response;
 
       // Manually update the infinite query cache to show the new tip at index 0 immediately
       // This works for both 'newest' and 'popular' sort modes by forcefully prepending
-      const tipTypes = ['TRY', 'AVOID'];
-      const sortTypes = ['popular', 'newest'];
+      const tipTypes = ["TRY", "AVOID"];
+      const sortTypes = ["popular", "newest"];
 
       tipTypes.forEach((type) => {
         sortTypes.forEach((sort) => {
           queryClient.setQueryData(
-            ['tips-infinite', spotId, type, sort],
-            (oldData: any) => {
+            ["tips-infinite", spotId, type, sort],
+            (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
               if (!oldData || !oldData.pages) {
                 return oldData;
               }
@@ -51,7 +55,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
               if (newTip.type !== type) return oldData;
 
               const newPages = [...oldData.pages];
-              
+
               if (newPages.length === 0) {
                 newPages[0] = { data: [newTip] };
               } else {
@@ -59,28 +63,33 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
                 firstPage.data = [newTip, ...(firstPage.data || [])];
                 newPages[0] = firstPage;
               }
-              
+
               return {
                 ...oldData,
                 pages: newPages,
               };
-            }
+            },
           );
         });
       });
 
-      toast.success('Tip shared with the community!');
+      toast.success("Tip shared with the community!");
       onClose();
     } catch (error: unknown) {
       const apiError = error as ApiError;
       console.error(error);
-      const errorMessage = apiError.response?.data?.message || apiError.message || 'Failed to share tip';
-      toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to share tip');
+      const errorMessage =
+        apiError.response?.data?.message ||
+        apiError.message ||
+        "Failed to share tip";
+      toast.error(
+        typeof errorMessage === "string" ? errorMessage : "Failed to share tip",
+      );
     }
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6">
       <div
         className="absolute inset-0 bg-black/75 backdrop-blur-xl transition-opacity"
         onClick={onClose}
@@ -110,11 +119,11 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
         </header>
 
         <div className="p-8">
-            <TipForm
-                onSubmit={onFormSubmit}
-                isLoading={createMutation.isPending}
-                submitLabel="Publish Tip"
-            />
+          <TipForm
+            onSubmit={onFormSubmit}
+            isLoading={createMutation.isPending}
+            submitLabel="Publish Tip"
+          />
         </div>
       </div>
     </div>

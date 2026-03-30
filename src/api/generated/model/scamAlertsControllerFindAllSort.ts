@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ScamAlertsControllerFindAllSort = typeof ScamAlertsControllerFindAllSort[keyof typeof ScamAlertsControllerFindAllSort];
-
+export type ScamAlertsControllerFindAllSort =
+  (typeof ScamAlertsControllerFindAllSort)[keyof typeof ScamAlertsControllerFindAllSort];
 
 export const ScamAlertsControllerFindAllSort = {
-  newest: 'newest',
-  popular: 'popular',
+  newest: "newest",
+  popular: "popular",
 } as const;

@@ -21,7 +21,10 @@ export default async function MyTipsPage() {
   const queryClient = new QueryClient();
 
   // Prefetch infinite query using 'me' as the userId
-  const infiniteQueryOptions = getCommunityTipsControllerFindByUserInfiniteQueryOptions("me", { take: 10 });
+  const infiniteQueryOptions =
+    getCommunityTipsControllerFindByUserInfiniteQueryOptions("me", {
+      take: 10,
+    });
 
   await queryClient.prefetchInfiniteQuery(infiniteQueryOptions);
 

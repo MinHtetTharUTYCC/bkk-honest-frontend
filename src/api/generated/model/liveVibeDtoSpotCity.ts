@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ProfilesControllerGetLeaderboardParams = {
-  take: string;
-  skip?: string;
+export type LiveVibeDtoSpotCity = {
+  id?: string;
+  name?: string;
+  slug?: string;
 };

@@ -21,7 +21,10 @@ export default async function MySpotsPage() {
   const queryClient = new QueryClient();
 
   // Prefetch infinite query using 'me' as the userId
-  const infiniteQueryOptions = getSpotsControllerFindByUserInfiniteQueryOptions("me", { take: 10 });
+  const infiniteQueryOptions = getSpotsControllerFindByUserInfiniteQueryOptions(
+    "me",
+    { take: 10 },
+  );
 
   await queryClient.prefetchInfiniteQuery(infiniteQueryOptions);
 

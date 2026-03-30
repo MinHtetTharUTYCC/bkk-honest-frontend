@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { MoreVertical, Edit2, Trash2, AlertCircle, Flag } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import ReportButton from '@/components/report/report-button';
-import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useState } from "react";
+import { MoreVertical, Edit2, Trash2, AlertCircle, Flag } from "lucide-react";
+import ReportButton from "@/components/report/report-button";
+import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface TipActionsMenuProps {
   tipId: string;
@@ -36,7 +35,11 @@ export function TipActionsMenu({
               <Edit2 size={16} />
               <span>Edit Tip</span>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setShowDeleteConfirm(true)} className="gap-3 py-3" danger>
+            <DropdownMenuItem
+              onClick={() => setShowDeleteConfirm(true)}
+              className="gap-3 py-3"
+              danger
+            >
               <Trash2 size={16} />
               <span>Delete Tip</span>
             </DropdownMenuItem>
@@ -66,7 +69,8 @@ export function TipActionsMenu({
               <div className="flex-1">
                 <h3 className="font-bold text-white text-lg">Delete Tip?</h3>
                 <p className="text-white/60 text-sm mt-1">
-                  This action cannot be undone. All comments and reactions will be lost.
+                  This action cannot be undone. All comments and reactions will
+                  be lost.
                 </p>
               </div>
             </div>

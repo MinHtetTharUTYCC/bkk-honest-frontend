@@ -1,30 +1,20 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { 
-  Instagram, 
-  Facebook, 
-  Twitter, 
-  Music, 
-  Mail, 
-  MapPin, 
-  Plus,
-  Heart,
-  ExternalLink
-} from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+import { Mail, Plus, Heart, ExternalLink } from "lucide-react";
 
-import { FooterSection } from './footer-section';
+import { FooterSection } from "./footer-section";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { href: '/about', label: 'About BKK Honest' },
-    { href: '/how-it-works', label: 'How It Works' },
-    { href: '/community-guidelines', label: 'Community Guidelines' },
-    { href: '/privacy', label: 'Privacy Policy' },
-    { href: '/terms', label: 'Terms of Service' },
+    { href: "/about", label: "About BKK Honest" },
+    { href: "/how-it-works", label: "How It Works" },
+    { href: "/community-guidelines", label: "Community Guidelines" },
+    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms of Service" },
   ];
 
   /* Social Media Links - Commented out for now
@@ -61,16 +51,15 @@ const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          
           {/* About & Quick Links */}
           <FooterSection title="BKK Honest">
             <p className="text-white/70 text-sm mb-4 leading-relaxed">
-              The honest guide to Thailand. Real spots, real prices, real vibes. 
+              The honest guide to Thailand. Real spots, real prices, real vibes.
               By locals, for locals and travelers who want the truth.
             </p>
             <div className="space-y-2">
               {quickLinks.slice(0, 3).map((link) => (
-                <Link 
+                <Link
                   key={link.href}
                   href={link.href}
                   className="block text-sm text-white/70 hover:text-amber-400 transition-colors duration-200"
@@ -84,7 +73,7 @@ const Footer: React.FC = () => {
           {/* Community & Actions */}
           <FooterSection title="Community">
             <div className="space-y-3">
-              <Link 
+              <Link
                 href="/report"
                 className="flex items-center text-sm text-amber-400 hover:text-amber-300 transition-colors duration-200 group"
               >
@@ -92,7 +81,7 @@ const Footer: React.FC = () => {
                 Submit Report
                 <ExternalLink className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
               </Link>
-              <Link 
+              <Link
                 href="/contact"
                 className="flex items-center text-sm text-white/70 hover:text-amber-400 transition-colors duration-200"
               >
@@ -100,10 +89,12 @@ const Footer: React.FC = () => {
                 Contact Us
               </Link>
             </div>
-            
+
             <div className="mt-4 pt-4 border-t border-white/10">
               <p className="text-xs text-white/50">
-                Powered by <span className="text-amber-400 font-semibold">2.5K+</span> honest contributors
+                Powered by{" "}
+                <span className="text-amber-400 font-semibold">2.5K+</span>{" "}
+                honest contributors
               </p>
             </div>
           </FooterSection>
@@ -143,7 +134,7 @@ const Footer: React.FC = () => {
           <FooterSection title="Legal">
             <div className="space-y-2">
               {quickLinks.slice(3).map((link) => (
-                <Link 
+                <Link
                   key={link.href}
                   href={link.href}
                   className="block text-sm text-white/70 hover:text-amber-400 transition-colors duration-200"
@@ -161,7 +152,7 @@ const Footer: React.FC = () => {
             <div className="text-sm text-white/50">
               © {currentYear} BKK Honest. All rights reserved.
             </div>
-            
+
             <div className="flex items-center space-x-6 text-sm text-white/50">
               <span>Keep Thailand honest</span>
               <div className="flex items-center">

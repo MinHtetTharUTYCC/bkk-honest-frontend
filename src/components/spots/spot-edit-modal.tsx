@@ -1,101 +1,113 @@
-'use client';
+"use client";
 
-import { X } from 'lucide-react';
-import { useUpdateSpot, useCategories, useCities } from '@/hooks/use-api';
-import SpotForm, { SpotFormData } from '@/components/spots/spot-form';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { X } from "lucide-react";
+import { useUpdateSpot, useCategories, useCities } from "@/hooks/use-api";
+import SpotForm, { SpotFormData } from "@/components/spots/spot-form";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface SpotEditModalProps {
-    spot: SpotEditData;
-    onClose: () => void;
+  spot: SpotEditData;
+  onClose: () => void;
 }
 
 interface SpotEditData {
-    id: string;
-    name?: string;
-    address?: string;
-    categoryId?: string;
-    cityId?: string;
-    latitude?: number;
-    longitude?: number;
-    category?: { id?: string };
-    city?: { id?: string };
+  id: string;
+  name?: string;
+  address?: string;
+  categoryId?: string;
+  cityId?: string;
+  latitude?: number;
+  longitude?: number;
+  category?: { id?: string };
+  city?: { id?: string };
 }
 
 interface ApiError {
-    message?: string;
-    response?: { data?: { message?: string | string[] } };
+  message?: string;
+  response?: { data?: { message?: string | string[] } };
 }
 
 export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
-    const router = useRouter();
-    const updateSpotMutation = useUpdateSpot();
-    const { data: categoriesResponse } = useCategories();
-    const { data: citiesResponse } = useCities();
+  const router = useRouter();
+  const updateSpotMutation = useUpdateSpot();
+  const { data: categoriesResponse } = useCategories();
+  const { data: citiesResponse } = useCities();
 
-    const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
-    const cities = Array.isArray(citiesResponse) ? citiesResponse : [];
+  const categories = Array.isArray(categoriesResponse)
+    ? categoriesResponse
+    : [];
+  const cities = Array.isArray(citiesResponse) ? citiesResponse : [];
 
-    const handleUpdateSpot = async (formData: SpotFormData) => {
-        try {
-            await updateSpotMutation.mutateAsync({
-                id: spot.id,
-                payload: {
-                    name: formData.name,
-                    address: formData.address,
-                    categoryId: formData.categoryId,
-                    cityId: formData.cityId,
-                    latitude: formData.latitude,
-                    longitude: formData.longitude,
-                    image: formData.imageFile || undefined } });
-            toast.success('Spot updated successfully');
-            router.refresh();
-            onClose();
-        } catch (err: unknown) {
-            const apiError = err as ApiError;
-            console.error(err);
-            const message = apiError.response?.data?.message || apiError.message || 'Failed to update spot';
-            const errorMessage = Array.isArray(message) ? message.join(', ') : message;
-            toast.error(typeof errorMessage === 'string' ? errorMessage : 'Failed to update spot');
-        }
-    };
+  const handleUpdateSpot = async (formData: SpotFormData) => {
+    try {
+      await updateSpotMutation.mutateAsync({
+        id: spot.id,
+        payload: {
+          name: formData.name,
+          address: formData.address,
+          categoryId: formData.categoryId,
+          cityId: formData.cityId,
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+        },
+      });
+      toast.success("Spot updated successfully");
+      router.refresh();
+      onClose();
+    } catch (err: unknown) {
+      const apiError = err as ApiError;
+      console.error(err);
+      const message =
+        apiError.response?.data?.message ||
+        apiError.message ||
+        "Failed to update spot";
+      const errorMessage = Array.isArray(message)
+        ? message.join(", ")
+        : message;
+      toast.error(
+        typeof errorMessage === "string"
+          ? errorMessage
+          : "Failed to update spot",
+      );
+    }
+  };
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="bg-card rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-white/8 relative max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300 scrollbar-hide">
-                <button
-                    onClick={onClose}
-                    className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors z-10"
-                >
-                    <X size={20} className="text-white/50" />
-                </button>
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="bg-card rounded-3xl p-8 max-w-2xl w-full shadow-2xl border border-white/8 relative max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300 scrollbar-hide">
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 p-2 rounded-full hover:bg-white/5 transition-colors z-10"
+        >
+          <X size={20} className="text-white/50" />
+        </button>
 
-                <div className="flex flex-col gap-1 mb-8">
-                    <h3 className="font-display text-3xl font-bold text-foreground tracking-tight">
-                        Edit Spot
-                    </h3>
-                    <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
-                        Keep the pulse updated for {spot.name || 'this spot'}
-                    </p>
-                </div>
-
-                <SpotForm
-                    mode="edit"
-                    initialData={{
-                        name: spot.name || '',
-                        address: spot.address || '',
-                        categoryId: spot.categoryId || spot.category?.id || '',
-                        cityId: spot.cityId || spot.city?.id || '',
-                        latitude: spot.latitude,
-                        longitude: spot.longitude,
-                    }}
-                    categories={categories}
-                    cities={cities}
-                    isLoading={updateSpotMutation.isPending}
-                    onSubmit={handleUpdateSpot}
-                />
-            </div>
+        <div className="flex flex-col gap-1 mb-8">
+          <h3 className="font-display text-3xl font-bold text-foreground tracking-tight">
+            Edit Spot
+          </h3>
+          <p className="text-white/40 font-medium uppercase tracking-widest text-[10px]">
+            Keep the pulse updated for {spot.name || "this spot"}
+          </p>
         </div>
-    );
+
+        <SpotForm
+          mode="edit"
+          initialData={{
+            name: spot.name || "",
+            address: spot.address || "",
+            categoryId: spot.categoryId || spot.category?.id || "",
+            cityId: spot.cityId || spot.city?.id || "",
+            latitude: spot.latitude,
+            longitude: spot.longitude,
+          }}
+          categories={categories}
+          cities={cities}
+          isLoading={updateSpotMutation.isPending}
+          onSubmit={handleUpdateSpot}
+        />
+      </div>
+    </div>
+  );
 }

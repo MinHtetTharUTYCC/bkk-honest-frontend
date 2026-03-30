@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   useSpots,
   useCategories,
@@ -30,14 +30,6 @@ import { useAuth } from "@/components/providers/auth-provider";
 import LoginRequired from "@/components/auth/login-required";
 import { Textarea } from "@/components/ui/textarea";
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string | string[];
-    };
-  };
-}
-
 export default function ReportPage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -46,11 +38,8 @@ export default function ReportPage() {
     "price" | "scam" | "vibe" | "spot"
   >("spot");
   const [error, setError] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [isClient, setIsClient] = useState(true); // Initialize as true for client-side rendering
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -63,30 +52,19 @@ export default function ReportPage() {
   const [scamDescription, setScamDescription] = useState("");
   const [scamPreventionTip, setScamPreventionTip] = useState("");
   const [scamCategory, setScamCategory] = useState("");
-  const [scamCity, setScamCity] = useState("");
+  const [scamCity, setScamCity] = useState(selectedCityId || ""); // Initialize with selectedCityId
   const [scamImageFile, setScamImageFile] = useState<File | null>(null);
   const [scamImagePreview, setScamImagePreview] = useState("");
-
-  // Sync cities when selectedCityId changes, but only if not already set or specifically changed
-  useEffect(() => {
-    if (selectedCityId && !scamCity) {
-      setScamCity(selectedCityId);
-    }
-  }, [selectedCityId, scamCity]);
 
   // Data for Selects
   const { data: spotsResponse } = useSpots({ cityId: selectedCityId });
   const { data: categoriesResponse } = useCategories();
   const { data: citiesResponse } = useCities();
 
-  const spots =
-    (spotsResponse as { data?: unknown[] })?.data || spotsResponse || [];
-  const categories =
-    (categoriesResponse as { data?: unknown[] })?.data ||
-    categoriesResponse ||
-    [];
-  const cities =
-    (citiesResponse as { data?: unknown[] })?.data || citiesResponse || [];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const spots = spotsResponse || [];
+  const categories = categoriesResponse || [];
+  const cities = citiesResponse || [];
 
   // Mutations
   const createPrice = useCreatePriceReport();
@@ -106,10 +84,27 @@ export default function ReportPage() {
         image: formData.imageFile || undefined,
       });
       setSubmitted(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to create spot:", err);
-      const message = err.response?.data?.message || "Failed to create spot";
-      setError(Array.isArray(message) ? message[0] : message);
+      const message =
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+          ? err.response.data.message
+          : "Failed to create spot";
+      setError(
+        Array.isArray(message)
+          ? message[0]
+          : typeof message === "string"
+            ? message
+            : "Failed to create spot",
+      );
     }
   };
 
@@ -131,9 +126,26 @@ export default function ReportPage() {
         priceThb: Number(formData.get("priceThb")),
       });
       setSubmitted(true);
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Failed to publish price report";
-      setError(Array.isArray(message) ? message[0] : message);
+    } catch (err: unknown) {
+      const message =
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+          ? err.response.data.message
+          : "Failed to publish price report";
+      setError(
+        Array.isArray(message)
+          ? message[0]
+          : typeof message === "string"
+            ? message
+            : "Failed to publish price report",
+      );
     }
   };
 
@@ -167,9 +179,26 @@ export default function ReportPage() {
         image: scamImageFile || undefined,
       });
       setSubmitted(true);
-    } catch (err: any) {
-      const message = err.response?.data?.message || "Failed to publish scam alert";
-      setError(Array.isArray(message) ? message[0] : message);
+    } catch (err: unknown) {
+      const message =
+        err &&
+        typeof err === "object" &&
+        "response" in err &&
+        err.response &&
+        typeof err.response === "object" &&
+        "data" in err.response &&
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+          ? err.response.data.message
+          : "Failed to publish scam alert";
+      setError(
+        Array.isArray(message)
+          ? message[0]
+          : typeof message === "string"
+            ? message
+            : "Failed to publish scam alert",
+      );
     }
   };
 

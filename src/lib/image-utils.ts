@@ -12,17 +12,17 @@ import type {
   ProfileResponseDto,
   SpotWithStatsResponseDto,
   ScamAlertResponseDto,
-} from '@/api/generated/model';
+} from "@/api/generated/model";
 
 /**
  * Variant type - represents available image sizes
  */
-export type VariantType = 'thumbnail' | 'display';
+export type VariantType = "thumbnail" | "display";
 
 /**
  * Screen size context for responsive image selection
  */
-export type ScreenContext = 'mobile' | 'tablet' | 'desktop';
+export type ScreenContext = "mobile" | "tablet" | "desktop";
 
 /**
  * Safe image variant - either variants object or blur placeholder
@@ -31,6 +31,15 @@ export interface SafeImageVariant {
   variants?: ImageVariantsDto;
   blurPlaceholder?: string;
 }
+
+/**
+ * Union type for all DTOs that contain image metadata
+ */
+export type ImageObjectDto =
+  | GalleryImageResponseDto
+  | SpotWithStatsResponseDto
+  | ProfileResponseDto
+  | ScamAlertResponseDto;
 
 /**
  * Get a specific image variant safely
@@ -44,7 +53,7 @@ export interface SafeImageVariant {
  */
 export function getImageVariant(
   variants: ImageVariantsDto | undefined,
-  type: VariantType
+  type: VariantType,
 ): string | undefined {
   if (!variants) return undefined;
   return variants[type];
@@ -63,18 +72,18 @@ export function getImageVariant(
  */
 export function getResponsiveImageVariant(
   variants: ImageVariantsDto | undefined,
-  context: ScreenContext
+  context: ScreenContext,
 ): string | undefined {
   if (!variants) return undefined;
 
   switch (context) {
-    case 'mobile':
-    case 'tablet':
-      return getImageVariant(variants, 'thumbnail');
-    case 'desktop':
-      return getImageVariant(variants, 'display');
+    case "mobile":
+    case "tablet":
+      return getImageVariant(variants, "thumbnail");
+    case "desktop":
+      return getImageVariant(variants, "display");
     default:
-      return getImageVariant(variants, 'display');
+      return getImageVariant(variants, "display");
   }
 }
 
@@ -86,9 +95,9 @@ export function getResponsiveImageVariant(
  * @returns The display variant URL
  */
 export function getGalleryImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'display');
+  return getImageVariant(variants, "display");
 }
 
 /**
@@ -99,9 +108,9 @@ export function getGalleryImageUrl(
  * @returns The thumbnail variant URL
  */
 export function getThumbnailImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'thumbnail');
+  return getImageVariant(variants, "thumbnail");
 }
 
 /**
@@ -112,9 +121,9 @@ export function getThumbnailImageUrl(
  * @returns The thumbnail variant URL
  */
 export function getCardImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'thumbnail');
+  return getImageVariant(variants, "thumbnail");
 }
 
 /**
@@ -125,9 +134,9 @@ export function getCardImageUrl(
  * @returns The display variant URL
  */
 export function getHeroImageUrl(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): string | undefined {
-  return getImageVariant(variants, 'display');
+  return getImageVariant(variants, "display");
 }
 
 /**
@@ -142,14 +151,14 @@ export function getHeroImageUrl(
  * const url = getGalleryImageUrl(image.variants);
  */
 export function selectImageVariantSafely(
-  imageData: any
+  imageData: ImageObjectDto | undefined,
 ): SafeImageVariant {
   if (!imageData) {
     return {};
   }
 
   return {
-    variants: imageData.imageVariants as ImageVariantsDto | undefined,
+    variants: imageData.imageVariants,
     blurPlaceholder: imageData.blurPlaceholder,
   };
 }
@@ -169,7 +178,7 @@ export function selectImageVariantSafely(
  */
 export function buildImageUrl(
   variants: ImageVariantsDto | undefined,
-  variantType: VariantType = 'display'
+  variantType: VariantType = "display",
 ): string | undefined {
   // Use variant
   const variantUrl = getImageVariant(variants, variantType);
@@ -191,9 +200,9 @@ export function buildImageUrl(
  * }
  */
 export function hasValidVariants(
-  variants: ImageVariantsDto | undefined
+  variants: ImageVariantsDto | undefined,
 ): variants is ImageVariantsDto {
-  return !!variants && 'thumbnail' in variants && 'display' in variants;
+  return !!variants && "thumbnail" in variants && "display" in variants;
 }
 
 /**
@@ -208,15 +217,21 @@ export function hasValidVariants(
  *   aspectRatio = dimensions.width / dimensions.height;
  * }
  */
-export function getImageDimensions(imageData: any) {
-  if (!imageData || !imageData.imageWidth || !imageData.imageHeight) {
+type ImageWithDimensions = ImageObjectDto & {
+  imageWidth?: number;
+  imageHeight?: number;
+};
+
+export function getImageDimensions(imageData: ImageObjectDto | undefined) {
+  const data = imageData as ImageWithDimensions | undefined;
+  if (!data || !data.imageWidth || !data.imageHeight) {
     return undefined;
   }
 
   return {
-    width: imageData.imageWidth as number,
-    height: imageData.imageHeight as number,
-    aspectRatio: imageData.imageWidth / imageData.imageHeight,
+    width: data.imageWidth,
+    height: data.imageHeight,
+    aspectRatio: data.imageWidth / data.imageHeight,
   };
 }
 
@@ -231,7 +246,9 @@ export function getImageDimensions(imageData: any) {
  *   showQualityWarning();
  * }
  */
-export function isImageDegraded(imageData: any): boolean {
+export function isImageDegraded(
+  imageData: ImageObjectDto | undefined,
+): boolean {
   return imageData?.isDegraded === true;
 }
 
@@ -247,8 +264,14 @@ export function isImageDegraded(imageData: any): boolean {
  *   showLowQualityWarning();
  * }
  */
-export function getImageQualityScore(imageData: any): number | undefined {
-  return imageData?.qualityScore as number | undefined;
+type ImageWithQuality = ImageObjectDto & {
+  qualityScore?: number;
+};
+
+export function getImageQualityScore(
+  imageData: ImageObjectDto | undefined,
+): number | undefined {
+  return (imageData as ImageWithQuality | undefined)?.qualityScore;
 }
 
 /**
@@ -258,6 +281,7 @@ export function getImageQualityScore(imageData: any): number | undefined {
  *
  * @param imageData - Image response object (GalleryImageResponseDto, etc.)
  * @param screenContext - Current screen size context for responsive variant
+ * @param altText - Alternative text for image
  * @returns Complete image object ready for rendering
  *
  * @example
@@ -275,15 +299,15 @@ export interface RenderableImage {
   qualityScore?: number;
   renderProps: {
     alt: string;
-    loading: 'lazy' | 'eager';
-    decoding: 'auto' | 'sync' | 'async';
+    loading: "lazy" | "eager";
+    decoding: "auto" | "sync" | "async";
   };
 }
 
 export function buildRenderableImage(
-  imageData: any,
-  screenContext: ScreenContext = 'desktop',
-  altText: string = 'Image'
+  imageData: ImageObjectDto | undefined,
+  screenContext: ScreenContext = "desktop",
+  altText: string = "Image",
 ): RenderableImage | undefined {
   const { variants, blurPlaceholder } = selectImageVariantSafely(imageData);
   const dimensions = getImageDimensions(imageData);
@@ -293,8 +317,9 @@ export function buildRenderableImage(
   }
 
   const finalUrl =
-    buildImageUrl(variants, 'display') ||
-    'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E';
+    getResponsiveImageVariant(variants, screenContext) ||
+    buildImageUrl(variants, "display") ||
+    "data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22/%3E";
 
   return {
     url: finalUrl,
@@ -307,8 +332,8 @@ export function buildRenderableImage(
     qualityScore: getImageQualityScore(imageData),
     renderProps: {
       alt: altText,
-      loading: 'lazy' as const,
-      decoding: 'async' as const,
+      loading: "lazy" as const,
+      decoding: "async" as const,
     },
   };
 }
@@ -321,22 +346,19 @@ export function buildRenderableImage(
  * @returns Image data object with all properties
  */
 export function extractGalleryImageData(galleryImage: GalleryImageResponseDto) {
-  // Cast to any to access optional image metadata fields that backend returns
-  // but generated types don't yet include (imageVariants, blurPlaceholder, dimensions, etc.)
-  const imageData = galleryImage as any;
   return {
     id: galleryImage.id,
     url: galleryImage.url,
-    variants: imageData.imageVariants,
-    blurPlaceholder: imageData.blurPlaceholder,
+    variants: galleryImage.imageVariants,
+    blurPlaceholder: galleryImage.blurPlaceholder,
     dimensions: {
-      width: imageData.imageWidth,
-      height: imageData.imageHeight,
+      width: undefined as number | undefined,
+      height: undefined as number | undefined,
     },
     metadata: {
-      mimeType: imageData.imageMimeType,
-      fileSize: imageData.imageSize,
-      qualityScore: imageData.qualityScore,
+      mimeType: undefined as string | undefined,
+      fileSize: undefined as number | undefined,
+      qualityScore: undefined as number | undefined,
       isDegraded: galleryImage.isDegraded,
     },
   };

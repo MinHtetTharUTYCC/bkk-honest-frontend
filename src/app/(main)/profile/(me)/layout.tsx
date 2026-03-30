@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { Suspense, useState, useRef } from 'react';
-import { useAuth } from '@/components/providers/auth-provider';
-import { useMyProfile } from '@/hooks/use-api';
-import { ProfileUserInfo } from '@/components/profile/profile-user-info';
-import { EditProfileModal } from '@/components/profile/edit-profile-modal';
-import { Loader2 } from 'lucide-react';
+import { Suspense, useState } from "react";
+import { useAuth } from "@/components/providers/auth-provider";
+import { useMyProfile } from "@/hooks/use-api";
+import { ProfileUserInfo } from "@/components/profile/profile-user-info";
+import { EditProfileModal } from "@/components/profile/edit-profile-modal";
+import { Loader2 } from "lucide-react";
 
 interface ProfileData {
   id?: string;
@@ -21,7 +21,7 @@ interface ProfileData {
 function unwrapProfileData(payload: unknown): ProfileData | null {
   const unwrapped =
     payload && typeof payload === "object" && "data" in payload
-      ? (payload as { data?: unknown }).data ?? payload
+      ? ((payload as { data?: unknown }).data ?? payload)
       : payload;
 
   if (!unwrapped || typeof unwrapped !== "object") {
@@ -31,12 +31,8 @@ function unwrapProfileData(payload: unknown): ProfileData | null {
   return unwrapped as ProfileData;
 }
 
-function ProfileLayoutContent({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { user, loading: authLoading } = useAuth();
+function ProfileLayoutContent({ children }: { children: React.ReactNode }) {
+  const { loading: authLoading } = useAuth();
   const {
     data: profileResponse,
     isLoading: profileLoading,
@@ -65,7 +61,9 @@ function ProfileLayoutContent({
     return (
       <div className="min-h-screen bg-linear-to-b from-black via-slate-950 to-black pt-20 px-4 flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Profile Not Found</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">
+            Profile Not Found
+          </h2>
           <p className="text-white/60 mb-6">
             Could not load your profile. Please try again.
           </p>
@@ -80,7 +78,7 @@ function ProfileLayoutContent({
 
   const handleUploadClick = () => {
     // TODO: Implement avatar upload
-    console.log('Upload avatar clicked');
+    console.log("Upload avatar clicked");
   };
 
   return (

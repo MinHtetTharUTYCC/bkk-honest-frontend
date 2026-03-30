@@ -106,8 +106,8 @@ export default function HowItWorksPage() {
                 Smart Search
               </h3>
               <p className="text-muted-foreground text-sm">
-                Find exactly what you&apos;re looking for with our powerful search
-                and filtering system.
+                Find exactly what you&apos;re looking for with our powerful
+                search and filtering system.
               </p>
             </div>
 
@@ -139,8 +139,8 @@ export default function HowItWorksPage() {
                 Community Reviews
               </h3>
               <p className="text-muted-foreground text-sm">
-                Read authentic reviews from real people who&apos;ve actually visited
-                these places.
+                Read authentic reviews from real people who&apos;ve actually
+                visited these places.
               </p>
             </div>
           </div>
@@ -246,8 +246,8 @@ export default function HowItWorksPage() {
                     Experience:
                   </span>
                   <p className="text-muted-foreground mt-1 italic">
-                    &quot;Authentic local spot with amazing pad thai. Cash only, no
-                    English menu but staff is helpful. Can get crowded after
+                    &quot;Authentic local spot with amazing pad thai. Cash only,
+                    no English menu but staff is helpful. Can get crowded after
                     7pm. Perfect for adventurous foodies!&quot;
                   </p>
                 </div>
@@ -256,8 +256,8 @@ export default function HowItWorksPage() {
                     Tips:
                   </span>
                   <p className="text-muted-foreground mt-1 italic">
-                    &quot;Try the green curry - it's not on the tourist menu but
-                    locals love it. Bring small bills.&quot;
+                    &quot;Try the green curry - it&apos;s not on the tourist
+                    menu but locals love it. Bring small bills.&quot;
                   </p>
                 </div>
               </div>
@@ -286,9 +286,9 @@ export default function HowItWorksPage() {
                 Submit a Report
               </h3>
               <p className="text-muted-foreground mb-4">
-                Share your experience at any Thailand location. Whether it&apos;s a
-                hidden gem, tourist trap, or something in between - your honest
-                review helps others.
+                Share your experience at any Thailand location. Whether
+                it&apos;s a hidden gem, tourist trap, or something in between -
+                your honest review helps others.
               </p>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li>• Rate the authenticity and value</li>

@@ -5,31 +5,31 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { SpotsControllerFindAllSort } from './spotsControllerFindAllSort';
+import type { SpotsControllerFindAllSort } from "./spotsControllerFindAllSort";
 
 export type SpotsControllerFindAllParams = {
-/**
- * Search text
- */
-search?: string;
-/**
- * Filter by category ID
- */
-categoryId?: string;
-/**
- * Filter by city ID
- */
-cityId?: string;
-/**
- * Sort order
- */
-sort?: SpotsControllerFindAllSort;
-/**
- * Items per page
- */
-take?: number;
-/**
- * Items to skip
- */
-skip?: unknown;
+  /**
+   * Items to skip
+   */
+  skip?: number;
+  /**
+   * Items per page
+   */
+  take?: number;
+  /**
+   * Search text
+   */
+  search?: string;
+  /**
+   * Filter by category ID
+   */
+  categoryId?: string;
+  /**
+   * Filter by city ID
+   */
+  cityId?: string;
+  /**
+   * Sort order
+   */
+  sort?: SpotsControllerFindAllSort;
 };

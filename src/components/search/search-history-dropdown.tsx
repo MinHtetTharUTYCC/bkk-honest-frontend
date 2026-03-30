@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { X } from 'lucide-react';
-import { SearchHistoryItem } from '@/hooks/use-search-history';
-import { cn } from '@/lib/utils';
+import { X } from "lucide-react";
+import { SearchHistoryItem } from "@/hooks/use-search-history";
+import { cn } from "@/lib/utils";
 
 interface SearchHistoryDropdownProps {
   history: SearchHistoryItem[];
@@ -28,11 +28,11 @@ export function SearchHistoryDropdown({
   return (
     <div
       className={cn(
-        'absolute top-full left-0 right-0 mt-2 bg-black/80 border border-white/10 rounded-2xl backdrop-blur-xl z-50',
-        className
+        "absolute top-full left-0 right-0 mt-2 bg-black/80 border border-white/10 rounded-2xl backdrop-blur-xl z-50",
+        className,
       )}
     >
-      <div className="max-h-[300px] overflow-y-auto">
+      <div className="max-h-75 overflow-y-auto">
         {history.map((item, index) => (
           <button
             key={index}

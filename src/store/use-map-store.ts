@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 interface MapState {
   transitVisible: boolean;
@@ -12,20 +12,23 @@ export const useMapStore = create<MapState>()(
     (set) => ({
       transitVisible: false,
       setTransitVisible: (visible) => set({ transitVisible: visible }),
-      toggleTransitVisible: () => set((state) => ({ transitVisible: !state.transitVisible })),
+      toggleTransitVisible: () =>
+        set((state) => ({ transitVisible: !state.transitVisible })),
     }),
     {
-      name: 'bkk-honest-map-storage',
-      storage: createJSONStorage(() => 
-        typeof window !== 'undefined' ? window.localStorage : {
-          getItem: () => null,
-          setItem: () => {},
-          removeItem: () => {},
-        }
+      name: "bkk-honest-map-storage",
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined"
+          ? window.localStorage
+          : {
+              getItem: () => null,
+              setItem: () => {},
+              removeItem: () => {},
+            },
       ),
       // Prevent automatic hydration on mount to avoid Next.js hydration mismatch.
       // We will handle hydration manually or via a hook.
       skipHydration: true,
-    }
-  )
+    },
+  ),
 );

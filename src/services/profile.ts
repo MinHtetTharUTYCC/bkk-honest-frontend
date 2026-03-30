@@ -10,7 +10,7 @@ export const getUserProfile = cache(async (userId: string) => {
     const res = await profilesControllerFindOne(userId, {
       cache: "no-store",
     } as RequestInit);
-    
+
     return res?.data || res;
   } catch (error) {
     console.error(`[getUserProfile] Error fetching profile ${userId}:`, error);

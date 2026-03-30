@@ -7,12 +7,12 @@
  */
 
 export type CommunityTipsControllerFindMyTipsParams = {
-/**
- * Items per page
- */
-take?: number;
-/**
- * Items to skip
- */
-skip?: unknown;
+  /**
+   * Items per page
+   */
+  take?: number;
+  /**
+   * Items to skip
+   */
+  skip?: number;
 };

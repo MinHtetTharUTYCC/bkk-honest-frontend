@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { ScamAlertResponseDto } from "@/api/generated/model";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useScamAlertBySlug,
@@ -54,15 +55,18 @@ interface AlertUser {
   name?: string;
   level?: string;
   avatarUrl?: string;
+  [key: string]: unknown;
 }
 
 interface AlertCity {
   name?: string;
+  [key: string]: unknown;
 }
 
 interface AlertCounts {
   votes?: number;
   comments?: number;
+  [key: string]: unknown;
 }
 
 interface LocalAlert {
@@ -70,20 +74,22 @@ interface LocalAlert {
   userId?: string;
   categoryId?: string;
   cityId?: string;
-  city?: AlertCity;
-  user?: AlertUser;
-  scamName?: string;
+  city: AlertCity;
+  user: AlertUser;
+  scamName: string;
   slug?: string;
-  description?: string;
-  preventionTip?: string;
+  description: string;
+  preventionTip: string;
   createdAt: string;
   hasVoted?: boolean;
   voteId?: string | null;
-  _count?: AlertCounts;
+  _count: AlertCounts;
   imageVariants?: {
     thumbnail: string;
     display: string;
   };
+  citySlug: string;
+  category: Record<string, unknown>;
 }
 
 interface AlertComment {
@@ -100,7 +106,7 @@ interface AlertComment {
 function unwrapAlertData(payload: unknown): LocalAlert | null {
   const unwrapped =
     payload && typeof payload === "object" && "data" in payload
-      ? (payload as { data?: unknown }).data ?? payload
+      ? ((payload as { data?: unknown }).data ?? payload)
       : payload;
 
   if (!unwrapped || typeof unwrapped !== "object") {
@@ -128,9 +134,7 @@ export default function ScamAlertClient() {
     alertSlug,
   );
   const alert = unwrapAlertData(alertResponse);
-  const [localAlert, setLocalAlert] = useState<LocalAlert | null>(
-    alert,
-  );
+  const [localAlert, setLocalAlert] = useState<LocalAlert | null>(alert);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showImageViewer, setShowImageViewer] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
@@ -152,10 +156,12 @@ export default function ScamAlertClient() {
   } = useScamComments(alertId);
 
   const comments: AlertComment[] =
-    commentsResponse?.pages?.flatMap(
+    (
+      commentsResponse?.pages as unknown as Array<{ data?: AlertComment[] }>
+    )?.flatMap(
       (page) =>
-        (page as { data?: AlertComment[] })?.data ||
-        (Array.isArray(page) ? (page as AlertComment[]) : []),
+        page?.data ||
+        (Array.isArray(page) ? (page as unknown as AlertComment[]) : []),
     ) || [];
   const createCommentMutation = useCreateComment();
   const { toggleVote, isPending: votePending } = useVoteToggle("alert");
@@ -208,19 +214,29 @@ export default function ScamAlertClient() {
 
       // Update the infinite query cache to show new comment at index 0
       queryClient.setQueryData(
-        ['scam-comments', alertId],
-        (oldData: any) => {
-          if (!oldData || !oldData.pages) return oldData;
-          const newPages = [...oldData.pages];
+        ["scam-comments", alertId],
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
+          if (!oldData || typeof oldData !== "object" || !("pages" in oldData))
+            return oldData;
+          const data = oldData as Record<string, unknown>;
+          const oldPages = data.pages;
+          if (!Array.isArray(oldPages)) return oldData;
+          const newPages = [...oldPages];
           if (newPages.length === 0) {
             newPages[0] = { data: [newCommentData] };
           } else {
             const firstPage = { ...newPages[0] };
-            firstPage.data = [newCommentData, ...(firstPage.data || [])];
+            if (typeof firstPage === "object" && firstPage !== null) {
+              (firstPage as Record<string, unknown>).data = [
+                newCommentData,
+                ...(((firstPage as Record<string, unknown>)
+                  .data as unknown[]) || []),
+              ];
+            }
             newPages[0] = firstPage;
           }
-          return { ...oldData, pages: newPages };
-        }
+          return { ...data, pages: newPages };
+        },
       );
 
       setNewComment("");
@@ -254,19 +270,32 @@ export default function ScamAlertClient() {
 
       // Update the infinite query cache
       queryClient.setQueryData(
-        ['scam-comments', alertId],
-        (oldData: any) => {
-          if (!oldData || !oldData.pages) return oldData;
+        ["scam-comments", alertId],
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
+          if (!oldData || typeof oldData !== "object" || !("pages" in oldData))
+            return oldData;
+          const data = oldData as Record<string, unknown>;
+          const oldPages = data.pages;
+          if (!Array.isArray(oldPages)) return oldData;
           return {
-            ...oldData,
-            pages: oldData.pages.map((page: any) => ({
-              ...page,
-              data: page.data?.map((comment: AlertComment) => 
-                comment.id === commentId ? { ...comment, ...updatedComment, content: updatedComment.text || updatedComment.content } : comment
-              )
-            }))
+            ...data,
+            pages: oldPages.map((page: { data?: unknown[] } | unknown) => {
+              if (typeof page !== "object" || !page) return page;
+              const p = page as Record<string, unknown>;
+              return {
+                ...p,
+                data: (p.data as unknown[])?.map((comment: unknown) => {
+                  const c = comment as Record<string, unknown> & {
+                    id?: string;
+                  };
+                  return c.id === commentId
+                    ? { ...c, ...updatedComment, content: updatedComment.text }
+                    : comment;
+                }),
+              };
+            }),
           };
-        }
+        },
       );
 
       setEditingCommentId(null);
@@ -287,17 +316,30 @@ export default function ScamAlertClient() {
 
       // Update the infinite query cache
       queryClient.setQueryData(
-        ['scam-comments', alertId],
-        (oldData: any) => {
-          if (!oldData || !oldData.pages) return oldData;
+        ["scam-comments", alertId],
+        (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
+          if (!oldData || typeof oldData !== "object" || !("pages" in oldData))
+            return oldData;
+          const data = oldData as Record<string, unknown>;
+          const oldPages = data.pages;
+          if (!Array.isArray(oldPages)) return oldData;
           return {
-            ...oldData,
-            pages: oldData.pages.map((page: any) => ({
-              ...page,
-              data: page.data?.filter((comment: AlertComment) => comment.id !== commentId)
-            }))
+            ...data,
+            pages: oldPages.map((page: { data?: unknown[] } | unknown) => {
+              if (typeof page !== "object" || !page) return page;
+              const p = page as Record<string, unknown>;
+              return {
+                ...p,
+                data: (p.data as unknown[])?.filter((comment: unknown) => {
+                  const c = comment as Record<string, unknown> & {
+                    id?: string;
+                  };
+                  return c.id !== commentId;
+                }),
+              };
+            }),
           };
-        }
+        },
       );
 
       setLocalAlert((prev) => {
@@ -343,14 +385,7 @@ export default function ScamAlertClient() {
       };
     });
 
-    const result = await toggleVote({
-      id: localAlert.id,
-      hasVoted: wasVoted,
-      voteId: localAlert.voteId,
-      _count: {
-        votes: localAlert._count?.votes ?? 0,
-      },
-    });
+    const result = await toggleVote(localAlert as ScamAlertResponseDto);
 
     setLocalAlert((prev) => {
       if (!prev) return prev;
@@ -454,20 +489,25 @@ export default function ScamAlertClient() {
         </div>
 
         {/* Hero Image */}
-        {localAlert.imageVariants && Object.values(localAlert.imageVariants).some(v => v) && (
-          <div
-            className="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl cursor-pointer group"
-            onClick={() => setShowImageViewer(true)}
-          >
-            <Image
-              src={localAlert.imageVariants.display || localAlert.imageVariants.thumbnail || ''}
-              alt={localAlert.scamName || 'Scam alert image'}
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-              priority
-            />
-          </div>
-        )}
+        {localAlert.imageVariants &&
+          Object.values(localAlert.imageVariants).some((v) => v) && (
+            <div
+              className="relative w-full aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-2xl cursor-pointer group"
+              onClick={() => setShowImageViewer(true)}
+            >
+              <Image
+                src={
+                  localAlert.imageVariants.display ||
+                  localAlert.imageVariants.thumbnail ||
+                  ""
+                }
+                alt={localAlert.scamName || "Scam alert image"}
+                fill
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                priority
+              />
+            </div>
+          )}
 
         {/* Alert Header */}
         <div className="space-y-6">
@@ -590,11 +630,14 @@ export default function ScamAlertClient() {
                 )
               }
             >
-              <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10 group-hover/user:border-amber-400 transition-colors">
+              <div className="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10 group-hover/user:border-amber-400 transition-colors">
                 {localAlert.user?.avatarUrl ? (
-                  <img
+                  <Image
                     src={localAlert.user.avatarUrl}
-                    className="w-full h-full object-cover"
+                    alt={localAlert.user?.name || "User Avatar"}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
                   />
                 ) : (
                   <User size={18} />
@@ -694,11 +737,14 @@ export default function ScamAlertClient() {
                         )
                       }
                     >
-                      <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5 group-hover/comment-user:border-amber-400 transition-colors">
+                      <div className="relative w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5 group-hover/comment-user:border-amber-400 transition-colors">
                         {comment.user?.avatarUrl ? (
-                          <img
+                          <Image
                             src={comment.user.avatarUrl}
-                            className="w-full h-full object-cover"
+                            alt={comment.user?.name || "User Avatar"}
+                            fill
+                            sizes="32px"
+                            className="object-cover"
                           />
                         ) : (
                           <User size={14} />
@@ -845,14 +891,15 @@ export default function ScamAlertClient() {
       )}
 
       {/* Image Viewer */}
-      {localAlert.imageVariants && Object.values(localAlert.imageVariants).some(v => v) && (
-        <ImageViewer
-          isOpen={showImageViewer}
-          imageVariants={localAlert.imageVariants}
-          alt={localAlert.scamName}
-          onClose={() => setShowImageViewer(false)}
-        />
-      )}
+      {localAlert.imageVariants &&
+        Object.values(localAlert.imageVariants).some((v) => v) && (
+          <ImageViewer
+            isOpen={showImageViewer}
+            imageVariants={localAlert.imageVariants}
+            alt={localAlert.scamName}
+            onClose={() => setShowImageViewer(false)}
+          />
+        )}
     </div>
   );
 }

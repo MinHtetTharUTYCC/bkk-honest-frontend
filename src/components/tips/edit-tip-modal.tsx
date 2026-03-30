@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import TipForm from './tip-form';
-import { TipFormValues } from '@/lib/validations/tip';
-
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import TipForm from "./tip-form";
+import { TipFormValues } from "@/lib/validations/tip";
 
 interface EditTipModalProps {
   tip: EditTipData;
@@ -23,11 +22,13 @@ export default function EditTipModal({
   tip,
   onSave,
   onClose,
-  isLoading = false }: EditTipModalProps) {
-  const normalizedType: 'TRY' | 'AVOID' = tip.type === 'AVOID' ? 'AVOID' : 'TRY';
+  isLoading = false,
+}: EditTipModalProps) {
+  const normalizedType: "TRY" | "AVOID" =
+    tip.type === "AVOID" ? "AVOID" : "TRY";
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6">
       <div
         className="absolute inset-0 bg-black/75 backdrop-blur-xl transition-opacity"
         onClick={onClose}
@@ -38,13 +39,13 @@ export default function EditTipModal({
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                'w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-xl',
-                normalizedType === 'AVOID'
-                  ? 'bg-red-400 shadow-red-400/20'
-                  : 'bg-emerald-400 shadow-emerald-400/20'
+                "w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-xl",
+                normalizedType === "AVOID"
+                  ? "bg-red-400 shadow-red-400/20"
+                  : "bg-emerald-400 shadow-emerald-400/20",
               )}
             >
-              {normalizedType === 'AVOID' ? '⚠️' : '✓'}
+              {normalizedType === "AVOID" ? "⚠️" : "✓"}
             </div>
             <div>
               <h3 className="font-display text-xl font-bold text-foreground tracking-tight">
@@ -64,16 +65,17 @@ export default function EditTipModal({
         </header>
 
         <div className="p-8">
-            <TipForm
-                initialData={{
-                    type: normalizedType,
-                    title: tip.title,
-                    description: tip.description }}
-                onSubmit={onSave}
-                isLoading={isLoading}
-                submitLabel="Save Changes"
-                isEdit={true}
-            />
+          <TipForm
+            initialData={{
+              type: normalizedType,
+              title: tip.title,
+              description: tip.description,
+            }}
+            onSubmit={onSave}
+            isLoading={isLoading}
+            submitLabel="Save Changes"
+            isEdit={true}
+          />
         </div>
       </div>
     </div>

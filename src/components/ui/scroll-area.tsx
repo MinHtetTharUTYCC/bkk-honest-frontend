@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
+import * as React from "react";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 function ScrollArea({
   className,
@@ -18,7 +18,8 @@ function ScrollArea({
 
     const onWheel = (e: WheelEvent) => {
       // Determine if it's primarily a horizontal scroll area (like a category bar)
-      const isHorizontalOnly = viewport.scrollHeight <= viewport.clientHeight + 1; // +1 for pixel rounding
+      const isHorizontalOnly =
+        viewport.scrollHeight <= viewport.clientHeight + 1; // +1 for pixel rounding
       const hasHorizontalOverflow = viewport.scrollWidth > viewport.clientWidth;
 
       if (isHorizontalOnly && hasHorizontalOverflow) {
@@ -26,7 +27,9 @@ function ScrollArea({
         if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
           // Check if we can scroll any more in the requested direction
           const canScrollLeft = viewport.scrollLeft > 0 && e.deltaY < 0;
-          const canScrollRight = viewport.scrollLeft < viewport.scrollWidth - viewport.clientWidth - 1 && e.deltaY > 0;
+          const canScrollRight =
+            viewport.scrollLeft <
+              viewport.scrollWidth - viewport.clientWidth - 1 && e.deltaY > 0;
 
           if (canScrollLeft || canScrollRight) {
             e.preventDefault();
@@ -36,8 +39,8 @@ function ScrollArea({
       }
     };
 
-    viewport.addEventListener('wheel', onWheel, { passive: false });
-    return () => viewport.removeEventListener('wheel', onWheel);
+    viewport.addEventListener("wheel", onWheel, { passive: false });
+    return () => viewport.removeEventListener("wheel", onWheel);
   }, []);
 
   return (
@@ -56,7 +59,7 @@ function ScrollArea({
       <ScrollBar />
       <ScrollAreaPrimitive.Corner />
     </ScrollAreaPrimitive.Root>
-  )
+  );
 }
 
 function ScrollBar({
@@ -74,7 +77,7 @@ function ScrollBar({
           "h-full w-2.5 border-l border-l-transparent",
         orientation === "horizontal" &&
           "h-2.5 flex-col border-t border-t-transparent",
-        className
+        className,
       )}
       {...props}
     >
@@ -83,7 +86,7 @@ function ScrollBar({
         className="relative flex-1 rounded-full bg-border"
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
-  )
+  );
 }
 
-export { ScrollArea, ScrollBar }
+export { ScrollArea, ScrollBar };

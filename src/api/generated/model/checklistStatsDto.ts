@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ProfilesControllerGetLeaderboardParams = {
-  take: string;
-  skip?: string;
-};
+export interface ChecklistStatsDto {
+  total: number;
+  completed: number;
+  remaining: number;
+}

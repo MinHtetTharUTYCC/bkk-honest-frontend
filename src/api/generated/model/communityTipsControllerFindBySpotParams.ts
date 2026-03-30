@@ -7,14 +7,14 @@
  */
 
 export type CommunityTipsControllerFindBySpotParams = {
-/**
- * Items to skip
- */
-skip?: string | number;
-/**
- * Items per page
- */
-take?: number;
-type: string;
-sort: string;
+  /**
+   * Items to skip
+   */
+  skip?: number;
+  /**
+   * Items per page
+   */
+  take?: number;
+  type: string;
+  sort: string;
 };

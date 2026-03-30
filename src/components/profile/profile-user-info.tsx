@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   MapPin,
@@ -10,12 +10,12 @@ import {
   Edit2,
   User,
   Loader2,
-} from 'lucide-react';
-import Image from 'next/image';
-import { toast } from 'sonner';
-import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import ReportButton from '@/components/report/report-button';
-import { useState } from 'react';
+} from "lucide-react";
+import Image from "next/image";
+import { toast } from "sonner";
+import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import ReportButton from "@/components/report/report-button";
+import { useState } from "react";
 
 interface ProfileData {
   id?: string;
@@ -30,7 +30,7 @@ interface ProfileData {
 
 interface ProfileUserInfoProps {
   /** User ID to display profile for. Use "me" for authenticated user */
-  userId: string | 'me';
+  userId: string | "me";
   /** Profile data to display */
   profile: ProfileData | null | undefined;
   /** Whether this is a public profile (visited user) */
@@ -56,7 +56,7 @@ export function ProfileUserInfo({
   const handleShare = async () => {
     setShareLoading(true);
     try {
-      const url = typeof window !== 'undefined' ? window.location.href : '';
+      const url = typeof window !== "undefined" ? window.location.href : "";
       const shareData = {
         title: `${profile?.name}'s Profile`,
         text: `Check out ${profile?.name}'s pulse on BKK Honest! ⚡`,
@@ -64,39 +64,47 @@ export function ProfileUserInfo({
       };
 
       try {
-        if (typeof navigator !== 'undefined' && navigator.share && navigator.canShare?.(shareData)) {
+        if (
+          typeof navigator !== "undefined" &&
+          navigator.share &&
+          navigator.canShare?.(shareData)
+        ) {
           await navigator.share(shareData);
         } else {
-          throw new Error('Native share unavailable');
+          throw new Error("Native share unavailable");
         }
       } catch (err) {
-        if ((err as Error).name === 'AbortError') return;
-        console.warn('Native share failed, trying clipboard:', err);
+        if ((err as Error).name === "AbortError") return;
+        console.warn("Native share failed, trying clipboard:", err);
 
-        if (typeof navigator !== 'undefined' && navigator.clipboard && window.isSecureContext) {
+        if (
+          typeof navigator !== "undefined" &&
+          navigator.clipboard &&
+          window.isSecureContext
+        ) {
           await navigator.clipboard.writeText(url);
-          toast.success('Link copied to clipboard!');
+          toast.success("Link copied to clipboard!");
         } else {
-          const textArea = document.createElement('textarea');
+          const textArea = document.createElement("textarea");
           textArea.value = url;
-          textArea.style.position = 'fixed';
-          textArea.style.left = '-999999px';
-          textArea.style.top = '-999999px';
+          textArea.style.position = "fixed";
+          textArea.style.left = "-999999px";
+          textArea.style.top = "-999999px";
           document.body.appendChild(textArea);
           textArea.focus();
           textArea.select();
-          const successful = document.execCommand('copy');
+          const successful = document.execCommand("copy");
           document.body.removeChild(textArea);
           if (successful) {
-            toast.success('Link copied to clipboard!');
+            toast.success("Link copied to clipboard!");
           } else {
-            throw new Error('Copy command failed');
+            throw new Error("Copy command failed");
           }
         }
       }
     } catch (clipErr) {
-      console.error('All sharing methods failed:', clipErr);
-      toast.error('Failed to copy link');
+      console.error("All sharing methods failed:", clipErr);
+      toast.error("Failed to copy link");
     } finally {
       setShareLoading(false);
     }
@@ -127,14 +135,23 @@ export function ProfileUserInfo({
               className="p-2.5 hover:bg-amber-400/10 rounded-full transition-colors disabled:opacity-50 border border-white/10 hover:border-amber-400/50"
               title="Share profile"
             >
-              <Share2 size={18} className="text-white/60 hover:text-amber-400" />
+              <Share2
+                size={18}
+                className="text-white/60 hover:text-amber-400"
+              />
             </button>
 
             {/* Report in Dropdown Menu */}
-            <DropdownMenu>
-              <button className="p-2.5 hover:bg-white/10 rounded-full transition-colors border border-white/10">
-                <MoreVertical size={18} className="text-white/60 hover:text-white" />
-              </button>
+            <DropdownMenu
+              trigger={
+                <button className="p-2.5 hover:bg-white/10 rounded-full transition-colors border border-white/10">
+                  <MoreVertical
+                    size={18}
+                    className="text-white/60 hover:text-white"
+                  />
+                </button>
+              }
+            >
               <DropdownMenuItem>
                 <ReportButton
                   targetId={userId}
@@ -167,7 +184,7 @@ export function ProfileUserInfo({
           {profile?.avatarUrl ? (
             <Image
               src={profile.avatarUrl}
-              alt={profile.name || 'User avatar'}
+              alt={profile.name || "User avatar"}
               fill
               className="object-cover"
             />
@@ -176,7 +193,7 @@ export function ProfileUserInfo({
               <User size={40} />
             </div>
           )}
-          
+
           {/* Upload overlay - shown for own profile */}
           {!isPublic && onUploadClick && (
             <div
@@ -192,7 +209,7 @@ export function ProfileUserInfo({
         <div className="flex-1 w-full pt-1 sm:pt-0">
           <div className="flex items-center gap-3 mb-2 pr-14">
             <h1 className="text-3xl sm:text-4xl font-bold text-white truncate">
-              {profile?.name || 'User'}
+              {profile?.name || "User"}
             </h1>
             {profile?.level && (
               <span className="shrink-0 px-3 py-1 bg-amber-500/20 border border-amber-400/50 text-amber-300 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-widest">

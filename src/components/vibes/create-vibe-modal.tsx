@@ -1,16 +1,19 @@
-'use client';
+"use client";
 
-import { Zap, X } from 'lucide-react';
-import CreateVibeForm from './create-vibe-form';
+import { Zap, X } from "lucide-react";
+import CreateVibeForm from "./create-vibe-form";
 
 interface CreateVibeModalProps {
   spotId: string;
   onClose: () => void;
 }
 
-export default function CreateVibeModal({ spotId, onClose }: CreateVibeModalProps) {
+export default function CreateVibeModal({
+  spotId,
+  onClose,
+}: CreateVibeModalProps) {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6">
       <div
         className="absolute inset-0 bg-black/75 backdrop-blur-xl transition-opacity"
         onClick={onClose}
@@ -40,10 +43,7 @@ export default function CreateVibeModal({ spotId, onClose }: CreateVibeModalProp
         </header>
 
         <div className="p-6 overflow-y-auto">
-          <CreateVibeForm
-            spotId={spotId}
-            onSuccess={onClose}
-          />
+          <CreateVibeForm spotId={spotId} onSuccess={onClose} />
         </div>
       </div>
     </div>

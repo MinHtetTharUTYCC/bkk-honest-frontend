@@ -1,17 +1,20 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import Map, { Marker, ViewState, MapRef } from 'react-map-gl/mapbox';
-import type { MapMouseEvent } from 'react-map-gl/mapbox';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { MapPin, Loader2, Navigation } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
+import { useState, useRef } from "react";
+import Map, { Marker, ViewState, MapRef } from "react-map-gl/mapbox";
+import type { MapMouseEvent } from "react-map-gl/mapbox";
+import "mapbox-gl/dist/mapbox-gl.css";
+import { MapPin, Loader2, Navigation } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
 interface LocationPickerProps {
-  onLocationSelect: (location: { latitude: number; longitude: number; address?: string }) => void;
+  onLocationSelect: (location: {
+    latitude: number;
+    longitude: number;
+    address?: string;
+  }) => void;
   initialLocation?: { latitude: number; longitude: number };
   label?: string;
   required?: boolean;
@@ -25,7 +28,8 @@ export function LocationPicker({
   label,
   required = false,
   isLoading = false,
-  height = 'h-80' }: LocationPickerProps) {
+  height = "h-80",
+}: LocationPickerProps) {
   const mapRef = useRef<MapRef>(null);
   const [viewState, setViewState] = useState<ViewState>({
     latitude: initialLocation?.latitude || 13.7563,
@@ -33,30 +37,36 @@ export function LocationPicker({
     zoom: 14,
     bearing: 0,
     pitch: 0,
-    padding: { top: 0, bottom: 0, left: 0, right: 0 } });
-  const [selectedLocation, setSelectedLocation] = useState<{ latitude: number; longitude: number } | null>(
-    initialLocation || null
-  );
+    padding: { top: 0, bottom: 0, left: 0, right: 0 },
+  });
+  const [selectedLocation, setSelectedLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(initialLocation || null);
   const [isGeolocating, setIsGeolocating] = useState(false);
 
-  const fetchAddressFromCoordinates = async (lat: number, lng: number): Promise<string | undefined> => {
+  const fetchAddressFromCoordinates = async (
+    lat: number,
+    lng: number,
+  ): Promise<string | undefined> => {
     try {
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       if (!apiUrl) {
-        console.error('API URL not configured');
+        console.error("API URL not configured");
         return undefined;
       }
 
       const response = await fetch(`${apiUrl}/spots/reverse-geocode`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latitude: lat, longitude: lng }) });
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ latitude: lat, longitude: lng }),
+      });
       if (response.ok) {
         const data = await response.json();
         return data.address;
       }
     } catch (error) {
-      console.error('Failed to fetch address:', error);
+      console.error("Failed to fetch address:", error);
     }
     return undefined;
   };
@@ -66,14 +76,14 @@ export function LocationPicker({
     const { lng, lat } = e.lngLat;
     const location = { latitude: lat, longitude: lng };
     setSelectedLocation(location);
-    
+
     const address = await fetchAddressFromCoordinates(lat, lng);
     onLocationSelect({ ...location, address });
   };
 
   const handleCurrentLocation = async () => {
     if (isLoading || !navigator.geolocation) return;
-    
+
     setIsGeolocating(true);
     try {
       navigator.geolocation.getCurrentPosition(
@@ -81,19 +91,22 @@ export function LocationPicker({
           const { latitude, longitude } = position.coords;
           const location = { latitude, longitude };
           setSelectedLocation(location);
-          setViewState(prev => ({
+          setViewState((prev) => ({
             ...prev,
             latitude,
             longitude,
-            zoom: 16
+            zoom: 16,
           }));
-          
-          const address = await fetchAddressFromCoordinates(latitude, longitude);
+
+          const address = await fetchAddressFromCoordinates(
+            latitude,
+            longitude,
+          );
           onLocationSelect({ ...location, address });
         },
         () => {
-          console.error('Failed to get user location');
-        }
+          console.error("Failed to get user location");
+        },
       );
     } finally {
       setIsGeolocating(false);
@@ -116,8 +129,13 @@ export function LocationPicker({
           {required && <span className="text-amber-400 ml-1">*</span>}
         </label>
       )}
-      
-      <div className={cn("relative rounded-2xl overflow-hidden border border-white/10", height || "h-80 md:h-[600px] lg:h-screen")}>
+
+      <div
+        className={cn(
+          "relative rounded-2xl overflow-hidden border border-white/10",
+          height || "h-80 md:h-[600px] lg:h-screen",
+        )}
+      >
         <Map
           ref={mapRef}
           {...viewState}
@@ -125,8 +143,8 @@ export function LocationPicker({
           onClick={handleMapClick}
           mapboxAccessToken={MAPBOX_TOKEN}
           mapStyle="mapbox://styles/mapbox/dark-v11"
-          cursor={isLoading ? 'not-allowed' : 'crosshair'}
-          style={{ width: '100%', height: '100%' }}
+          cursor={isLoading ? "not-allowed" : "crosshair"}
+          style={{ width: "100%", height: "100%" }}
         >
           {selectedLocation && (
             <Marker
@@ -135,7 +153,11 @@ export function LocationPicker({
               anchor="bottom"
             >
               <div className="animate-bounce">
-                <MapPin size={32} className="text-amber-400 drop-shadow-lg" fill="currentColor" />
+                <MapPin
+                  size={32}
+                  className="text-amber-400 drop-shadow-lg"
+                  fill="currentColor"
+                />
               </div>
             </Marker>
           )}
@@ -148,7 +170,7 @@ export function LocationPicker({
             <span className="text-xs font-medium text-white">
               {selectedLocation
                 ? `${selectedLocation.latitude.toFixed(4)}, ${selectedLocation.longitude.toFixed(4)}`
-                : 'Click to select location'}
+                : "Click to select location"}
             </span>
           </div>
 
@@ -158,7 +180,7 @@ export function LocationPicker({
             disabled={isLoading || isGeolocating}
             className={cn(
               "bg-amber-500 hover:bg-amber-400 text-black p-2 rounded-lg transition-all",
-              "disabled:opacity-50 disabled:cursor-not-allowed"
+              "disabled:opacity-50 disabled:cursor-not-allowed",
             )}
             aria-label="Use current location"
             title="Use current location"
@@ -182,7 +204,8 @@ export function LocationPicker({
       </div>
 
       <p className="text-xs text-white/50">
-        Click on the map to select a location, or use the button to use your current location.
+        Click on the map to select a location, or use the button to use your
+        current location.
       </p>
     </div>
   );

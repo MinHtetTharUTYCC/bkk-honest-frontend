@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { X, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
-import { useUpdateProfile } from '@/hooks/use-api';
+import { useState } from "react";
+import { X, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useUpdateProfile } from "@/hooks/use-api";
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -22,8 +22,8 @@ export function EditProfileModal({
   profile,
   onSuccess,
 }: EditProfileModalProps) {
-  const [name, setName] = useState(profile?.name || '');
-  const [bio, setBio] = useState(profile?.bio || '');
+  const [name, setName] = useState(profile?.name || "");
+  const [bio, setBio] = useState(profile?.bio || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const updateProfileMutation = useUpdateProfile();
@@ -32,22 +32,22 @@ export function EditProfileModal({
     e.preventDefault();
 
     if (!name.trim()) {
-      toast.error('Name is required');
+      toast.error("Name is required");
       return;
     }
 
     if (name.trim().length < 2) {
-      toast.error('Name must be at least 2 characters');
+      toast.error("Name must be at least 2 characters");
       return;
     }
 
     if (name.trim().length > 50) {
-      toast.error('Name must be 50 characters or less');
+      toast.error("Name must be 50 characters or less");
       return;
     }
 
     if (bio.trim().length > 500) {
-      toast.error('Bio must be 500 characters or less');
+      toast.error("Bio must be 500 characters or less");
       return;
     }
 
@@ -58,12 +58,13 @@ export function EditProfileModal({
         bio: bio.trim(),
       });
 
-      toast.success('Profile updated successfully!');
+      toast.success("Profile updated successfully!");
       onSuccess?.();
       onClose();
     } catch (error) {
-      console.error('Failed to update profile:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to update profile';
+      console.error("Failed to update profile:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update profile";
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -104,9 +105,7 @@ export function EditProfileModal({
               disabled={isSubmitting}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 transition-colors"
             />
-            <p className="text-xs text-white/50">
-              {name.length}/50 characters
-            </p>
+            <p className="text-xs text-white/50">{name.length}/50 characters</p>
           </div>
 
           <div className="space-y-2">
@@ -120,9 +119,7 @@ export function EditProfileModal({
               rows={4}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-amber-400/50 disabled:opacity-50 transition-colors resize-none"
             />
-            <p className="text-xs text-white/50">
-              {bio.length}/500 characters
-            </p>
+            <p className="text-xs text-white/50">{bio.length}/500 characters</p>
           </div>
 
           <div className="flex gap-3 justify-end pt-4">
@@ -145,7 +142,7 @@ export function EditProfileModal({
                   Saving...
                 </>
               ) : (
-                'Save Changes'
+                "Save Changes"
               )}
             </button>
           </div>

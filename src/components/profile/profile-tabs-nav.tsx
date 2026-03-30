@@ -25,9 +25,10 @@ export function ProfileTabsNav({ userId }: ProfileTabsNavProps) {
         const Icon = tab.icon;
         // Support both /profile/me/tips and /profile/[userId]/tips routes
         // Route groups (parentheses) don't appear in actual URLs
-        const href = userId === "me" 
-          ? `/profile/${tab.id}`
-          : `/profile/${userId}/${tab.id}`;
+        const href =
+          userId === "me"
+            ? `/profile/${tab.id}`
+            : `/profile/${userId}/${tab.id}`;
         const isActive = pathname === href;
 
         return (
@@ -38,7 +39,7 @@ export function ProfileTabsNav({ userId }: ProfileTabsNavProps) {
               "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all",
               isActive
                 ? `bg-${tab.color}-400/20 text-${tab.color}-400 border border-${tab.color}-400/50`
-                : "text-white/60 hover:text-white/80 hover:bg-white/5"
+                : "text-white/60 hover:text-white/80 hover:bg-white/5",
             )}
           >
             <Icon size={16} />

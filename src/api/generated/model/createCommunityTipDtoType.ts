@@ -9,10 +9,10 @@
 /**
  * Tip type
  */
-export type CreateCommunityTipDtoType = typeof CreateCommunityTipDtoType[keyof typeof CreateCommunityTipDtoType];
-
+export type CreateCommunityTipDtoType =
+  (typeof CreateCommunityTipDtoType)[keyof typeof CreateCommunityTipDtoType];
 
 export const CreateCommunityTipDtoType = {
-  TRY: 'TRY',
-  AVOID: 'AVOID',
+  TRY: "TRY",
+  AVOID: "AVOID",
 } as const;

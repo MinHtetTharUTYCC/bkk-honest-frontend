@@ -12,26 +12,26 @@ export interface CreateSpotDto {
   /** Category ID (cuid) */
   categoryId: string;
   /**
-     * Spot name
-     * @maxLength 100
-     */
+   * Spot name
+   * @maxLength 100
+   */
   name: string;
   /**
-     * Full street address (auto-populated from coordinates if not provided)
-     * @maxLength 200
-     */
+   * Full street address (auto-populated from coordinates if not provided)
+   * @maxLength 200
+   */
   address?: string;
   /**
-     * Latitude coordinate
-     * @minimum -90
-     * @maximum 90
-     */
+   * Latitude coordinate
+   * @minimum -90
+   * @maximum 90
+   */
   latitude: number;
   /**
-     * Longitude coordinate
-     * @minimum -180
-     * @maximum 180
-     */
+   * Longitude coordinate
+   * @minimum -180
+   * @maximum 180
+   */
   longitude: number;
   /** Spot image file */
   image?: Blob;

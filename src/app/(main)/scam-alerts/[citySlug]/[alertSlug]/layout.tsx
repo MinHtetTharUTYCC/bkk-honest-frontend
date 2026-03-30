@@ -14,7 +14,7 @@ export async function generateMetadata({
 }: ScamAlertLayoutProps): Promise<Metadata> {
   try {
     const { citySlug, alertSlug } = await params;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
     const encodedCitySlug = encodeURIComponent(citySlug);
     const encodedAlertSlug = encodeURIComponent(alertSlug);
     const path = `/scam-alerts/${encodedCitySlug}/${encodedAlertSlug}`;
@@ -36,7 +36,7 @@ export async function generateMetadata({
 
     const alert = await response.json();
     const alertData = alert.data || alert;
-    
+
     // Get display image variant for OG tags
     const ogImageUrl = alertData.imageVariants?.display || null;
 
@@ -80,7 +80,7 @@ export async function generateMetadata({
         canonical: path,
       },
     };
-  } catch () {
+  } catch {
     return {
       title: "Scam Alert - BKK Honest",
       description: "View scam alert details and community discussion",

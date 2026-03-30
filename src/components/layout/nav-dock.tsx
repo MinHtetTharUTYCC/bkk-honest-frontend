@@ -1,41 +1,71 @@
-'use client';
+"use client";
 
-import { Home, Compass, Map as MapIcon, Plus, AlertTriangle, Target, User, Zap } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import NavigationMenuSheet from './navigation-menu-sheet';
-import { useAuth } from '@/components/providers/auth-provider';
+import {
+  Home,
+  Compass,
+  Map as MapIcon,
+  Plus,
+  AlertTriangle,
+  Target,
+  User,
+  Zap,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import NavigationMenuSheet from "./navigation-menu-sheet";
+import { useAuth } from "@/components/providers/auth-provider";
 
 export default function NavDock() {
   const pathname = usePathname();
   const { user } = useAuth();
 
   const navItems = [
-    { icon: Home, label: 'Home', href: '/' },
-    { icon: Compass, label: 'Spots', href: '/spots' },
-    { icon: AlertTriangle, label: 'Scams', href: '/scam-alerts' },
-    { icon: MapIcon, label: 'Map', href: '/map' },
-    { icon: Zap, label: 'Vibes', href: '/vibes', desktopOnly: true },
-    { icon: Target, label: 'Missions', href: '/missions', desktopOnly: true, auth: true },
-    { icon: User, label: 'Profile', href: '/profile', desktopOnly: true, auth: true },
+    { icon: Home, label: "Home", href: "/" },
+    { icon: Compass, label: "Spots", href: "/spots" },
+    { icon: AlertTriangle, label: "Scams", href: "/scam-alerts" },
+    { icon: MapIcon, label: "Map", href: "/map" },
+    { icon: Zap, label: "Vibes", href: "/vibes", desktopOnly: true },
+    {
+      icon: Target,
+      label: "Missions",
+      href: "/missions",
+      desktopOnly: true,
+      auth: true,
+    },
+    {
+      icon: User,
+      label: "Profile",
+      href: "/profile",
+      desktopOnly: true,
+      auth: true,
+    },
   ];
 
-  const visibleNavItems = navItems.filter(item => !item.auth || !!user);
+  const visibleNavItems = navItems.filter((item) => !item.auth || !!user);
 
   const isActiveRoute = (href: string) => {
     if (!pathname) return false;
-    const cleanPathname = pathname.split('?')[0];
-    
-    if (href === '/') {
-      return cleanPathname === '/';
+    const cleanPathname = pathname.split("?")[0];
+
+    if (href === "/") {
+      return cleanPathname === "/";
     }
-    
-    if (href === '/profile') {
-      const isMyProfileTab = ['/profile/tips', '/profile/scams', '/profile/spots', '/profile/reports'].includes(cleanPathname);
-      return cleanPathname === '/profile' || cleanPathname === '/profile/' || isMyProfileTab;
+
+    if (href === "/profile") {
+      const isMyProfileTab = [
+        "/profile/tips",
+        "/profile/scams",
+        "/profile/spots",
+        "/profile/reports",
+      ].includes(cleanPathname);
+      return (
+        cleanPathname === "/profile" ||
+        cleanPathname === "/profile/" ||
+        isMyProfileTab
+      );
     }
-    
+
     return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
   };
 
@@ -57,15 +87,17 @@ export default function NavDock() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex flex-col items-center gap-1 transition-all',
+                "flex flex-col items-center gap-1 transition-all",
                 isActive
-                  ? 'text-amber-400'
-                  : 'text-white/30 hover:text-white/70',
-                item.desktopOnly && 'hidden md:flex'
+                  ? "text-amber-400"
+                  : "text-white/30 hover:text-white/70",
+                item.desktopOnly && "hidden md:flex",
               )}
             >
               <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
-              <span className="text-[10px] font-bold md:hidden uppercase tracking-wider">{item.label}</span>
+              <span className="text-[10px] font-bold md:hidden uppercase tracking-wider">
+                {item.label}
+              </span>
             </Link>
           );
         })}

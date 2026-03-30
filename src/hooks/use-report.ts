@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useCreateReport } from './use-api';
+import { useCreateReport } from "./use-api";
 
 export function useReport() {
   return useCreateReport();

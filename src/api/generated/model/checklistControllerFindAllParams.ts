@@ -7,8 +7,8 @@
  */
 
 export type ChecklistControllerFindAllParams = {
-status?: string;
-sort?: string;
-skip?: string | number;
-take?: string | number;
+  skip?: string;
+  take?: string;
+  status?: string;
+  sort?: string;
 };

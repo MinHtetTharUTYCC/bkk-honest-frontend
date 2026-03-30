@@ -82,11 +82,21 @@ export default async function ScamAlertsPage({
       });
       return data;
     },
-    getNextPageParam: (lastPage: any) => {
-      const pagination = lastPage?.pagination;
-      if (!pagination) return undefined;
-
-      const { skip, take, total } = pagination;
+    getNextPageParam: (lastPage: unknown) => {
+      if (!lastPage || typeof lastPage !== "object") return undefined;
+      const p = lastPage as Record<string, unknown>;
+      const pagination = p.pagination;
+      if (!pagination || typeof pagination !== "object") return undefined;
+      const pag = pagination as {
+        skip?: number;
+        take?: number;
+        total?: number;
+      };
+      const skip = pag.skip as number | undefined;
+      const take = pag.take as number | undefined;
+      const total = pag.total as number | undefined;
+      if (skip === undefined || take === undefined || total === undefined)
+        return undefined;
       const nextSkip = skip + take;
       return nextSkip < total ? Math.floor(nextSkip / take) : undefined;
     },

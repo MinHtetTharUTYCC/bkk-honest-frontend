@@ -1,9 +1,10 @@
-'use client';
+"use client";
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
-import { useEffect } from 'react';
-import { X } from 'lucide-react';
-import type { ImageVariantsDto } from '@/api/generated/model';
-import { getGalleryImageUrl } from '@/lib/image-utils';
+import { useEffect } from "react";
+import { X } from "lucide-react";
+import type { ImageVariantsDto } from "@/api/generated/model";
+import { getGalleryImageUrl } from "@/lib/image-utils";
 
 interface ImageViewerProps {
   isOpen: boolean;
@@ -12,31 +13,36 @@ interface ImageViewerProps {
   onClose: () => void;
 }
 
-export function ImageViewer({ isOpen, imageVariants, alt = 'Image', onClose }: ImageViewerProps) {
+export function ImageViewer({
+  isOpen,
+  imageVariants,
+  alt = "Image",
+  onClose,
+}: ImageViewerProps) {
   // Handle ESC key
   useEffect(() => {
     if (!isOpen) return;
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     }
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     };
   }, [isOpen]);
 
@@ -76,12 +82,17 @@ export function ImageViewer({ isOpen, imageVariants, alt = 'Image', onClose }: I
       </button>
 
       <div className="flex items-center justify-center w-screen h-screen">
-        <img
-          src={imageUrl}
-          alt={alt}
-          className="max-w-[90vw] max-h-[90vh] object-contain"
+        <div
+          className="relative w-[90vw] h-[90vh]"
           onClick={(e) => e.stopPropagation()}
-        />
+        >
+          <OptimizedImage
+            variants={imageVariants}
+            alt={alt}
+            fill
+            objectFit="contain"
+          />
+        </div>
       </div>
     </div>
   );

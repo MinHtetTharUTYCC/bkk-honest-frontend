@@ -5,8 +5,8 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { GalleryImageResponseDto } from './galleryImageResponseDto';
-import type { PaginationMetaDto } from './paginationMetaDto';
+import type { GalleryImageResponseDto } from "./galleryImageResponseDto";
+import type { PaginationMetaDto } from "./paginationMetaDto";
 
 export interface PaginatedGalleryImagesResponseDto {
   data: GalleryImageResponseDto[];

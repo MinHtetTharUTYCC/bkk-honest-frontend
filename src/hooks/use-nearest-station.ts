@@ -1,18 +1,22 @@
-import { useState, useEffect, useCallback } from 'react';
-import { 
-  parseStationsFromGeoJSON, 
-  findNearestStation, 
+import { useState, useEffect, useCallback } from "react";
+import {
+  parseStationsFromGeoJSON,
+  findNearestStation,
   findNearestStations,
   type Station,
-  type NearestStation 
-} from '@/lib/transit-utils';
+  type NearestStation,
+} from "@/lib/transit-utils";
 
 interface UseNearestStationReturn {
   stations: Station[];
   loading: boolean;
   error: string | null;
   findNearest: (lat: number, lng: number) => NearestStation | null;
-  findNearestMultiple: (lat: number, lng: number, count?: number) => NearestStation[];
+  findNearestMultiple: (
+    lat: number,
+    lng: number,
+    count?: number,
+  ) => NearestStation[];
 }
 
 export function useNearestStation(): UseNearestStationReturn {
@@ -26,19 +30,21 @@ export function useNearestStation(): UseNearestStationReturn {
         setLoading(true);
         setError(null);
 
-        const response = await fetch('/data/transit/stations.geojson');
-        
+        const response = await fetch("/data/transit/stations.geojson");
+
         if (!response.ok) {
           throw new Error(`Failed to fetch stations: ${response.status}`);
         }
 
         const stationsGeoJSON = await response.json();
         const parsedStations = parseStationsFromGeoJSON(stationsGeoJSON);
-        
+
         setStations(parsedStations);
       } catch (err) {
-        console.error('Error loading transit stations:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load transit data');
+        console.error("Error loading transit stations:", err);
+        setError(
+          err instanceof Error ? err.message : "Failed to load transit data",
+        );
       } finally {
         setLoading(false);
       }
@@ -51,14 +57,14 @@ export function useNearestStation(): UseNearestStationReturn {
     (lat: number, lng: number) => {
       return findNearestStation(lat, lng, stations);
     },
-    [stations]
+    [stations],
   );
 
   const findNearestMultiple = useCallback(
     (lat: number, lng: number, count = 3) => {
       return findNearestStations(lat, lng, stations, count);
     },
-    [stations]
+    [stations],
   );
 
   return {

@@ -1,27 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import SpotCard from '@/components/spots/spot-card';
-import ScamAlertCard from '@/components/scams/scam-alert-card';
-import { CardSkeleton, ScamAlertCardSkeleton } from '@/components/ui/skeleton';
-import { useInfiniteSpots, useInfiniteScamAlerts } from '@/hooks/use-api';
-import { useAuth } from '@/components/providers/auth-provider';
-import { useInView } from 'react-intersection-observer';
-import type { ScamAlertData } from '@/components/scams/scam-alert-card';
+import { useState, useEffect } from "react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import SpotCard from "@/components/spots/spot-card";
+import ScamAlertCard from "@/components/scams/scam-alert-card";
+import { CardSkeleton, ScamAlertCardSkeleton } from "@/components/ui/skeleton";
+import { useInfiniteSpots, useInfiniteScamAlerts } from "@/hooks/use-api";
+import { useAuth } from "@/components/providers/auth-provider";
+import { useInView } from "react-intersection-observer";
+import type { SpotCardData } from "@/components/spots/spot-card";
+import type { ScamAlertData } from "@/components/scams/scam-alert-card";
 
 interface SearchResultsTabsProps {
   query: string;
   categoryId?: string;
-  sort?: 'newest' | 'popular';
-  activeTab?: 'spots' | 'scams';
-  onTabChange?: (tab: 'spots' | 'scams') => void;
+  sort?: "newest" | "popular";
+  activeTab?: "spots" | "scams";
+  onTabChange?: (tab: "spots" | "scams") => void;
   cityId?: string;
 }
 
-interface SearchSpotItem {
-  id: string;
-}
+type SearchSpotItem = SpotCardData;
 
 interface PaginationPage<T> {
   data?: T[];
@@ -33,12 +32,13 @@ interface PaginationPage<T> {
 export function SearchResultsTabs({
   query,
   categoryId,
-  sort = 'popular',
-  activeTab = 'spots',
+  sort = "popular",
+  activeTab = "spots",
   onTabChange,
   cityId,
 }: SearchResultsTabsProps) {
   const [tab, setTab] = useState(activeTab);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user: authUser } = useAuth();
   const { ref, inView } = useInView();
 
@@ -81,9 +81,13 @@ export function SearchResultsTabs({
   // Load more when in view
   useEffect(() => {
     if (inView) {
-      if (tab === 'spots' && spotsHasNextPage && !spotsFetchingNextPage) {
+      if (tab === "spots" && spotsHasNextPage && !spotsFetchingNextPage) {
         spotsFetchNextPage();
-      } else if (tab === 'scams' && scamsHasNextPage && !scamsFetchingNextPage) {
+      } else if (
+        tab === "scams" &&
+        scamsHasNextPage &&
+        !scamsFetchingNextPage
+      ) {
         scamsFetchNextPage();
       }
     }
@@ -99,13 +103,17 @@ export function SearchResultsTabs({
   ]);
 
   const handleTabChange = (newTab: string) => {
-    setTab(newTab as 'spots' | 'scams');
-    onTabChange?.(newTab as 'spots' | 'scams');
+    setTab(newTab as "spots" | "scams");
+    onTabChange?.(newTab as "spots" | "scams");
   };
 
   // Flatten paginated data
-  const spotPages = spotsData?.pages as PaginationPage<SearchSpotItem>[] | undefined;
-  const scamPages = scamsData?.pages as PaginationPage<ScamAlertData>[] | undefined;
+  const spotPages = spotsData?.pages as
+    | PaginationPage<SearchSpotItem>[]
+    | undefined;
+  const scamPages = scamsData?.pages as
+    | PaginationPage<ScamAlertData>[]
+    | undefined;
 
   const spots = spotPages?.flatMap((page) => page.data || []) || [];
   const scams = scamPages?.flatMap((page) => page.data || []) || [];
@@ -119,14 +127,14 @@ export function SearchResultsTabs({
         <TabsList className="grid w-full grid-cols-2 bg-white/5 border border-white/10 p-1 mb-6">
           <TabsTrigger
             value="spots"
-            data-state={tab === 'spots' ? 'active' : 'inactive'}
+            data-state={tab === "spots" ? "active" : "inactive"}
             className="data-[state=active]:bg-amber-400/20 data-[state=active]:text-amber-400"
           >
             Spots {spotsCount > 0 && `(${spotsCount})`}
           </TabsTrigger>
           <TabsTrigger
             value="scams"
-            data-state={tab === 'scams' ? 'active' : 'inactive'}
+            data-state={tab === "scams" ? "active" : "inactive"}
             className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400"
           >
             Scam Alerts {scamsCount > 0 && `(${scamsCount})`}
@@ -152,7 +160,10 @@ export function SearchResultsTabs({
                 ))}
               </div>
               {(spotsHasNextPage || spotsFetchingNextPage) && (
-                <div ref={ref} className="h-10 flex items-center justify-center">
+                <div
+                  ref={ref}
+                  className="h-10 flex items-center justify-center"
+                >
                   {spotsFetchingNextPage && (
                     <div className="text-xs text-white/40">Loading more...</div>
                   )}
@@ -181,7 +192,10 @@ export function SearchResultsTabs({
                 ))}
               </div>
               {(scamsHasNextPage || scamsFetchingNextPage) && (
-                <div ref={ref} className="h-10 flex items-center justify-center">
+                <div
+                  ref={ref}
+                  className="h-10 flex items-center justify-center"
+                >
                   {scamsFetchingNextPage && (
                     <div className="text-xs text-white/40">Loading more...</div>
                   )}

@@ -1,35 +1,45 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Flag, X, Loader2 } from 'lucide-react';
-import { useReport } from '@/hooks/use-report';
-import { toast } from 'sonner';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
+import { useState } from "react";
+import { Flag, X, Loader2 } from "lucide-react";
+import { useReport } from "@/hooks/use-report";
+import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ReportModalProps {
   targetId: string;
-  reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
+  reportType: "SPOT" | "COMMUNITY_TIP" | "SCAM_ALERT" | "COMMENT" | "PROFILE";
   onClose: () => void;
 }
 
 const REPORT_REASONS = [
-  { value: 'SPAM', label: 'Spam or duplicate' },
-  { value: 'INAPPROPRIATE', label: 'Inappropriate content' },
-  { value: 'FAKE_INFO', label: 'Fake or misleading info' },
-  { value: 'SAFETY_CONCERN', label: 'Safety concern' },
-  { value: 'OTHER', label: 'Other reason' },
+  { value: "SPAM", label: "Spam or duplicate" },
+  { value: "INAPPROPRIATE", label: "Inappropriate content" },
+  { value: "FAKE_INFO", label: "Fake or misleading info" },
+  { value: "SAFETY_CONCERN", label: "Safety concern" },
+  { value: "OTHER", label: "Other reason" },
 ];
 
-export default function ReportModal({ targetId, reportType, onClose }: ReportModalProps) {
-  const [reason, setReason] = useState<string>('');
-  const [description, setDescription] = useState('');
+export default function ReportModal({
+  targetId,
+  reportType,
+  onClose,
+}: ReportModalProps) {
+  const [reason, setReason] = useState<string>("");
+  const [description, setDescription] = useState("");
   const reportMutation = useReport();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!reason) {
-      toast.error('Please select a reason');
+      toast.error("Please select a reason");
       return;
     }
 
@@ -40,22 +50,35 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
         reason,
         description: description || undefined,
       });
-      toast.success('Report submitted. Thank you for helping keep our community safe.');
+      toast.success(
+        "Report submitted. Thank you for helping keep our community safe.",
+      );
       onClose();
     } catch (error) {
-      toast.error('Failed to submit report');
+      toast.error(
+        error instanceof Error
+          ? `: ${error.message}`
+          : "Failed to submit report",
+      );
     }
   };
 
   return (
-    <div 
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    <div
+      className="fixed inset-0 z-100 flex items-center justify-center p-4"
       onClick={(e) => e.stopPropagation()}
     >
       <div
         className="absolute inset-0 bg-black/75 backdrop-blur-xl"
-        onClick={(e) => { e.stopPropagation(); onClose(); }}
-        onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onClose();
+        }}
       />
 
       <div className="relative w-full max-w-md bg-card rounded-2xl shadow-2xl overflow-hidden">
@@ -66,12 +89,21 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
             </div>
             <div>
               <h3 className="font-semibold text-foreground">Report Content</h3>
-              <p className="text-xs text-white/40">Help us keep the community safe</p>
+              <p className="text-xs text-white/40">
+                Help us keep the community safe
+              </p>
             </div>
           </div>
           <button
-            onClick={(e) => { e.stopPropagation(); onClose(); }}
-            onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); onClose(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClose();
+            }}
             className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center hover:bg-white/12 transition-colors"
           >
             <X size={18} />

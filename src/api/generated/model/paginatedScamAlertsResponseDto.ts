@@ -5,8 +5,8 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { PaginationMetaDto } from './paginationMetaDto';
-import type { ScamAlertResponseDto } from './scamAlertResponseDto';
+import type { PaginationMetaDto } from "./paginationMetaDto";
+import type { ScamAlertResponseDto } from "./scamAlertResponseDto";
 
 export interface PaginatedScamAlertsResponseDto {
   data: ScamAlertResponseDto[];

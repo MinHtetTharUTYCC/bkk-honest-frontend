@@ -5,11 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 import type {
   DataTag,
   DefinedInitialDataOptions,
@@ -26,360 +22,627 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult
-} from '@tanstack/react-query';
+  UseQueryResult,
+} from "@tanstack/react-query";
 
-import type {
-  CommentReactionResponseDto
-} from '../model';
+import type { CommentReactionResponseDto } from "../model";
 
-import { customInstance } from '../../mutator/custom-instance';
-
-
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
-
+import { customInstance } from "../../mutator/custom-instance";
 
 /**
  * @summary Toggle like reaction on a comment
  */
 export type commentReactionsControllerToggleReactionResponse201 = {
-  data: CommentReactionResponseDto
-  status: 201
-}
-
-export type commentReactionsControllerToggleReactionResponseSuccess = (commentReactionsControllerToggleReactionResponse201) & {
-  headers: Headers;
+  data: CommentReactionResponseDto;
+  status: 201;
 };
-;
 
-export type commentReactionsControllerToggleReactionResponse = (commentReactionsControllerToggleReactionResponseSuccess)
+export type commentReactionsControllerToggleReactionResponseSuccess =
+  commentReactionsControllerToggleReactionResponse201 & {
+    headers: Headers;
+  };
+export type commentReactionsControllerToggleReactionResponse =
+  commentReactionsControllerToggleReactionResponseSuccess;
 
-export const getCommentReactionsControllerToggleReactionUrl = (commentId: string,) => {
+export const getCommentReactionsControllerToggleReactionUrl = (
+  commentId: string,
+) => {
+  return `/comments/${commentId}/reactions`;
+};
 
+export const commentReactionsControllerToggleReaction = async (
+  commentId: string,
+  options?: RequestInit,
+): Promise<commentReactionsControllerToggleReactionResponse> => {
+  return customInstance<commentReactionsControllerToggleReactionResponse>(
+    getCommentReactionsControllerToggleReactionUrl(commentId),
+    {
+      ...options,
+      method: "POST",
+    },
+  );
+};
 
+export const getCommentReactionsControllerToggleReactionMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
+    TError,
+    { commentId: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
+  TError,
+  { commentId: string },
+  TContext
+> => {
+  const mutationKey = ["commentReactionsControllerToggleReaction"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
+    { commentId: string }
+  > = (props) => {
+    const { commentId } = props ?? {};
 
-  return `/comments/${commentId}/reactions`
-}
+    return commentReactionsControllerToggleReaction(commentId);
+  };
 
-export const commentReactionsControllerToggleReaction = async (commentId: string, options?: RequestInit): Promise<commentReactionsControllerToggleReactionResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<commentReactionsControllerToggleReactionResponse>(getCommentReactionsControllerToggleReactionUrl(commentId),
-  {
-    ...options,
-    method: 'POST'
+export type CommentReactionsControllerToggleReactionMutationResult =
+  NonNullable<
+    Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>
+  >;
 
+export type CommentReactionsControllerToggleReactionMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getCommentReactionsControllerToggleReactionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext> => {
-
-const mutationKey = ['commentReactionsControllerToggleReaction'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, {commentId: string}> = (props) => {
-          const {commentId} = props ?? {};
-
-          return  commentReactionsControllerToggleReaction(commentId,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommentReactionsControllerToggleReactionMutationResult = NonNullable<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>>
-
-    export type CommentReactionsControllerToggleReactionMutationError = unknown
-
-    /**
+/**
  * @summary Toggle like reaction on a comment
  */
-export const useCommentReactionsControllerToggleReaction = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
-        TError,
-        {commentId: string},
-        TContext
-      > => {
-      return useMutation(getCommentReactionsControllerToggleReactionMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommentReactionsControllerToggleReaction = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
+      TError,
+      { commentId: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
+  TError,
+  { commentId: string },
+  TContext
+> => {
+  return useMutation(
+    getCommentReactionsControllerToggleReactionMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Remove like reaction from a comment
  */
 export type commentReactionsControllerRemoveReactionResponse200 = {
-  data: CommentReactionResponseDto
-  status: 200
-}
-
-export type commentReactionsControllerRemoveReactionResponseSuccess = (commentReactionsControllerRemoveReactionResponse200) & {
-  headers: Headers;
+  data: CommentReactionResponseDto;
+  status: 200;
 };
-;
 
-export type commentReactionsControllerRemoveReactionResponse = (commentReactionsControllerRemoveReactionResponseSuccess)
+export type commentReactionsControllerRemoveReactionResponseSuccess =
+  commentReactionsControllerRemoveReactionResponse200 & {
+    headers: Headers;
+  };
+export type commentReactionsControllerRemoveReactionResponse =
+  commentReactionsControllerRemoveReactionResponseSuccess;
 
-export const getCommentReactionsControllerRemoveReactionUrl = (commentId: string,) => {
+export const getCommentReactionsControllerRemoveReactionUrl = (
+  commentId: string,
+) => {
+  return `/comments/${commentId}/reactions`;
+};
 
+export const commentReactionsControllerRemoveReaction = async (
+  commentId: string,
+  options?: RequestInit,
+): Promise<commentReactionsControllerRemoveReactionResponse> => {
+  return customInstance<commentReactionsControllerRemoveReactionResponse>(
+    getCommentReactionsControllerRemoveReactionUrl(commentId),
+    {
+      ...options,
+      method: "DELETE",
+    },
+  );
+};
 
+export const getCommentReactionsControllerRemoveReactionMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
+    TError,
+    { commentId: string },
+    TContext
+  >;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
+  TError,
+  { commentId: string },
+  TContext
+> => {
+  const mutationKey = ["commentReactionsControllerRemoveReaction"];
+  const { mutation: mutationOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey } };
 
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
+    { commentId: string }
+  > = (props) => {
+    const { commentId } = props ?? {};
 
-  return `/comments/${commentId}/reactions`
-}
+    return commentReactionsControllerRemoveReaction(commentId);
+  };
 
-export const commentReactionsControllerRemoveReaction = async (commentId: string, options?: RequestInit): Promise<commentReactionsControllerRemoveReactionResponse> => {
+  return { mutationFn, ...mutationOptions };
+};
 
-  return customInstance<commentReactionsControllerRemoveReactionResponse>(getCommentReactionsControllerRemoveReactionUrl(commentId),
-  {
-    ...options,
-    method: 'DELETE'
+export type CommentReactionsControllerRemoveReactionMutationResult =
+  NonNullable<
+    Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>
+  >;
 
+export type CommentReactionsControllerRemoveReactionMutationError = unknown;
 
-  }
-);}
-
-
-
-
-export const getCommentReactionsControllerRemoveReactionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
-): UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext> => {
-
-const mutationKey = ['commentReactionsControllerRemoveReaction'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, {commentId: string}> = (props) => {
-          const {commentId} = props ?? {};
-
-          return  commentReactionsControllerRemoveReaction(commentId,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type CommentReactionsControllerRemoveReactionMutationResult = NonNullable<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>>
-
-    export type CommentReactionsControllerRemoveReactionMutationError = unknown
-
-    /**
+/**
  * @summary Remove like reaction from a comment
  */
-export const useCommentReactionsControllerRemoveReaction = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
-        TError,
-        {commentId: string},
-        TContext
-      > => {
-      return useMutation(getCommentReactionsControllerRemoveReactionMutationOptions(options), queryClient);
-    }
-    /**
+export const useCommentReactionsControllerRemoveReaction = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
+      TError,
+      { commentId: string },
+      TContext
+    >;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
+  TError,
+  { commentId: string },
+  TContext
+> => {
+  return useMutation(
+    getCommentReactionsControllerRemoveReactionMutationOptions(options),
+    queryClient,
+  );
+};
+/**
  * @summary Get reaction summary for a comment
  */
 export type commentReactionsControllerGetReactionSummaryResponse200 = {
-  data: CommentReactionResponseDto
-  status: 200
-}
-
-export type commentReactionsControllerGetReactionSummaryResponseSuccess = (commentReactionsControllerGetReactionSummaryResponse200) & {
-  headers: Headers;
+  data: CommentReactionResponseDto;
+  status: 200;
 };
-;
 
-export type commentReactionsControllerGetReactionSummaryResponse = (commentReactionsControllerGetReactionSummaryResponseSuccess)
+export type commentReactionsControllerGetReactionSummaryResponseSuccess =
+  commentReactionsControllerGetReactionSummaryResponse200 & {
+    headers: Headers;
+  };
+export type commentReactionsControllerGetReactionSummaryResponse =
+  commentReactionsControllerGetReactionSummaryResponseSuccess;
 
-export const getCommentReactionsControllerGetReactionSummaryUrl = (commentId: string,) => {
-
-
-
-
-  return `/comments/${commentId}/reactions`
-}
-
-export const commentReactionsControllerGetReactionSummary = async (commentId: string, options?: RequestInit): Promise<commentReactionsControllerGetReactionSummaryResponse> => {
-
-  return customInstance<commentReactionsControllerGetReactionSummaryResponse>(getCommentReactionsControllerGetReactionSummaryUrl(commentId),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
-
-export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey = (commentId: string,) => {
-    return [
-    'infinite', `/comments/${commentId}/reactions`
-    ] as const;
-    }
-
-export const getCommentReactionsControllerGetReactionSummaryQueryKey = (commentId: string,) => {
-    return [
-    `/comments/${commentId}/reactions`
-    ] as const;
-    }
-
-
-export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCommentReactionsControllerGetReactionSummaryUrl = (
+  commentId: string,
 ) => {
+  return `/comments/${commentId}/reactions`;
+};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+export const commentReactionsControllerGetReactionSummary = async (
+  commentId: string,
+  options?: RequestInit,
+): Promise<commentReactionsControllerGetReactionSummaryResponse> => {
+  return customInstance<commentReactionsControllerGetReactionSummaryResponse>(
+    getCommentReactionsControllerGetReactionSummaryUrl(commentId),
+    {
+      ...options,
+      method: "GET",
+    },
+  );
+};
 
-  const queryKey =  queryOptions?.queryKey ?? getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey(commentId);
+export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey = (
+  commentId: string,
+) => {
+  return ["infinite", `/comments/${commentId}/reactions`] as const;
+};
 
+export const getCommentReactionsControllerGetReactionSummaryQueryKey = (
+  commentId: string,
+) => {
+  return [`/comments/${commentId}/reactions`] as const;
+};
 
+export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions =
+  <
+    TData = InfiniteData<
+      Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+    >,
+    TError = unknown,
+  >(
+    commentId: string,
+    options?: {
+      query?: Partial<
+        UseInfiniteQueryOptions<
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >,
+          TError,
+          TData
+        >
+      >;
+    },
+  ) => {
+    const { query: queryOptions } = options ?? {};
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal, ...requestOptions });
+    const queryKey =
+      queryOptions?.queryKey ??
+      getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey(
+        commentId,
+      );
 
+    const queryFn: QueryFunction<
+      Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+    > = ({ signal }) =>
+      commentReactionsControllerGetReactionSummary(commentId, { signal });
 
+    return {
+      queryKey,
+      queryFn,
+      enabled: !!commentId,
+      ...queryOptions,
+    } as UseInfiniteQueryOptions<
+      Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+      TError,
+      TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+  };
 
+export type CommentReactionsControllerGetReactionSummaryInfiniteQueryResult =
+  NonNullable<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  >;
+export type CommentReactionsControllerGetReactionSummaryInfiniteQueryError =
+  unknown;
 
-
-   return  { queryKey, queryFn, enabled: !!(commentId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommentReactionsControllerGetReactionSummaryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>
-export type CommentReactionsControllerGetReactionSummaryInfiniteQueryError = unknown
-
-
-export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
- commentId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>> & Pick<
+export function useCommentReactionsControllerGetReactionSummaryInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options: {
+    query: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >,
           TError,
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>> & Pick<
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentReactionsControllerGetReactionSummaryInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >,
           TError,
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentReactionsControllerGetReactionSummaryInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get reaction summary for a comment
  */
 
-export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommentReactionsControllerGetReactionSummaryInfinite<
+  TData = InfiniteData<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseInfiniteQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseInfiniteQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions(
+      commentId,
+      options,
+    );
 
-  const queryOptions = getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions(commentId,options)
-
-  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useInfiniteQuery(
+    queryOptions,
+    queryClient,
+  ) as UseInfiniteQueryResult<TData, TError> & {
+    queryKey: DataTag<QueryKey, TData, TError>;
+  };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-
-
-
-export const getCommentReactionsControllerGetReactionSummaryQueryOptions = <TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCommentReactionsControllerGetReactionSummaryQueryOptions = <
+  TData = Awaited<
+    ReturnType<typeof commentReactionsControllerGetReactionSummary>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
 ) => {
+  const { query: queryOptions } = options ?? {};
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+  const queryKey =
+    queryOptions?.queryKey ??
+    getCommentReactionsControllerGetReactionSummaryQueryKey(commentId);
 
-  const queryKey =  queryOptions?.queryKey ?? getCommentReactionsControllerGetReactionSummaryQueryKey(commentId);
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  > = ({ signal }) =>
+    commentReactionsControllerGetReactionSummary(commentId, { signal });
 
+  return {
+    queryKey,
+    queryFn,
+    enabled: !!commentId,
+    ...queryOptions,
+  } as UseQueryOptions<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type CommentReactionsControllerGetReactionSummaryQueryResult =
+  NonNullable<
+    Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
+  >;
+export type CommentReactionsControllerGetReactionSummaryQueryError = unknown;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal, ...requestOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(commentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type CommentReactionsControllerGetReactionSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>
-export type CommentReactionsControllerGetReactionSummaryQueryError = unknown
-
-
-export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
- commentId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>> & Pick<
+export function useCommentReactionsControllerGetReactionSummary<
+  TData = Awaited<
+    ReturnType<typeof commentReactionsControllerGetReactionSummary>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >,
           TError,
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>> & Pick<
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentReactionsControllerGetReactionSummary<
+  TData = Awaited<
+    ReturnType<typeof commentReactionsControllerGetReactionSummary>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    > &
+      Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>,
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >,
           TError,
-          Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+          Awaited<
+            ReturnType<typeof commentReactionsControllerGetReactionSummary>
+          >
+        >,
+        "initialData"
+      >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useCommentReactionsControllerGetReactionSummary<
+  TData = Awaited<
+    ReturnType<typeof commentReactionsControllerGetReactionSummary>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
 /**
  * @summary Get reaction summary for a comment
  */
 
-export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useCommentReactionsControllerGetReactionSummary<
+  TData = Awaited<
+    ReturnType<typeof commentReactionsControllerGetReactionSummary>
+  >,
+  TError = unknown,
+>(
+  commentId: string,
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<
+          ReturnType<typeof commentReactionsControllerGetReactionSummary>
+        >,
+        TError,
+        TData
+      >
+    >;
+  },
+  queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getCommentReactionsControllerGetReactionSummaryQueryOptions(
+      commentId,
+      options,
+    );
 
-  const queryOptions = getCommentReactionsControllerGetReactionSummaryQueryOptions(commentId,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Menu, X, Target, User, Zap } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import * as Dialog from '@radix-ui/react-dialog';
+import { useState } from "react";
+import { Menu, X, Target, User, Zap } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import * as Dialog from "@radix-ui/react-dialog";
 
-import { useAuth } from '@/components/providers/auth-provider';
-import { LogIn } from 'lucide-react';
+import { useAuth } from "@/components/providers/auth-provider";
+import { LogIn } from "lucide-react";
 
 interface MenuItem {
   icon: React.ReactNode;
@@ -22,17 +22,36 @@ export default function NavigationMenuSheet() {
   const pathname = usePathname();
 
   const menuItems: MenuItem[] = [
-    { icon: <Zap size={20} />, label: 'Vibes', href: '/vibes' },
-    { icon: <Target size={20} />, label: 'Missions', href: '/missions', auth: true },
-    { icon: <User size={20} />, label: 'Profile', href: '/profile', auth: true },
-  ].filter(item => !item.auth || !!user);
+    { icon: <Zap size={20} />, label: "Vibes", href: "/vibes" },
+    {
+      icon: <Target size={20} />,
+      label: "Missions",
+      href: "/missions",
+      auth: true,
+    },
+    {
+      icon: <User size={20} />,
+      label: "Profile",
+      href: "/profile",
+      auth: true,
+    },
+  ].filter((item) => !item.auth || !!user);
 
   const isActive = (href: string) => {
     if (!pathname) return false;
-    const cleanPathname = pathname.split('?')[0];
-    if (href === '/profile') {
-      const isMyProfileTab = ['/profile/tips', '/profile/scams', '/profile/spots', '/profile/reports'].includes(cleanPathname);
-      return cleanPathname === '/profile' || cleanPathname === '/profile/' || isMyProfileTab;
+    const cleanPathname = pathname.split("?")[0];
+    if (href === "/profile") {
+      const isMyProfileTab = [
+        "/profile/tips",
+        "/profile/scams",
+        "/profile/spots",
+        "/profile/reports",
+      ].includes(cleanPathname);
+      return (
+        cleanPathname === "/profile" ||
+        cleanPathname === "/profile/" ||
+        isMyProfileTab
+      );
     }
     return cleanPathname === href || cleanPathname.startsWith(`${href}/`);
   };
@@ -47,16 +66,18 @@ export default function NavigationMenuSheet() {
 
       <Dialog.Portal>
         {/* Backdrop - only show when dialog is open */}
-        {isOpen && <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden" />}
+        {isOpen && (
+          <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden" />
+        )}
 
         {/* Drawer content */}
-        <Dialog.Content 
+        <Dialog.Content
           aria-describedby={undefined}
           className="fixed bottom-20 left-0 right-0 z-50 bg-background border-t border-white/8 p-4 rounded-t-3xl shadow-xl md:hidden max-h-[70vh] overflow-y-auto"
         >
           <div className="flex items-center justify-between mb-6 px-2">
             <Dialog.Title className="text-sm font-bold uppercase tracking-widest text-foreground">
-              {user ? 'More Options' : 'Welcome'}
+              {user ? "More Options" : "Welcome"}
             </Dialog.Title>
             <Dialog.Close asChild>
               <button className="p-1 hover:bg-white/8 rounded-lg transition-colors text-white/40 hover:text-white/70">
@@ -89,16 +110,18 @@ export default function NavigationMenuSheet() {
                   href={item.href}
                   onClick={() => setIsOpen(false)}
                   className={cn(
-                    'flex items-center gap-3 px-4 py-3 rounded-xl transition-all',
+                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all",
                     active
-                      ? 'bg-amber-400/10 text-amber-400 border border-amber-400/20'
-                      : 'text-white/50 hover:text-white/70 hover:bg-white/5',
+                      ? "bg-amber-400/10 text-amber-400 border border-amber-400/20"
+                      : "text-white/50 hover:text-white/70 hover:bg-white/5",
                   )}
                 >
-                  <div className={cn(
-                    'flex items-center justify-center',
-                    active ? 'text-amber-400' : 'text-white/40'
-                  )}>
+                  <div
+                    className={cn(
+                      "flex items-center justify-center",
+                      active ? "text-amber-400" : "text-white/40",
+                    )}
+                  >
                     {item.icon}
                   </div>
                   <span className="text-sm font-bold uppercase tracking-wide">

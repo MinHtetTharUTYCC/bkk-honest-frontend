@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export type SpotsControllerFindAllSort = typeof SpotsControllerFindAllSort[keyof typeof SpotsControllerFindAllSort];
-
+export type SpotsControllerFindAllSort =
+  (typeof SpotsControllerFindAllSort)[keyof typeof SpotsControllerFindAllSort];
 
 export const SpotsControllerFindAllSort = {
-  newest: 'newest',
-  popular: 'popular',
+  newest: "newest",
+  popular: "popular",
 } as const;
