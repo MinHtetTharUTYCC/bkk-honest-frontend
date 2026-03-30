@@ -17,7 +17,7 @@ export function useSpotGallery(spotId: string, limit: number = 12, sort: 'newest
         : GalleryControllerGetGallerySort.newest;
         
     const query = useGalleryControllerGetGallery(spotId, { take: limit, sort: normalizedSort }, { query: { enabled: !!spotId } });
-    return { ...query, data: query.data?.data };
+    return { ...query, data: query.data?.data?.data || [] };
 }
 
 export function useInfiniteSpotGallery(spotId: string, sort: 'newest' | 'popular' = 'newest') {

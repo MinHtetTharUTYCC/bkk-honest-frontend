@@ -9,8 +9,7 @@ import {
     useChecklistControllerGetStats 
 } from '@/api/generated/checklist/checklist';
 import type { 
-    ChecklistItemDto,
-    PaginatedChecklistItemResponseDto
+    ChecklistItemDto
 } from '@/api/generated/model';
 import { getNextSkipFromPage } from './base';
 
@@ -22,7 +21,7 @@ export function useMissions(status: string = 'all', sort: string = 'newest', use
     }, {
         query: {
             queryKey: ['missions-infinite', userId, status, sort],
-            getNextPageParam: (lastPage: PaginatedChecklistItemResponseDto) => getNextSkipFromPage(lastPage),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
             enabled: userId === 'me'
         }
     });
@@ -36,10 +35,10 @@ export function useMissionStats() {
 /**
  * Robust helper to update item data in various cache structures
  */
-function updateItemInCache(old: unknown, spotId: string, updates: Partial<ChecklistItemDto>): unknown {
+function updateItemInCache<T extends { id: string }>(old: unknown, spotId: string, updates: Partial<T>): unknown {
     if (!old || typeof old !== 'object') return old;
 
-    const cacheData = old as { pages?: Array<{ data?: ChecklistItemDto[] }> } & { data?: ChecklistItemDto | ChecklistItemDto[] };
+    const cacheData = old as { pages?: Array<{ data?: T[] }> } & { data?: T | T[] };
 
     // Handle Infinite Query structure { pages: { data: Item[] }[] }
     if (cacheData.pages && Array.isArray(cacheData.pages)) {
@@ -56,7 +55,7 @@ function updateItemInCache(old: unknown, spotId: string, updates: Partial<Checkl
 
     // Handle { data: Item } structure
     if (cacheData.data && !Array.isArray(cacheData.data)) {
-        const dataItem = cacheData.data as ChecklistItemDto;
+        const dataItem = cacheData.data as T;
         if (dataItem.id === spotId) {
             return { ...cacheData, data: { ...dataItem, ...updates } };
         }
@@ -73,7 +72,7 @@ function updateItemInCache(old: unknown, spotId: string, updates: Partial<Checkl
     }
 
     // Handle raw Item object structure
-    const maybeItem = cacheData as ChecklistItemDto;
+    const maybeItem = cacheData as T;
     if (maybeItem.id === spotId) {
         return { ...maybeItem, ...updates };
     }
@@ -106,7 +105,7 @@ export function useAddMission() {
                 });
 
                 // 2. Update the specific spot detail cache
-                const spotPredicate = (query: { queryKey: unknown[] }): query is { queryKey: string[] } => {
+                const spotPredicate = (query: { queryKey: readonly unknown[] }) => {
                     const key = query.queryKey[0];
                     if (typeof key !== 'string') return false;
                     return key === 'spot' || key === 'spots' || key.startsWith('/spots');
@@ -114,7 +113,7 @@ export function useAddMission() {
 
                 queryClient.setQueriesData(
                     { predicate: spotPredicate }, 
-                    (old) => updateItemInCache(old, spotId, { isInMission: true, missionId: newItem.id })
+                    (old: unknown) => updateItemInCache<{ id: string; isInMission?: boolean; missionId?: string | null }>(old, spotId, { isInMission: true, missionId: newItem.id })
                 );
 
                 queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
@@ -129,15 +128,15 @@ export function useUpdateMission() {
     const queryClient = useQueryClient();
     return {
         ...mutation,
-        mutate: ({ id, completed }: { 
+        mutate: ({ id, completed, currentStatus, currentSort }: { 
             id: string; 
             completed: boolean;
             currentStatus?: string;
             currentSort?: string;
         }) => mutation.mutate({ id, data: { completed } }, {
-            onSuccess: (response: ChecklistItemDto) => {
-                const updatedItem = response;
-                const currentKey = ['missions-infinite', 'me', currentStatus, currentSort];
+            onSuccess: (response) => {
+                const updatedItem = response.data;
+                const currentKey = ['missions-infinite', 'me', currentStatus || 'all', currentSort || 'newest'];
                 
                 // Surgical update: remove from current tab if status changes
                 queryClient.setQueryData(currentKey, (old: unknown) => {
@@ -194,8 +193,7 @@ export function useDeleteMission() {
     const queryClient = useQueryClient();
     return {
         ...mutation,
-        mutate: (id: string, _currentStatus = 'all',
-            _currentSort = 'newest', spotId?: string) => mutation.mutate({ id }, {
+        mutate: (id: string, currentStatus = 'all', currentSort = 'newest', spotId?: string) => mutation.mutate({ id }, {
             onSuccess: () => {
                 let deletedSpotId: string | undefined = spotId;
                 const currentKey = ['missions-infinite', 'me', currentStatus, currentSort];
@@ -235,7 +233,7 @@ export function useDeleteMission() {
 
                 // 2. Update the specific spot detail cache
                 if (deletedSpotId) {
-                    const spotPredicate = (query: { queryKey: unknown[] }): query is { queryKey: string[] } => {
+                    const spotPredicate = (query: { queryKey: readonly unknown[] }) => {
                         const key = query.queryKey[0];
                         if (typeof key !== 'string') return false;
                         return key === 'spot' || key === 'spots' || key.startsWith('/spots');
@@ -243,14 +241,18 @@ export function useDeleteMission() {
 
                     queryClient.setQueriesData(
                         { predicate: spotPredicate }, 
-                        (old) => updateItemInCache(old, deletedSpotId!, { isInMission: false, missionId: null })
+                        (old: unknown) => updateItemInCache<{ id: string; isInMission?: boolean; missionId?: string | null }>(old, deletedSpotId!, { isInMission: false, missionId: null })
                     );
                 }
 
                 queryClient.invalidateQueries({ queryKey: ['mission-stats'] });
             }
         }),
-        mutateAsync: (id: string, _currentStatus = 'all',
-            _currentSort = 'newest', spotId?: string) => mutation.mutateAsync({ id })
+        mutateAsync: (id: string, currentStatus = 'all', currentSort = 'newest', spotId?: string) => {
+            void currentStatus;
+            void currentSort;
+            void spotId;
+            return mutation.mutateAsync({ id });
+        }
     };
 }

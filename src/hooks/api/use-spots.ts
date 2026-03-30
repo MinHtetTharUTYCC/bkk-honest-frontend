@@ -15,6 +15,7 @@ import type {
     SpotWithStatsResponseDto,
     PaginatedSpotsWithStatsResponseDto,
     CreateSpotDto,
+    UpdateSpotDto,
     SpotsControllerFindAllParams,
     SpotsControllerFindNearbyParams,
     SpotsControllerSearchParams
@@ -48,7 +49,7 @@ export function useSpots(params?: {
     }
 
     const query = useSpotsControllerFindAll(cleanParams, { query: { staleTime: 5 * 60 * 1000 } });
-    return { ...query, data: query.data?.data ? (Array.isArray(query.data.data) ? query.data.data : [query.data.data]) : [] };
+    return { ...query, data: query.data?.data?.data || [] };
 }
 
 export function useInfiniteSpots(params?: {
@@ -70,7 +71,7 @@ export function useInfiniteSpots(params?: {
     return useSpotsControllerFindAllInfinite(cleanParams, {
         query: {
             queryKey: ['spots-infinite', cleanParams],
-            getNextPageParam: (lastPage: PaginatedSpotsWithStatsResponseDto) => getNextSkipFromPage(lastPage),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
             staleTime: 5 * 60 * 1000,
         }
     });
@@ -123,10 +124,10 @@ export function useUpdateSpot() {
     const mutation = useSpotsControllerUpdate();
     return {
         ...mutation,
-        mutate: ({ id, payload }: { id: string; payload: Partial<SpotWithStatsResponseDto> }) => 
-            mutation.mutate({ id, data: payload as unknown as Record<string, unknown> }),
-        mutateAsync: ({ id, payload }: { id: string; payload: Partial<SpotWithStatsResponseDto> }) => 
-            mutation.mutateAsync({ id, data: payload as unknown as Record<string, unknown> })
+        mutate: ({ id, payload }: { id: string; payload: UpdateSpotDto }) =>
+            mutation.mutate({ id, data: payload }),
+        mutateAsync: ({ id, payload }: { id: string; payload: UpdateSpotDto }) =>
+            mutation.mutateAsync({ id, data: payload })
     };
 }
 

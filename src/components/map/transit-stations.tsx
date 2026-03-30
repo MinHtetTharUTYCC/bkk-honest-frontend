@@ -21,6 +21,7 @@ export default function TransitStations({ id, data }: TransitStationsProps) {
     const sourceId = `transit-stations-data-${id}`;
 
     // Station icon symbols for different systems
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const stationIconStyle: LayerProps = {
         id: `transit-station-icons-${sourceId}`,
         type: 'symbol',

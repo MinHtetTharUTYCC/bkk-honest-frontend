@@ -31,7 +31,11 @@ export default function PricesTab({ spot }: PricesTabProps) {
 
   const reports: PriceReportRow[] = useMemo(() => {
     const rawReports =
-      reportsData?.pages.flatMap((page) => (page as { data?: PriceReportRow[] })?.data || []) || [];
+      reportsData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: PriceReportRow[] } })?.data
+            ?.data || [],
+      ) || [];
 
     return [...rawReports].sort((a, b) => {
       const dateA = a.timestamp || a.reportedAt ? new Date(a.timestamp || a.reportedAt!).getTime() : 0;
@@ -63,6 +67,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
   }, [inViewPrices]);
 
   const spotPriceStats = spot.priceStats;
+  const avgSpotPrice = typeof spotPriceStats?.avg === "number" ? spotPriceStats.avg : 0;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
@@ -116,13 +121,13 @@ export default function PricesTab({ spot }: PricesTabProps) {
                     <div
                       className={cn(
                         "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold tracking-tighter",
-                        Number(r.priceThb) <= (spotPriceStats?.avg ?? 0)
+                        Number(r.priceThb) <= avgSpotPrice
                           ? "bg-emerald-50 text-emerald-500"
                           : "bg-red-50 text-red-500"
                       )}
                     >
-                      {Number(r.priceThb) <= (spotPriceStats?.avg ?? 0) ? <TrendingDown size={10} /> : <TrendingUp size={10} />}
-                      {Number(r.priceThb) <= (spotPriceStats?.avg ?? 0) ? "Fair Price" : "Expensive"}
+                      {Number(r.priceThb) <= avgSpotPrice ? <TrendingDown size={10} /> : <TrendingUp size={10} />}
+                      {Number(r.priceThb) <= avgSpotPrice ? "Fair Price" : "Expensive"}
                     </div>
                   </td>
                   <td className="px-8 py-6 text-[10px] font-medium text-white/50 uppercase tracking-widest" suppressHydrationWarning>

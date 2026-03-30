@@ -9,6 +9,14 @@ import type { ScamAlertsControllerFindAllSort } from './scamAlertsControllerFind
 
 export type ScamAlertsControllerFindAllParams = {
 /**
+ * Items to skip
+ */
+skip?: number;
+/**
+ * Items per page
+ */
+take?: number;
+/**
  * Search text
  */
 search?: string;
@@ -24,12 +32,4 @@ categoryId?: string;
  * Sort order
  */
 sort?: ScamAlertsControllerFindAllSort;
-/**
- * Items per page
- */
-take?: number;
-/**
- * Items to skip
- */
-skip?: unknown;
 };

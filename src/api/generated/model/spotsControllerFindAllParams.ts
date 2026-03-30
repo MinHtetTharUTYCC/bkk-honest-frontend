@@ -9,6 +9,14 @@ import type { SpotsControllerFindAllSort } from './spotsControllerFindAllSort';
 
 export type SpotsControllerFindAllParams = {
 /**
+ * Items to skip
+ */
+skip?: number;
+/**
+ * Items per page
+ */
+take?: number;
+/**
  * Search text
  */
 search?: string;
@@ -24,12 +32,4 @@ cityId?: string;
  * Sort order
  */
 sort?: SpotsControllerFindAllSort;
-/**
- * Items per page
- */
-take?: number;
-/**
- * Items to skip
- */
-skip?: unknown;
 };

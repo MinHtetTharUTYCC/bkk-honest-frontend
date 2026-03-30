@@ -1,4 +1,15 @@
 import { cache } from "react";
+import type {
+  commentsControllerFindByScamAlertResponse,
+} from "@/api/generated/comments/comments";
+import type {
+  scamAlertsControllerFindAllResponse,
+  scamAlertsControllerFindBySlugResponse,
+} from "@/api/generated/scam-alerts/scam-alerts";
+import type {
+  CommentsControllerFindByScamAlertParams,
+  ScamAlertsControllerFindAllParams,
+} from "@/api/generated/model";
 import { 
   scamAlertsControllerFindBySlug, 
   scamAlertsControllerFindAll 
@@ -11,7 +22,7 @@ import { commentsControllerFindByScamAlert } from "@/api/generated/comments/comm
  * Automatically handles Supabase Auth headers if a session exists.
  */
 export const getScamAlert = cache(
-  async (citySlug: string, alertSlug: string): Promise<any | null> => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  async (citySlug: string, alertSlug: string): Promise<scamAlertsControllerFindBySlugResponse['data'] | null> => {
     try {
       const res = await scamAlertsControllerFindBySlug(citySlug, alertSlug, {
         next: { revalidate: 3600 }
@@ -32,15 +43,12 @@ export const getScamAlert = cache(
  * Used to load first 10 alerts before hydration.
  */
 export const getScamAlertsPage = cache(
-  async (skip: number = 0, take: number = 10, params?: Record<string, unknown>): Promise<any | null> => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  async (skip: number = 0, take: number = 10, params?: ScamAlertsControllerFindAllParams): Promise<scamAlertsControllerFindAllResponse['data'] | null> => {
     try {
       const res = await scamAlertsControllerFindAll({
+        ...params,
         skip,
         take,
-        ...(params?.cityId && { cityId: params.cityId }),
-        ...(params?.categoryId && { categoryId: params.categoryId }),
-        ...(params?.search && { search: params.search }),
-        ...(params?.sort && { sort: params.sort })
       }, { next: { revalidate: 300 } } as RequestInit);
       return res.data;
     } catch (error) {
@@ -55,9 +63,10 @@ export const getScamAlertsPage = cache(
  * Used to load first page before hydration.
  */
 export const getScamAlertComments = cache(
-  async (alertId: string, skip: number = 0, take: number = 10): Promise<any | null> => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  async (alertId: string, skip: number = 0, take: number = 10): Promise<commentsControllerFindByScamAlertResponse['data'] | null> => {
     try {
-      const res = await commentsControllerFindByScamAlert(alertId, { skip, take }, {
+      const params: CommentsControllerFindByScamAlertParams = { skip, take };
+      const res = await commentsControllerFindByScamAlert(alertId, params, {
         next: { revalidate: 300 }
       } as RequestInit);
       return res.data;

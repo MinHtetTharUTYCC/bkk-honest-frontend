@@ -36,8 +36,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -78,15 +76,15 @@ export const commentReactionsControllerToggleReaction = async (commentId: string
 
 
 export const getCommentReactionsControllerToggleReactionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext> => {
 
 const mutationKey = ['commentReactionsControllerToggleReaction'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -94,7 +92,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, {commentId: string}> = (props) => {
           const {commentId} = props ?? {};
 
-          return  commentReactionsControllerToggleReaction(commentId,requestOptions)
+          return  commentReactionsControllerToggleReaction(commentId,)
         }
 
 
@@ -112,7 +110,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Toggle like reaction on a comment
  */
 export const useCommentReactionsControllerToggleReaction = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>, TError,{commentId: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof commentReactionsControllerToggleReaction>>,
         TError,
@@ -159,15 +157,15 @@ export const commentReactionsControllerRemoveReaction = async (commentId: string
 
 
 export const getCommentReactionsControllerRemoveReactionMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext> => {
 
 const mutationKey = ['commentReactionsControllerRemoveReaction'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -175,7 +173,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, {commentId: string}> = (props) => {
           const {commentId} = props ?? {};
 
-          return  commentReactionsControllerRemoveReaction(commentId,requestOptions)
+          return  commentReactionsControllerRemoveReaction(commentId,)
         }
 
 
@@ -193,7 +191,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Remove like reaction from a comment
  */
 export const useCommentReactionsControllerRemoveReaction = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>, TError,{commentId: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof commentReactionsControllerRemoveReaction>>,
         TError,
@@ -253,16 +251,16 @@ export const getCommentReactionsControllerGetReactionSummaryQueryKey = (commentI
     }
 
 
-export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCommentReactionsControllerGetReactionSummaryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCommentReactionsControllerGetReactionSummaryInfiniteQueryKey(commentId);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal });
 
 
 
@@ -282,7 +280,7 @@ export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = 
           TError,
           Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
@@ -292,11 +290,11 @@ export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = 
           TError,
           Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -304,7 +302,7 @@ export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = 
  */
 
 export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ commentId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -318,16 +316,16 @@ export function useCommentReactionsControllerGetReactionSummaryInfinite<TData = 
 
 
 
-export const getCommentReactionsControllerGetReactionSummaryQueryOptions = <TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCommentReactionsControllerGetReactionSummaryQueryOptions = <TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCommentReactionsControllerGetReactionSummaryQueryKey(commentId);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>> = ({ signal }) => commentReactionsControllerGetReactionSummary(commentId, { signal });
 
 
 
@@ -347,7 +345,7 @@ export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<
           TError,
           Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
@@ -357,11 +355,11 @@ export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<
           TError,
           Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -369,7 +367,7 @@ export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<
  */
 
 export function useCommentReactionsControllerGetReactionSummary<TData = Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError = unknown>(
- commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ commentId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof commentReactionsControllerGetReactionSummary>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

@@ -18,7 +18,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 import { getSpotUrl } from '@/lib/slug';
 import type { SpotCardData } from '@/components/spots/spot-card';
-import type { ScamAlertData } from '@/components/scams/scam-alert-card';
+import type { ScamAlertResponseDto, LiveVibeDto } from '@/api/generated/model';
 
 interface HomeFeedClientProps {
     fallbackCityName?: string;
@@ -26,19 +26,9 @@ interface HomeFeedClientProps {
 
 type HomeSpotItem = SpotCardData;
 
-type HomeScamAlertItem = ScamAlertData;
+type HomeScamAlertItem = ScamAlertResponseDto;
 
-interface HomeVibeItem {
-    id: string;
-    timestamp: string;
-    crowdLevel: number;
-    waitTimeMinutes?: number;
-    spot?: {
-        slug?: string;
-        name?: string;
-        city?: { slug?: string };
-    };
-}
+type HomeVibeItem = LiveVibeDto;
 
 interface HomeCategoryItem {
     id: string;
@@ -287,7 +277,7 @@ export default function HomeFeedClient({ fallbackCityName = 'Thailand' }: HomeFe
                                                 className="text-white/40 font-bold text-[12px] uppercase tracking-tighter"
                                                 suppressHydrationWarning
                                             >
-                                                {new Date(vibe.timestamp).toLocaleTimeString([], {
+                                                {new Date(vibe.createdAt || '').toLocaleTimeString([], {
                                                     hour: '2-digit',
                                                     minute: '2-digit',
                                                 })}

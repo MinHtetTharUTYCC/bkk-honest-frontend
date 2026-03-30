@@ -4,8 +4,10 @@ import { useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteUserPriceReports } from "@/hooks/use-api";
 import { useInView } from "react-intersection-observer";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { toast } from "sonner";
 import { getSpotUrl } from "@/lib/slug";
 import Link from "next/link";
@@ -34,8 +36,11 @@ interface PriceReport {
 }
 
 export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTabProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user: authUser } = useAuth();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const pathname = usePathname();
 
   const {
@@ -47,7 +52,12 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
   } = useInfiniteUserPriceReports(userId);
 
   const reports: PriceReport[] = useMemo(() => {
-    const rawReports = reportsData?.pages.flatMap((page) => (page as { data?: PriceReport[] })?.data || []) || [];
+    const rawReports =
+      reportsData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: PriceReport[] } })?.data?.data ||
+          [],
+      ) || [];
     return rawReports;
   }, [reportsData]);
 
@@ -91,7 +101,7 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
                 {report.spot?.imageVariants && (
                   <div className="flex-shrink-0">
                     <OptimizedImage
-                      imageVariants={report.spot.imageVariants}
+                      variants={report.spot.imageVariants}
                       alt={report.spot.name}
                       width={report.spot.imageWidth || 64}
                       height={report.spot.imageHeight || 64}

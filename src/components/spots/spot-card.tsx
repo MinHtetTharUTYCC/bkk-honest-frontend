@@ -8,44 +8,28 @@ import OptimizedImage from '@/components/ui/OptimizedImage';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-export interface SpotCardData {
-    id: string;
-    slug?: string;
-    name?: string;
-    address?: string;
-    imageVariants?: {
-        thumbnail: string;
-        display: string;
-    };
-    blurPlaceholder?: string;
-    imageWidth?: number;
-    imageHeight?: number;
-    imageSize?: number;
-    imageMimeType?: string;
-    qualityScore?: number;
-    images?: Array<{ url?: string }>;
-    city?: { slug?: string };
-    category?: { name?: string };
-    hasVoted?: boolean;
-    voteId?: string | null;
-    _count?: { 
-        votes?: number;
-        priceReports?: number;
-        vibeChecks?: number;
-        communityTips?: number;
-    };
-    vibeStats?: { avgCrowdLevel?: number; count?: number };
-    priceStats?: { avg?: number; count?: number };
-    activityStats?: { totalContributors?: number; lastActivity?: string | null };
-}
+import type { SpotWithStatsResponseDto } from '@/api/generated/model';
+
+export type SpotCardData = SpotWithStatsResponseDto;
 
 export default function SpotCard({ spot }: { spot: SpotCardData }) {
-    const { slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageVariants, images } = spot;
+    const { slug, city, name, category, address, priceStats, vibeStats, activityStats, _count, imageVariants } = spot;
+    const spotSlug = typeof slug === 'string' ? slug : '';
+    const citySlug = typeof city?.slug === 'string' ? city.slug : 'bangkok';
+    const safeAddress = typeof address === 'string' ? address : '';
+    const categoryName = typeof category?.name === 'string' ? category.name : 'Category';
+    const avgCrowdLevel = typeof vibeStats?.avgCrowdLevel === 'number' ? vibeStats.avgCrowdLevel : undefined;
+    const avgPrice = typeof priceStats?.avg === 'number' ? priceStats.avg : undefined;
+    const voteCount = typeof spot._count?.votes === 'number' ? spot._count.votes : 0;
+    const totalPulse =
+        (typeof _count?.priceReports === 'number' ? _count.priceReports : 0) +
+        (typeof _count?.vibeChecks === 'number' ? _count.vibeChecks : 0) +
+        (typeof _count?.communityTips === 'number' ? _count.communityTips : 0);
 
     // Helper for "Pulse" freshness - memoized to avoid recalculating on every render
     const pulseLabel = useMemo(() => {
         const timestamp = activityStats?.lastActivity;
-        if (!timestamp) return null;
+        if (typeof timestamp !== 'string' && typeof timestamp !== 'number' && !(timestamp instanceof Date)) return null;
         const date = new Date(timestamp);
         // eslint-disable-next-line react-hooks/purity
         const now = Date.now();
@@ -59,26 +43,21 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
         return `${days}d ago`;
     }, [activityStats?.lastActivity]);
 
-    const totalPulse = (_count?.priceReports || 0) + (_count?.vibeChecks || 0) + (_count?.communityTips || 0);
-
     const { toggleVote, isPending: votePending } = useVoteToggle('spot');
 
-    // Format category name
-    const categoryName = category?.name || 'Category';
-
     // Get the display image - prioritize imageVariants
-    const displayVariants = imageVariants || (images && images.length > 0 ? undefined : null);
+    const displayVariants = imageVariants ?? null;
 
     const handleVote = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         if (votePending) return;
-        await toggleVote({ id: spot.id, hasVoted: spot.hasVoted, voteId: spot.voteId });
+        await toggleVote(spot);
     };
 
     return (
         <Link 
-            href={getSpotUrl(spot.city?.slug || 'bangkok', spot.slug || '')}
+            href={getSpotUrl(citySlug, spotSlug)}
             className="shrink-0 w-full bg-card rounded-2xl border border-white/8 shadow-xl shadow-black/40 group hover:shadow-2xl hover:shadow-black/60 hover:scale-[1.01] transition-all duration-500 cursor-pointer overflow-hidden"
         >
             {/* Image Section */}
@@ -110,8 +89,8 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                     </span>
                     <div className="bg-white/10 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl flex items-center gap-1.5 font-bold text-[12px] tracking-widest shadow-sm border border-white/10 text-wrap">
                         <Zap size={10} fill="#fbbf24" className="text-amber-400" />
-                        {vibeStats?.avgCrowdLevel
-                            ? `Busy: ${vibeStats.avgCrowdLevel.toFixed(1)}/5`
+                        {typeof avgCrowdLevel === 'number'
+                            ? `Busy: ${avgCrowdLevel.toFixed(1)}/5`
                             : 'New'}
                     </div>
                 </div>
@@ -119,7 +98,7 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                 {/* Action buttons — bottom-right of image */}
                 <div className="absolute bottom-3 right-3 flex items-center gap-2 pointer-events-auto">
                     <LikeButton
-                        count={spot._count?.votes || 0}
+                        count={voteCount}
                         isVoted={spot.hasVoted}
                         onVote={handleVote}
                         isPending={votePending}
@@ -140,7 +119,7 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                     </h3>
                     <p className="text-white/60 font-medium text-[12px] uppercase tracking-widest flex items-center gap-1.5 line-clamp-1">
                         <MapPin size={11} className="text-amber-400 shrink-0" />
-                        {address?.split(',')[0]}
+                        {safeAddress.split(',')[0]}
                     </p>
                 </div>
 
@@ -150,7 +129,7 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                             Avg Price
                         </span>
                         <span className="text-sm font-mono font-bold text-foreground tracking-tight">
-                            {priceStats?.avg ? `${priceStats.avg} THB` : '--'}
+                            {typeof avgPrice === 'number' ? `${avgPrice} THB` : '--'}
                         </span>
                     </div>
                     

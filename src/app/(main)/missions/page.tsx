@@ -1,5 +1,7 @@
 "use client";
-import { Suspense, useState, useEffect, useMemo } from "react";
+import OptimizedImage from "@/components/ui/OptimizedImage";
+import type { ImageVariantsDto } from "@/api/generated/model";
+import { Suspense, useState, useEffect } from "react";
 
 import {
   useMissions,
@@ -17,14 +19,12 @@ import {
   ArrowRight,
   Zap,
   Trophy,
-  Filter,
   SortAsc,
   SortDesc,
   ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { useCity } from "@/components/providers/city-provider";
 import { getSpotUrl } from "@/lib/slug";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -62,6 +62,7 @@ function MissionsPageContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [missionToDelete, setMissionToDelete] = useState<string | null>(null);
+  const [missionToUpdate, setMissionToUpdate] = useState<string | null>(null);
   // Sync state with URL params
   const statusFilter =
     (searchParams.get("status") as "all" | "pending" | "completed") ||
@@ -132,17 +133,15 @@ function MissionsPageContent() {
       const timer = setTimeout(() => setMissionToUpdate(null), 0);
       return () => clearTimeout(timer);
     }
-  }, [updateMission.isPending]);
+  }, [updateMission.isPending, missionToUpdate]);
 
-  const missions = useMemo(() => {
-    return (
-      (missionsData?.pages as Array<{ data?: MissionItem[] }> | undefined)?.flatMap(
-        (page) => (page.data || []).filter(Boolean),
-      ) || []
-    );
-  }, [missionsData]);
-  const completedCount = stats?.completed || 0;
-  const totalCount = stats?.total || 0;
+  // React Compiler optimization: removed useMemo, let compiler optimize
+  const rawPages = missionsData?.pages as unknown as Array<{ data?: { data?: MissionItem[] } }> | undefined;
+  const missions = rawPages?.flatMap((page) => (page.data?.data || []).filter(Boolean)) || [];
+
+  const statsTyped = stats as unknown as { completed?: number; total?: number } | undefined;
+  const completedCount = statsTyped?.completed || 0;
+  const totalCount = statsTyped?.total || 0;
   const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   if (authLoading) {
@@ -206,7 +205,7 @@ function MissionsPageContent() {
               </span>
             </div>
             <h1 className="font-display text-4xl md:text-6xl font-bold text-white tracking-tight">
-              {selectedCity?.name || "Bangkok"}{" "}
+              Bangkok{" "}
               <span className="text-amber-400">Scout</span>
             </h1>
             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs flex items-center gap-2">
@@ -322,7 +321,7 @@ function MissionsPageContent() {
                 href="/spots"
                 className="mt-4 bg-amber-400 text-black px-8 py-3 rounded-2xl text-[10px] font-bold uppercase tracking-widest hover:bg-amber-300 transition-all active:scale-95 flex items-center gap-2"
               >
-                Explore {selectedCity?.name || "City"} <ArrowRight size={14} />
+                Explore City <ArrowRight size={14} />
               </Link>
             </div>
           </div>
@@ -341,11 +340,7 @@ function MissionsPageContent() {
                 <div className="flex items-center gap-6">
                   <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden border border-white/10 shrink-0 bg-white/5">
                     {mission.spot?.imageVariants && Object.values(mission.spot.imageVariants).some(v => v) ? (
-                      <img
-                        src={mission.spot.imageVariants.display || mission.spot.imageVariants.thumbnail || ''}
-                        alt={mission.spot?.name}
-                        className="w-full h-full object-cover"
-                      />
+                      <OptimizedImage variants={mission.spot.imageVariants as ImageVariantsDto} alt={mission.spot?.name || ''} fill className="object-cover" />
                     ) : (
                       <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-1">
                         <ImageIcon size={24} strokeWidth={1.5} />

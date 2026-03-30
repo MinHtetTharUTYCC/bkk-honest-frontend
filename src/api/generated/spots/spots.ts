@@ -44,8 +44,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -106,15 +104,15 @@ if(createSpotDto.image !== undefined) {
 
 
 export const getSpotsControllerCreateMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext> => {
 
 const mutationKey = ['spotsControllerCreate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -122,7 +120,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerCreate>>, {data: CreateSpotDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  spotsControllerCreate(data,requestOptions)
+          return  spotsControllerCreate(data,)
         }
 
 
@@ -140,7 +138,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a new spot
  */
 export const useSpotsControllerCreate = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof spotsControllerCreate>>,
         TError,
@@ -207,16 +205,16 @@ export const getSpotsControllerFindAllQueryKey = (params?: SpotsControllerFindAl
     }
 
 
-export const getSpotsControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindAll>>, SpotsControllerFindAllParams['skip']>, TError = unknown>(params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData, QueryKey, SpotsControllerFindAllParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindAll>>, SpotsControllerFindAllParams['skip']>, TError = unknown>(params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData, QueryKey, SpotsControllerFindAllParams['skip']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindAllInfiniteQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindAll>>, QueryKey, SpotsControllerFindAllParams['skip']> = ({ signal, pageParam }) => spotsControllerFindAll({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindAll>>, QueryKey, SpotsControllerFindAllParams['skip']> = ({ signal, pageParam }) => spotsControllerFindAll({...params, 'skip': pageParam || params?.['skip']}, { signal });
 
 
 
@@ -236,7 +234,7 @@ export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof spotsControllerFindAll>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindAll>>, SpotsControllerFindAllParams['skip']>, TError = unknown>(
@@ -246,11 +244,11 @@ export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof spotsControllerFindAll>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindAll>>, SpotsControllerFindAllParams['skip']>, TError = unknown>(
- params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData, QueryKey, SpotsControllerFindAllParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData, QueryKey, SpotsControllerFindAllParams['skip']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -258,7 +256,7 @@ export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<R
  */
 
 export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindAll>>, SpotsControllerFindAllParams['skip']>, TError = unknown>(
- params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData, QueryKey, SpotsControllerFindAllParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData, QueryKey, SpotsControllerFindAllParams['skip']>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -272,16 +270,16 @@ export function useSpotsControllerFindAllInfinite<TData = InfiniteData<Awaited<R
 
 
 
-export const getSpotsControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = unknown>(params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = unknown>(params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindAllQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindAll>>> = ({ signal }) => spotsControllerFindAll(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindAll>>> = ({ signal }) => spotsControllerFindAll(params, { signal });
 
 
 
@@ -301,7 +299,7 @@ export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spot
           TError,
           Awaited<ReturnType<typeof spotsControllerFindAll>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = unknown>(
@@ -311,11 +309,11 @@ export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spot
           TError,
           Awaited<ReturnType<typeof spotsControllerFindAll>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = unknown>(
- params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -323,7 +321,7 @@ export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spot
  */
 
 export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = unknown>(
- params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -388,16 +386,16 @@ export const getSpotsControllerGetTotalSpotsQueryKey = () => {
     }
 
 
-export const getSpotsControllerGetTotalSpotsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerGetTotalSpotsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerGetTotalSpotsInfiniteQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>> = ({ signal }) => spotsControllerGetTotalSpots({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>> = ({ signal }) => spotsControllerGetTotalSpots({ signal });
 
 
 
@@ -417,7 +415,7 @@ export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awa
           TError,
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>>, TError = unknown>(
@@ -427,11 +425,11 @@ export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awa
           TError,
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -439,7 +437,7 @@ export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awa
  */
 
 export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -453,16 +451,16 @@ export function useSpotsControllerGetTotalSpotsInfinite<TData = InfiniteData<Awa
 
 
 
-export const getSpotsControllerGetTotalSpotsQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerGetTotalSpotsQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerGetTotalSpotsQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>> = ({ signal }) => spotsControllerGetTotalSpots({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>> = ({ signal }) => spotsControllerGetTotalSpots({ signal });
 
 
 
@@ -482,7 +480,7 @@ export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeo
           TError,
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = unknown>(
@@ -492,11 +490,11 @@ export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeo
           TError,
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -504,7 +502,7 @@ export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeo
  */
 
 export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -569,16 +567,16 @@ export const getSpotsControllerGetPopularAreaQueryKey = () => {
     }
 
 
-export const getSpotsControllerGetPopularAreaInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerGetPopularAreaInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerGetPopularAreaInfiniteQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>> = ({ signal }) => spotsControllerGetPopularArea({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>> = ({ signal }) => spotsControllerGetPopularArea({ signal });
 
 
 
@@ -598,7 +596,7 @@ export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Aw
           TError,
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>>, TError = unknown>(
@@ -608,11 +606,11 @@ export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Aw
           TError,
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -620,7 +618,7 @@ export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Aw
  */
 
 export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -634,16 +632,16 @@ export function useSpotsControllerGetPopularAreaInfinite<TData = InfiniteData<Aw
 
 
 
-export const getSpotsControllerGetPopularAreaQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerGetPopularAreaQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerGetPopularAreaQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>> = ({ signal }) => spotsControllerGetPopularArea({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>> = ({ signal }) => spotsControllerGetPopularArea({ signal });
 
 
 
@@ -663,7 +661,7 @@ export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = unknown>(
@@ -673,11 +671,11 @@ export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<type
           TError,
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -685,7 +683,7 @@ export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<type
  */
 
 export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -757,16 +755,16 @@ export const getSpotsControllerFindNearbyQueryKey = (params?: SpotsControllerFin
     }
 
 
-export const getSpotsControllerFindNearbyInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindNearby>>, SpotsControllerFindNearbyParams['skip']>, TError = unknown>(params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData, QueryKey, SpotsControllerFindNearbyParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindNearbyInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindNearby>>, SpotsControllerFindNearbyParams['skip']>, TError = unknown>(params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData, QueryKey, SpotsControllerFindNearbyParams['skip']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindNearbyInfiniteQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindNearby>>, QueryKey, SpotsControllerFindNearbyParams['skip']> = ({ signal, pageParam }) => spotsControllerFindNearby({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindNearby>>, QueryKey, SpotsControllerFindNearbyParams['skip']> = ({ signal, pageParam }) => spotsControllerFindNearby({...params, 'skip': pageParam || params?.['skip']}, { signal });
 
 
 
@@ -786,7 +784,7 @@ export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof spotsControllerFindNearby>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindNearby>>, SpotsControllerFindNearbyParams['skip']>, TError = unknown>(
@@ -796,11 +794,11 @@ export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof spotsControllerFindNearby>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindNearby>>, SpotsControllerFindNearbyParams['skip']>, TError = unknown>(
- params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData, QueryKey, SpotsControllerFindNearbyParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData, QueryKey, SpotsControllerFindNearbyParams['skip']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -808,7 +806,7 @@ export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaite
  */
 
 export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindNearby>>, SpotsControllerFindNearbyParams['skip']>, TError = unknown>(
- params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData, QueryKey, SpotsControllerFindNearbyParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData, QueryKey, SpotsControllerFindNearbyParams['skip']>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -822,16 +820,16 @@ export function useSpotsControllerFindNearbyInfinite<TData = InfiniteData<Awaite
 
 
 
-export const getSpotsControllerFindNearbyQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = unknown>(params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindNearbyQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = unknown>(params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindNearbyQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindNearby>>> = ({ signal }) => spotsControllerFindNearby(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindNearby>>> = ({ signal }) => spotsControllerFindNearby(params, { signal });
 
 
 
@@ -851,7 +849,7 @@ export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof s
           TError,
           Awaited<ReturnType<typeof spotsControllerFindNearby>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = unknown>(
@@ -861,11 +859,11 @@ export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof s
           TError,
           Awaited<ReturnType<typeof spotsControllerFindNearby>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = unknown>(
- params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -873,7 +871,7 @@ export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof s
  */
 
 export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = unknown>(
- params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -945,16 +943,16 @@ export const getSpotsControllerFindMySpotsQueryKey = (params?: SpotsControllerFi
     }
 
 
-export const getSpotsControllerFindMySpotsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, SpotsControllerFindMySpotsParams['skip']>, TError = unknown>(params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData, QueryKey, SpotsControllerFindMySpotsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindMySpotsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, SpotsControllerFindMySpotsParams['skip']>, TError = unknown>(params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData, QueryKey, SpotsControllerFindMySpotsParams['skip']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindMySpotsInfiniteQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, QueryKey, SpotsControllerFindMySpotsParams['skip']> = ({ signal, pageParam }) => spotsControllerFindMySpots({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, QueryKey, SpotsControllerFindMySpotsParams['skip']> = ({ signal, pageParam }) => spotsControllerFindMySpots({...params, 'skip': pageParam || params?.['skip']}, { signal });
 
 
 
@@ -974,7 +972,7 @@ export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Await
           TError,
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, SpotsControllerFindMySpotsParams['skip']>, TError = unknown>(
@@ -984,11 +982,11 @@ export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Await
           TError,
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, SpotsControllerFindMySpotsParams['skip']>, TError = unknown>(
- params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData, QueryKey, SpotsControllerFindMySpotsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData, QueryKey, SpotsControllerFindMySpotsParams['skip']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -996,7 +994,7 @@ export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Await
  */
 
 export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, SpotsControllerFindMySpotsParams['skip']>, TError = unknown>(
- params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData, QueryKey, SpotsControllerFindMySpotsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData, QueryKey, SpotsControllerFindMySpotsParams['skip']>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1010,16 +1008,16 @@ export function useSpotsControllerFindMySpotsInfinite<TData = InfiniteData<Await
 
 
 
-export const getSpotsControllerFindMySpotsQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = unknown>(params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindMySpotsQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = unknown>(params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindMySpotsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindMySpots>>> = ({ signal }) => spotsControllerFindMySpots(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindMySpots>>> = ({ signal }) => spotsControllerFindMySpots(params, { signal });
 
 
 
@@ -1039,7 +1037,7 @@ export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = unknown>(
@@ -1049,11 +1047,11 @@ export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof 
           TError,
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = unknown>(
- params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1061,7 +1059,7 @@ export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof 
  */
 
 export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = unknown>(
- params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1133,16 +1131,16 @@ export const getSpotsControllerSearchQueryKey = (params?: SpotsControllerSearchP
     }
 
 
-export const getSpotsControllerSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerSearch>>, SpotsControllerSearchParams['skip']>, TError = unknown>(params?: SpotsControllerSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData, QueryKey, SpotsControllerSearchParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerSearchInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerSearch>>, SpotsControllerSearchParams['skip']>, TError = unknown>(params?: SpotsControllerSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData, QueryKey, SpotsControllerSearchParams['skip']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerSearchInfiniteQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerSearch>>, QueryKey, SpotsControllerSearchParams['skip']> = ({ signal, pageParam }) => spotsControllerSearch({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerSearch>>, QueryKey, SpotsControllerSearchParams['skip']> = ({ signal, pageParam }) => spotsControllerSearch({...params, 'skip': pageParam || params?.['skip']}, { signal });
 
 
 
@@ -1162,7 +1160,7 @@ export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<Re
           TError,
           Awaited<ReturnType<typeof spotsControllerSearch>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerSearch>>, SpotsControllerSearchParams['skip']>, TError = unknown>(
@@ -1172,11 +1170,11 @@ export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<Re
           TError,
           Awaited<ReturnType<typeof spotsControllerSearch>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerSearch>>, SpotsControllerSearchParams['skip']>, TError = unknown>(
- params?: SpotsControllerSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData, QueryKey, SpotsControllerSearchParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData, QueryKey, SpotsControllerSearchParams['skip']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1184,7 +1182,7 @@ export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<Re
  */
 
 export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerSearch>>, SpotsControllerSearchParams['skip']>, TError = unknown>(
- params?: SpotsControllerSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData, QueryKey, SpotsControllerSearchParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData, QueryKey, SpotsControllerSearchParams['skip']>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1198,16 +1196,16 @@ export function useSpotsControllerSearchInfinite<TData = InfiniteData<Awaited<Re
 
 
 
-export const getSpotsControllerSearchQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = unknown>(params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerSearchQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = unknown>(params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerSearchQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerSearch>>> = ({ signal }) => spotsControllerSearch(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerSearch>>> = ({ signal }) => spotsControllerSearch(params, { signal });
 
 
 
@@ -1227,7 +1225,7 @@ export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spots
           TError,
           Awaited<ReturnType<typeof spotsControllerSearch>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = unknown>(
@@ -1237,11 +1235,11 @@ export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spots
           TError,
           Awaited<ReturnType<typeof spotsControllerSearch>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = unknown>(
- params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1249,7 +1247,7 @@ export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spots
  */
 
 export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = unknown>(
- params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1319,16 +1317,16 @@ export const getSpotsControllerFindBySlugQueryKey = (citySlug: string,
 
 
 export const getSpotsControllerFindBySlugInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>, TError = unknown>(citySlug: string,
-    spotSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    spotSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindBySlugInfiniteQueryKey(citySlug,spotSlug);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindBySlug>>> = ({ signal }) => spotsControllerFindBySlug(citySlug,spotSlug, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindBySlug>>> = ({ signal }) => spotsControllerFindBySlug(citySlug,spotSlug, { signal });
 
 
 
@@ -1349,7 +1347,7 @@ export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>, TError = unknown>(
@@ -1360,12 +1358,12 @@ export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>, TError = unknown>(
  citySlug: string,
-    spotSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    spotSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1374,7 +1372,7 @@ export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaite
 
 export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>, TError = unknown>(
  citySlug: string,
-    spotSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    spotSlug: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1389,16 +1387,16 @@ export function useSpotsControllerFindBySlugInfinite<TData = InfiniteData<Awaite
 
 
 export const getSpotsControllerFindBySlugQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = unknown>(citySlug: string,
-    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindBySlugQueryKey(citySlug,spotSlug);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindBySlug>>> = ({ signal }) => spotsControllerFindBySlug(citySlug,spotSlug, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindBySlug>>> = ({ signal }) => spotsControllerFindBySlug(citySlug,spotSlug, { signal });
 
 
 
@@ -1419,7 +1417,7 @@ export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof s
           TError,
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = unknown>(
@@ -1430,12 +1428,12 @@ export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof s
           TError,
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = unknown>(
  citySlug: string,
-    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1444,7 +1442,7 @@ export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof s
 
 export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = unknown>(
  citySlug: string,
-    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1509,16 +1507,16 @@ export const getSpotsControllerFindOneQueryKey = (id: string,) => {
     }
 
 
-export const getSpotsControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindOneInfiniteQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindOne>>> = ({ signal }) => spotsControllerFindOne(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindOne>>> = ({ signal }) => spotsControllerFindOne(id, { signal });
 
 
 
@@ -1538,7 +1536,7 @@ export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof spotsControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>, TError = unknown>(
@@ -1548,11 +1546,11 @@ export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof spotsControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1560,7 +1558,7 @@ export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<R
  */
 
 export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1574,16 +1572,16 @@ export function useSpotsControllerFindOneInfinite<TData = InfiniteData<Awaited<R
 
 
 
-export const getSpotsControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getSpotsControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindOne>>> = ({ signal }) => spotsControllerFindOne(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindOne>>> = ({ signal }) => spotsControllerFindOne(id, { signal });
 
 
 
@@ -1603,7 +1601,7 @@ export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spot
           TError,
           Awaited<ReturnType<typeof spotsControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = unknown>(
@@ -1613,11 +1611,11 @@ export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spot
           TError,
           Awaited<ReturnType<typeof spotsControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1625,7 +1623,7 @@ export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spot
  */
 
 export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1698,15 +1696,15 @@ if(updateSpotDto.longitude !== undefined) {
 
 
 export const getSpotsControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext> => {
 
 const mutationKey = ['spotsControllerUpdate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -1714,7 +1712,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerUpdate>>, {id: string;data: UpdateSpotDto}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  spotsControllerUpdate(id,data,requestOptions)
+          return  spotsControllerUpdate(id,data,)
         }
 
 
@@ -1732,7 +1730,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Update own spot
  */
 export const useSpotsControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof spotsControllerUpdate>>,
         TError,
@@ -1779,15 +1777,15 @@ export const spotsControllerDelete = async (id: string, options?: RequestInit): 
 
 
 export const getSpotsControllerDeleteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['spotsControllerDelete'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -1795,7 +1793,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerDelete>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  spotsControllerDelete(id,requestOptions)
+          return  spotsControllerDelete(id,)
         }
 
 
@@ -1813,7 +1811,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete own spot
  */
 export const useSpotsControllerDelete = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof spotsControllerDelete>>,
         TError,
@@ -1885,16 +1883,16 @@ export const getSpotsControllerFindByUserQueryKey = (userId: string,
 
 
 export const getSpotsControllerFindByUserInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindByUser>>, SpotsControllerFindByUserParams['skip']>, TError = unknown>(userId: string,
-    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData, QueryKey, SpotsControllerFindByUserParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData, QueryKey, SpotsControllerFindByUserParams['skip']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindByUserInfiniteQueryKey(userId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindByUser>>, QueryKey, SpotsControllerFindByUserParams['skip']> = ({ signal, pageParam }) => spotsControllerFindByUser(userId,{...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindByUser>>, QueryKey, SpotsControllerFindByUserParams['skip']> = ({ signal, pageParam }) => spotsControllerFindByUser(userId,{...params, 'skip': pageParam || params?.['skip']}, { signal });
 
 
 
@@ -1915,7 +1913,7 @@ export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof spotsControllerFindByUser>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindByUser>>, SpotsControllerFindByUserParams['skip']>, TError = unknown>(
@@ -1926,12 +1924,12 @@ export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof spotsControllerFindByUser>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindByUser>>, SpotsControllerFindByUserParams['skip']>, TError = unknown>(
  userId: string,
-    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData, QueryKey, SpotsControllerFindByUserParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData, QueryKey, SpotsControllerFindByUserParams['skip']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -1940,7 +1938,7 @@ export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaite
 
 export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindByUser>>, SpotsControllerFindByUserParams['skip']>, TError = unknown>(
  userId: string,
-    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData, QueryKey, SpotsControllerFindByUserParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData, QueryKey, SpotsControllerFindByUserParams['skip']>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1955,16 +1953,16 @@ export function useSpotsControllerFindByUserInfinite<TData = InfiniteData<Awaite
 
 
 export const getSpotsControllerFindByUserQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = unknown>(userId: string,
-    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindByUserQueryKey(userId,params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindByUser>>> = ({ signal }) => spotsControllerFindByUser(userId,params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindByUser>>> = ({ signal }) => spotsControllerFindByUser(userId,params, { signal });
 
 
 
@@ -1985,7 +1983,7 @@ export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof s
           TError,
           Awaited<ReturnType<typeof spotsControllerFindByUser>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = unknown>(
@@ -1996,12 +1994,12 @@ export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof s
           TError,
           Awaited<ReturnType<typeof spotsControllerFindByUser>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = unknown>(
  userId: string,
-    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -2010,7 +2008,7 @@ export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof s
 
 export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = unknown>(
  userId: string,
-    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -2062,15 +2060,15 @@ export const spotsControllerReverseGeocode = async ( options?: RequestInit): Pro
 
 
 export const getSpotsControllerReverseGeocodeMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext> => {
 
 const mutationKey = ['spotsControllerReverseGeocode'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -2078,7 +2076,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, void> = () => {
 
 
-          return  spotsControllerReverseGeocode(requestOptions)
+          return  spotsControllerReverseGeocode()
         }
 
 
@@ -2096,7 +2094,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Reverse geocode coordinates to address
  */
 export const useSpotsControllerReverseGeocode = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
         TError,

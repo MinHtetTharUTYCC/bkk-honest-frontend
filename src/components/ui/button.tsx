@@ -43,6 +43,7 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   asChild = false,
   ...props
 }: React.ComponentProps<"button"> &

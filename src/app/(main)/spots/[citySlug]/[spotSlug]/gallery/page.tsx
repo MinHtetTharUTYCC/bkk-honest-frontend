@@ -1,10 +1,12 @@
 import { Metadata } from "next";
 import { QueryClient, HydrationBoundary, dehydrate } from "@tanstack/react-query";
 import GalleryTab from "@/components/spots/tabs/gallery-tab";
+import { SpotWithStatsResponseDto } from "@/api/generated/model";
 import { getSpot } from "@/services/spot";
 import { galleryControllerGetGallery } from "@/api/generated/gallery/gallery";
 import { GalleryControllerGetGallerySort } from "@/api/generated/model/galleryControllerGetGallerySort";
 import { createClient as createServerClient } from "@/lib/supabase/server";
+import { getNextSkipFromPage } from "@/hooks/api/base";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
 
@@ -59,22 +61,12 @@ export default async function GalleryPage({
       }, { headers, next: { revalidate: 60 } } as RequestInit);
       return res;
     },
-    getNextPageParam: (lastPage: unknown) => {
-      if (!lastPage || typeof lastPage !== 'object') return undefined;
-      const p = lastPage as Record<string, unknown>;
-      const pagination = p.pagination;
-      if (!pagination || typeof pagination !== 'object') return undefined;
-      const pag = pagination as { skip?: number; take?: number; total?: number };
-      const { skip, take, total } = pag;
-      if (skip === undefined || take === undefined || total === undefined) return undefined;
-      const nextSkip = (skip as number) + (take as number);
-      return nextSkip < (total as number) ? nextSkip : undefined;
-    },
+    getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, true),
   });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <GalleryTab spot={spot} />
+      <GalleryTab spot={spot as SpotWithStatsResponseDto} />
     </HydrationBoundary>
   );
 }

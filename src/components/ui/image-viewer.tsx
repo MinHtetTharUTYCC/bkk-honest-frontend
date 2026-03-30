@@ -1,4 +1,5 @@
 'use client';
+import OptimizedImage from "@/components/ui/OptimizedImage";
 
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
@@ -76,12 +77,14 @@ export function ImageViewer({ isOpen, imageVariants, alt = 'Image', onClose }: I
       </button>
 
       <div className="flex items-center justify-center w-screen h-screen">
-        <img
-          src={imageUrl}
-          alt={alt}
-          className="max-w-[90vw] max-h-[90vh] object-contain"
-          onClick={(e) => e.stopPropagation()}
-        />
+        <div className="relative w-[90vw] h-[90vh]" onClick={(e) => e.stopPropagation()}>
+          <OptimizedImage
+            variants={imageVariants}
+            alt={alt}
+            fill
+            objectFit="contain"
+          />
+        </div>
       </div>
     </div>
   );

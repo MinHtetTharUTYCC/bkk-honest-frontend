@@ -1,4 +1,5 @@
 'use client';
+import Image from "next/image";
 import { Tip } from "@/types";
 
 import { useState, useEffect, useRef } from 'react';
@@ -310,7 +311,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                         className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
                       >
                          {comment.user?.avatarUrl ? (
-                            <img alt="" src={comment.user.avatarUrl} className="w-full h-full object-cover" />
+                            <Image src={comment.user.avatarUrl} alt="" fill sizes="32px" className="object-cover" />
                           ) : (
                             <UserIcon size={16} />
                           )}

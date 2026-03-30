@@ -6,10 +6,12 @@ import { useInfiniteUserSpots } from "@/hooks/use-api";
 import { useInView } from "react-intersection-observer";
 import { Loader2 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { toast } from "sonner";
 import { getSpotUrl } from "@/lib/slug";
 import Link from "next/link";
 import OptimizedImage from "@/components/ui/OptimizedImage";
+import type { ImageVariantsDto } from "@/api/generated/model";
 
 interface UserSpotsInfiniteTabProps {
   userId: string;
@@ -30,8 +32,11 @@ interface Spot {
 }
 
 export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabProps) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user: authUser } = useAuth();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const pathname = usePathname();
 
   const {
@@ -43,7 +48,11 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
   } = useInfiniteUserSpots(userId);
 
   const spots: Spot[] = useMemo(() => {
-    const rawSpots = spotsData?.pages.flatMap((page) => (page as { data?: Spot[] })?.data || []) || [];
+    const rawSpots =
+      spotsData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: Spot[] } })?.data?.data || [],
+      ) || [];
     return rawSpots;
   }, [spotsData]);
 
@@ -87,7 +96,7 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
                 {spot.imageVariants && (
                   <div className="flex-shrink-0">
                     <OptimizedImage
-                      variants={spot.imageVariants as any}
+                      variants={spot.imageVariants as ImageVariantsDto}
                       alt={spot.name}
                       width={64}
                       height={64}

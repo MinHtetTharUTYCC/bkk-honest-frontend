@@ -3,29 +3,26 @@
 import { useCreateVote, useDeleteVote } from '@/hooks/api';
 import { Query, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import type { 
-  CommunityTipResponseDto, 
-  ScamAlertResponseDto, 
-  GalleryImageResponseDto, 
-  SpotWithStatsResponseDto 
-} from '@/api/generated/model';
 
+type VoteableItem = {
+  id: string;
+  hasVoted?: boolean;
+  voteId?: string | Record<string, unknown> | null;
+};
 
-type VoteableItem = 
-  | CommunityTipResponseDto 
-  | ScamAlertResponseDto 
-  | GalleryImageResponseDto 
-  | SpotWithStatsResponseDto;
-
-type CacheData = {
+type CacheData = Record<string, unknown> & {
   id?: string;
-  data?: CacheData | CacheData[];
-  pages?: Array<{ data?: CacheData[] }>;
-  _count?: { votes?: number; [key: string]: number | undefined };
+  data?: unknown;
+  pages?: Array<{ data?: unknown[] } | unknown>;
+  _count?: { votes?: number };
   voteCount?: number;
   hasVoted?: boolean;
   voteId?: string | null;
-  [key: string]: unknown;
+};
+
+type VoteCreateResponse = {
+  data?: { voteId?: string };
+  voteId?: string;
 };
 
 export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?: string) {
@@ -126,7 +123,7 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     return data.id === itemId ? data : null;
   };
 
-  const setItemState = (oldData: CacheData | CacheData[] | undefined, itemId: string, newState: Partial<VoteableItem>) => {
+  const setItemState = (oldData: CacheData | CacheData[] | undefined, itemId: string, newState: Partial<VoteableItem>): CacheData | CacheData[] | undefined => {
     if (!oldData) return oldData;
     const updateTarget = (target: CacheData) => target.id === itemId ? { ...target, ...newState } : target;
     if (Array.isArray(oldData)) return oldData.map(updateTarget);
@@ -155,7 +152,8 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     const snapshots = queryClient.getQueriesData<CacheData | CacheData[]>({ predicate });
 
     // Get current voteId from cache (in case item passed in is stale)
-    let currentVoteId = item.voteId as string | null | undefined;
+    let currentVoteId =
+      typeof item.voteId === 'string' ? item.voteId : null;
     for (const [, data] of snapshots) {
       const found = findItemInCache(data, item.id);
       if (found?.voteId && found.voteId !== 'temp-id') {
@@ -178,10 +176,12 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
       } else {
         const response = await createVote.mutateAsync({ targetId: item.id, type });
         // After successful create, set state directly (not toggle)
+        const voteResponse = response as VoteCreateResponse;
+        const newVoteId = voteResponse.data?.voteId ?? voteResponse.voteId;
         queryClient.setQueriesData<CacheData | CacheData[]>({ predicate }, (old) =>
-          setItemState(old, item.id, { hasVoted: true, voteId: response.voteId })
+          setItemState(old, item.id, { hasVoted: true, voteId: newVoteId })
         );
-        return { voteId: response.voteId };
+        return { voteId: newVoteId };
       }
     } catch (error) {
       // Rollback all snapshots on error
@@ -192,7 +192,7 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
       } else {
         toast.error('Failed to update vote');
       }
-      return { voteId: (item.voteId as string | null) ?? null };
+      return { voteId: typeof item.voteId === 'string' ? item.voteId : null };
     }
   };
 

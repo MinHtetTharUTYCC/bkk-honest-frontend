@@ -14,5 +14,5 @@ take?: number;
 /**
  * Items to skip
  */
-skip?: unknown;
+skip?: number;
 };

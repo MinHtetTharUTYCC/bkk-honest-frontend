@@ -13,7 +13,7 @@ export interface VibeRow {
   waitTimeMinutes?: number | null;
   caption?: string;
   hasVoted?: boolean;
-  voteId?: string | null;
+  voteId?: string | null | { [key: string]: unknown };
   _count?: { votes?: number };
   user?: {
     id?: string;
@@ -34,12 +34,15 @@ export interface MissionRow {
 export interface GalleryImage {
   id: string;
   url: string;
+  createdAt?: string;
+  userId?: string;
   hasVoted?: boolean;
-  voteId?: string | null;
+  voteId?: string | null | { [key: string]: unknown };
   _count?: { votes: number };
   user?: {
     name?: string;
     level?: string;
+    avatarUrl?: string;
   };
   imageVariants?: {
     thumbnail: string;
@@ -60,7 +63,7 @@ export interface SpotTip {
   title: string;
   description: string;
   hasVoted?: boolean;
-  voteId?: string | null;
+  voteId?: string | null | { [key: string]: unknown };
   _count?: { votes?: number; comments?: number };
   createdAt?: string;
   user?: {
@@ -81,21 +84,21 @@ export interface SpotData {
   latitude: number;
   longitude: number;
   hasVoted?: boolean;
-  voteId?: string | null;
+  voteId?: string | null | { [key: string]: unknown };
   isInMission?: boolean;
-  missionId?: string | null;
+  missionId?: string | null | { [key: string]: unknown };
   _count?: { votes?: number };
   user?: {
     id: string;
     name: string;
     avatarUrl?: string;
-  };
-  category?: { id?: string; name?: string };
-  city?: { id?: string; name?: string; slug?: string };
-  vibeStats?: { avgCrowdLevel?: number; count?: number };
-  tipStats?: { tryCount: number; avoidCount: number };
-  priceStats?: { avg?: number; count?: number; min?: number; max?: number };
-  activityStats?: { totalContributors: number; lastActivity: string | null };
+  } | { [key: string]: unknown };
+  category?: { id?: string; name?: string } | { [key: string]: unknown };
+  city?: { id?: string; name?: string; slug?: string } | { [key: string]: unknown };
+  vibeStats?: { avgCrowdLevel?: number; count?: number } | { [key: string]: unknown };
+  tipStats?: { tryCount: number; avoidCount: number } | { [key: string]: unknown };
+  priceStats?: { avg?: number; count?: number; min?: number; max?: number } | { [key: string]: unknown };
+  activityStats?: { totalContributors: number; lastActivity: string | null } | { [key: string]: unknown };
   imageVariants?: {
     thumbnail: string;
     display: string;

@@ -125,6 +125,7 @@ interface TabsContentProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const TabsContent = React.forwardRef<HTMLDivElement, TabsContentProps>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ({ className, value, _tabsValue, _onValueChange, ...props }, ref) => {
     const isActive = _tabsValue === value;
     

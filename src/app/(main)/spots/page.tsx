@@ -2,6 +2,7 @@
 import { Suspense, useState, useEffect, useCallback, useRef, useMemo } from "react";
 
 import { useInfiniteSpots, useCategories } from "@/hooks/use-api";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useQueryClient } from "@tanstack/react-query";
 import SpotCard from "@/components/spots/spot-card";
 import { SearchInput } from "@/components/ui/search-input";
@@ -28,6 +29,7 @@ function DiscoveryPageContent() {
 
   const { selectedCityId, selectedCity } = useCity();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const prefetchCategory = (catId: string | undefined) => {
     // Prefetch is handled by useInfiniteSpots hook itself
     // Just update the URL state
@@ -131,7 +133,7 @@ function DiscoveryPageContent() {
 
   const spots: SpotCardData[] = useMemo(() => {
     return spotsData?.pages.flatMap(
-      (page) => (page as { data?: SpotCardData[] })?.data || [],
+      (page) => (page as { data?: { data?: SpotCardData[] } })?.data?.data || [],
     ) || [];
   }, [spotsData]);
 

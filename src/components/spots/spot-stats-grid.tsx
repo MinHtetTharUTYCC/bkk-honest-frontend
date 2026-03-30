@@ -3,8 +3,19 @@ import { cn } from "@/lib/utils";
 
 export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStatsResponseDto; className?: string }) {
   const { activityStats, priceStats, vibeStats } = spot;
+  const lastActivity =
+    activityStats?.lastActivity;
+  const safeLastActivity =
+    typeof lastActivity === "string" || typeof lastActivity === "number" || lastActivity instanceof Date
+      ? lastActivity
+      : null;
+  const minPrice = typeof priceStats?.min === "number" ? priceStats.min : null;
+  const maxPrice = typeof priceStats?.max === "number" ? priceStats.max : null;
+  const avgCrowdLevel = typeof vibeStats?.avgCrowdLevel === "number" ? vibeStats.avgCrowdLevel : null;
+  const totalContributors =
+    typeof activityStats?.totalContributors === "number" ? activityStats.totalContributors : 0;
 
-  const lastPulseDate = activityStats?.lastActivity ? new Date(activityStats.lastActivity).getTime() : null;
+  const lastPulseDate = safeLastActivity ? new Date(safeLastActivity).getTime() : null;
   const timeAgo = (timestamp: number | null) => {
     if (!timestamp) return "No Data";
     // eslint-disable-next-line react-hooks/purity
@@ -39,9 +50,9 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Fair Range
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white flex items-center gap-1 md:gap-2">
-            <span className="text-emerald-500 italic">{priceStats?.min || "--"}</span>
+            <span className="text-emerald-500 italic">{minPrice ?? "--"}</span>
             <span className="text-white/20">-</span>
-            <span className="text-red-500 italic">{priceStats?.max || "--"}</span>
+            <span className="text-red-500 italic">{maxPrice ?? "--"}</span>
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest italic">
             THB Range
@@ -52,7 +63,7 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Live Vibe
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white">
-            {vibeStats?.avgCrowdLevel ? `${vibeStats.avgCrowdLevel.toFixed(1)} / 5` : "No Data"}
+            {typeof avgCrowdLevel === "number" ? `${avgCrowdLevel.toFixed(1)} / 5` : "No Data"}
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest">
             Crowd Rating
@@ -63,7 +74,7 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Verified by
           </span>
           <div className="text-2xl md:text-3xl font-display font-bold text-white">
-            {activityStats?.totalContributors ?? 0}
+            {totalContributors}
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest">
             Unique Locals
@@ -89,9 +100,9 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Fair Range
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white flex items-center gap-1 md:gap-2">
-            <span className="text-emerald-500 italic">{priceStats?.min || "--"}</span>
+            <span className="text-emerald-500 italic">{minPrice ?? "--"}</span>
             <span className="text-white/20">-</span>
-            <span className="text-red-500 italic">{priceStats?.max || "--"}</span>
+            <span className="text-red-500 italic">{maxPrice ?? "--"}</span>
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest italic">
             THB Range
@@ -102,7 +113,7 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Live Vibe
           </span>
           <div className="text-lg md:text-xl font-display font-bold text-white">
-            {vibeStats?.avgCrowdLevel ? `${vibeStats.avgCrowdLevel.toFixed(1)} / 5` : "No Data"}
+            {typeof avgCrowdLevel === "number" ? `${avgCrowdLevel.toFixed(1)} / 5` : "No Data"}
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest">
             Crowd Rating
@@ -113,7 +124,7 @@ export default function SpotStatsGrid({ spot, className }: { spot: SpotWithStats
             Verified by
           </span>
           <div className="text-2xl md:text-3xl font-display font-bold text-white">
-            {activityStats?.totalContributors ?? 0}
+            {totalContributors}
           </div>
           <div className="mt-1 text-[8px] md:text-[9px] font-medium text-white/50 uppercase tracking-widest">
             Unique Locals

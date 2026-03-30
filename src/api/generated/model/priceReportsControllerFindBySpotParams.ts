@@ -7,6 +7,6 @@
  */
 
 export type PriceReportsControllerFindBySpotParams = {
-skip?: string | number;
-take?: string | number;
+skip?: number;
+take?: number;
 };

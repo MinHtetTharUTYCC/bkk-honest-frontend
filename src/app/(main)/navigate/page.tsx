@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState, useEffect, useRef } from "react";
+import { Suspense, useState, useEffect, useRef, useCallback } from "react";
 
 import { useSearchParams, useRouter } from "next/navigation";
 import Map, { Marker, Source, Layer, MapRef } from "react-map-gl/mapbox";
@@ -79,47 +79,40 @@ function NavigatePageContent() {
 
   const mapRef = useRef<MapRef>(null);
 
-  useEffect(() => {
-    checkGeolocationPermission();
-    // Lock body scroll while navigation page is mounted
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [destLat, destLng]);
-
-  const checkGeolocationPermission = async () => {
-    if (!navigator.geolocation) {
-      setError("Geolocation not supported");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!navigator.permissions) {
-      // Fallback: just try geolocation if permissions API not available
-      attemptGeolocation();
-      return;
-    }
-
+  const fetchRoute = useCallback(async (
+    fromLat: number,
+    fromLng: number,
+    toLat: number,
+    toLng: number,
+  ) => {
     try {
-      const permissionStatus = await navigator.permissions.query({
-        name: "geolocation" as PermissionName,
-      });
+      setIsLoading(true);
+      setError(null);
+      const response = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${fromLng},${fromLat};${toLng},${toLat}?alternatives=false&steps=true&geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`,
+      );
 
-      if (permissionStatus.state === "denied") {
-        setShowManualLocation(true);
-        setPermissionError("permission_denied");
-        setIsLoading(false);
+      if (!response.ok) throw new Error("Failed to fetch route");
+
+      const data = await response.json();
+      if (data.routes && data.routes.length > 0) {
+        const mainRoute = data.routes[0];
+        setRoute({
+          ...mainRoute,
+          steps: mainRoute.legs?.[0]?.steps || [],
+        });
       } else {
-        attemptGeolocation();
+        setError("No route found");
       }
     } catch (_err) {
-      // Fallback if permissions API fails
-      attemptGeolocation();
+      console.error("Route fetch error:", _err);
+      setError("Failed to calculate route");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, []);
 
-  const attemptGeolocation = () => {
+  const attemptGeolocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -152,40 +145,48 @@ function NavigatePageContent() {
         enableHighAccuracy: false,
       },
     );
-  };
+  }, [destLat, destLng, fetchRoute]);
 
-  const fetchRoute = async (
-    fromLat: number,
-    fromLng: number,
-    toLat: number,
-    toLng: number,
-  ) => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const response = await fetch(
-        `https://api.mapbox.com/directions/v5/mapbox/driving/${fromLng},${fromLat};${toLng},${toLat}?alternatives=false&steps=true&geometries=geojson&overview=full&access_token=${MAPBOX_TOKEN}`,
-      );
-
-      if (!response.ok) throw new Error("Failed to fetch route");
-
-      const data = await response.json();
-      if (data.routes && data.routes.length > 0) {
-        const mainRoute = data.routes[0];
-        setRoute({
-          ...mainRoute,
-          steps: mainRoute.legs?.[0]?.steps || [],
-        });
-      } else {
-        setError("No route found");
-      }
-    } catch (_err) {
-      console.error("Route fetch error:", err);
-      setError("Failed to calculate route");
-    } finally {
+  const checkGeolocationPermission = useCallback(async () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation not supported");
       setIsLoading(false);
+      return;
     }
-  };
+
+    if (!navigator.permissions) {
+      // Fallback: just try geolocation if permissions API not available
+      attemptGeolocation();
+      return;
+    }
+
+    try {
+      const permissionStatus = await navigator.permissions.query({
+        name: "geolocation" as PermissionName,
+      });
+
+      if (permissionStatus.state === "denied") {
+        setShowManualLocation(true);
+        setPermissionError("permission_denied");
+        setIsLoading(false);
+      } else {
+        attemptGeolocation();
+      }
+    } catch {
+      // Fallback if permissions API fails
+      attemptGeolocation();
+    }
+  }, [attemptGeolocation]);
+
+  useEffect(() => {
+    checkGeolocationPermission();
+    // Lock body scroll while navigation page is mounted
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [destLat, destLng, checkGeolocationPermission]);
+
 
   const handleCloseManualLocation = () => {
     setShowManualLocation(false);

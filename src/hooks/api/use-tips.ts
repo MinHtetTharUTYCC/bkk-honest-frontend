@@ -7,12 +7,11 @@ import {
     useCommunityTipsControllerUpdate,
     useCommunityTipsControllerDelete
 } from '@/api/generated/community-tips/community-tips';
-import type { PaginatedCommunityTipsResponseDto } from '@/api/generated/model';
 import { getNextSkipFromPage } from './base';
 
 export function useSpotTips(spotId: string) {
     const query = useCommunityTipsControllerFindBySpot(spotId, {}, { query: { enabled: !!spotId } });
-    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
+    return { ...query, data: query.data?.data?.data || [] };
 }
 
 export function useInfiniteSpotTips(
@@ -37,7 +36,7 @@ export function useInfiniteSpotTips(
             queryKey: ['tips-infinite', spotId, normalizedType, normalizedSort],
             staleTime: 5 * 60 * 1000,
             initialPageParam: 0,
-            getNextPageParam: (lastPage: PaginatedCommunityTipsResponseDto) => getNextSkipFromPage(lastPage, true),
+            getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, true),
         },
     });
 }
@@ -72,7 +71,7 @@ export function useDeleteCommunityTip() {
     const mutation = useCommunityTipsControllerDelete();
     return {
         ...mutation,
-        mutate: ({ id, spotId }: { id: string; spotId: string }) => mutation.mutate({ id }),
-        mutateAsync: ({ id, spotId }: { id: string; spotId: string }) => mutation.mutateAsync({ id })
+        mutate: ({ id }: { id: string; _spotId: string }) => mutation.mutate({ id }),
+        mutateAsync: ({ id }: { id: string; _spotId: string }) => mutation.mutateAsync({ id })
     };
 }

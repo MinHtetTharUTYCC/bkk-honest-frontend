@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteUserCommunityTips } from "@/hooks/use-api";
 import { useInView } from "react-intersection-observer";
 import { Loader2 } from "lucide-react";
 import { TipCard } from "@/components/tips/tip-card";
-import { SpotTip } from "@/types/spot";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
-import { useRouter, usePathname } from "next/navigation";
 import { toast } from "sonner";
+import type { CommunityTipResponseDto } from "@/api/generated/model";
 
 interface UserTipsInfiniteTabProps {
   userId: string;
@@ -17,9 +16,6 @@ interface UserTipsInfiniteTabProps {
 
 export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps) {
   const { user: authUser } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
-  const [selectedTip, setSelectedTip] = useState<SpotTip | null>(null);
 
   const {
     data: tipsData,
@@ -28,6 +24,38 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
     isFetchingNextPage: isFetchingNextTips,
     isLoading: tipsLoading,
   } = useInfiniteUserCommunityTips(userId);
+
+  const tips: CommunityTipResponseDto[] = useMemo(() => {
+    return (
+      tipsData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: CommunityTipResponseDto[] } })
+            ?.data?.data || [],
+      ) || []
+    );
+  }, [tipsData]);
+
+  const { ref: observerTarget, inView } = useInView({ threshold: 0.1, rootMargin: "200px" });
+  const hasFetchedTipsRef = useRef(false);
+
+  useEffect(() => {
+    if (inView && hasNextTips && !isFetchingNextTips && !hasFetchedTipsRef.current) {
+      hasFetchedTipsRef.current = true;
+      fetchNextTips();
+    }
+  }, [inView, hasNextTips, isFetchingNextTips, fetchNextTips]);
+
+  useEffect(() => {
+    if (!inView) hasFetchedTipsRef.current = false;
+  }, [inView]);
+
+  const { toggleVote: toggleTipVote } = useVoteToggle("tip");
+
+  const toTipLevel = (level?: number): "NEWBIE" | "EXPLORER" | "LOCAL_GURU" => {
+    if (!level || level <= 1) return "NEWBIE";
+    if (level === 2) return "EXPLORER";
+    return "LOCAL_GURU";
+  };
 
   return (
     <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">
@@ -48,20 +76,30 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
           {tips.map((tip) => (
             <TipCard
               key={tip.id}
-              tip={tip}
+              tip={{
+                id: tip.id,
+                userId: tip.userId,
+                type: "TRY",
+                title: tip.title,
+                description: tip.description,
+                hasVoted: tip.hasVoted,
+                _count: { votes: tip.voteCount, comments: tip.commentCount },
+                createdAt: tip.createdAt,
+                user: {
+                  id: tip.user?.id ?? tip.userId,
+                  name: tip.user?.name,
+                  avatarUrl: tip.user?.avatarUrl,
+                  level: toTipLevel(tip.user?.level),
+                },
+              }}
               authUser={authUser}
-              onCommentClick={() => setSelectedTip(tip)}
+              onCommentClick={() => {}}
               onVoteClick={async () => {
                 if (!authUser) {
                   toast.error("Join us to like tips!", { description: "Login to help the community." });
                   return;
                 }
-                return toggleTipVote({
-                  id: tip.id,
-                  hasVoted: tip.hasVoted,
-                  voteId: tip.voteId,
-                  _count: { votes: tip._count?.votes ?? 0 },
-                });
+                return toggleTipVote(tip);
               }}
             />
           ))}

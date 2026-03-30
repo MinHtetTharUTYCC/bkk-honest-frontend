@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } from "@/hooks/use-api";
-import { useQueryClient } from "@tanstack/react-query";
-import { useVoteToggle } from "@/hooks/use-vote-toggle";
-import { Zap, Loader2, CheckCircle2, AlertTriangle, ChevronDown } from "lucide-react";
+import { useQueryClient, InfiniteData } from "@tanstack/react-query";
+import { Zap, Loader2, CheckCircle2, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SpotTip, SpotData } from "@/types/spot";
 import { TipCard } from "@/components/tips/tip-card";
@@ -24,11 +23,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface TipsTabProps {
-  spot: SpotData;
-  initialTips?: { pages: any[]; pageParams: any[] };
+interface TipPageData {
+  data?: SpotTip[];
 }
 
+interface TipsTabProps {
+  spot: SpotData;
+  initialTips?: InfiniteData<TipPageData>;
+}
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function TipsTab({ spot, initialTips }: TipsTabProps) {
   const { user: authUser } = useAuth();
   const router = useRouter();
@@ -67,7 +71,11 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
 
   const tips: SpotTip[] = useMemo(() => {
     // We can merge initialTips with react-query data, but for simplicity we rely on React Query hydration.
-    const rawTips = tipsData?.pages.flatMap((page) => (page as { data?: SpotTip[] })?.data || []) || [];
+    const rawTips =
+      tipsData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: SpotTip[] } })?.data?.data || [],
+      ) || [];
     return rawTips;
   }, [tipsData]);
 
@@ -100,13 +108,13 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
       // Manually update all sort variations of the infinite query cache
       const sortTypes = ['popular', 'newest'];
       sortTypes.forEach((sortType) => {
-        queryClient.setQueryData(
+        queryClient.setQueryData<InfiniteData<TipPageData>>(
           ['tips-infinite', spotId, editingTip.type, sortType],
-          (oldData: any) => {
+          (oldData) => {
             if (!oldData || !oldData.pages) return oldData;
             return {
               ...oldData,
-              pages: oldData.pages.map((page: any) => ({
+              pages: oldData.pages.map((page) => ({
                 ...page,
                 data: page.data?.map((tip: SpotTip) => 
                   tip.id === editingTip.id ? { ...tip, ...updatedTip } : tip
@@ -135,13 +143,13 @@ export default function TipsTab({ spot, initialTips }: TipsTabProps) {
 
       const sortTypes = ['popular', 'newest'];
       sortTypes.forEach((sortType) => {
-        queryClient.setQueryData(
+        queryClient.setQueryData<InfiniteData<TipPageData>>(
           ['tips-infinite', spotId, deletedTip.type, sortType],
-          (oldData: any) => {
+          (oldData) => {
             if (!oldData || !oldData.pages) return oldData;
             return {
               ...oldData,
-              pages: oldData.pages.map((page: any) => ({
+              pages: oldData.pages.map((page) => ({
                 ...page,
                 data: page.data?.filter((tip: SpotTip) => tip.id !== tipId)
               }))

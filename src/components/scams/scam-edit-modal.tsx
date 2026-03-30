@@ -1,4 +1,6 @@
 'use client';
+import OptimizedImage from "@/components/ui/OptimizedImage";
+import type { ImageVariantsDto } from "@/api/generated/model";
 
 import { useState, useRef } from 'react';
 import {
@@ -7,14 +9,22 @@ import {
     Camera,
     Save,
 } from 'lucide-react';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { cn } from '@/lib/utils';
 import { useUpdateScamAlert, useCategories, useCities } from '@/hooks/use-api';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
-import type { ScamAlertData } from './scam-alert-card';
 
 interface ScamEditModalProps {
-    alert: ScamAlertData;
+    alert: {
+        id: string;
+        scamName: string;
+        description: string;
+        preventionTip: string;
+        categoryId?: string;
+        cityId?: string;
+        imageVariants?: ImageVariantsDto;
+    };
     onClose: () => void;
 }
 
@@ -92,10 +102,10 @@ export default function ScamEditModal({ alert, onClose }: ScamEditModalProps) {
                                 onClick={() => fileInputRef.current?.click()}
                                 className="w-32 h-32 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                             >
-                                {editPreview || (alert.imageVariants && Object.values(alert.imageVariants).some(v => v)) ? (
-                                    <img alt="Scam alert" src={editPreview || (alert.imageVariants?.display || alert.imageVariants?.thumbnail || '')}
-                                        className="w-full h-full object-cover group-hover:opacity-50"
-                                    />
+                                {editPreview ? (
+                                    <img alt="Scam alert" src={editPreview} className="w-full h-full object-cover group-hover:opacity-50" />
+                                ) : alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
+                                    <OptimizedImage variants={alert.imageVariants as ImageVariantsDto} alt="Scam alert" fill className="w-full h-full object-cover group-hover:opacity-50" />
                                 ) : (
                                     <Camera size={24} className="text-white/20" />
                                 )}

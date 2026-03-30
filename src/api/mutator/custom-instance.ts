@@ -28,10 +28,10 @@ interface PromiseWithCancel<T> extends Promise<T> {
 }
 
 // Custom instance wrapper for Orval
-export const customInstance = <T>(
+export function customInstance<T>(
   config: AxiosRequestConfig | string,
   options?: Record<string, unknown>,
-): PromiseWithCancel<T> => {
+): PromiseWithCancel<T> {
   const source = Axios.CancelToken.source();
   
   // Transform body -> data for Axios compatibility
@@ -48,7 +48,8 @@ export const customInstance = <T>(
 
   // Explicitly merge headers if they are provided in options (useful for SSR)
   if (options?.headers && typeof options.headers === 'object') {
-    requestConfig.headers = { ...requestConfig.headers, ...(options.headers as Record<string, unknown>) };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    requestConfig.headers = { ...requestConfig.headers, ...(options.headers as any) };
   }
 
   const promise = AXIOS_INSTANCE({
@@ -61,4 +62,4 @@ export const customInstance = <T>(
   };
 
   return promise;
-};
+}

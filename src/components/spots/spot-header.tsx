@@ -1,9 +1,11 @@
 "use client";
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useState } from "react";
 import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SpotWithStatsResponseDto, ChecklistItemDto } from "@/api/generated/model";
 import OptimizedImage from "@/components/ui/OptimizedImage";
 import { LikeButton } from "@/components/ui/like-button";
@@ -11,6 +13,7 @@ import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import ReportButton from "@/components/report/report-button";
 import { useAuth } from "@/components/providers/auth-provider";
 import { toast } from "sonner";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useAddMission, useDeleteMission, useMissions } from "@/hooks/use-api";
 import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import SpotStatsGrid from "@/components/spots/spot-stats-grid";
@@ -32,6 +35,12 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
 
   const spotCategory = spot.category;
   const spotVibeStats = spot.vibeStats;
+  const spotName = typeof spot.name === "string" ? spot.name : "";
+  const spotAddress = typeof spot.address === "string" ? spot.address : "";
+  const categoryName = typeof spotCategory?.name === "string" ? spotCategory.name : "Spot";
+  const avgCrowdLevel =
+    typeof spotVibeStats?.avgCrowdLevel === "number" ? spotVibeStats.avgCrowdLevel : undefined;
+  const voteCount = typeof spot._count?.votes === "number" ? spot._count.votes : 0;
   const isOwner = authUser?.id === spot.userId;
 
   const isInMissions = Boolean(spot.isInMission);
@@ -48,7 +57,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
   };
 
   const handleRemoveMission = () => {
-    const targetMissionId = (spot as any).missionId;
+    const targetMissionId = typeof spot.missionId === "string" ? spot.missionId : null;
     
     if (targetMissionId) {
       // Pass spotId so cache update works even when not on missions page
@@ -68,7 +77,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
 
   const handleShare = async () => {
     const url = window.location.href;
-    const shareData = { title: spot.name, text: `Check out ${spot.name} on BKK Honest! ⚡`, url };
+    const shareData = { title: spotName || "Spot", text: `Check out ${spotName || "this spot"} on BKK Honest! ⚡`, url };
     try {
       if (navigator.share && navigator.canShare?.(shareData)) {
         await navigator.share(shareData);
@@ -112,11 +121,11 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
           <div className="absolute top-6 left-6 right-6 flex items-center justify-between pointer-events-none">
             <div className="flex items-center gap-2 pointer-events-auto" onClick={(e) => e.stopPropagation()}>
               <span className="bg-black/40 backdrop-blur-md text-white/90 px-3 py-1.5 rounded-xl text-[12px] font-bold tracking-widest uppercase shadow-sm border border-white/10">
-                {spotCategory?.name}
+                {categoryName}
               </span>
               <div className="bg-amber-400/90 backdrop-blur-md text-black px-3 py-1.5 rounded-xl flex items-center gap-1 font-bold text-[12px] tracking-widest uppercase shadow-lg shadow-amber-400/20 border border-amber-300/20">
                 <Zap size={10} fill="currentColor" className="shrink-0" />
-                {spotVibeStats?.avgCrowdLevel ? `Busy: ${spotVibeStats.avgCrowdLevel.toFixed(1)}/5` : "New Spot"}
+                {typeof avgCrowdLevel === "number" ? `Busy: ${avgCrowdLevel.toFixed(1)}/5` : "New Spot"}
               </div>
             </div>
 
@@ -141,11 +150,11 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
           <div className="absolute bottom-6 left-6 right-6 flex flex-col justify-between gap-6 md:hidden">
             <div className="space-y-3">
               <TruncatedTextWithDialog
-                text={spot.name}
+                text={spotName}
                 textClassName="text-2xl font-display font-bold text-white tracking-tight drop-shadow-sm"
               />
               <TruncatedTextWithDialog
-                text={spot.address}
+                text={spotAddress}
                 title="Full Address"
                 icon={<MapPin size={14} strokeWidth={3} className="text-amber-400 mt-0.5" />}
                 textClassName="text-white/60 font-bold uppercase tracking-widest text-xs leading-tight"
@@ -177,10 +186,10 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
                   </>
                 )}
               </button>
-              <button onClick={() => router.push(`/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`)} className="flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide" title="Navigate to this spot">
+              <button onClick={() => router.push(`/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spotName)}`)} className="flex-1 bg-white/10 backdrop-blur-md text-white px-4 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-[10px] font-semibold tracking-wide" title="Navigate to this spot">
                 <Navigation size={16} /> Navigate
               </button>
-              <LikeButton count={spot._count?.votes || 0} isVoted={spot.hasVoted} onVote={handleSpotVoteClick} variant="default" size="lg" className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30" title={spot.hasVoted ? "Remove like" : "Like this spot"} />
+              <LikeButton count={voteCount} isVoted={spot.hasVoted} onVote={handleSpotVoteClick} variant="default" size="lg" className="text-[10px] font-semibold tracking-wide px-4 py-4 rounded-2xl backdrop-blur-md border shadow-xl bg-white/10 border-white/20 hover:bg-amber-400/20 hover:border-amber-400/30" title={spot.hasVoted ? "Remove like" : "Like this spot"} />
             </div>
           </div>
         </div>
@@ -191,11 +200,11 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
           <div className="flex items-start justify-between gap-4">
             <div className="space-y-1 flex-1 min-w-0">
               <TruncatedTextWithDialog
-                text={spot.name}
+                text={spotName}
                 textClassName="text-3xl lg:text-4xl font-display font-bold text-white tracking-tight"
               />
               <TruncatedTextWithDialog
-                text={spot.address}
+                text={spotAddress}
                 title="Full Address"
                 icon={<MapPin size={16} strokeWidth={3} className="text-amber-400 mt-0.5" />}
                 textClassName="text-white/60 font-bold uppercase tracking-widest text-xs leading-tight"
@@ -252,7 +261,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
               <button
                 onClick={() =>
                   router.push(
-                    `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spot.name)}`
+                    `/navigate?lat=${spot.latitude}&lng=${spot.longitude}&name=${encodeURIComponent(spotName)}`
                   )
                 }
                 className="flex-1 bg-white/10 backdrop-blur-md text-white px-6 py-4 rounded-2xl hover:bg-amber-400 transition-all active:scale-95 border border-white/20 shadow-xl flex items-center justify-center gap-2 text-sm font-semibold tracking-wide cursor-pointer"
@@ -262,7 +271,7 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick }: Spo
                 Navigate
               </button>
               <LikeButton
-                count={spot._count?.votes || 0}
+                count={voteCount}
                 isVoted={spot.hasVoted}
                 onVote={handleSpotVoteClick}
                 variant="default"

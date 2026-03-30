@@ -22,17 +22,19 @@ export function getNextSkipFromPage(lastPage: unknown, requireHasMore = false): 
         return undefined;
     }
 
-    const page = lastPage as PaginationLike;
-    const source = page.pagination ?? page;
-    const skip = source?.skip;
-    const take = source?.take;
-    const total = source?.total;
+    // Account for Orval wrapper { data, status, headers }
+    const page = (lastPage as Record<string, unknown>).data || lastPage;
+    
+    const source = (page as Record<string, unknown>).pagination ?? page;
+    const skip = (source as Record<string, unknown>)?.skip;
+    const take = (source as Record<string, unknown>)?.take;
+    const total = (source as Record<string, unknown>)?.total;
 
     if (typeof skip !== 'number' || typeof take !== 'number' || typeof total !== 'number') {
         return undefined;
     }
 
-    if (requireHasMore && page.pagination?.hasMore === false) {
+    if (requireHasMore && source?.hasMore === false) {
         return undefined;
     }
 

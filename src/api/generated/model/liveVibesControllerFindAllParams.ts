@@ -7,8 +7,8 @@
  */
 
 export type LiveVibesControllerFindAllParams = {
-skip?: string | number;
-take?: string | number;
+skip?: string;
+take?: string;
 cityId?: string;
 categoryId?: string;
 spotId?: string;

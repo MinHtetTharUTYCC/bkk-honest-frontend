@@ -1,4 +1,5 @@
 'use client';
+import Image from "next/image";
 
 import { useLeaderboard } from '@/hooks/use-api';
 import { cn } from '@/lib/utils';
@@ -54,15 +55,12 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
                     >
                         <div
                             className={cn(
-                                'w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shadow-sm',
+                                'relative w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shadow-sm',
                                 LEVEL_COLORS[idx % LEVEL_COLORS.length],
                             )}
                         >
                             {c.avatarUrl ? (
-                                <img
-                                    src={c.avatarUrl}
-                                    className="w-full h-full object-cover rounded-2xl"
-                                />
+                                <Image src={c.avatarUrl} alt={c.name || 'User avatar'} fill sizes="40px" className="object-cover rounded-2xl" />
                             ) : (
                                 (c.name?.charAt(0) || '?').toUpperCase()
                             )}
@@ -110,12 +108,12 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
                 >
                     <div
                         className={cn(
-                            'w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shadow-sm overflow-hidden group-hover:scale-105 transition-transform',
+                            'relative w-10 h-10 rounded-2xl flex items-center justify-center font-black text-xs shadow-sm overflow-hidden group-hover:scale-105 transition-transform',
                             LEVEL_COLORS[idx % LEVEL_COLORS.length],
                         )}
                     >
                         {c.avatarUrl ? (
-                            <img src={c.avatarUrl} className="w-full h-full object-cover" />
+                            <Image src={c.avatarUrl} alt={c.name || 'User avatar'} fill sizes="40px" className="object-cover" />
                         ) : (
                             (c.name?.charAt(0) || '?').toUpperCase()
                         )}

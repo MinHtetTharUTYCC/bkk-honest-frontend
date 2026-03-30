@@ -8,8 +8,8 @@ import {
 import { getNextSkipFromPage } from './base';
 
 export function useSpotPriceReports(spotId: string) {
-    const query = usePriceReportsControllerFindBySpot(spotId, { query: { enabled: !!spotId } });
-    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
+    const query = usePriceReportsControllerFindBySpot(spotId, undefined, { query: { enabled: !!spotId } });
+    return { ...query, data: query.data?.data?.data || [] };
 }
 
 export function useInfiniteSpotPriceReports(spotId: string) {

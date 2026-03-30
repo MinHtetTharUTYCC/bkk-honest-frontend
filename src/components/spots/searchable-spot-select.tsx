@@ -34,8 +34,18 @@ export default function SearchableSpotSelect({
     const containerRef = useRef<HTMLDivElement>(null);
 
     const { data: spotsData = [] } = useSpotSearch(inputValue, cityId, 15);
-    const spots = (Array.isArray(spotsData) ? spotsData : [])
-        .filter((item): item is SpotSearchItem => !!(item && typeof item === 'object' && 'id' in item && 'name' in item));
+    const spots: SpotSearchItem[] = (Array.isArray(spotsData) ? spotsData : [])
+        .map((item) => {
+            const cityName =
+                typeof item.city?.name === 'string' ? item.city.name : undefined;
+            return {
+                id: item.id,
+                name: item.name,
+                address: typeof item.address === 'string' ? item.address : undefined,
+                city: cityName ? { name: cityName } : undefined,
+            };
+        })
+        .filter((item) => Boolean(item.id && item.name));
 
     // Close dropdown when clicking outside
     useEffect(() => {

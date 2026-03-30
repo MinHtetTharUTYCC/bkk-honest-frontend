@@ -217,15 +217,21 @@ export function hasValidVariants(
  *   aspectRatio = dimensions.width / dimensions.height;
  * }
  */
+type ImageWithDimensions = ImageObjectDto & {
+  imageWidth?: number;
+  imageHeight?: number;
+};
+
 export function getImageDimensions(imageData: ImageObjectDto | undefined) {
-  if (!imageData || !imageData.imageWidth || !imageData.imageHeight) {
+  const data = imageData as ImageWithDimensions | undefined;
+  if (!data || !data.imageWidth || !data.imageHeight) {
     return undefined;
   }
 
   return {
-    width: imageData.imageWidth,
-    height: imageData.imageHeight,
-    aspectRatio: imageData.imageWidth / imageData.imageHeight,
+    width: data.imageWidth,
+    height: data.imageHeight,
+    aspectRatio: data.imageWidth / data.imageHeight,
   };
 }
 
@@ -256,8 +262,12 @@ export function isImageDegraded(imageData: ImageObjectDto | undefined): boolean 
  *   showLowQualityWarning();
  * }
  */
+type ImageWithQuality = ImageObjectDto & {
+  qualityScore?: number;
+};
+
 export function getImageQualityScore(imageData: ImageObjectDto | undefined): number | undefined {
-  return imageData?.qualityScore;
+  return (imageData as ImageWithQuality | undefined)?.qualityScore;
 }
 
 /**

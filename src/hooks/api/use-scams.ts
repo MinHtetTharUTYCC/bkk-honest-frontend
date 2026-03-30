@@ -8,7 +8,7 @@ import {
     useScamAlertsControllerUpdate,
     useScamAlertsControllerDelete
 } from '@/api/generated/scam-alerts/scam-alerts';
-import type { ScamAlertsControllerFindAllSort } from '@/api/generated/model/scamAlertsControllerFindAllSort';
+import { ScamAlertsControllerFindAllSort } from '@/api/generated/model/scamAlertsControllerFindAllSort';
 import type { ScamAlertsControllerFindAllParams } from '@/api/generated/model/scamAlertsControllerFindAllParams';
 import type { UpdateScamAlertDto } from '@/api/generated/model/updateScamAlertDto';
 import type { PaginatedScamAlertsResponseDto } from '@/api/generated/model/paginatedScamAlertsResponseDto';
@@ -27,7 +27,7 @@ export function useScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: Record<string, unknown> = {};
+    const cleanParams: ScamAlertsControllerFindAllParams = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;
@@ -42,7 +42,7 @@ export function useScamAlerts(params?: {
             staleTime: 5 * 60 * 1000,
         }
     });
-    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
+    return { ...query, data: query.data?.data?.data || [] };
 }
 
 export function useInfiniteScamAlerts(params?: {
@@ -52,7 +52,7 @@ export function useInfiniteScamAlerts(params?: {
     search?: string;
     take?: number;
 }) {
-    const cleanParams: Record<string, unknown> = {};
+    const cleanParams: ScamAlertsControllerFindAllParams = {};
     if (params) {
         if (params.cityId) cleanParams.cityId = params.cityId;
         if (params.categoryId) cleanParams.categoryId = params.categoryId;

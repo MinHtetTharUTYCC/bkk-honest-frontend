@@ -10,20 +10,20 @@ import { getNextSkipFromPage } from './base';
 export function useLiveVibes(params?: { spotId?: string; cityId?: string; take?: number }) {
     const query = _useLiveVibesControllerFindAll({
         ...params,
-        take: params?.take || 10
+        take: (params?.take || 10).toString()
     }, {
         query: {
             queryKey: ['live-vibes', params],
             staleTime: 60 * 1000,
         }
     });
-    return { ...query, data: Array.isArray(query.data?.data) ? query.data?.data : [] };
+    return { ...query, data: query.data?.data?.data || [] };
 }
 
 export function useInfiniteLiveVibes(params?: { spotId?: string; cityId?: string; categoryId?: string; take?: number }) {
     return useLiveVibesControllerFindAllInfinite({
         ...params,
-        take: params?.take || 10
+        take: (params?.take || 10).toString()
     }, {
         query: {
             queryKey: ['live-vibes-infinite', params],

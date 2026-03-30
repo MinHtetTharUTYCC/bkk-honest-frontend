@@ -38,8 +38,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -81,15 +79,15 @@ export const categoriesControllerCreate = async (createCategoryDto: CreateCatego
 
 
 export const getCategoriesControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerCreate>>, TError,{data: CreateCategoryDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerCreate>>, TError,{data: CreateCategoryDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerCreate>>, TError,{data: CreateCategoryDto}, TContext> => {
 
 const mutationKey = ['categoriesControllerCreate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -97,7 +95,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof categoriesControllerCreate>>, {data: CreateCategoryDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  categoriesControllerCreate(data,requestOptions)
+          return  categoriesControllerCreate(data,)
         }
 
 
@@ -115,7 +113,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a new category
  */
 export const useCategoriesControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerCreate>>, TError,{data: CreateCategoryDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerCreate>>, TError,{data: CreateCategoryDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof categoriesControllerCreate>>,
         TError,
@@ -175,16 +173,16 @@ export const getCategoriesControllerFindAllQueryKey = () => {
     }
 
 
-export const getCategoriesControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindAll>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCategoriesControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindAll>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCategoriesControllerFindAllInfiniteQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindAll>>> = ({ signal }) => categoriesControllerFindAll({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindAll>>> = ({ signal }) => categoriesControllerFindAll({ signal });
 
 
 
@@ -204,7 +202,7 @@ export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awai
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindAll>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindAll>>>, TError = unknown>(
@@ -214,11 +212,11 @@ export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awai
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindAll>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindAll>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -226,7 +224,7 @@ export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awai
  */
 
 export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindAll>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -240,16 +238,16 @@ export function useCategoriesControllerFindAllInfinite<TData = InfiniteData<Awai
 
 
 
-export const getCategoriesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCategoriesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCategoriesControllerFindAllQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindAll>>> = ({ signal }) => categoriesControllerFindAll({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindAll>>> = ({ signal }) => categoriesControllerFindAll({ signal });
 
 
 
@@ -269,7 +267,7 @@ export function useCategoriesControllerFindAll<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindAll>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindAll<TData = Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError = unknown>(
@@ -279,11 +277,11 @@ export function useCategoriesControllerFindAll<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindAll>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindAll<TData = Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -291,7 +289,7 @@ export function useCategoriesControllerFindAll<TData = Awaited<ReturnType<typeof
  */
 
 export function useCategoriesControllerFindAll<TData = Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindAll>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -356,16 +354,16 @@ export const getCategoriesControllerFindOneQueryKey = (id: string,) => {
     }
 
 
-export const getCategoriesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCategoriesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCategoriesControllerFindOneInfiniteQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindOne>>> = ({ signal }) => categoriesControllerFindOne(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindOne>>> = ({ signal }) => categoriesControllerFindOne(id, { signal });
 
 
 
@@ -385,7 +383,7 @@ export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awai
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindOne>>>, TError = unknown>(
@@ -395,11 +393,11 @@ export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awai
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -407,7 +405,7 @@ export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awai
  */
 
 export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof categoriesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -421,16 +419,16 @@ export function useCategoriesControllerFindOneInfinite<TData = InfiniteData<Awai
 
 
 
-export const getCategoriesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getCategoriesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCategoriesControllerFindOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindOne>>> = ({ signal }) => categoriesControllerFindOne(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof categoriesControllerFindOne>>> = ({ signal }) => categoriesControllerFindOne(id, { signal });
 
 
 
@@ -450,7 +448,7 @@ export function useCategoriesControllerFindOne<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindOne<TData = Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError = unknown>(
@@ -460,11 +458,11 @@ export function useCategoriesControllerFindOne<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof categoriesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCategoriesControllerFindOne<TData = Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -472,7 +470,7 @@ export function useCategoriesControllerFindOne<TData = Awaited<ReturnType<typeof
  */
 
 export function useCategoriesControllerFindOne<TData = Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof categoriesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -526,15 +524,15 @@ export const categoriesControllerUpdate = async (id: string,
 
 
 export const getCategoriesControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerUpdate>>, TError,{id: string;data: UpdateCategoryDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerUpdate>>, TError,{id: string;data: UpdateCategoryDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerUpdate>>, TError,{id: string;data: UpdateCategoryDto}, TContext> => {
 
 const mutationKey = ['categoriesControllerUpdate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -542,7 +540,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof categoriesControllerUpdate>>, {id: string;data: UpdateCategoryDto}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  categoriesControllerUpdate(id,data,requestOptions)
+          return  categoriesControllerUpdate(id,data,)
         }
 
 
@@ -560,7 +558,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Update a category
  */
 export const useCategoriesControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerUpdate>>, TError,{id: string;data: UpdateCategoryDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof categoriesControllerUpdate>>, TError,{id: string;data: UpdateCategoryDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof categoriesControllerUpdate>>,
         TError,

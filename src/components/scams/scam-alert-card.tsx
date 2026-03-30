@@ -1,4 +1,7 @@
 'use client';
+import Image from "next/image";
+import OptimizedImage from "@/components/ui/OptimizedImage";
+import type { ImageVariantsDto, ScamAlertResponseDto } from "@/api/generated/model";
 
 import {
     AlertTriangle,
@@ -20,36 +23,44 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/components/providers/auth-provider';
 import { toast } from 'sonner';
 
-interface ScamAlertCardProps {
-    alert: ScamAlertData;
-}
+type AlertUser = {
+    id?: string;
+    name?: string;
+    level?: string;
+    avatarUrl?: string | null;
+    [key: string]: unknown;
+};
 
-export interface ScamAlertData {
-    id: string;
-    scamName?: string;
-    description?: string;
-    preventionTip?: string;
+type AlertCity = {
+    name?: string;
+    slug?: string;
+    [key: string]: unknown;
+};
+
+type AlertCategory = {
+    name?: string;
+    [key: string]: unknown;
+};
+
+type AlertCount = {
+    votes?: number;
+    comments?: number;
+    [key: string]: unknown;
+};
+
+export type ScamAlertData = Omit<ScamAlertResponseDto, 'voteId' | '_count' | 'city' | 'category' | 'user'> & {
+    userId?: string;
     categoryId?: string;
     cityId?: string;
-    createdAt?: string;
-    slug?: string;
-    hasVoted?: boolean;
-    voteId?: string | null;
-    userId?: string;
-    category?: { name?: string };
-    city?: { slug?: string; name?: string };
-    user?: { id?: string; name?: string; avatarUrl?: string; level?: string };
-    _count?: { comments?: number; votes?: number };
-    imageVariants?: {
-        thumbnail: string;
-        display: string;
-    };
-    blurPlaceholder?: string;
-    imageWidth?: number;
-    imageHeight?: number;
-    imageSize?: number;
-    imageMimeType?: string;
-    qualityScore?: number;
+    voteId?: string | Record<string, unknown> | null;
+    _count?: AlertCount;
+    city?: AlertCity;
+    category?: AlertCategory;
+    user?: AlertUser;
+};
+
+interface ScamAlertCardProps {
+    alert: ScamAlertData;
 }
 
 interface NamedOption {
@@ -104,8 +115,9 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     image: editFile || undefined,
                 },
             });
-                const updatedAlert = (result as { data?: ScamAlertData })?.data || (result as ScamAlertData);
-                setAlert(updatedAlert);
+                if (result?.data) {
+                    setAlert(result.data);
+                }
                 setIsEditing(false);
             } catch (err) {
                 console.error(err);
@@ -153,10 +165,10 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             onClick={() => fileInputRef.current?.click()}
                             className="w-24 h-24 rounded-2xl bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center cursor-pointer hover:border-amber-400 transition-colors shrink-0 overflow-hidden relative group"
                         >
-                            {editPreview || (alert.imageVariants && Object.values(alert.imageVariants).some(v => v)) ? (
-                                <img alt="" src={editPreview || (alert.imageVariants?.display || alert.imageVariants?.thumbnail || '')}
-                                    className="w-full h-full object-cover group-hover:opacity-50"
-                                />
+                            {editPreview ? (
+                                <img alt="" src={editPreview} className="w-full h-full object-cover group-hover:opacity-50" />
+                            ) : alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
+                                <OptimizedImage variants={alert.imageVariants as ImageVariantsDto} alt="" fill className="w-full h-full object-cover group-hover:opacity-50" />
                             ) : (
                                 <Camera size={20} className="text-white/20" />
                             )}
@@ -250,9 +262,11 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
     return (
         <div
             onClick={() => {
+                const cityName = typeof alert.city?.name === 'string' ? alert.city.name : '';
+                const citySlugFromDto = typeof alert.city?.slug === 'string' ? alert.city.slug : '';
                 const citySlug =
-                    alert.city?.slug ||
-                    alert.city?.name?.toLowerCase().replace(/\s+/g, '-') ||
+                    citySlugFromDto ||
+                    cityName.toLowerCase().replace(/\s+/g, '-') ||
                     'bangkok';
                 const alertSlug = alert.slug || alert.scamName?.toLowerCase().replace(/\s+/g, '-') || alert.id;
                 router.push(`/scam-alerts/${citySlug}/${alertSlug}`);
@@ -262,13 +276,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
             {/* Photo — left */}
             <div className="relative w-36 shrink-0 overflow-hidden bg-white/5 border-r border-white/8" style={{ aspectRatio: alert.imageHeight && alert.imageWidth ? `${alert.imageWidth}/${alert.imageHeight}` : undefined }}>
                 {alert.imageVariants && Object.values(alert.imageVariants).some(v => v) ? (
-                    <img
-                        src={alert.imageVariants.display || alert.imageVariants.thumbnail || ''}
-                        alt={alert.scamName || 'Scam alert'}
-                        width={alert.imageWidth}
-                        height={alert.imageHeight}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    <OptimizedImage variants={alert.imageVariants as ImageVariantsDto} alt={alert.scamName || 'Scam alert'} fill className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">
                         <Camera size={24} strokeWidth={1.5} />
@@ -281,7 +289,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                 <div className="absolute top-3 left-3">
                     <span className="bg-red-500/80 backdrop-blur-md text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-widest uppercase flex items-center gap-1 shadow-lg border border-red-400/20">
                         <AlertTriangle size={8} />
-                        {alert.category?.name || 'Scam'}
+                        {typeof alert.category?.name === 'string' ? alert.category.name : 'Scam'}
                     </span>
                 </div>
 
@@ -290,24 +298,28 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent group/author cursor-pointer pointer-events-auto"
                     onClick={(e) => {
                         e.stopPropagation();
-                        router.push(`/profile/${alert.userId || alert.user?.id}`);
+                        const profileId =
+                            (typeof alert.userId === 'string' && alert.userId) ||
+                            (typeof alert.user?.id === 'string' && alert.user.id) ||
+                            '';
+                        if (profileId) {
+                            router.push(`/profile/${profileId}`);
+                        }
                     }}
                 >
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
-                            {alert.user?.avatarUrl ? (
-                                <img alt="" src={alert.user.avatarUrl}
-                                    className="w-full h-full object-cover"
-                                />
+                            {typeof alert.user?.avatarUrl === 'string' && alert.user.avatarUrl ? (
+                                <Image src={alert.user.avatarUrl} alt="" fill sizes="40px" className="object-cover" />
                             ) : (
                                 <User size={16} />
                             )}
                         </div>
                         <div className="flex flex-col min-w-0">
                             <span className="text-[10px] font-black text-white uppercase tracking-tight truncate leading-none mb-1 group-hover/author:text-amber-400 transition-colors">
-                                {alert.user?.name || 'Local'}
+                                {typeof alert.user?.name === 'string' ? alert.user.name : 'Local'}
                             </span>
-                            {alert.user?.level && (
+                            {typeof alert.user?.level === 'string' && alert.user.level && (
                                 <span className="text-[10px] font-bold text-amber-400 uppercase tracking-tighter leading-none">
                                     {alert.user.level.replace('_', ' ')}
                                 </span>
@@ -347,15 +359,26 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
 
                 {/* Footer */}
                 <div className="mt-auto flex items-center justify-end gap-2 pt-2 border-t border-white/8">
+                    {(() => {
+                        const currentComments =
+                            typeof alert._count?.comments === 'number'
+                                ? alert._count.comments
+                                : 0;
+                        const currentVotes =
+                            typeof alert._count?.votes === 'number'
+                                ? alert._count.votes
+                                : 0;
+                        return (
+                            <>
                     <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-full bg-white/5 text-xs transition-all duration-200">
                         <MessageCircle size={14} className="text-white/70" />
                         <span className="font-medium text-white/70">
-                            {alert._count?.comments || 0}
+                            {currentComments}
                         </span>
                     </div>
                     <div onClick={(e) => e.stopPropagation()}>
                         <LikeButton
-                            count={alert._count?.votes || 0}
+                            count={currentVotes}
                             isVoted={alert.hasVoted}
                             onVote={async () => {
                                 if (!authUser) {
@@ -374,19 +397,14 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                                         ...prev._count,
                                         votes: Math.max(
                                             0,
-                                            (prev._count?.votes || 0) + (wasVoted ? -1 : 1),
+                                            (typeof prev._count?.votes === 'number'
+                                                ? prev._count.votes
+                                                : 0) + (wasVoted ? -1 : 1),
                                         ),
                                     },
                                 }));
 
-                                const result = await toggleVote({
-                                    id: alert.id,
-                                    hasVoted: alert.hasVoted,
-                                    voteId: alert.voteId,
-                                    _count: {
-                                        votes: alert._count?.votes ?? 0,
-                                    },
-                                });
+                                const result = await toggleVote(alert);
 
                                 setAlert((prev) => ({
                                     ...prev,
@@ -402,6 +420,9 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                             title={alert.hasVoted ? 'Unlike this alert' : 'Like this alert'}
                         />
                     </div>
+                            </>
+                        );
+                    })()}
                 </div>
             </div>
         </div>

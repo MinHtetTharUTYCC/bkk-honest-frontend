@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { ScamAlertResponseDto } from "@/api/generated/model";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   useScamAlertBySlug,
@@ -54,15 +55,18 @@ interface AlertUser {
   name?: string;
   level?: string;
   avatarUrl?: string;
+  [key: string]: unknown;
 }
 
 interface AlertCity {
   name?: string;
+  [key: string]: unknown;
 }
 
 interface AlertCounts {
   votes?: number;
   comments?: number;
+  [key: string]: unknown;
 }
 
 interface LocalAlert {
@@ -70,20 +74,22 @@ interface LocalAlert {
   userId?: string;
   categoryId?: string;
   cityId?: string;
-  city?: AlertCity;
-  user?: AlertUser;
-  scamName?: string;
+  city: AlertCity;
+  user: AlertUser;
+  scamName: string;
   slug?: string;
-  description?: string;
-  preventionTip?: string;
+  description: string;
+  preventionTip: string;
   createdAt: string;
   hasVoted?: boolean;
   voteId?: string | null;
-  _count?: AlertCounts;
+  _count: AlertCounts;
   imageVariants?: {
     thumbnail: string;
     display: string;
   };
+  citySlug: string;
+  category: Record<string, unknown>;
 }
 
 interface AlertComment {
@@ -364,7 +370,7 @@ export default function ScamAlertClient() {
       };
     });
 
-    const result = await toggleVote(localAlert as LocalAlert);
+    const result = await toggleVote(localAlert as ScamAlertResponseDto);
 
     setLocalAlert((prev) => {
       if (!prev) return prev;
@@ -604,13 +610,9 @@ export default function ScamAlertClient() {
                 )
               }
             >
-              <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10 group-hover/user:border-amber-400 transition-colors">
+              <div className="relative w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center text-white/60 overflow-hidden border border-white/10 group-hover/user:border-amber-400 transition-colors">
                 {localAlert.user?.avatarUrl ? (
-                  <img
-                    src={localAlert.user.avatarUrl}
-                    alt={localAlert.user?.name || "User Avatar"}
-                    className="w-full h-full object-cover"
-                  />
+                  <Image src={localAlert.user.avatarUrl} alt={localAlert.user?.name || "User Avatar"} fill sizes="40px" className="object-cover" />
                 ) : (
                   <User size={18} />
                 )}
@@ -709,13 +711,9 @@ export default function ScamAlertClient() {
                         )
                       }
                     >
-                      <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5 group-hover/comment-user:border-amber-400 transition-colors">
+                      <div className="relative w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-white/40 overflow-hidden border border-white/5 group-hover/comment-user:border-amber-400 transition-colors">
                         {comment.user?.avatarUrl ? (
-                          <img
-                            src={comment.user.avatarUrl}
-                            alt={comment.user?.name || "User Avatar"}
-                            className="w-full h-full object-cover"
-                          />
+                          <Image src={comment.user.avatarUrl} alt={comment.user?.name || "User Avatar"} fill sizes="32px" className="object-cover" />
                         ) : (
                           <User size={14} />
                         )}

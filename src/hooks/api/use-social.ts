@@ -32,6 +32,7 @@ export function useCreateVote() {
 
 export function useDeleteVote() {
     return useMutation({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
         mutationFn: async ({ voteId, type }: { voteId: string; type: 'tip' | 'alert' | 'image' | 'spot' }) => {
             return await votesControllerDeleteVote(voteId);
         }
@@ -49,7 +50,11 @@ export function useCreateReport() {
     };
 }
 
-export function useGetReports(status?: string) {
-    const query = useReportsControllerGetReports({ status: status as string | undefined }, { query: { queryKey: ['reports', status] } });
+export function useGetReports(status?: string, limit = 10, offset = 0) {
+    const query = useReportsControllerGetReports({ 
+        status: status || '',
+        limit,
+        offset
+    }, { query: { queryKey: ['reports', status, limit, offset] } });
     return { ...query, data: query.data?.data || [] };
 }

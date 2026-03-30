@@ -31,7 +31,11 @@ export default function VibesTab({ spot }: VibesTabProps) {
   } = useInfiniteLiveVibes({ spotId });
 
   const spotVibes: VibeRow[] = useMemo(() => {
-    const rawVibes = vibesData?.pages.flatMap((page) => (page as { data?: VibeRow[] })?.data || []) || [];
+    const rawVibes =
+      vibesData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: VibeRow[] } })?.data?.data || [],
+      ) || [];
 
     return [...rawVibes].sort((a, b) => {
       const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0;

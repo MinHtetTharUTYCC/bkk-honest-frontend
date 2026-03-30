@@ -36,7 +36,7 @@ function ProfileLayoutContent({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading: authLoading } = useAuth();
+  const { loading: authLoading } = useAuth();
   const {
     data: profileResponse,
     isLoading: profileLoading,

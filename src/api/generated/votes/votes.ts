@@ -27,8 +27,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -70,15 +68,15 @@ export const votesControllerCreateTipVote = async (tipVoteDto: TipVoteDto, optio
 
 
 export const getVotesControllerCreateTipVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateTipVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -86,7 +84,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, {data: TipVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateTipVote(data,requestOptions)
+          return  votesControllerCreateTipVote(data,)
         }
 
 
@@ -104,7 +102,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a community tip vote
  */
 export const useVotesControllerCreateTipVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
         TError,
@@ -152,15 +150,15 @@ export const votesControllerCreateAlertVote = async (alertVoteDto: AlertVoteDto,
 
 
 export const getVotesControllerCreateAlertVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateAlertVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -168,7 +166,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, {data: AlertVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateAlertVote(data,requestOptions)
+          return  votesControllerCreateAlertVote(data,)
         }
 
 
@@ -186,7 +184,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a scam alert vote
  */
 export const useVotesControllerCreateAlertVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
         TError,
@@ -234,15 +232,15 @@ export const votesControllerCreateImageVote = async (imageVoteDto: ImageVoteDto,
 
 
 export const getVotesControllerCreateImageVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateImageVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -250,7 +248,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, {data: ImageVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateImageVote(data,requestOptions)
+          return  votesControllerCreateImageVote(data,)
         }
 
 
@@ -268,7 +266,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a gallery image vote
  */
 export const useVotesControllerCreateImageVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
         TError,
@@ -316,15 +314,15 @@ export const votesControllerCreateSpotVote = async (spotVoteDto: SpotVoteDto, op
 
 
 export const getVotesControllerCreateSpotVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateSpotVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -332,7 +330,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, {data: SpotVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateSpotVote(data,requestOptions)
+          return  votesControllerCreateSpotVote(data,)
         }
 
 
@@ -350,7 +348,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a spot vote
  */
 export const useVotesControllerCreateSpotVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
         TError,
@@ -397,15 +395,15 @@ export const votesControllerDeleteVote = async (id: string, options?: RequestIni
 
 
 export const getVotesControllerDeleteVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -413,7 +411,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteVote(id,requestOptions)
+          return  votesControllerDeleteVote(id,)
         }
 
 
@@ -431,7 +429,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete a vote (unvote)
  */
 export const useVotesControllerDeleteVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteVote>>,
         TError,
@@ -478,15 +476,15 @@ export const votesControllerDeleteImageVote = async (id: string, options?: Reque
 
 
 export const getVotesControllerDeleteImageVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteImageVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -494,7 +492,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteImageVote(id,requestOptions)
+          return  votesControllerDeleteImageVote(id,)
         }
 
 
@@ -512,7 +510,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete an image vote (unvote)
  */
 export const useVotesControllerDeleteImageVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
         TError,
@@ -559,15 +557,15 @@ export const votesControllerDeleteTipVote = async (id: string, options?: Request
 
 
 export const getVotesControllerDeleteTipVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteTipVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -575,7 +573,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteTipVote(id,requestOptions)
+          return  votesControllerDeleteTipVote(id,)
         }
 
 
@@ -593,7 +591,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete a tip vote (unvote)
  */
 export const useVotesControllerDeleteTipVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
         TError,
@@ -640,15 +638,15 @@ export const votesControllerDeleteAlertVote = async (id: string, options?: Reque
 
 
 export const getVotesControllerDeleteAlertVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteAlertVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -656,7 +654,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteAlertVote(id,requestOptions)
+          return  votesControllerDeleteAlertVote(id,)
         }
 
 
@@ -674,7 +672,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete a scam alert vote (unvote)
  */
 export const useVotesControllerDeleteAlertVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
         TError,
@@ -721,15 +719,15 @@ export const votesControllerDeleteSpotVote = async (id: string, options?: Reques
 
 
 export const getVotesControllerDeleteSpotVoteMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteSpotVote'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -737,7 +735,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteSpotVote(id,requestOptions)
+          return  votesControllerDeleteSpotVote(id,)
         }
 
 
@@ -755,7 +753,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete a spot vote (unvote)
  */
 export const useVotesControllerDeleteSpotVote = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
         TError,
@@ -804,15 +802,15 @@ export const votesControllerDeleteVoteByType = async (type: string,
 
 
 export const getVotesControllerDeleteVoteByTypeMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteVoteByType'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -820,7 +818,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, {type: string;id: string}> = (props) => {
           const {type,id} = props ?? {};
 
-          return  votesControllerDeleteVoteByType(type,id,requestOptions)
+          return  votesControllerDeleteVoteByType(type,id,)
         }
 
 
@@ -838,7 +836,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Delete a vote by type and id (unvote)
  */
 export const useVotesControllerDeleteVoteByType = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
         TError,

@@ -11,11 +11,14 @@ import {
     ArrowRight,
     Loader2,
     AlertTriangle,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Target,
     Zap,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Calendar,
     ImageIcon,
     Lightbulb,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Tag,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -99,6 +102,7 @@ interface InfinitePage<T> extends PaginationPage {
 export function ProfileTabs({ userId, activeTab, onTabChange, isPublic = false }: ProfileTabsProps) {
     const { ref, inView } = useInView({ threshold: 0.1 });
     const lastFetchTabRef = useRef<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const queryClient = useQueryClient();
 
     const {

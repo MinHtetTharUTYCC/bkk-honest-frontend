@@ -236,6 +236,7 @@ describe('ReactionButton Component', () => {
 
   describe('Error Handling', () => {
     it('should revert count on API error', async () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const user = userEvent.setup();
       mockMutateAsync.mockRejectedValueOnce(new Error('Network error'));
 
@@ -258,6 +259,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should revert reaction state on API error', async () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const user = userEvent.setup();
       mockMutateAsync.mockRejectedValueOnce(new Error('API error'));
 
@@ -284,6 +286,7 @@ describe('ReactionButton Component', () => {
     });
 
     it('should handle network errors gracefully', async () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const user = userEvent.setup();
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       mockMutateAsync.mockRejectedValueOnce(new Error('Network timeout'));
@@ -338,7 +341,7 @@ describe('ReactionButton Component', () => {
   describe('Optimistic Updates', () => {
     it('should update UI before API call completes', async () => {
       const user = userEvent.setup();
-      let resolveApi: (value: any) => void = () => {};
+      let resolveApi: (value: unknown) => void = () => {};
       mockMutateAsync.mockReturnValueOnce(
         new Promise(resolve => { resolveApi = resolve; })
       );

@@ -1,8 +1,11 @@
 "use client";
+import OptimizedImage from "@/components/ui/OptimizedImage";
+import type { ImageVariantsDto } from "@/api/generated/model";
 import { Suspense, useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Map, { Marker, ViewState, MapRef } from "react-map-gl/mapbox";
 import "mapbox-gl/dist/mapbox-gl.css";
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useNearbySpots, usePopularArea, useCategories } from "@/hooks/use-api";
 import {
   Loader2,
@@ -91,7 +94,6 @@ function MapPageContent() {
   const urlLat = parseFloat(urlParams.get("lat") || "");
   const urlLng = parseFloat(urlParams.get("lng") || "");
   const urlZoom = parseFloat(urlParams.get("zoom") || "");
-  const urlCat = urlParams.get("cat") || undefined;
   const hasUrlPosition = !isNaN(urlLat) && !isNaN(urlLng);
 
   const initialCenter = hasUrlPosition
@@ -132,7 +134,7 @@ function MapPageContent() {
     const timestamp = spot.activityStats?.lastActivity;
     if (!timestamp) return null;
     const date = new Date(timestamp);
-    // eslint-disable-next-line react-hooks/purity
+     
     const now = Date.now();
     const seconds = Math.floor((now - date.getTime()) / 1000);
     if (seconds < 60) return "Just now";
@@ -161,7 +163,6 @@ function MapPageContent() {
 
   // Data Fetching
   const { data: categories } = useCategories();
-  const { data: popularArea } = usePopularArea();
 
   // Snap coordinate to ~1km grid to avoid cache-key churn on tiny moves
   const snapCoord = (v: number) => Math.round(v * 100) / 100;
@@ -264,50 +265,49 @@ function MapPageContent() {
           setSearchParams({ latitude, longitude, zoom: 15 });
           syncUrl(latitude, longitude, 15, activeCategoryId);
         },
-        (error) => {
+          (error) => {
           console.warn("Geolocation blocked or failed. Using fallback.", error);
-          if (popularArea) {
-            setViewState((prev) => ({
-              ...prev,
-              latitude: (popularArea?.latitude ?? 0),
-              longitude: (popularArea?.longitude ?? 0),
-              zoom: 14,
-            }));
-            setSearchParams({
-              latitude: (popularArea?.latitude ?? 0),
-              longitude: (popularArea?.longitude ?? 0),
-              zoom: 14,
-            });
-            syncUrl(
-              (popularArea?.latitude ?? 0),
-              (popularArea?.longitude ?? 0),
-              14,
-              activeCategoryId,
-            );
-          }
+          setViewState((prev) => ({
+            ...prev,
+            latitude: DEFAULT_CENTER.latitude,
+            longitude: DEFAULT_CENTER.longitude,
+            zoom: DEFAULT_CENTER.zoom,
+          }));
+          setSearchParams({
+            latitude: DEFAULT_CENTER.latitude,
+            longitude: DEFAULT_CENTER.longitude,
+            zoom: DEFAULT_CENTER.zoom,
+          });
+          syncUrl(
+            DEFAULT_CENTER.latitude,
+            DEFAULT_CENTER.longitude,
+            DEFAULT_CENTER.zoom,
+            activeCategoryId,
+          );
         },
         { timeout: 10000, enableHighAccuracy: true },
       );
-    } else if (popularArea) {
+    } else {
       setViewState((prev) => ({
         ...prev,
-        latitude: (popularArea?.latitude ?? 0),
-        longitude: (popularArea?.longitude ?? 0),
-        zoom: 14,
+        latitude: DEFAULT_CENTER.latitude,
+        longitude: DEFAULT_CENTER.longitude,
+        zoom: DEFAULT_CENTER.zoom,
       }));
       setSearchParams({
-        latitude: (popularArea?.latitude ?? 0),
-        longitude: (popularArea?.longitude ?? 0),
-        zoom: 14,
+        latitude: DEFAULT_CENTER.latitude,
+        longitude: DEFAULT_CENTER.longitude,
+        zoom: DEFAULT_CENTER.zoom,
       });
       syncUrl(
-        (popularArea?.latitude ?? 0),
-        (popularArea?.longitude ?? 0),
-        14,
+        DEFAULT_CENTER.latitude,
+        DEFAULT_CENTER.longitude,
+        DEFAULT_CENTER.zoom,
         activeCategoryId,
       );
     }
-  }, [popularArea, activeCategoryId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeCategoryId]);
 
   const handleNavigate = () => {
     if (!selectedSpot) return;
@@ -600,12 +600,8 @@ function MapPageContent() {
             <div className="bg-zinc-900/90 backdrop-blur-xl border border-white/10 p-5 rounded-3xl shadow-2xl max-w-md mx-auto">
               {/* Spot Image */}
               {selectedSpot.imageVariants && Object.values(selectedSpot.imageVariants).some(v => v) && (
-                <div className="w-full h-40 rounded-2xl overflow-hidden mb-4 bg-white/5">
-                  <img
-                    src={selectedSpot.imageVariants.display || selectedSpot.imageVariants.thumbnail || ''}
-                    alt={selectedSpot.name}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-4 bg-white/5">
+                  <OptimizedImage variants={selectedSpot.imageVariants as ImageVariantsDto} alt={selectedSpot.name} fill className="object-cover" />
                 </div>
               )}
               <div className="flex justify-between items-start mb-4">

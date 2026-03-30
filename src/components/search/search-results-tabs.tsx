@@ -8,6 +8,7 @@ import { CardSkeleton, ScamAlertCardSkeleton } from '@/components/ui/skeleton';
 import { useInfiniteSpots, useInfiniteScamAlerts } from '@/hooks/use-api';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInView } from 'react-intersection-observer';
+import type { SpotCardData } from '@/components/spots/spot-card';
 import type { ScamAlertData } from '@/components/scams/scam-alert-card';
 
 interface SearchResultsTabsProps {
@@ -19,9 +20,7 @@ interface SearchResultsTabsProps {
   cityId?: string;
 }
 
-interface SearchSpotItem {
-  id: string;
-}
+type SearchSpotItem = SpotCardData;
 
 interface PaginationPage<T> {
   data?: T[];
@@ -39,6 +38,7 @@ export function SearchResultsTabs({
   cityId,
 }: SearchResultsTabsProps) {
   const [tab, setTab] = useState(activeTab);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user: authUser } = useAuth();
   const { ref, inView } = useInView();
 

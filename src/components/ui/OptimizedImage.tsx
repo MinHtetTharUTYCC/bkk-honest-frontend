@@ -109,12 +109,12 @@ export default function OptimizedImage({
 
   // Render with fill prop (for responsive containers)
   if (fill) {
-    return <Image {...imageProps} fill />;
+    return <Image {...imageProps} alt={alt} fill />;
   }
 
   // Render with explicit dimensions
   if (width && height) {
-    return <Image {...imageProps} width={width} height={height} />;
+    return <Image {...imageProps} alt={alt} width={width} height={height} />;
   }
 
   // Default: require dimensions

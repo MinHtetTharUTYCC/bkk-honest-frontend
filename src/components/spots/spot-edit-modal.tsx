@@ -48,7 +48,7 @@ export default function SpotEditModal({ spot, onClose }: SpotEditModalProps) {
                     cityId: formData.cityId,
                     latitude: formData.latitude,
                     longitude: formData.longitude,
-                    image: formData.imageFile || undefined } });
+                } });
             toast.success('Spot updated successfully');
             router.refresh();
             onClose();

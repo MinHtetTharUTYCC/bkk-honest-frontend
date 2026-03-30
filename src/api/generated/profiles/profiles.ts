@@ -40,8 +40,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -83,15 +81,15 @@ export const profilesControllerCreate = async (createProfileDto: CreateProfileDt
 
 
 export const getProfilesControllerCreateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext> => {
 
 const mutationKey = ['profilesControllerCreate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -99,7 +97,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof profilesControllerCreate>>, {data: CreateProfileDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  profilesControllerCreate(data,requestOptions)
+          return  profilesControllerCreate(data,)
         }
 
 
@@ -117,7 +115,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Create a profile
  */
 export const useProfilesControllerCreate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profilesControllerCreate>>,
         TError,
@@ -177,16 +175,16 @@ export const getProfilesControllerGetMeQueryKey = () => {
     }
 
 
-export const getProfilesControllerGetMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerGetMeInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetMeInfiniteQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({ signal }) => profilesControllerGetMe({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({ signal }) => profilesControllerGetMe({ signal });
 
 
 
@@ -206,7 +204,7 @@ export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<
           TError,
           Awaited<ReturnType<typeof profilesControllerGetMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
@@ -216,11 +214,11 @@ export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<
           TError,
           Awaited<ReturnType<typeof profilesControllerGetMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -228,7 +226,7 @@ export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<
  */
 
 export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetMe>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -242,16 +240,16 @@ export function useProfilesControllerGetMeInfinite<TData = InfiniteData<Awaited<
 
 
 
-export const getProfilesControllerGetMeQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerGetMeQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetMeQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({ signal }) => profilesControllerGetMe({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({ signal }) => profilesControllerGetMe({ signal });
 
 
 
@@ -271,7 +269,7 @@ export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof pro
           TError,
           Awaited<ReturnType<typeof profilesControllerGetMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = unknown>(
@@ -281,11 +279,11 @@ export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof pro
           TError,
           Awaited<ReturnType<typeof profilesControllerGetMe>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -293,7 +291,7 @@ export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof pro
  */
 
 export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -359,15 +357,15 @@ if(updateProfileDto.country !== undefined) {
 
 
 export const getProfilesControllerUpdateMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext> => {
 
 const mutationKey = ['profilesControllerUpdate'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -375,7 +373,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof profilesControllerUpdate>>, {data: UpdateProfileDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  profilesControllerUpdate(data,requestOptions)
+          return  profilesControllerUpdate(data,)
         }
 
 
@@ -393,7 +391,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Update profile
  */
 export const useProfilesControllerUpdate = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof profilesControllerUpdate>>,
         TError,
@@ -460,16 +458,16 @@ export const getProfilesControllerGetLeaderboardQueryKey = (params?: ProfilesCon
     }
 
 
-export const getProfilesControllerGetLeaderboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerGetLeaderboardInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetLeaderboardInfiniteQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey, ProfilesControllerGetLeaderboardParams['skip']> = ({ signal, pageParam }) => profilesControllerGetLeaderboard({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey, ProfilesControllerGetLeaderboardParams['skip']> = ({ signal, pageParam }) => profilesControllerGetLeaderboard({...params, 'skip': pageParam || params?.['skip']}, { signal });
 
 
 
@@ -489,7 +487,7 @@ export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData
           TError,
           Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
@@ -499,11 +497,11 @@ export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData
           TError,
           Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, QueryKey
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -511,7 +509,7 @@ export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData
  */
 
 export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, ProfilesControllerGetLeaderboardParams['skip']>, TError = unknown>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData, QueryKey, ProfilesControllerGetLeaderboardParams['skip']>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -525,16 +523,16 @@ export function useProfilesControllerGetLeaderboardInfinite<TData = InfiniteData
 
 
 
-export const getProfilesControllerGetLeaderboardQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = unknown>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerGetLeaderboardQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = unknown>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetLeaderboardQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>> = ({ signal }) => profilesControllerGetLeaderboard(params, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>> = ({ signal }) => profilesControllerGetLeaderboard(params, { signal });
 
 
 
@@ -554,7 +552,7 @@ export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<t
           TError,
           Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = unknown>(
@@ -564,11 +562,11 @@ export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<t
           TError,
           Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = unknown>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -576,7 +574,7 @@ export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<t
  */
 
 export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = unknown>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -641,16 +639,16 @@ export const getProfilesControllerFindOneQueryKey = (id: string,) => {
     }
 
 
-export const getProfilesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerFindOneInfiniteQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal });
 
 
 
@@ -670,7 +668,7 @@ export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof profilesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
@@ -680,11 +678,11 @@ export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaite
           TError,
           Awaited<ReturnType<typeof profilesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -692,7 +690,7 @@ export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaite
  */
 
 export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerFindOne>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -706,16 +704,16 @@ export function useProfilesControllerFindOneInfinite<TData = InfiniteData<Awaite
 
 
 
-export const getProfilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerFindOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal });
 
 
 
@@ -735,7 +733,7 @@ export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof p
           TError,
           Awaited<ReturnType<typeof profilesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = unknown>(
@@ -745,11 +743,11 @@ export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof p
           TError,
           Awaited<ReturnType<typeof profilesControllerFindOne>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -757,7 +755,7 @@ export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof p
  */
 
 export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -822,16 +820,16 @@ export const getProfilesControllerGetReputationStatsQueryKey = (id: string,) => 
     }
 
 
-export const getProfilesControllerGetReputationStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerGetReputationStatsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetReputationStatsInfiniteQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>> = ({ signal }) => profilesControllerGetReputationStats(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>> = ({ signal }) => profilesControllerGetReputationStats(id, { signal });
 
 
 
@@ -851,7 +849,7 @@ export function useProfilesControllerGetReputationStatsInfinite<TData = Infinite
           TError,
           Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
@@ -861,11 +859,11 @@ export function useProfilesControllerGetReputationStatsInfinite<TData = Infinite
           TError,
           Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -873,7 +871,7 @@ export function useProfilesControllerGetReputationStatsInfinite<TData = Infinite
  */
 
 export function useProfilesControllerGetReputationStatsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -887,16 +885,16 @@ export function useProfilesControllerGetReputationStatsInfinite<TData = Infinite
 
 
 
-export const getProfilesControllerGetReputationStatsQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getProfilesControllerGetReputationStatsQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = unknown>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetReputationStatsQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>> = ({ signal }) => profilesControllerGetReputationStats(id, { signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>> = ({ signal }) => profilesControllerGetReputationStats(id, { signal });
 
 
 
@@ -916,7 +914,7 @@ export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = unknown>(
@@ -926,11 +924,11 @@ export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -938,7 +936,7 @@ export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnTy
  */
 
 export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = unknown>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

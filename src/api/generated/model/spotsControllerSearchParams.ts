@@ -7,8 +7,6 @@
  */
 
 export type SpotsControllerSearchParams = {
-skip?: string | number;
-take?: string | number;
 /**
  * Search query
  */
@@ -21,4 +19,8 @@ cityId?: string;
  * Max results (default 20)
  */
 limit?: number;
+/**
+ * Items to skip (for pagination)
+ */
+skip?: number;
 };

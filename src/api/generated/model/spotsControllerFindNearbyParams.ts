@@ -7,8 +7,6 @@
  */
 
 export type SpotsControllerFindNearbyParams = {
-skip?: string | number;
-take?: string | number;
 /**
  * Latitude coordinate
  */
@@ -29,4 +27,8 @@ categoryId?: string;
  * Max number of spots to return
  */
 limit?: number;
+/**
+ * Items to skip (for pagination)
+ */
+skip?: number;
 };

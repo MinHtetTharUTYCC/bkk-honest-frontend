@@ -7,6 +7,6 @@
  */
 
 export type PriceReportsControllerFindByUserParams = {
-take?: string | number;
-skip?: string | number;
+take?: number;
+skip?: number;
 };

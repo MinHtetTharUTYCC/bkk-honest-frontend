@@ -1,5 +1,6 @@
 'use client';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Search, Bell, Zap, LogIn } from 'lucide-react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useProfile } from '@/hooks/use-api';

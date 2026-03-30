@@ -22,8 +22,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 /**
@@ -72,15 +70,15 @@ export const contactControllerSubmitContactForm = async (contactFormDto: Contact
 
 
 export const getContactControllerSubmitContactFormMutationOptions = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, }
 ): UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext> => {
 
 const mutationKey = ['contactControllerSubmitContactForm'];
-const {mutation: mutationOptions, request: requestOptions} = options ?
+const {mutation: mutationOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
+      : {mutation: { mutationKey, }};
 
 
 
@@ -88,7 +86,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, {data: ContactFormDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  contactControllerSubmitContactForm(data,requestOptions)
+          return  contactControllerSubmitContactForm(data,)
         }
 
 
@@ -106,7 +104,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
  * @summary Send a contact form email
  */
 export const useContactControllerSubmitContactForm = <TError = void,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, request?: SecondParameter<typeof customInstance>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, }
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
         TError,

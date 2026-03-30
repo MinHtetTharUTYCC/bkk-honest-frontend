@@ -7,6 +7,7 @@ import ScamAlertCard from '@/components/scams/scam-alert-card';
 import { AlertTriangle, MapPin, TrendingUp, Clock, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCity } from '@/components/providers/city-provider';
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
@@ -21,6 +22,7 @@ type ScamAlertsPageClientProps = {
     };
 };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ScamAlertsPageClient({ searchParams: initialParams }: ScamAlertsPageClientProps = {}) {
     const router = useRouter();
     const pathname = usePathname();
@@ -79,11 +81,12 @@ export default function ScamAlertsPageClient({ searchParams: initialParams }: Sc
             }
         }, 500);
         return () => clearTimeout(timer);
-    }, [search, pathname, createQueryString, searchParams]);
+    }, [search, pathname, createQueryString, searchParams, router]);
 
     const { data: categoriesResponse } = useCategories();
     const categories = Array.isArray(categoriesResponse) ? categoriesResponse : [];
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
         useInfiniteScamAlerts({
             cityId: selectedCityId,
@@ -107,7 +110,13 @@ export default function ScamAlertsPageClient({ searchParams: initialParams }: Sc
         }
     }, [inView]);
 
-    const alerts = (data?.pages.flatMap((page) => page.data || []) || []) as ScamAlertData[];
+    const alerts = (
+        data?.pages.flatMap(
+            (page) =>
+                (page as unknown as { data?: { data?: ScamAlertData[] } })?.data
+                    ?.data || [],
+        ) || []
+    ) as ScamAlertData[];
 
     return (
         <div className="space-y-6 pb-24">

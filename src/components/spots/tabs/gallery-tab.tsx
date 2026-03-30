@@ -1,10 +1,10 @@
 "use client";
+import Image from "next/image";
 
 import { useRef, useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteSpotGallery, useUploadSpotImage, useDeleteGalleryImage, useFlagGalleryImage } from "@/hooks/use-api";
-import { useQueryClient } from "@tanstack/react-query";
-import { useVoteToggle } from "@/hooks/use-vote-toggle";
+import { useQueryClient, InfiniteData } from "@tanstack/react-query";
 import { Camera, Upload, Loader2, User, Calendar, Trash2, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GalleryImage, SpotData } from "@/types/spot";
@@ -13,9 +13,9 @@ import OptimizedImage from "@/components/ui/OptimizedImage";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { toast } from "sonner";
+import { useVoteToggle } from "@/hooks/use-vote-toggle";
 import Link from "next/link";
 import { ImageViewer } from "@/components/ui/image-viewer";
-import { buildRenderableImage, extractGalleryImageData } from "@/lib/image-utils";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,6 +26,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+
+interface GalleryPageData {
+  data: GalleryImage[];
+}
 
 interface GalleryTabProps {
   spot: SpotData;
@@ -62,7 +66,12 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const flagMutation = useFlagGalleryImage();
 
   const images = useMemo(() => {
-    const rawImages = galleryData?.pages.flatMap((page) => (page as { data?: GalleryImage[] })?.data || []) || [];
+    const rawImages =
+      galleryData?.pages.flatMap(
+        (page) =>
+          (page as unknown as { data?: { data?: GalleryImage[] } })?.data
+            ?.data || [],
+      ) || [];
     // Deduplicate items just in case
     return Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
   }, [galleryData]);
@@ -101,9 +110,9 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
       // This ensures the new upload stays at the top regardless of sort (Popular vs Newest)
       const sortTypes = ['popular', 'newest'];
       sortTypes.forEach((sortType) => {
-        queryClient.setQueryData(
+        queryClient.setQueryData<InfiniteData<GalleryPageData>>(
           ['gallery-infinite', spotId, sortType],
-          (oldData: { pages: Array<{ data: GalleryImage[] }>; pageParams: any } | undefined) => {
+          (oldData) => {
             if (!oldData || !oldData.pages) return oldData;
             
             const newPages = [...oldData.pages];
@@ -146,7 +155,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
       return;
     }
     try {
-      await flagMutation.mutateAsync(id);
+      await flagMutation.mutateAsync({ id });
       toast.success("Photo reported successfully", { description: "Our moderators will review it soon." });
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string | string[] } } };
@@ -158,7 +167,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
   const handleDeleteImage = async () => {
     if (!deleteImageId) return;
     try {
-      await deleteMutation.mutateAsync({ id: deleteImageId, spotId });
+      await deleteMutation.mutateAsync({ id: deleteImageId });
       toast.success("Photo deleted successfully");
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string | string[] } } };
@@ -336,10 +345,10 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                     <div className="flex items-center gap-2 min-w-0">
                       <Link 
                         href={`/profile/${img.userId}`}
-                        className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 border border-transparent transition-colors shrink-0"
+                        className="relative w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 border border-transparent transition-colors shrink-0"
                       >
-                        {(img.user as any)?.avatarUrl ? (
-                          <img alt="" src={(img.user as any).avatarUrl} className="w-full h-full object-cover" />
+                        {img.user?.avatarUrl ? (
+                          <Image src={img.user.avatarUrl} alt="" fill sizes="28px" className="object-cover" />
                         ) : (
                           <User size={12} />
                         )}
@@ -368,7 +377,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                         }
                         setVotingImageId(img.id);
                         try {
-                          await toggleVote({ id: img.id, hasVoted: img.hasVoted, voteId: img.voteId, _count: { votes: img._count?.votes ?? 0 } });
+                          await toggleVote({ id: img.id, hasVoted: img.hasVoted, voteId: img.voteId });
                         } finally {
                           setVotingImageId(null);
                         }

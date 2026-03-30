@@ -5,6 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
+import type { LiveVibeDtoSpot } from './liveVibeDtoSpot';
 
 export interface LiveVibeDto {
   id: string;
@@ -14,4 +15,5 @@ export interface LiveVibeDto {
   waitTimeMinutes?: number;
   createdAt: string;
   updatedAt: string;
+  spot?: LiveVibeDtoSpot;
 }

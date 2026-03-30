@@ -7,9 +7,8 @@
  */
 
 export type ReportsControllerGetReportsParams = {
-skip?: string | number;
-take?: string | number;
 limit: number;
 offset: number;
 status: string;
+skip?: number;
 };

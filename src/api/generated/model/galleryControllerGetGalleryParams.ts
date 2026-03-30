@@ -9,15 +9,15 @@ import type { GalleryControllerGetGallerySort } from './galleryControllerGetGall
 
 export type GalleryControllerGetGalleryParams = {
 /**
- * Sort order
+ * Items to skip
  */
-sort?: GalleryControllerGetGallerySort;
+skip?: number;
 /**
  * Items per page
  */
 take?: number;
 /**
- * Items to skip
+ * Sort order
  */
-skip?: unknown;
+sort?: GalleryControllerGetGallerySort;
 };

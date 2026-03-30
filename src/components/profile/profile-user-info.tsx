@@ -131,10 +131,13 @@ export function ProfileUserInfo({
             </button>
 
             {/* Report in Dropdown Menu */}
-            <DropdownMenu>
-              <button className="p-2.5 hover:bg-white/10 rounded-full transition-colors border border-white/10">
-                <MoreVertical size={18} className="text-white/60 hover:text-white" />
-              </button>
+            <DropdownMenu
+              trigger={
+                <button className="p-2.5 hover:bg-white/10 rounded-full transition-colors border border-white/10">
+                  <MoreVertical size={18} className="text-white/60 hover:text-white" />
+                </button>
+              }
+            >
               <DropdownMenuItem>
                 <ReportButton
                   targetId={userId}

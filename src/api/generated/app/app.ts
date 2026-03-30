@@ -28,8 +28,6 @@ import type {
 import { customInstance } from '../../mutator/custom-instance';
 
 
-type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
-
 
 
 export type appControllerGetHealthResponse200 = {
@@ -80,16 +78,16 @@ export const getAppControllerGetHealthQueryKey = () => {
     }
 
 
-export const getAppControllerGetHealthInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAppControllerGetHealthInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getAppControllerGetHealthInfiniteQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerGetHealth>>> = ({ signal }) => appControllerGetHealth({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerGetHealth>>> = ({ signal }) => appControllerGetHealth({ signal });
 
 
 
@@ -109,7 +107,7 @@ export function useAppControllerGetHealthInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof appControllerGetHealth>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerGetHealthInfinite<TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>, TError = unknown>(
@@ -119,16 +117,16 @@ export function useAppControllerGetHealthInfinite<TData = InfiniteData<Awaited<R
           TError,
           Awaited<ReturnType<typeof appControllerGetHealth>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerGetHealthInfinite<TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useAppControllerGetHealthInfinite<TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -142,16 +140,16 @@ export function useAppControllerGetHealthInfinite<TData = InfiniteData<Awaited<R
 
 
 
-export const getAppControllerGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAppControllerGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getAppControllerGetHealthQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerGetHealth>>> = ({ signal }) => appControllerGetHealth({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerGetHealth>>> = ({ signal }) => appControllerGetHealth({ signal });
 
 
 
@@ -171,7 +169,7 @@ export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appC
           TError,
           Awaited<ReturnType<typeof appControllerGetHealth>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
@@ -181,16 +179,16 @@ export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appC
           TError,
           Awaited<ReturnType<typeof appControllerGetHealth>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -252,16 +250,16 @@ export const getAppControllerDebugSentryQueryKey = () => {
     }
 
 
-export const getAppControllerDebugSentryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAppControllerDebugSentryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getAppControllerDebugSentryInfiniteQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerDebugSentry>>> = ({ signal }) => appControllerDebugSentry({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerDebugSentry>>> = ({ signal }) => appControllerDebugSentry({ signal });
 
 
 
@@ -281,7 +279,7 @@ export function useAppControllerDebugSentryInfinite<TData = InfiniteData<Awaited
           TError,
           Awaited<ReturnType<typeof appControllerDebugSentry>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerDebugSentryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>, TError = unknown>(
@@ -291,16 +289,16 @@ export function useAppControllerDebugSentryInfinite<TData = InfiniteData<Awaited
           TError,
           Awaited<ReturnType<typeof appControllerDebugSentry>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerDebugSentryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useAppControllerDebugSentryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>, TError = unknown>(
-  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -314,16 +312,16 @@ export function useAppControllerDebugSentryInfinite<TData = InfiniteData<Awaited
 
 
 
-export const getAppControllerDebugSentryQueryOptions = <TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+export const getAppControllerDebugSentryQueryOptions = <TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, }
 ) => {
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+const {query: queryOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getAppControllerDebugSentryQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerDebugSentry>>> = ({ signal }) => appControllerDebugSentry({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerDebugSentry>>> = ({ signal }) => appControllerDebugSentry({ signal });
 
 
 
@@ -343,7 +341,7 @@ export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof ap
           TError,
           Awaited<ReturnType<typeof appControllerDebugSentry>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
@@ -353,16 +351,16 @@ export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof ap
           TError,
           Awaited<ReturnType<typeof appControllerDebugSentry>>
         > , 'initialData'
-      >, request?: SecondParameter<typeof customInstance>}
+      >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, }
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

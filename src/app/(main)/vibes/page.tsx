@@ -9,19 +9,9 @@ import { getSpotUrl } from "@/lib/slug";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useInView } from "react-intersection-observer";
 import { CategorySelector } from "@/components/ui/category-selector";
+import type { LiveVibeDto } from "@/api/generated/model";
 
-interface VibeItem {
-  id: string;
-  timestamp: string;
-  crowdLevel: number;
-  waitTimeMinutes?: number;
-  spot?: {
-    slug?: string;
-    name?: string;
-    address?: string;
-    city?: { slug?: string };
-  };
-}
+type VibeItem = LiveVibeDto;
 
 function VibesPageContent() {
   const router = useRouter();
@@ -78,7 +68,7 @@ function VibesPageContent() {
 
   const vibes: VibeItem[] =
     vibesData?.pages.flatMap(
-      (page) => (page as { data?: VibeItem[] })?.data || [],
+      (page) => (page as { data?: { data?: VibeItem[] } })?.data?.data || [],
     ) || [];
 
   // Intersection Observer for Infinite Scroll
@@ -166,7 +156,7 @@ function VibesPageContent() {
                   className="text-white/40 font-bold text-[10px] uppercase tracking-tighter bg-white/5 px-3 py-1.5 rounded-xl border border-white/5"
                   suppressHydrationWarning
                 >
-                  {new Date(vibe.timestamp).toLocaleTimeString([], {
+                  {new Date(vibe.createdAt).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
@@ -200,7 +190,7 @@ function VibesPageContent() {
 
                 <p className="text-white/40 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2 pt-4 border-t border-white/5">
                   <MapPin size={12} className="text-amber-400" />
-                  {vibe.spot?.address?.split(",")[0]}
+                  {vibe.spot?.name || "Unknown spot"}
                 </p>
               </div>
             </Link>

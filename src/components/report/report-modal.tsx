@@ -42,6 +42,7 @@ export default function ReportModal({ targetId, reportType, onClose }: ReportMod
       });
       toast.success('Report submitted. Thank you for helping keep our community safe.');
       onClose();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('Failed to submit report');
     }
