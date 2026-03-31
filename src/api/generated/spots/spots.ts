@@ -5,3712 +5,1670 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
-  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
-  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseInfiniteQueryOptions,
-  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
+  BadRequestErrorDto,
   CreateSpotDto,
+  GeocodeResponseDto,
+  InternalServerErrorDto,
+  NotFoundErrorDto,
   PaginatedSpotsWithStatsResponseDto,
+  PopularAreaDto,
+  SpotSearchDto,
   SpotWithStatsResponseDto,
   SpotsControllerFindAllParams,
   SpotsControllerFindByUserParams,
   SpotsControllerFindMySpotsParams,
   SpotsControllerFindNearbyParams,
   SpotsControllerSearchParams,
-  UpdateSpotDto,
-} from "../model";
+  UnauthorizedErrorDto,
+  UpdateSpotDto
+} from '../model';
 
-import { customInstance } from "../../mutator/custom-instance";
+
+
+
 
 /**
  * @summary Create a new spot
  */
 export type spotsControllerCreateResponse201 = {
-  data: SpotWithStatsResponseDto;
-  status: 201;
-};
+  data: SpotWithStatsResponseDto
+  status: 201
+}
 
 export type spotsControllerCreateResponse400 = {
-  data: void;
-  status: 400;
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type spotsControllerCreateResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type spotsControllerCreateResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerCreateResponseSuccess = (spotsControllerCreateResponse201) & {
+  headers: Headers;
+};
+export type spotsControllerCreateResponseError = (spotsControllerCreateResponse400 | spotsControllerCreateResponse401 | spotsControllerCreateResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerCreateResponseSuccess =
-  spotsControllerCreateResponse201 & {
-    headers: Headers;
-  };
-export type spotsControllerCreateResponseError =
-  spotsControllerCreateResponse400 & {
-    headers: Headers;
-  };
-
-export type spotsControllerCreateResponse =
-  | spotsControllerCreateResponseSuccess
-  | spotsControllerCreateResponseError;
+export type spotsControllerCreateResponse = (spotsControllerCreateResponseSuccess | spotsControllerCreateResponseError)
 
 export const getSpotsControllerCreateUrl = () => {
-  return `/spots`;
-};
 
-export const spotsControllerCreate = async (
-  createSpotDto: CreateSpotDto,
-  options?: RequestInit,
-): Promise<spotsControllerCreateResponse> => {
-  const formData = new FormData();
-  formData.append(`cityId`, createSpotDto.cityId);
-  formData.append(`categoryId`, createSpotDto.categoryId);
-  formData.append(`name`, createSpotDto.name);
-  if (createSpotDto.address !== undefined) {
-    formData.append(`address`, createSpotDto.address);
+
+
+
+  return `/spots`
+}
+
+export const spotsControllerCreate = async (createSpotDto: CreateSpotDto, options?: RequestInit): Promise<spotsControllerCreateResponse> => {
+    const formData = new FormData();
+formData.append(`cityId`, createSpotDto.cityId);
+formData.append(`categoryId`, createSpotDto.categoryId);
+formData.append(`name`, createSpotDto.name);
+if(createSpotDto.address !== undefined) {
+ formData.append(`address`, createSpotDto.address);
+ }
+formData.append(`latitude`, createSpotDto.latitude.toString())
+formData.append(`longitude`, createSpotDto.longitude.toString())
+
+  const res = await fetch(getSpotsControllerCreateUrl(),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body:
+      formData,
   }
-  formData.append(`latitude`, createSpotDto.latitude.toString());
-  formData.append(`longitude`, createSpotDto.longitude.toString());
-  if (createSpotDto.image !== undefined) {
-    formData.append(`image`, createSpotDto.image);
-  }
+)
 
-  return customInstance<spotsControllerCreateResponse>(
-    getSpotsControllerCreateUrl(),
-    {
-      ...options,
-      method: "POST",
-      body: formData,
-    },
-  );
-};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-export const getSpotsControllerCreateMutationOptions = <
-  TError = void,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof spotsControllerCreate>>,
-    TError,
-    { data: CreateSpotDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof spotsControllerCreate>>,
-  TError,
-  { data: CreateSpotDto },
-  TContext
-> => {
-  const mutationKey = ["spotsControllerCreate"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
+  const data: spotsControllerCreateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerCreateResponse
+}
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof spotsControllerCreate>>,
-    { data: CreateSpotDto }
-  > = (props) => {
-    const { data } = props ?? {};
 
-    return spotsControllerCreate(data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type SpotsControllerCreateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerCreate>>
->;
-export type SpotsControllerCreateMutationBody = CreateSpotDto;
-export type SpotsControllerCreateMutationError = void;
+export const getSpotsControllerCreateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext> => {
 
-/**
+const mutationKey = ['spotsControllerCreate'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerCreate>>, {data: CreateSpotDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  spotsControllerCreate(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SpotsControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof spotsControllerCreate>>>
+    export type SpotsControllerCreateMutationBody = CreateSpotDto
+    export type SpotsControllerCreateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Create a new spot
  */
-export const useSpotsControllerCreate = <TError = void, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof spotsControllerCreate>>,
-      TError,
-      { data: CreateSpotDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof spotsControllerCreate>>,
-  TError,
-  { data: CreateSpotDto },
-  TContext
-> => {
-  return useMutation(
-    getSpotsControllerCreateMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useSpotsControllerCreate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerCreate>>, TError,{data: CreateSpotDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof spotsControllerCreate>>,
+        TError,
+        {data: CreateSpotDto},
+        TContext
+      > => {
+      return useMutation(getSpotsControllerCreateMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get all spots
  */
 export type spotsControllerFindAllResponse200 = {
-  data: PaginatedSpotsWithStatsResponseDto;
-  status: 200;
+  data: PaginatedSpotsWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerFindAllResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerFindAllResponseSuccess = (spotsControllerFindAllResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerFindAllResponseError = (spotsControllerFindAllResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerFindAllResponseSuccess =
-  spotsControllerFindAllResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerFindAllResponse =
-  spotsControllerFindAllResponseSuccess;
+export type spotsControllerFindAllResponse = (spotsControllerFindAllResponseSuccess | spotsControllerFindAllResponseError)
 
-export const getSpotsControllerFindAllUrl = (
-  params?: SpotsControllerFindAllParams,
-) => {
+export const getSpotsControllerFindAllUrl = (params?: SpotsControllerFindAllParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/spots?${stringifiedParams}`
-    : `/spots`;
-};
-
-export const spotsControllerFindAll = async (
-  params?: SpotsControllerFindAllParams,
-  options?: RequestInit,
-): Promise<spotsControllerFindAllResponse> => {
-  return customInstance<spotsControllerFindAllResponse>(
-    getSpotsControllerFindAllUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getSpotsControllerFindAllInfiniteQueryKey = (
-  params?: SpotsControllerFindAllParams,
-) => {
-  return ["infinite", `/spots`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindAllQueryKey = (
-  params?: SpotsControllerFindAllParams,
-) => {
-  return [`/spots`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindAllInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    SpotsControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindAllParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerFindAllInfiniteQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    QueryKey,
-    SpotsControllerFindAllParams["skip"]
-  > = ({ signal, pageParam }) =>
-    spotsControllerFindAll(
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    TError,
-    TData,
-    QueryKey,
-    SpotsControllerFindAllParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerFindAllInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindAll>>
->;
-export type SpotsControllerFindAllInfiniteQueryError = unknown;
-
-export function useSpotsControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    SpotsControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: undefined | SpotsControllerFindAllParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindAllParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindAll>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    SpotsControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindAllParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindAll>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    SpotsControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindAllParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get all spots
- */
-
-export function useSpotsControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    SpotsControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindAllParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindAllInfiniteQueryOptions(
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/spots?${stringifiedParams}` : `/spots`
 }
 
-export const getSpotsControllerFindAllQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerFindAll>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const spotsControllerFindAll = async (params?: SpotsControllerFindAllParams, options?: RequestInit): Promise<spotsControllerFindAllResponse> => {
+
+  const res = await fetch(getSpotsControllerFindAllUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerFindAllResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerFindAllResponse
+}
+
+
+
+
+
+export const getSpotsControllerFindAllQueryKey = (params?: SpotsControllerFindAllParams,) => {
+    return [
+    `/spots`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSpotsControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = InternalServerErrorDto>(params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerFindAllQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>
-  > = ({ signal }) => spotsControllerFindAll(params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindAllQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindAll>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerFindAllQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindAll>>
->;
-export type SpotsControllerFindAllQueryError = unknown;
 
-export function useSpotsControllerFindAll<
-  TData = Awaited<ReturnType<typeof spotsControllerFindAll>>,
-  TError = unknown,
->(
-  params: undefined | SpotsControllerFindAllParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindAll>>> = ({ signal }) => spotsControllerFindAll(params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerFindAll>>>
+export type SpotsControllerFindAllQueryError = InternalServerErrorDto
+
+
+export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = InternalServerErrorDto>(
+ params: undefined |  SpotsControllerFindAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindAll>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindAll<
-  TData = Awaited<ReturnType<typeof spotsControllerFindAll>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = InternalServerErrorDto>(
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindAll>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindAll<
-  TData = Awaited<ReturnType<typeof spotsControllerFindAll>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = InternalServerErrorDto>(
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get all spots
  */
 
-export function useSpotsControllerFindAll<
-  TData = Awaited<ReturnType<typeof spotsControllerFindAll>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindAll>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindAllQueryOptions(params, options);
+export function useSpotsControllerFindAll<TData = Awaited<ReturnType<typeof spotsControllerFindAll>>, TError = InternalServerErrorDto>(
+ params?: SpotsControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getSpotsControllerFindAllQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Get total number of spots
  */
 export type spotsControllerGetTotalSpotsResponse200 = {
-  data: unknown;
-  status: 200;
+  data: unknown
+  status: 200
+}
+
+export type spotsControllerGetTotalSpotsResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerGetTotalSpotsResponseSuccess = (spotsControllerGetTotalSpotsResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerGetTotalSpotsResponseError = (spotsControllerGetTotalSpotsResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerGetTotalSpotsResponseSuccess =
-  spotsControllerGetTotalSpotsResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerGetTotalSpotsResponse =
-  spotsControllerGetTotalSpotsResponseSuccess;
+export type spotsControllerGetTotalSpotsResponse = (spotsControllerGetTotalSpotsResponseSuccess | spotsControllerGetTotalSpotsResponseError)
 
 export const getSpotsControllerGetTotalSpotsUrl = () => {
-  return `/spots/stats/total-spots`;
-};
 
-export const spotsControllerGetTotalSpots = async (
-  options?: RequestInit,
-): Promise<spotsControllerGetTotalSpotsResponse> => {
-  return customInstance<spotsControllerGetTotalSpotsResponse>(
-    getSpotsControllerGetTotalSpotsUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getSpotsControllerGetTotalSpotsInfiniteQueryKey = () => {
-  return ["infinite", `/spots/stats/total-spots`] as const;
-};
+
+
+  return `/spots/stats/total-spots`
+}
+
+export const spotsControllerGetTotalSpots = async ( options?: RequestInit): Promise<spotsControllerGetTotalSpotsResponse> => {
+
+  const res = await fetch(getSpotsControllerGetTotalSpotsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerGetTotalSpotsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerGetTotalSpotsResponse
+}
+
+
+
+
 
 export const getSpotsControllerGetTotalSpotsQueryKey = () => {
-  return [`/spots/stats/total-spots`] as const;
-};
+    return [
+    `/spots/stats/total-spots`
+    ] as const;
+    }
 
-export const getSpotsControllerGetTotalSpotsInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  >,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerGetTotalSpotsInfiniteQueryKey();
+export const getSpotsControllerGetTotalSpotsQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = InternalServerErrorDto>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  > = ({ signal }) => spotsControllerGetTotalSpots({ signal });
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerGetTotalSpotsQueryKey();
 
-export type SpotsControllerGetTotalSpotsInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
->;
-export type SpotsControllerGetTotalSpotsInfiniteQueryError = unknown;
 
-export function useSpotsControllerGetTotalSpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  >,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>> = ({ signal }) => spotsControllerGetTotalSpots({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerGetTotalSpotsQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>>
+export type SpotsControllerGetTotalSpotsQueryError = InternalServerErrorDto
+
+
+export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = InternalServerErrorDto>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetTotalSpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  >,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetTotalSpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  >,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get total number of spots
  */
 
-export function useSpotsControllerGetTotalSpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  >,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions =
-    getSpotsControllerGetTotalSpotsInfiniteQueryOptions(options);
+export function useSpotsControllerGetTotalSpots<TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getSpotsControllerGetTotalSpotsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getSpotsControllerGetTotalSpotsQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerGetTotalSpotsQueryKey();
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-  > = ({ signal }) => spotsControllerGetTotalSpots({ signal });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerGetTotalSpotsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
->;
-export type SpotsControllerGetTotalSpotsQueryError = unknown;
-
-export function useSpotsControllerGetTotalSpots<
-  TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetTotalSpots<
-  TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetTotalSpots<
-  TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get total number of spots
- */
-
-export function useSpotsControllerGetTotalSpots<
-  TData = Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetTotalSpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerGetTotalSpotsQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Get popular area coordinates
  */
 export type spotsControllerGetPopularAreaResponse200 = {
-  data: void;
-  status: 200;
+  data: PopularAreaDto
+  status: 200
+}
+
+export type spotsControllerGetPopularAreaResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerGetPopularAreaResponseSuccess = (spotsControllerGetPopularAreaResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerGetPopularAreaResponseError = (spotsControllerGetPopularAreaResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerGetPopularAreaResponseSuccess =
-  spotsControllerGetPopularAreaResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerGetPopularAreaResponse =
-  spotsControllerGetPopularAreaResponseSuccess;
+export type spotsControllerGetPopularAreaResponse = (spotsControllerGetPopularAreaResponseSuccess | spotsControllerGetPopularAreaResponseError)
 
 export const getSpotsControllerGetPopularAreaUrl = () => {
-  return `/spots/popular-area`;
-};
 
-export const spotsControllerGetPopularArea = async (
-  options?: RequestInit,
-): Promise<spotsControllerGetPopularAreaResponse> => {
-  return customInstance<spotsControllerGetPopularAreaResponse>(
-    getSpotsControllerGetPopularAreaUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getSpotsControllerGetPopularAreaInfiniteQueryKey = () => {
-  return ["infinite", `/spots/popular-area`] as const;
-};
+
+
+  return `/spots/popular-area`
+}
+
+export const spotsControllerGetPopularArea = async ( options?: RequestInit): Promise<spotsControllerGetPopularAreaResponse> => {
+
+  const res = await fetch(getSpotsControllerGetPopularAreaUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerGetPopularAreaResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerGetPopularAreaResponse
+}
+
+
+
+
 
 export const getSpotsControllerGetPopularAreaQueryKey = () => {
-  return [`/spots/popular-area`] as const;
-};
+    return [
+    `/spots/popular-area`
+    ] as const;
+    }
 
-export const getSpotsControllerGetPopularAreaInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  >,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerGetPopularAreaInfiniteQueryKey();
+export const getSpotsControllerGetPopularAreaQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = InternalServerErrorDto>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  > = ({ signal }) => spotsControllerGetPopularArea({ signal });
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerGetPopularAreaQueryKey();
 
-export type SpotsControllerGetPopularAreaInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
->;
-export type SpotsControllerGetPopularAreaInfiniteQueryError = unknown;
 
-export function useSpotsControllerGetPopularAreaInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  >,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>> = ({ signal }) => spotsControllerGetPopularArea({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerGetPopularAreaQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>>
+export type SpotsControllerGetPopularAreaQueryError = InternalServerErrorDto
+
+
+export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = InternalServerErrorDto>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetPopularAreaInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  >,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetPopularAreaInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  >,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get popular area coordinates
  */
 
-export function useSpotsControllerGetPopularAreaInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  >,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions =
-    getSpotsControllerGetPopularAreaInfiniteQueryOptions(options);
+export function useSpotsControllerGetPopularArea<TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerGetPopularArea>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getSpotsControllerGetPopularAreaQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getSpotsControllerGetPopularAreaQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerGetPopularAreaQueryKey();
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-  > = ({ signal }) => spotsControllerGetPopularArea({ signal });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerGetPopularAreaQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
->;
-export type SpotsControllerGetPopularAreaQueryError = unknown;
-
-export function useSpotsControllerGetPopularArea<
-  TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetPopularArea<
-  TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerGetPopularArea>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerGetPopularArea<
-  TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get popular area coordinates
- */
-
-export function useSpotsControllerGetPopularArea<
-  TData = Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerGetPopularArea>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerGetPopularAreaQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Find nearby spots
  */
 export type spotsControllerFindNearbyResponse200 = {
-  data: PaginatedSpotsWithStatsResponseDto;
-  status: 200;
+  data: PaginatedSpotsWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerFindNearbyResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type spotsControllerFindNearbyResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerFindNearbyResponseSuccess = (spotsControllerFindNearbyResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerFindNearbyResponseError = (spotsControllerFindNearbyResponse400 | spotsControllerFindNearbyResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerFindNearbyResponseSuccess =
-  spotsControllerFindNearbyResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerFindNearbyResponse =
-  spotsControllerFindNearbyResponseSuccess;
+export type spotsControllerFindNearbyResponse = (spotsControllerFindNearbyResponseSuccess | spotsControllerFindNearbyResponseError)
 
-export const getSpotsControllerFindNearbyUrl = (
-  params: SpotsControllerFindNearbyParams,
-) => {
+export const getSpotsControllerFindNearbyUrl = (params: SpotsControllerFindNearbyParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/spots/nearby?${stringifiedParams}`
-    : `/spots/nearby`;
-};
-
-export const spotsControllerFindNearby = async (
-  params: SpotsControllerFindNearbyParams,
-  options?: RequestInit,
-): Promise<spotsControllerFindNearbyResponse> => {
-  return customInstance<spotsControllerFindNearbyResponse>(
-    getSpotsControllerFindNearbyUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getSpotsControllerFindNearbyInfiniteQueryKey = (
-  params?: SpotsControllerFindNearbyParams,
-) => {
-  return ["infinite", `/spots/nearby`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindNearbyQueryKey = (
-  params?: SpotsControllerFindNearbyParams,
-) => {
-  return [`/spots/nearby`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindNearbyInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    SpotsControllerFindNearbyParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindNearbyParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerFindNearbyInfiniteQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    QueryKey,
-    SpotsControllerFindNearbyParams["skip"]
-  > = ({ signal, pageParam }) =>
-    spotsControllerFindNearby(
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    TError,
-    TData,
-    QueryKey,
-    SpotsControllerFindNearbyParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerFindNearbyInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindNearby>>
->;
-export type SpotsControllerFindNearbyInfiniteQueryError = unknown;
-
-export function useSpotsControllerFindNearbyInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    SpotsControllerFindNearbyParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindNearbyParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindNearbyInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    SpotsControllerFindNearbyParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindNearbyParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindNearbyInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    SpotsControllerFindNearbyParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindNearbyParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Find nearby spots
- */
-
-export function useSpotsControllerFindNearbyInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    SpotsControllerFindNearbyParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindNearbyParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindNearbyInfiniteQueryOptions(
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/spots/nearby?${stringifiedParams}` : `/spots/nearby`
 }
 
-export const getSpotsControllerFindNearbyQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const spotsControllerFindNearby = async (params: SpotsControllerFindNearbyParams, options?: RequestInit): Promise<spotsControllerFindNearbyResponse> => {
+
+  const res = await fetch(getSpotsControllerFindNearbyUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerFindNearbyResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerFindNearbyResponse
+}
+
+
+
+
+
+export const getSpotsControllerFindNearbyQueryKey = (params?: SpotsControllerFindNearbyParams,) => {
+    return [
+    `/spots/nearby`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSpotsControllerFindNearbyQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = BadRequestErrorDto | InternalServerErrorDto>(params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerFindNearbyQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>
-  > = ({ signal }) => spotsControllerFindNearby(params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindNearbyQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerFindNearbyQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindNearby>>
->;
-export type SpotsControllerFindNearbyQueryError = unknown;
 
-export function useSpotsControllerFindNearby<
-  TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindNearby>>> = ({ signal }) => spotsControllerFindNearby(params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerFindNearbyQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerFindNearby>>>
+export type SpotsControllerFindNearbyQueryError = BadRequestErrorDto | InternalServerErrorDto
+
+
+export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ params: SpotsControllerFindNearbyParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindNearby>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindNearby>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindNearby<
-  TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindNearby>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindNearby>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindNearby<
-  TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Find nearby spots
  */
 
-export function useSpotsControllerFindNearby<
-  TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-  TError = unknown,
->(
-  params: SpotsControllerFindNearbyParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindNearby>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindNearbyQueryOptions(
-    params,
-    options,
-  );
+export function useSpotsControllerFindNearby<TData = Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ params: SpotsControllerFindNearbyParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindNearby>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getSpotsControllerFindNearbyQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Get current user spots
  */
 export type spotsControllerFindMySpotsResponse200 = {
-  data: PaginatedSpotsWithStatsResponseDto;
-  status: 200;
+  data: PaginatedSpotsWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerFindMySpotsResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type spotsControllerFindMySpotsResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerFindMySpotsResponseSuccess = (spotsControllerFindMySpotsResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerFindMySpotsResponseError = (spotsControllerFindMySpotsResponse401 | spotsControllerFindMySpotsResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerFindMySpotsResponseSuccess =
-  spotsControllerFindMySpotsResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerFindMySpotsResponse =
-  spotsControllerFindMySpotsResponseSuccess;
+export type spotsControllerFindMySpotsResponse = (spotsControllerFindMySpotsResponseSuccess | spotsControllerFindMySpotsResponseError)
 
-export const getSpotsControllerFindMySpotsUrl = (
-  params?: SpotsControllerFindMySpotsParams,
-) => {
+export const getSpotsControllerFindMySpotsUrl = (params?: SpotsControllerFindMySpotsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/spots/mine?${stringifiedParams}`
-    : `/spots/mine`;
-};
-
-export const spotsControllerFindMySpots = async (
-  params?: SpotsControllerFindMySpotsParams,
-  options?: RequestInit,
-): Promise<spotsControllerFindMySpotsResponse> => {
-  return customInstance<spotsControllerFindMySpotsResponse>(
-    getSpotsControllerFindMySpotsUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getSpotsControllerFindMySpotsInfiniteQueryKey = (
-  params?: SpotsControllerFindMySpotsParams,
-) => {
-  return ["infinite", `/spots/mine`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindMySpotsQueryKey = (
-  params?: SpotsControllerFindMySpotsParams,
-) => {
-  return [`/spots/mine`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindMySpotsInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    SpotsControllerFindMySpotsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindMySpotsParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerFindMySpotsInfiniteQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    QueryKey,
-    SpotsControllerFindMySpotsParams["skip"]
-  > = ({ signal, pageParam }) =>
-    spotsControllerFindMySpots(
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    TError,
-    TData,
-    QueryKey,
-    SpotsControllerFindMySpotsParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerFindMySpotsInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindMySpots>>
->;
-export type SpotsControllerFindMySpotsInfiniteQueryError = unknown;
-
-export function useSpotsControllerFindMySpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    SpotsControllerFindMySpotsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: undefined | SpotsControllerFindMySpotsParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindMySpotsParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindMySpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    SpotsControllerFindMySpotsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindMySpotsParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindMySpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    SpotsControllerFindMySpotsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindMySpotsParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get current user spots
- */
-
-export function useSpotsControllerFindMySpotsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    SpotsControllerFindMySpotsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindMySpotsParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindMySpotsInfiniteQueryOptions(
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/spots/mine?${stringifiedParams}` : `/spots/mine`
 }
 
-export const getSpotsControllerFindMySpotsQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const spotsControllerFindMySpots = async (params?: SpotsControllerFindMySpotsParams, options?: RequestInit): Promise<spotsControllerFindMySpotsResponse> => {
+
+  const res = await fetch(getSpotsControllerFindMySpotsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerFindMySpotsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerFindMySpotsResponse
+}
+
+
+
+
+
+export const getSpotsControllerFindMySpotsQueryKey = (params?: SpotsControllerFindMySpotsParams,) => {
+    return [
+    `/spots/mine`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSpotsControllerFindMySpotsQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerFindMySpotsQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>
-  > = ({ signal }) => spotsControllerFindMySpots(params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindMySpotsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerFindMySpotsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindMySpots>>
->;
-export type SpotsControllerFindMySpotsQueryError = unknown;
 
-export function useSpotsControllerFindMySpots<
-  TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-  TError = unknown,
->(
-  params: undefined | SpotsControllerFindMySpotsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindMySpots>>> = ({ signal }) => spotsControllerFindMySpots(params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerFindMySpotsQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerFindMySpots>>>
+export type SpotsControllerFindMySpotsQueryError = UnauthorizedErrorDto | InternalServerErrorDto
+
+
+export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params: undefined |  SpotsControllerFindMySpotsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindMySpots<
-  TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindMySpots>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindMySpots<
-  TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get current user spots
  */
 
-export function useSpotsControllerFindMySpots<
-  TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-  TError = unknown,
->(
-  params?: SpotsControllerFindMySpotsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindMySpots>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindMySpotsQueryOptions(
-    params,
-    options,
-  );
+export function useSpotsControllerFindMySpots<TData = Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params?: SpotsControllerFindMySpotsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindMySpots>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getSpotsControllerFindMySpotsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Search spots by name or address
  */
 export type spotsControllerSearchResponse200 = {
-  data: void;
-  status: 200;
+  data: SpotSearchDto[]
+  status: 200
+}
+
+export type spotsControllerSearchResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerSearchResponseSuccess = (spotsControllerSearchResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerSearchResponseError = (spotsControllerSearchResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerSearchResponseSuccess =
-  spotsControllerSearchResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerSearchResponse =
-  spotsControllerSearchResponseSuccess;
+export type spotsControllerSearchResponse = (spotsControllerSearchResponseSuccess | spotsControllerSearchResponseError)
 
-export const getSpotsControllerSearchUrl = (
-  params?: SpotsControllerSearchParams,
-) => {
+export const getSpotsControllerSearchUrl = (params?: SpotsControllerSearchParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/spots/search?${stringifiedParams}`
-    : `/spots/search`;
-};
-
-export const spotsControllerSearch = async (
-  params?: SpotsControllerSearchParams,
-  options?: RequestInit,
-): Promise<spotsControllerSearchResponse> => {
-  return customInstance<spotsControllerSearchResponse>(
-    getSpotsControllerSearchUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getSpotsControllerSearchInfiniteQueryKey = (
-  params?: SpotsControllerSearchParams,
-) => {
-  return ["infinite", `/spots/search`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerSearchQueryKey = (
-  params?: SpotsControllerSearchParams,
-) => {
-  return [`/spots/search`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerSearchInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    SpotsControllerSearchParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerSearchParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerSearchInfiniteQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    QueryKey,
-    SpotsControllerSearchParams["skip"]
-  > = ({ signal, pageParam }) =>
-    spotsControllerSearch(
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    TError,
-    TData,
-    QueryKey,
-    SpotsControllerSearchParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerSearchInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerSearch>>
->;
-export type SpotsControllerSearchInfiniteQueryError = unknown;
-
-export function useSpotsControllerSearchInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    SpotsControllerSearchParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: undefined | SpotsControllerSearchParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerSearchParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerSearch>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerSearch>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerSearchInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    SpotsControllerSearchParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerSearchParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerSearch>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerSearch>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerSearchInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    SpotsControllerSearchParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerSearchParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Search spots by name or address
- */
-
-export function useSpotsControllerSearchInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    SpotsControllerSearchParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerSearchParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerSearchInfiniteQueryOptions(
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/spots/search?${stringifiedParams}` : `/spots/search`
 }
 
-export const getSpotsControllerSearchQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerSearch>>,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const spotsControllerSearch = async (params?: SpotsControllerSearchParams, options?: RequestInit): Promise<spotsControllerSearchResponse> => {
+
+  const res = await fetch(getSpotsControllerSearchUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerSearchResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerSearchResponse
+}
+
+
+
+
+
+export const getSpotsControllerSearchQueryKey = (params?: SpotsControllerSearchParams,) => {
+    return [
+    `/spots/search`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSpotsControllerSearchQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = InternalServerErrorDto>(params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerSearchQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerSearch>>
-  > = ({ signal }) => spotsControllerSearch(params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerSearchQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerSearch>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerSearchQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerSearch>>
->;
-export type SpotsControllerSearchQueryError = unknown;
 
-export function useSpotsControllerSearch<
-  TData = Awaited<ReturnType<typeof spotsControllerSearch>>,
-  TError = unknown,
->(
-  params: undefined | SpotsControllerSearchParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerSearch>>> = ({ signal }) => spotsControllerSearch(params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerSearchQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerSearch>>>
+export type SpotsControllerSearchQueryError = InternalServerErrorDto
+
+
+export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = InternalServerErrorDto>(
+ params: undefined |  SpotsControllerSearchParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerSearch>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerSearch>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerSearch<
-  TData = Awaited<ReturnType<typeof spotsControllerSearch>>,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = InternalServerErrorDto>(
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerSearch>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerSearch>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerSearch<
-  TData = Awaited<ReturnType<typeof spotsControllerSearch>>,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = InternalServerErrorDto>(
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Search spots by name or address
  */
 
-export function useSpotsControllerSearch<
-  TData = Awaited<ReturnType<typeof spotsControllerSearch>>,
-  TError = unknown,
->(
-  params?: SpotsControllerSearchParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerSearch>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerSearchQueryOptions(params, options);
+export function useSpotsControllerSearch<TData = Awaited<ReturnType<typeof spotsControllerSearch>>, TError = InternalServerErrorDto>(
+ params?: SpotsControllerSearchParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerSearch>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getSpotsControllerSearchQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Get spot by city and slug (SEO-friendly URL)
  */
 export type spotsControllerFindBySlugResponse200 = {
-  data: SpotWithStatsResponseDto;
-  status: 200;
+  data: SpotWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerFindBySlugResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type spotsControllerFindBySlugResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerFindBySlugResponseSuccess = (spotsControllerFindBySlugResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerFindBySlugResponseError = (spotsControllerFindBySlugResponse404 | spotsControllerFindBySlugResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerFindBySlugResponseSuccess =
-  spotsControllerFindBySlugResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerFindBySlugResponse =
-  spotsControllerFindBySlugResponseSuccess;
+export type spotsControllerFindBySlugResponse = (spotsControllerFindBySlugResponseSuccess | spotsControllerFindBySlugResponseError)
 
-export const getSpotsControllerFindBySlugUrl = (
-  citySlug: string,
-  spotSlug: string,
+export const getSpotsControllerFindBySlugUrl = (citySlug: string,
+    spotSlug: string,) => {
+
+
+
+
+  return `/spots/by-slug/${citySlug}/${spotSlug}`
+}
+
+export const spotsControllerFindBySlug = async (citySlug: string,
+    spotSlug: string, options?: RequestInit): Promise<spotsControllerFindBySlugResponse> => {
+
+  const res = await fetch(getSpotsControllerFindBySlugUrl(citySlug,spotSlug),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerFindBySlugResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerFindBySlugResponse
+}
+
+
+
+
+
+export const getSpotsControllerFindBySlugQueryKey = (citySlug: string,
+    spotSlug: string,) => {
+    return [
+    `/spots/by-slug/${citySlug}/${spotSlug}`
+    ] as const;
+    }
+
+
+export const getSpotsControllerFindBySlugQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = NotFoundErrorDto | InternalServerErrorDto>(citySlug: string,
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  return `/spots/by-slug/${citySlug}/${spotSlug}`;
-};
 
-export const spotsControllerFindBySlug = async (
-  citySlug: string,
-  spotSlug: string,
-  options?: RequestInit,
-): Promise<spotsControllerFindBySlugResponse> => {
-  return customInstance<spotsControllerFindBySlugResponse>(
-    getSpotsControllerFindBySlugUrl(citySlug, spotSlug),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-export const getSpotsControllerFindBySlugInfiniteQueryKey = (
-  citySlug: string,
-  spotSlug: string,
-) => {
-  return ["infinite", `/spots/by-slug/${citySlug}/${spotSlug}`] as const;
-};
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindBySlugQueryKey(citySlug,spotSlug);
 
-export const getSpotsControllerFindBySlugQueryKey = (
-  citySlug: string,
-  spotSlug: string,
-) => {
-  return [`/spots/by-slug/${citySlug}/${spotSlug}`] as const;
-};
 
-export const getSpotsControllerFindBySlugInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerFindBySlugInfiniteQueryKey(citySlug, spotSlug);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindBySlug>>> = ({ signal }) => spotsControllerFindBySlug(citySlug,spotSlug, { signal, ...fetchOptions });
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindBySlug>>
-  > = ({ signal }) => spotsControllerFindBySlug(citySlug, spotSlug, { signal });
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!(citySlug && spotSlug),
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerFindBySlugInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindBySlug>>
->;
-export type SpotsControllerFindBySlugInfiniteQueryError = unknown;
 
-export function useSpotsControllerFindBySlugInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+   return  { queryKey, queryFn, enabled: !!(citySlug && spotSlug), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerFindBySlugQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>
+export type SpotsControllerFindBySlugQueryError = NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ citySlug: string,
+    spotSlug: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindBySlugInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ citySlug: string,
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindBySlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindBySlugInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ citySlug: string,
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get spot by city and slug (SEO-friendly URL)
  */
 
-export function useSpotsControllerFindBySlugInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindBySlug>>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindBySlugInfiniteQueryOptions(
-    citySlug,
-    spotSlug,
-    options,
-  );
+export function useSpotsControllerFindBySlug<TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ citySlug: string,
+    spotSlug: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindBySlug>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getSpotsControllerFindBySlugQueryOptions(citySlug,spotSlug,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getSpotsControllerFindBySlugQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerFindBySlugQueryKey(citySlug, spotSlug);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindBySlug>>
-  > = ({ signal }) => spotsControllerFindBySlug(citySlug, spotSlug, { signal });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!(citySlug && spotSlug),
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerFindBySlugQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindBySlug>>
->;
-export type SpotsControllerFindBySlugQueryError = unknown;
-
-export function useSpotsControllerFindBySlug<
-  TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindBySlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindBySlug<
-  TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindBySlug>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindBySlug<
-  TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get spot by city and slug (SEO-friendly URL)
- */
-
-export function useSpotsControllerFindBySlug<
-  TData = Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-  TError = unknown,
->(
-  citySlug: string,
-  spotSlug: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindBySlug>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindBySlugQueryOptions(
-    citySlug,
-    spotSlug,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Get a single spot
  */
 export type spotsControllerFindOneResponse200 = {
-  data: SpotWithStatsResponseDto;
-  status: 200;
+  data: SpotWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerFindOneResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type spotsControllerFindOneResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerFindOneResponseSuccess = (spotsControllerFindOneResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerFindOneResponseError = (spotsControllerFindOneResponse404 | spotsControllerFindOneResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerFindOneResponseSuccess =
-  spotsControllerFindOneResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerFindOneResponse =
-  spotsControllerFindOneResponseSuccess;
+export type spotsControllerFindOneResponse = (spotsControllerFindOneResponseSuccess | spotsControllerFindOneResponseError)
 
-export const getSpotsControllerFindOneUrl = (id: string) => {
-  return `/spots/${id}`;
-};
+export const getSpotsControllerFindOneUrl = (id: string,) => {
 
-export const spotsControllerFindOne = async (
-  id: string,
-  options?: RequestInit,
-): Promise<spotsControllerFindOneResponse> => {
-  return customInstance<spotsControllerFindOneResponse>(
-    getSpotsControllerFindOneUrl(id),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getSpotsControllerFindOneInfiniteQueryKey = (id: string) => {
-  return ["infinite", `/spots/${id}`] as const;
-};
 
-export const getSpotsControllerFindOneQueryKey = (id: string) => {
-  return [`/spots/${id}`] as const;
-};
 
-export const getSpotsControllerFindOneInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
+  return `/spots/${id}`
+}
+
+export const spotsControllerFindOne = async (id: string, options?: RequestInit): Promise<spotsControllerFindOneResponse> => {
+
+  const res = await fetch(getSpotsControllerFindOneUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerFindOneResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerFindOneResponse
+}
+
+
+
+
+
+export const getSpotsControllerFindOneQueryKey = (id: string,) => {
+    return [
+    `/spots/${id}`
+    ] as const;
+    }
+
+
+export const getSpotsControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerFindOneInfiniteQueryKey(id);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindOne>>
-  > = ({ signal }) => spotsControllerFindOne(id, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindOneQueryKey(id);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindOne>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerFindOneInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindOne>>
->;
-export type SpotsControllerFindOneInfiniteQueryError = unknown;
 
-export function useSpotsControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindOne>>> = ({ signal }) => spotsControllerFindOne(id, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerFindOne>>>
+export type SpotsControllerFindOneQueryError = NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get a single spot
  */
 
-export function useSpotsControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof spotsControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindOneInfiniteQueryOptions(
-    id,
-    options,
-  );
+export function useSpotsControllerFindOne<TData = Awaited<ReturnType<typeof spotsControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getSpotsControllerFindOneQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getSpotsControllerFindOneQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getSpotsControllerFindOneQueryKey(id);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindOne>>
-  > = ({ signal }) => spotsControllerFindOne(id, { signal });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindOne>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerFindOneQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindOne>>
->;
-export type SpotsControllerFindOneQueryError = unknown;
-
-export function useSpotsControllerFindOne<
-  TData = Awaited<ReturnType<typeof spotsControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindOne<
-  TData = Awaited<ReturnType<typeof spotsControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindOne<
-  TData = Awaited<ReturnType<typeof spotsControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get a single spot
- */
-
-export function useSpotsControllerFindOne<
-  TData = Awaited<ReturnType<typeof spotsControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindOneQueryOptions(id, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Update own spot
  */
 export type spotsControllerUpdateResponse200 = {
-  data: SpotWithStatsResponseDto;
-  status: 200;
+  data: SpotWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerUpdateResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type spotsControllerUpdateResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type spotsControllerUpdateResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type spotsControllerUpdateResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerUpdateResponseSuccess = (spotsControllerUpdateResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerUpdateResponseError = (spotsControllerUpdateResponse400 | spotsControllerUpdateResponse401 | spotsControllerUpdateResponse404 | spotsControllerUpdateResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerUpdateResponseSuccess =
-  spotsControllerUpdateResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerUpdateResponse =
-  spotsControllerUpdateResponseSuccess;
+export type spotsControllerUpdateResponse = (spotsControllerUpdateResponseSuccess | spotsControllerUpdateResponseError)
 
-export const getSpotsControllerUpdateUrl = (id: string) => {
-  return `/spots/${id}`;
-};
+export const getSpotsControllerUpdateUrl = (id: string,) => {
 
-export const spotsControllerUpdate = async (
-  id: string,
-  updateSpotDto: UpdateSpotDto,
-  options?: RequestInit,
-): Promise<spotsControllerUpdateResponse> => {
-  const formData = new FormData();
-  if (updateSpotDto.cityId !== undefined) {
-    formData.append(`cityId`, updateSpotDto.cityId);
+
+
+
+  return `/spots/${id}`
+}
+
+export const spotsControllerUpdate = async (id: string,
+    updateSpotDto: UpdateSpotDto, options?: RequestInit): Promise<spotsControllerUpdateResponse> => {
+    const formData = new FormData();
+if(updateSpotDto.cityId !== undefined) {
+ formData.append(`cityId`, updateSpotDto.cityId);
+ }
+if(updateSpotDto.name !== undefined) {
+ formData.append(`name`, updateSpotDto.name);
+ }
+if(updateSpotDto.address !== undefined) {
+ formData.append(`address`, updateSpotDto.address);
+ }
+if(updateSpotDto.categoryId !== undefined) {
+ formData.append(`categoryId`, updateSpotDto.categoryId);
+ }
+if(updateSpotDto.latitude !== undefined) {
+ formData.append(`latitude`, updateSpotDto.latitude.toString())
+ }
+if(updateSpotDto.longitude !== undefined) {
+ formData.append(`longitude`, updateSpotDto.longitude.toString())
+ }
+
+  const res = await fetch(getSpotsControllerUpdateUrl(id),
+  {
+    ...options,
+    method: 'PATCH'
+    ,
+    body:
+      formData,
   }
-  if (updateSpotDto.name !== undefined) {
-    formData.append(`name`, updateSpotDto.name);
-  }
-  if (updateSpotDto.address !== undefined) {
-    formData.append(`address`, updateSpotDto.address);
-  }
-  if (updateSpotDto.categoryId !== undefined) {
-    formData.append(`categoryId`, updateSpotDto.categoryId);
-  }
-  if (updateSpotDto.latitude !== undefined) {
-    formData.append(`latitude`, updateSpotDto.latitude.toString());
-  }
-  if (updateSpotDto.longitude !== undefined) {
-    formData.append(`longitude`, updateSpotDto.longitude.toString());
-  }
+)
 
-  return customInstance<spotsControllerUpdateResponse>(
-    getSpotsControllerUpdateUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      body: formData,
-    },
-  );
-};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-export const getSpotsControllerUpdateMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof spotsControllerUpdate>>,
-    TError,
-    { id: string; data: UpdateSpotDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof spotsControllerUpdate>>,
-  TError,
-  { id: string; data: UpdateSpotDto },
-  TContext
-> => {
-  const mutationKey = ["spotsControllerUpdate"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
+  const data: spotsControllerUpdateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerUpdateResponse
+}
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof spotsControllerUpdate>>,
-    { id: string; data: UpdateSpotDto }
-  > = (props) => {
-    const { id, data } = props ?? {};
 
-    return spotsControllerUpdate(id, data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type SpotsControllerUpdateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerUpdate>>
->;
-export type SpotsControllerUpdateMutationBody = UpdateSpotDto;
-export type SpotsControllerUpdateMutationError = unknown;
+export const getSpotsControllerUpdateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext> => {
 
-/**
+const mutationKey = ['spotsControllerUpdate'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerUpdate>>, {id: string;data: UpdateSpotDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  spotsControllerUpdate(id,data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SpotsControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof spotsControllerUpdate>>>
+    export type SpotsControllerUpdateMutationBody = UpdateSpotDto
+    export type SpotsControllerUpdateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Update own spot
  */
-export const useSpotsControllerUpdate = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof spotsControllerUpdate>>,
-      TError,
-      { id: string; data: UpdateSpotDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof spotsControllerUpdate>>,
-  TError,
-  { id: string; data: UpdateSpotDto },
-  TContext
-> => {
-  return useMutation(
-    getSpotsControllerUpdateMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useSpotsControllerUpdate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerUpdate>>, TError,{id: string;data: UpdateSpotDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof spotsControllerUpdate>>,
+        TError,
+        {id: string;data: UpdateSpotDto},
+        TContext
+      > => {
+      return useMutation(getSpotsControllerUpdateMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Delete own spot
  */
 export type spotsControllerDeleteResponse200 = {
-  data: void;
-  status: 200;
+  data: void
+  status: 200
+}
+
+export type spotsControllerDeleteResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type spotsControllerDeleteResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type spotsControllerDeleteResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerDeleteResponseSuccess = (spotsControllerDeleteResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerDeleteResponseError = (spotsControllerDeleteResponse401 | spotsControllerDeleteResponse404 | spotsControllerDeleteResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerDeleteResponseSuccess =
-  spotsControllerDeleteResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerDeleteResponse =
-  spotsControllerDeleteResponseSuccess;
+export type spotsControllerDeleteResponse = (spotsControllerDeleteResponseSuccess | spotsControllerDeleteResponseError)
 
-export const getSpotsControllerDeleteUrl = (id: string) => {
-  return `/spots/${id}`;
-};
+export const getSpotsControllerDeleteUrl = (id: string,) => {
 
-export const spotsControllerDelete = async (
-  id: string,
-  options?: RequestInit,
-): Promise<spotsControllerDeleteResponse> => {
-  return customInstance<spotsControllerDeleteResponse>(
-    getSpotsControllerDeleteUrl(id),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
 
-export const getSpotsControllerDeleteMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof spotsControllerDelete>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof spotsControllerDelete>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["spotsControllerDelete"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof spotsControllerDelete>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
 
-    return spotsControllerDelete(id);
-  };
+  return `/spots/${id}`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const spotsControllerDelete = async (id: string, options?: RequestInit): Promise<spotsControllerDeleteResponse> => {
 
-export type SpotsControllerDeleteMutationResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerDelete>>
->;
+  const res = await fetch(getSpotsControllerDeleteUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
 
-export type SpotsControllerDeleteMutationError = unknown;
 
-/**
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerDeleteResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerDeleteResponse
+}
+
+
+
+
+export const getSpotsControllerDeleteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['spotsControllerDelete'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerDelete>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  spotsControllerDelete(id,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SpotsControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof spotsControllerDelete>>>
+
+    export type SpotsControllerDeleteMutationError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Delete own spot
  */
-export const useSpotsControllerDelete = <TError = unknown, TContext = unknown>(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof spotsControllerDelete>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof spotsControllerDelete>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  return useMutation(
-    getSpotsControllerDeleteMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useSpotsControllerDelete = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof spotsControllerDelete>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getSpotsControllerDeleteMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get spots by user
  */
 export type spotsControllerFindByUserResponse200 = {
-  data: PaginatedSpotsWithStatsResponseDto;
-  status: 200;
+  data: PaginatedSpotsWithStatsResponseDto
+  status: 200
+}
+
+export type spotsControllerFindByUserResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerFindByUserResponseSuccess = (spotsControllerFindByUserResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerFindByUserResponseError = (spotsControllerFindByUserResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerFindByUserResponseSuccess =
-  spotsControllerFindByUserResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerFindByUserResponse =
-  spotsControllerFindByUserResponseSuccess;
+export type spotsControllerFindByUserResponse = (spotsControllerFindByUserResponseSuccess | spotsControllerFindByUserResponseError)
 
-export const getSpotsControllerFindByUserUrl = (
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-) => {
+export const getSpotsControllerFindByUserUrl = (userId: string,
+    params?: SpotsControllerFindByUserParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/spots/user/${userId}?${stringifiedParams}`
-    : `/spots/user/${userId}`;
-};
-
-export const spotsControllerFindByUser = async (
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: RequestInit,
-): Promise<spotsControllerFindByUserResponse> => {
-  return customInstance<spotsControllerFindByUserResponse>(
-    getSpotsControllerFindByUserUrl(userId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getSpotsControllerFindByUserInfiniteQueryKey = (
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-) => {
-  return [
-    "infinite",
-    `/spots/user/${userId}`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getSpotsControllerFindByUserQueryKey = (
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-) => {
-  return [`/spots/user/${userId}`, ...(params ? [params] : [])] as const;
-};
-
-export const getSpotsControllerFindByUserInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    SpotsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindByUserParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerFindByUserInfiniteQueryKey(userId, params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    QueryKey,
-    SpotsControllerFindByUserParams["skip"]
-  > = ({ signal, pageParam }) =>
-    spotsControllerFindByUser(
-      userId,
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!userId,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    TError,
-    TData,
-    QueryKey,
-    SpotsControllerFindByUserParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type SpotsControllerFindByUserInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindByUser>>
->;
-export type SpotsControllerFindByUserInfiniteQueryError = unknown;
-
-export function useSpotsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    SpotsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params: undefined | SpotsControllerFindByUserParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindByUserParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    SpotsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindByUserParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-          TError,
-          Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    SpotsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindByUserParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get spots by user
- */
-
-export function useSpotsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    SpotsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        SpotsControllerFindByUserParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindByUserInfiniteQueryOptions(
-    userId,
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/spots/user/${userId}?${stringifiedParams}` : `/spots/user/${userId}`
 }
 
-export const getSpotsControllerFindByUserQueryOptions = <
-  TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const spotsControllerFindByUser = async (userId: string,
+    params?: SpotsControllerFindByUserParams, options?: RequestInit): Promise<spotsControllerFindByUserResponse> => {
+
+  const res = await fetch(getSpotsControllerFindByUserUrl(userId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerFindByUserResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerFindByUserResponse
+}
+
+
+
+
+
+export const getSpotsControllerFindByUserQueryKey = (userId: string,
+    params?: SpotsControllerFindByUserParams,) => {
+    return [
+    `/spots/user/${userId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getSpotsControllerFindByUserQueryOptions = <TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = InternalServerErrorDto>(userId: string,
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getSpotsControllerFindByUserQueryKey(userId, params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>
-  > = ({ signal }) => spotsControllerFindByUser(userId, params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getSpotsControllerFindByUserQueryKey(userId,params);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!userId,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type SpotsControllerFindByUserQueryResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerFindByUser>>
->;
-export type SpotsControllerFindByUserQueryError = unknown;
 
-export function useSpotsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params: undefined | SpotsControllerFindByUserParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof spotsControllerFindByUser>>> = ({ signal }) => spotsControllerFindByUser(userId,params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SpotsControllerFindByUserQueryResult = NonNullable<Awaited<ReturnType<typeof spotsControllerFindByUser>>>
+export type SpotsControllerFindByUserQueryError = InternalServerErrorDto
+
+
+export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = InternalServerErrorDto>(
+ userId: string,
+    params: undefined |  SpotsControllerFindByUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindByUser>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = InternalServerErrorDto>(
+ userId: string,
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof spotsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof spotsControllerFindByUser>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useSpotsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = InternalServerErrorDto>(
+ userId: string,
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get spots by user
  */
 
-export function useSpotsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: SpotsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof spotsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getSpotsControllerFindByUserQueryOptions(
-    userId,
-    params,
-    options,
-  );
+export function useSpotsControllerFindByUser<TData = Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError = InternalServerErrorDto>(
+ userId: string,
+    params?: SpotsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof spotsControllerFindByUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getSpotsControllerFindByUserQueryOptions(userId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Reverse geocode coordinates to address
  */
 export type spotsControllerReverseGeocodeResponse200 = {
-  data: unknown;
-  status: 200;
+  data: GeocodeResponseDto
+  status: 200
+}
+
+export type spotsControllerReverseGeocodeResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type spotsControllerReverseGeocodeResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type spotsControllerReverseGeocodeResponseSuccess = (spotsControllerReverseGeocodeResponse200) & {
+  headers: Headers;
+};
+export type spotsControllerReverseGeocodeResponseError = (spotsControllerReverseGeocodeResponse400 | spotsControllerReverseGeocodeResponse500) & {
+  headers: Headers;
 };
 
-export type spotsControllerReverseGeocodeResponseSuccess =
-  spotsControllerReverseGeocodeResponse200 & {
-    headers: Headers;
-  };
-export type spotsControllerReverseGeocodeResponse =
-  spotsControllerReverseGeocodeResponseSuccess;
+export type spotsControllerReverseGeocodeResponse = (spotsControllerReverseGeocodeResponseSuccess | spotsControllerReverseGeocodeResponseError)
 
 export const getSpotsControllerReverseGeocodeUrl = () => {
-  return `/spots/reverse-geocode`;
-};
 
-export const spotsControllerReverseGeocode = async (
-  options?: RequestInit,
-): Promise<spotsControllerReverseGeocodeResponse> => {
-  return customInstance<spotsControllerReverseGeocodeResponse>(
-    getSpotsControllerReverseGeocodeUrl(),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
 
-export const getSpotsControllerReverseGeocodeMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
-    TError,
-    void,
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
-  TError,
-  void,
-  TContext
-> => {
-  const mutationKey = ["spotsControllerReverseGeocode"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
-    void
-  > = () => {
-    return spotsControllerReverseGeocode();
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
+  return `/spots/reverse-geocode`
+}
 
-export type SpotsControllerReverseGeocodeMutationResult = NonNullable<
-  Awaited<ReturnType<typeof spotsControllerReverseGeocode>>
->;
+export const spotsControllerReverseGeocode = async ( options?: RequestInit): Promise<spotsControllerReverseGeocodeResponse> => {
 
-export type SpotsControllerReverseGeocodeMutationError = unknown;
+  const res = await fetch(getSpotsControllerReverseGeocodeUrl(),
+  {
+    ...options,
+    method: 'POST'
 
-/**
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: spotsControllerReverseGeocodeResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as spotsControllerReverseGeocodeResponse
+}
+
+
+
+
+export const getSpotsControllerReverseGeocodeMutationOptions = <TError = BadRequestErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext> => {
+
+const mutationKey = ['spotsControllerReverseGeocode'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, void> = () => {
+
+
+          return  spotsControllerReverseGeocode(fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SpotsControllerReverseGeocodeMutationResult = NonNullable<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>>
+
+    export type SpotsControllerReverseGeocodeMutationError = BadRequestErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Reverse geocode coordinates to address
  */
-export const useSpotsControllerReverseGeocode = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
-      TError,
-      void,
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
-  TError,
-  void,
-  TContext
-> => {
-  return useMutation(
-    getSpotsControllerReverseGeocodeMutationOptions(options),
-    queryClient,
-  );
-};
+export const useSpotsControllerReverseGeocode = <TError = BadRequestErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof spotsControllerReverseGeocode>>, TError,void, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof spotsControllerReverseGeocode>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getSpotsControllerReverseGeocodeMutationOptions(options), queryClient);
+    }

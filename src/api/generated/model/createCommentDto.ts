@@ -5,7 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { CreateCommentDtoTargetType } from "./createCommentDtoTargetType";
+import type { CreateCommentDtoTargetType } from './createCommentDtoTargetType';
 
 export interface CreateCommentDto {
   text: string;

@@ -5,11 +5,12 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { LiveVibeDtoSpotCity } from "./liveVibeDtoSpotCity";
+import type { LiveVibeDtoSpotCity } from './liveVibeDtoSpotCity';
 
 export type LiveVibeDtoSpot = {
   id?: string;
   name?: string;
   slug?: string;
+  address?: string;
   city?: LiveVibeDtoSpotCity;
 };

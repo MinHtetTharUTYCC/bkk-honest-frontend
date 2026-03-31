@@ -5,12 +5,12 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { _ScamAlertResponseDtoCount } from "./_scamAlertResponseDtoCount";
-import type { ImageVariantsDto } from "./imageVariantsDto";
-import type { ScamAlertResponseDtoCategory } from "./scamAlertResponseDtoCategory";
-import type { ScamAlertResponseDtoCity } from "./scamAlertResponseDtoCity";
-import type { ScamAlertResponseDtoUser } from "./scamAlertResponseDtoUser";
-import type { ScamAlertResponseDtoVoteId } from "./scamAlertResponseDtoVoteId";
+import type { _ScamAlertResponseDtoCount } from './_scamAlertResponseDtoCount';
+import type { ImageVariantsDto } from './imageVariantsDto';
+import type { ScamAlertResponseDtoCategory } from './scamAlertResponseDtoCategory';
+import type { ScamAlertResponseDtoCity } from './scamAlertResponseDtoCity';
+import type { ScamAlertResponseDtoUser } from './scamAlertResponseDtoUser';
+import type { ScamAlertResponseDtoVoteId } from './scamAlertResponseDtoVoteId';
 
 export interface ScamAlertResponseDto {
   /** Scam alert ID (cuid) */
@@ -54,8 +54,8 @@ export interface ScamAlertResponseDto {
   /** Whether the current user has voted (only present when authenticated) */
   hasVoted?: boolean;
   /**
-   * Vote ID (cuid) if user has voted, null otherwise
-   * @nullable
-   */
+     * Vote ID (cuid) if user has voted, null otherwise
+     * @nullable
+     */
   voteId?: ScamAlertResponseDtoVoteId;
 }

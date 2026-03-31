@@ -7,8 +7,8 @@
  */
 
 export interface CreateProfileDto {
-  id?: string;
-  email?: string;
+  id: string;
+  email: string;
   name?: string;
   avatarUrl?: string;
   bio?: string;

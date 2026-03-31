@@ -9,11 +9,11 @@
 /**
  * Vote target type
  */
-export type CreateVoteResponseDtoVoteType =
-  (typeof CreateVoteResponseDtoVoteType)[keyof typeof CreateVoteResponseDtoVoteType];
+export type CreateVoteResponseDtoVoteType = typeof CreateVoteResponseDtoVoteType[keyof typeof CreateVoteResponseDtoVoteType];
+
 
 export const CreateVoteResponseDtoVoteType = {
-  tip: "tip",
-  alert: "alert",
-  image: "image",
+  tip: 'tip',
+  alert: 'alert',
+  image: 'image',
 } as const;

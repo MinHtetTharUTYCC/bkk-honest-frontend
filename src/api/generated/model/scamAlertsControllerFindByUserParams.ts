@@ -7,12 +7,12 @@
  */
 
 export type ScamAlertsControllerFindByUserParams = {
-  /**
-   * Items per page
-   */
-  take?: number;
-  /**
-   * Items to skip
-   */
-  skip?: number;
+/**
+ * Items per page
+ */
+take?: number;
+/**
+ * Items to skip
+ */
+skip?: number;
 };

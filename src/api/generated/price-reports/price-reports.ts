@@ -5,1553 +5,781 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
-  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
-  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseInfiniteQueryOptions,
-  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
+  BadRequestErrorDto,
   CreatePriceReportDto,
+  InternalServerErrorDto,
+  NotFoundErrorDto,
   PaginatedPriceReportsDto,
   PriceReportDto,
   PriceReportsControllerFindBySpotParams,
   PriceReportsControllerFindByUserParams,
   PriceReportsControllerFindMyReportsParams,
-  UpdatePriceReportDto,
-} from "../model";
+  UnauthorizedErrorDto,
+  UpdatePriceReportDto
+} from '../model';
 
-import { customInstance } from "../../mutator/custom-instance";
+
+
+
 
 /**
  * @summary Create a price report
  */
 export type priceReportsControllerCreateResponse201 = {
-  data: PriceReportDto;
-  status: 201;
+  data: PriceReportDto
+  status: 201
+}
+
+export type priceReportsControllerCreateResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type priceReportsControllerCreateResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type priceReportsControllerCreateResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type priceReportsControllerCreateResponseSuccess = (priceReportsControllerCreateResponse201) & {
+  headers: Headers;
+};
+export type priceReportsControllerCreateResponseError = (priceReportsControllerCreateResponse400 | priceReportsControllerCreateResponse401 | priceReportsControllerCreateResponse500) & {
+  headers: Headers;
 };
 
-export type priceReportsControllerCreateResponseSuccess =
-  priceReportsControllerCreateResponse201 & {
-    headers: Headers;
-  };
-export type priceReportsControllerCreateResponse =
-  priceReportsControllerCreateResponseSuccess;
+export type priceReportsControllerCreateResponse = (priceReportsControllerCreateResponseSuccess | priceReportsControllerCreateResponseError)
 
 export const getPriceReportsControllerCreateUrl = () => {
-  return `/price-reports`;
-};
 
-export const priceReportsControllerCreate = async (
-  createPriceReportDto: CreatePriceReportDto,
-  options?: RequestInit,
-): Promise<priceReportsControllerCreateResponse> => {
-  return customInstance<priceReportsControllerCreateResponse>(
-    getPriceReportsControllerCreateUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(createPriceReportDto),
-    },
-  );
-};
 
-export const getPriceReportsControllerCreateMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof priceReportsControllerCreate>>,
-    TError,
-    { data: CreatePriceReportDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof priceReportsControllerCreate>>,
-  TError,
-  { data: CreatePriceReportDto },
-  TContext
-> => {
-  const mutationKey = ["priceReportsControllerCreate"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof priceReportsControllerCreate>>,
-    { data: CreatePriceReportDto }
-  > = (props) => {
-    const { data } = props ?? {};
 
-    return priceReportsControllerCreate(data);
-  };
+  return `/price-reports`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const priceReportsControllerCreate = async (createPriceReportDto: CreatePriceReportDto, options?: RequestInit): Promise<priceReportsControllerCreateResponse> => {
 
-export type PriceReportsControllerCreateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerCreate>>
->;
-export type PriceReportsControllerCreateMutationBody = CreatePriceReportDto;
-export type PriceReportsControllerCreateMutationError = unknown;
+  const res = await fetch(getPriceReportsControllerCreateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createPriceReportDto,)
+  }
+)
 
-/**
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: priceReportsControllerCreateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as priceReportsControllerCreateResponse
+}
+
+
+
+
+export const getPriceReportsControllerCreateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerCreate>>, TError,{data: CreatePriceReportDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerCreate>>, TError,{data: CreatePriceReportDto}, TContext> => {
+
+const mutationKey = ['priceReportsControllerCreate'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof priceReportsControllerCreate>>, {data: CreatePriceReportDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  priceReportsControllerCreate(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PriceReportsControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof priceReportsControllerCreate>>>
+    export type PriceReportsControllerCreateMutationBody = CreatePriceReportDto
+    export type PriceReportsControllerCreateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Create a price report
  */
-export const usePriceReportsControllerCreate = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof priceReportsControllerCreate>>,
-      TError,
-      { data: CreatePriceReportDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof priceReportsControllerCreate>>,
-  TError,
-  { data: CreatePriceReportDto },
-  TContext
-> => {
-  return useMutation(
-    getPriceReportsControllerCreateMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const usePriceReportsControllerCreate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerCreate>>, TError,{data: CreatePriceReportDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof priceReportsControllerCreate>>,
+        TError,
+        {data: CreatePriceReportDto},
+        TContext
+      > => {
+      return useMutation(getPriceReportsControllerCreateMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get price reports by spot
  */
 export type priceReportsControllerFindBySpotResponse200 = {
-  data: PaginatedPriceReportsDto;
-  status: 200;
+  data: PaginatedPriceReportsDto
+  status: 200
+}
+
+export type priceReportsControllerFindBySpotResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type priceReportsControllerFindBySpotResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type priceReportsControllerFindBySpotResponseSuccess = (priceReportsControllerFindBySpotResponse200) & {
+  headers: Headers;
+};
+export type priceReportsControllerFindBySpotResponseError = (priceReportsControllerFindBySpotResponse400 | priceReportsControllerFindBySpotResponse500) & {
+  headers: Headers;
 };
 
-export type priceReportsControllerFindBySpotResponseSuccess =
-  priceReportsControllerFindBySpotResponse200 & {
-    headers: Headers;
-  };
-export type priceReportsControllerFindBySpotResponse =
-  priceReportsControllerFindBySpotResponseSuccess;
+export type priceReportsControllerFindBySpotResponse = (priceReportsControllerFindBySpotResponseSuccess | priceReportsControllerFindBySpotResponseError)
 
-export const getPriceReportsControllerFindBySpotUrl = (
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-) => {
+export const getPriceReportsControllerFindBySpotUrl = (spotId: string,
+    params?: PriceReportsControllerFindBySpotParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/price-reports/spot/${spotId}?${stringifiedParams}`
-    : `/price-reports/spot/${spotId}`;
-};
-
-export const priceReportsControllerFindBySpot = async (
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: RequestInit,
-): Promise<priceReportsControllerFindBySpotResponse> => {
-  return customInstance<priceReportsControllerFindBySpotResponse>(
-    getPriceReportsControllerFindBySpotUrl(spotId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getPriceReportsControllerFindBySpotInfiniteQueryKey = (
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-) => {
-  return [
-    "infinite",
-    `/price-reports/spot/${spotId}`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getPriceReportsControllerFindBySpotQueryKey = (
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-) => {
-  return [
-    `/price-reports/spot/${spotId}`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getPriceReportsControllerFindBySpotInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    PriceReportsControllerFindBySpotParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindBySpotParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getPriceReportsControllerFindBySpotInfiniteQueryKey(spotId, params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    QueryKey,
-    PriceReportsControllerFindBySpotParams["skip"]
-  > = ({ signal, pageParam }) =>
-    priceReportsControllerFindBySpot(
-      spotId,
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!spotId,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    TError,
-    TData,
-    QueryKey,
-    PriceReportsControllerFindBySpotParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type PriceReportsControllerFindBySpotInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>
->;
-export type PriceReportsControllerFindBySpotInfiniteQueryError = unknown;
-
-export function usePriceReportsControllerFindBySpotInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    PriceReportsControllerFindBySpotParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params: undefined | PriceReportsControllerFindBySpotParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindBySpotParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-          TError,
-          Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindBySpotInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    PriceReportsControllerFindBySpotParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindBySpotParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-          TError,
-          Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindBySpotInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    PriceReportsControllerFindBySpotParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindBySpotParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get price reports by spot
- */
-
-export function usePriceReportsControllerFindBySpotInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    PriceReportsControllerFindBySpotParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindBySpotParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getPriceReportsControllerFindBySpotInfiniteQueryOptions(
-    spotId,
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/price-reports/spot/${spotId}?${stringifiedParams}` : `/price-reports/spot/${spotId}`
 }
 
-export const getPriceReportsControllerFindBySpotQueryOptions = <
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const priceReportsControllerFindBySpot = async (spotId: string,
+    params?: PriceReportsControllerFindBySpotParams, options?: RequestInit): Promise<priceReportsControllerFindBySpotResponse> => {
+
+  const res = await fetch(getPriceReportsControllerFindBySpotUrl(spotId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: priceReportsControllerFindBySpotResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as priceReportsControllerFindBySpotResponse
+}
+
+
+
+
+
+export const getPriceReportsControllerFindBySpotQueryKey = (spotId: string,
+    params?: PriceReportsControllerFindBySpotParams,) => {
+    return [
+    `/price-reports/spot/${spotId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getPriceReportsControllerFindBySpotQueryOptions = <TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError = BadRequestErrorDto | InternalServerErrorDto>(spotId: string,
+    params?: PriceReportsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getPriceReportsControllerFindBySpotQueryKey(spotId, params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>
-  > = ({ signal }) =>
-    priceReportsControllerFindBySpot(spotId, params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getPriceReportsControllerFindBySpotQueryKey(spotId,params);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!spotId,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type PriceReportsControllerFindBySpotQueryResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>
->;
-export type PriceReportsControllerFindBySpotQueryError = unknown;
 
-export function usePriceReportsControllerFindBySpot<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-  TError = unknown,
->(
-  spotId: string,
-  params: undefined | PriceReportsControllerFindBySpotParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>> = ({ signal }) => priceReportsControllerFindBySpot(spotId,params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(spotId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PriceReportsControllerFindBySpotQueryResult = NonNullable<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>>
+export type PriceReportsControllerFindBySpotQueryError = BadRequestErrorDto | InternalServerErrorDto
+
+
+export function usePriceReportsControllerFindBySpot<TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params: undefined |  PriceReportsControllerFindBySpotParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
           TError,
           Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindBySpot<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePriceReportsControllerFindBySpot<TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params?: PriceReportsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
           TError,
           Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindBySpot<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePriceReportsControllerFindBySpot<TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params?: PriceReportsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get price reports by spot
  */
 
-export function usePriceReportsControllerFindBySpot<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: PriceReportsControllerFindBySpotParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getPriceReportsControllerFindBySpotQueryOptions(
-    spotId,
-    params,
-    options,
-  );
+export function usePriceReportsControllerFindBySpot<TData = Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params?: PriceReportsControllerFindBySpotParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindBySpot>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getPriceReportsControllerFindBySpotQueryOptions(spotId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Update a price report
  */
 export type priceReportsControllerUpdateResponse200 = {
-  data: PriceReportDto;
-  status: 200;
+  data: PriceReportDto
+  status: 200
+}
+
+export type priceReportsControllerUpdateResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type priceReportsControllerUpdateResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type priceReportsControllerUpdateResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type priceReportsControllerUpdateResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type priceReportsControllerUpdateResponseSuccess = (priceReportsControllerUpdateResponse200) & {
+  headers: Headers;
+};
+export type priceReportsControllerUpdateResponseError = (priceReportsControllerUpdateResponse400 | priceReportsControllerUpdateResponse401 | priceReportsControllerUpdateResponse404 | priceReportsControllerUpdateResponse500) & {
+  headers: Headers;
 };
 
-export type priceReportsControllerUpdateResponseSuccess =
-  priceReportsControllerUpdateResponse200 & {
-    headers: Headers;
-  };
-export type priceReportsControllerUpdateResponse =
-  priceReportsControllerUpdateResponseSuccess;
+export type priceReportsControllerUpdateResponse = (priceReportsControllerUpdateResponseSuccess | priceReportsControllerUpdateResponseError)
 
-export const getPriceReportsControllerUpdateUrl = (id: string) => {
-  return `/price-reports/${id}`;
-};
+export const getPriceReportsControllerUpdateUrl = (id: string,) => {
 
-export const priceReportsControllerUpdate = async (
-  id: string,
-  updatePriceReportDto: UpdatePriceReportDto,
-  options?: RequestInit,
-): Promise<priceReportsControllerUpdateResponse> => {
-  return customInstance<priceReportsControllerUpdateResponse>(
-    getPriceReportsControllerUpdateUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(updatePriceReportDto),
-    },
-  );
-};
 
-export const getPriceReportsControllerUpdateMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof priceReportsControllerUpdate>>,
-    TError,
-    { id: string; data: UpdatePriceReportDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof priceReportsControllerUpdate>>,
-  TError,
-  { id: string; data: UpdatePriceReportDto },
-  TContext
-> => {
-  const mutationKey = ["priceReportsControllerUpdate"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof priceReportsControllerUpdate>>,
-    { id: string; data: UpdatePriceReportDto }
-  > = (props) => {
-    const { id, data } = props ?? {};
 
-    return priceReportsControllerUpdate(id, data);
-  };
+  return `/price-reports/${id}`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const priceReportsControllerUpdate = async (id: string,
+    updatePriceReportDto: UpdatePriceReportDto, options?: RequestInit): Promise<priceReportsControllerUpdateResponse> => {
 
-export type PriceReportsControllerUpdateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerUpdate>>
->;
-export type PriceReportsControllerUpdateMutationBody = UpdatePriceReportDto;
-export type PriceReportsControllerUpdateMutationError = unknown;
+  const res = await fetch(getPriceReportsControllerUpdateUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updatePriceReportDto,)
+  }
+)
 
-/**
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: priceReportsControllerUpdateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as priceReportsControllerUpdateResponse
+}
+
+
+
+
+export const getPriceReportsControllerUpdateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerUpdate>>, TError,{id: string;data: UpdatePriceReportDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerUpdate>>, TError,{id: string;data: UpdatePriceReportDto}, TContext> => {
+
+const mutationKey = ['priceReportsControllerUpdate'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof priceReportsControllerUpdate>>, {id: string;data: UpdatePriceReportDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  priceReportsControllerUpdate(id,data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PriceReportsControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof priceReportsControllerUpdate>>>
+    export type PriceReportsControllerUpdateMutationBody = UpdatePriceReportDto
+    export type PriceReportsControllerUpdateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Update a price report
  */
-export const usePriceReportsControllerUpdate = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof priceReportsControllerUpdate>>,
-      TError,
-      { id: string; data: UpdatePriceReportDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof priceReportsControllerUpdate>>,
-  TError,
-  { id: string; data: UpdatePriceReportDto },
-  TContext
-> => {
-  return useMutation(
-    getPriceReportsControllerUpdateMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const usePriceReportsControllerUpdate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerUpdate>>, TError,{id: string;data: UpdatePriceReportDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof priceReportsControllerUpdate>>,
+        TError,
+        {id: string;data: UpdatePriceReportDto},
+        TContext
+      > => {
+      return useMutation(getPriceReportsControllerUpdateMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Delete a price report
  */
 export type priceReportsControllerDeleteResponse200 = {
-  data: void;
-  status: 200;
+  data: void
+  status: 200
+}
+
+export type priceReportsControllerDeleteResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type priceReportsControllerDeleteResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type priceReportsControllerDeleteResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type priceReportsControllerDeleteResponseSuccess = (priceReportsControllerDeleteResponse200) & {
+  headers: Headers;
+};
+export type priceReportsControllerDeleteResponseError = (priceReportsControllerDeleteResponse401 | priceReportsControllerDeleteResponse404 | priceReportsControllerDeleteResponse500) & {
+  headers: Headers;
 };
 
-export type priceReportsControllerDeleteResponseSuccess =
-  priceReportsControllerDeleteResponse200 & {
-    headers: Headers;
-  };
-export type priceReportsControllerDeleteResponse =
-  priceReportsControllerDeleteResponseSuccess;
+export type priceReportsControllerDeleteResponse = (priceReportsControllerDeleteResponseSuccess | priceReportsControllerDeleteResponseError)
 
-export const getPriceReportsControllerDeleteUrl = (id: string) => {
-  return `/price-reports/${id}`;
-};
+export const getPriceReportsControllerDeleteUrl = (id: string,) => {
 
-export const priceReportsControllerDelete = async (
-  id: string,
-  options?: RequestInit,
-): Promise<priceReportsControllerDeleteResponse> => {
-  return customInstance<priceReportsControllerDeleteResponse>(
-    getPriceReportsControllerDeleteUrl(id),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
 
-export const getPriceReportsControllerDeleteMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof priceReportsControllerDelete>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof priceReportsControllerDelete>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["priceReportsControllerDelete"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof priceReportsControllerDelete>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
 
-    return priceReportsControllerDelete(id);
-  };
+  return `/price-reports/${id}`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const priceReportsControllerDelete = async (id: string, options?: RequestInit): Promise<priceReportsControllerDeleteResponse> => {
 
-export type PriceReportsControllerDeleteMutationResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerDelete>>
->;
+  const res = await fetch(getPriceReportsControllerDeleteUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
 
-export type PriceReportsControllerDeleteMutationError = unknown;
 
-/**
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: priceReportsControllerDeleteResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as priceReportsControllerDeleteResponse
+}
+
+
+
+
+export const getPriceReportsControllerDeleteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerDelete>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['priceReportsControllerDelete'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof priceReportsControllerDelete>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  priceReportsControllerDelete(id,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PriceReportsControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof priceReportsControllerDelete>>>
+
+    export type PriceReportsControllerDeleteMutationError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Delete a price report
  */
-export const usePriceReportsControllerDelete = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof priceReportsControllerDelete>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof priceReportsControllerDelete>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  return useMutation(
-    getPriceReportsControllerDeleteMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const usePriceReportsControllerDelete = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof priceReportsControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof priceReportsControllerDelete>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getPriceReportsControllerDeleteMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get price reports by user
  */
 export type priceReportsControllerFindByUserResponse200 = {
-  data: PaginatedPriceReportsDto;
-  status: 200;
+  data: PaginatedPriceReportsDto
+  status: 200
+}
+
+export type priceReportsControllerFindByUserResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type priceReportsControllerFindByUserResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type priceReportsControllerFindByUserResponseSuccess = (priceReportsControllerFindByUserResponse200) & {
+  headers: Headers;
+};
+export type priceReportsControllerFindByUserResponseError = (priceReportsControllerFindByUserResponse400 | priceReportsControllerFindByUserResponse500) & {
+  headers: Headers;
 };
 
-export type priceReportsControllerFindByUserResponseSuccess =
-  priceReportsControllerFindByUserResponse200 & {
-    headers: Headers;
-  };
-export type priceReportsControllerFindByUserResponse =
-  priceReportsControllerFindByUserResponseSuccess;
+export type priceReportsControllerFindByUserResponse = (priceReportsControllerFindByUserResponseSuccess | priceReportsControllerFindByUserResponseError)
 
-export const getPriceReportsControllerFindByUserUrl = (
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-) => {
+export const getPriceReportsControllerFindByUserUrl = (userId: string,
+    params?: PriceReportsControllerFindByUserParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/price-reports/user/${userId}?${stringifiedParams}`
-    : `/price-reports/user/${userId}`;
-};
-
-export const priceReportsControllerFindByUser = async (
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: RequestInit,
-): Promise<priceReportsControllerFindByUserResponse> => {
-  return customInstance<priceReportsControllerFindByUserResponse>(
-    getPriceReportsControllerFindByUserUrl(userId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getPriceReportsControllerFindByUserInfiniteQueryKey = (
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-) => {
-  return [
-    "infinite",
-    `/price-reports/user/${userId}`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getPriceReportsControllerFindByUserQueryKey = (
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-) => {
-  return [
-    `/price-reports/user/${userId}`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getPriceReportsControllerFindByUserInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    PriceReportsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindByUserParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getPriceReportsControllerFindByUserInfiniteQueryKey(userId, params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    QueryKey,
-    PriceReportsControllerFindByUserParams["skip"]
-  > = ({ signal, pageParam }) =>
-    priceReportsControllerFindByUser(
-      userId,
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!userId,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    TError,
-    TData,
-    QueryKey,
-    PriceReportsControllerFindByUserParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type PriceReportsControllerFindByUserInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerFindByUser>>
->;
-export type PriceReportsControllerFindByUserInfiniteQueryError = unknown;
-
-export function usePriceReportsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    PriceReportsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params: undefined | PriceReportsControllerFindByUserParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindByUserParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-          TError,
-          Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    PriceReportsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindByUserParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-          TError,
-          Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    PriceReportsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindByUserParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get price reports by user
- */
-
-export function usePriceReportsControllerFindByUserInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    PriceReportsControllerFindByUserParams["skip"]
-  >,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindByUserParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getPriceReportsControllerFindByUserInfiniteQueryOptions(
-    userId,
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/price-reports/user/${userId}?${stringifiedParams}` : `/price-reports/user/${userId}`
 }
 
-export const getPriceReportsControllerFindByUserQueryOptions = <
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const priceReportsControllerFindByUser = async (userId: string,
+    params?: PriceReportsControllerFindByUserParams, options?: RequestInit): Promise<priceReportsControllerFindByUserResponse> => {
+
+  const res = await fetch(getPriceReportsControllerFindByUserUrl(userId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: priceReportsControllerFindByUserResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as priceReportsControllerFindByUserResponse
+}
+
+
+
+
+
+export const getPriceReportsControllerFindByUserQueryKey = (userId: string,
+    params?: PriceReportsControllerFindByUserParams,) => {
+    return [
+    `/price-reports/user/${userId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getPriceReportsControllerFindByUserQueryOptions = <TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError = BadRequestErrorDto | InternalServerErrorDto>(userId: string,
+    params?: PriceReportsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getPriceReportsControllerFindByUserQueryKey(userId, params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>
-  > = ({ signal }) =>
-    priceReportsControllerFindByUser(userId, params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getPriceReportsControllerFindByUserQueryKey(userId,params);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!userId,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type PriceReportsControllerFindByUserQueryResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerFindByUser>>
->;
-export type PriceReportsControllerFindByUserQueryError = unknown;
 
-export function usePriceReportsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params: undefined | PriceReportsControllerFindByUserParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>> = ({ signal }) => priceReportsControllerFindByUser(userId,params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(userId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PriceReportsControllerFindByUserQueryResult = NonNullable<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>>
+export type PriceReportsControllerFindByUserQueryError = BadRequestErrorDto | InternalServerErrorDto
+
+
+export function usePriceReportsControllerFindByUser<TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ userId: string,
+    params: undefined |  PriceReportsControllerFindByUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof priceReportsControllerFindByUser>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePriceReportsControllerFindByUser<TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ userId: string,
+    params?: PriceReportsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
           TError,
           Awaited<ReturnType<typeof priceReportsControllerFindByUser>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePriceReportsControllerFindByUser<TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ userId: string,
+    params?: PriceReportsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get price reports by user
  */
 
-export function usePriceReportsControllerFindByUser<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-  TError = unknown,
->(
-  userId: string,
-  params?: PriceReportsControllerFindByUserParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindByUser>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getPriceReportsControllerFindByUserQueryOptions(
-    userId,
-    params,
-    options,
-  );
+export function usePriceReportsControllerFindByUser<TData = Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ userId: string,
+    params?: PriceReportsControllerFindByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindByUser>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getPriceReportsControllerFindByUserQueryOptions(userId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Get my price reports
  */
 export type priceReportsControllerFindMyReportsResponse200 = {
-  data: PaginatedPriceReportsDto;
-  status: 200;
+  data: PaginatedPriceReportsDto
+  status: 200
+}
+
+export type priceReportsControllerFindMyReportsResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type priceReportsControllerFindMyReportsResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type priceReportsControllerFindMyReportsResponseSuccess = (priceReportsControllerFindMyReportsResponse200) & {
+  headers: Headers;
+};
+export type priceReportsControllerFindMyReportsResponseError = (priceReportsControllerFindMyReportsResponse401 | priceReportsControllerFindMyReportsResponse500) & {
+  headers: Headers;
 };
 
-export type priceReportsControllerFindMyReportsResponseSuccess =
-  priceReportsControllerFindMyReportsResponse200 & {
-    headers: Headers;
-  };
-export type priceReportsControllerFindMyReportsResponse =
-  priceReportsControllerFindMyReportsResponseSuccess;
+export type priceReportsControllerFindMyReportsResponse = (priceReportsControllerFindMyReportsResponseSuccess | priceReportsControllerFindMyReportsResponseError)
 
-export const getPriceReportsControllerFindMyReportsUrl = (
-  params?: PriceReportsControllerFindMyReportsParams,
-) => {
+export const getPriceReportsControllerFindMyReportsUrl = (params?: PriceReportsControllerFindMyReportsParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/price-reports/mine?${stringifiedParams}`
-    : `/price-reports/mine`;
-};
-
-export const priceReportsControllerFindMyReports = async (
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: RequestInit,
-): Promise<priceReportsControllerFindMyReportsResponse> => {
-  return customInstance<priceReportsControllerFindMyReportsResponse>(
-    getPriceReportsControllerFindMyReportsUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getPriceReportsControllerFindMyReportsInfiniteQueryKey = (
-  params?: PriceReportsControllerFindMyReportsParams,
-) => {
-  return [
-    "infinite",
-    `/price-reports/mine`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getPriceReportsControllerFindMyReportsQueryKey = (
-  params?: PriceReportsControllerFindMyReportsParams,
-) => {
-  return [`/price-reports/mine`, ...(params ? [params] : [])] as const;
-};
-
-export const getPriceReportsControllerFindMyReportsInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindMyReportsParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getPriceReportsControllerFindMyReportsInfiniteQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    QueryKey,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  > = ({ signal, pageParam }) =>
-    priceReportsControllerFindMyReports(
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    TError,
-    TData,
-    QueryKey,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type PriceReportsControllerFindMyReportsInfiniteQueryResult =
-  NonNullable<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>>;
-export type PriceReportsControllerFindMyReportsInfiniteQueryError = unknown;
-
-export function usePriceReportsControllerFindMyReportsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: undefined | PriceReportsControllerFindMyReportsParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindMyReportsParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-          TError,
-          Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindMyReportsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindMyReportsParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-          TError,
-          Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindMyReportsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindMyReportsParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get my price reports
- */
-
-export function usePriceReportsControllerFindMyReportsInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    PriceReportsControllerFindMyReportsParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData,
-        QueryKey,
-        PriceReportsControllerFindMyReportsParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions =
-    getPriceReportsControllerFindMyReportsInfiniteQueryOptions(params, options);
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/price-reports/mine?${stringifiedParams}` : `/price-reports/mine`
 }
 
-export const getPriceReportsControllerFindMyReportsQueryOptions = <
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const priceReportsControllerFindMyReports = async (params?: PriceReportsControllerFindMyReportsParams, options?: RequestInit): Promise<priceReportsControllerFindMyReportsResponse> => {
+
+  const res = await fetch(getPriceReportsControllerFindMyReportsUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: priceReportsControllerFindMyReportsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as priceReportsControllerFindMyReportsResponse
+}
+
+
+
+
+
+export const getPriceReportsControllerFindMyReportsQueryKey = (params?: PriceReportsControllerFindMyReportsParams,) => {
+    return [
+    `/price-reports/mine`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getPriceReportsControllerFindMyReportsQueryOptions = <TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(params?: PriceReportsControllerFindMyReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getPriceReportsControllerFindMyReportsQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>
-  > = ({ signal }) => priceReportsControllerFindMyReports(params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getPriceReportsControllerFindMyReportsQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type PriceReportsControllerFindMyReportsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>
->;
-export type PriceReportsControllerFindMyReportsQueryError = unknown;
 
-export function usePriceReportsControllerFindMyReports<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-  TError = unknown,
->(
-  params: undefined | PriceReportsControllerFindMyReportsParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>> = ({ signal }) => priceReportsControllerFindMyReports(params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type PriceReportsControllerFindMyReportsQueryResult = NonNullable<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>>
+export type PriceReportsControllerFindMyReportsQueryError = UnauthorizedErrorDto | InternalServerErrorDto
+
+
+export function usePriceReportsControllerFindMyReports<TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params: undefined |  PriceReportsControllerFindMyReportsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
           TError,
           Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindMyReports<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePriceReportsControllerFindMyReports<TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params?: PriceReportsControllerFindMyReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
           TError,
           Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function usePriceReportsControllerFindMyReports<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function usePriceReportsControllerFindMyReports<TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params?: PriceReportsControllerFindMyReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get my price reports
  */
 
-export function usePriceReportsControllerFindMyReports<
-  TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-  TError = unknown,
->(
-  params?: PriceReportsControllerFindMyReportsParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getPriceReportsControllerFindMyReportsQueryOptions(
-    params,
-    options,
-  );
+export function usePriceReportsControllerFindMyReports<TData = Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError = UnauthorizedErrorDto | InternalServerErrorDto>(
+ params?: PriceReportsControllerFindMyReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof priceReportsControllerFindMyReports>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getPriceReportsControllerFindMyReportsQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
+

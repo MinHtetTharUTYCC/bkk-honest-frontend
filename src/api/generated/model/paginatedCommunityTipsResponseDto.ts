@@ -9,6 +9,6 @@ import type { CommunityTipResponseDto } from './communityTipResponseDto';
 import type { PaginationMetaDto } from './paginationMetaDto';
 
 export interface PaginatedCommunityTipsResponseDto {
-    data: CommunityTipResponseDto[];
-    pagination: PaginationMetaDto;
+  data: CommunityTipResponseDto[];
+  pagination: PaginationMetaDto;
 }

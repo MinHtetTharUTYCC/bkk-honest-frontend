@@ -5,11 +5,10 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { ChecklistItemDtoSpot } from "./checklistItemDtoSpot";
+import type { ChecklistItemDtoSpot } from './checklistItemDtoSpot';
 
 export interface ChecklistItemDto {
   id: string;
-  spotId: string;
   userId: string;
   completed: boolean;
   createdAt: string;

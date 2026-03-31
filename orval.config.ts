@@ -12,14 +12,9 @@ export default defineConfig({
       client: 'react-query',
       mock: false,
       override: {
-        mutator: {
-          path: './src/api/mutator/custom-instance.ts',
-          name: 'customInstance',
-        },
         query: {
           useQuery: true,
-          useInfinite: true,
-          useInfiniteQueryParam: 'skip',
+          useInfinite: false,
         }
       },
     },

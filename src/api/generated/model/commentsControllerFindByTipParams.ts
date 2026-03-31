@@ -7,6 +7,6 @@
  */
 
 export type CommentsControllerFindByTipParams = {
-  skip?: number;
-  take?: number;
+skip?: number;
+take?: number;
 };

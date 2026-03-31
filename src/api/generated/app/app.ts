@@ -5,609 +5,242 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import {
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
-  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
-  InfiniteData,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseInfiniteQueryOptions,
-  UseInfiniteQueryResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
-import { customInstance } from "../../mutator/custom-instance";
+
+
+
 
 export type appControllerGetHealthResponse200 = {
-  data: void;
-  status: 200;
-};
+  data: void
+  status: 200
+}
 
-export type appControllerGetHealthResponseSuccess =
-  appControllerGetHealthResponse200 & {
-    headers: Headers;
-  };
-export type appControllerGetHealthResponse =
-  appControllerGetHealthResponseSuccess;
+export type appControllerGetHealthResponseSuccess = (appControllerGetHealthResponse200) & {
+  headers: Headers;
+};
+;
+
+export type appControllerGetHealthResponse = (appControllerGetHealthResponseSuccess)
 
 export const getAppControllerGetHealthUrl = () => {
-  return `/health`;
-};
 
-export const appControllerGetHealth = async (
-  options?: RequestInit,
-): Promise<appControllerGetHealthResponse> => {
-  return customInstance<appControllerGetHealthResponse>(
-    getAppControllerGetHealthUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getAppControllerGetHealthInfiniteQueryKey = () => {
-  return ["infinite", `/health`] as const;
-};
+
+
+  return `/health`
+}
+
+export const appControllerGetHealth = async ( options?: RequestInit): Promise<appControllerGetHealthResponse> => {
+
+  const res = await fetch(getAppControllerGetHealthUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: appControllerGetHealthResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as appControllerGetHealthResponse
+}
+
+
+
+
 
 export const getAppControllerGetHealthQueryKey = () => {
-  return [`/health`] as const;
-};
+    return [
+    `/health`
+    ] as const;
+    }
 
-export const getAppControllerGetHealthInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof appControllerGetHealth>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getAppControllerGetHealthInfiniteQueryKey();
+export const getAppControllerGetHealthQueryOptions = <TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof appControllerGetHealth>>
-  > = ({ signal }) => appControllerGetHealth({ signal });
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof appControllerGetHealth>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getAppControllerGetHealthQueryKey();
 
-export type AppControllerGetHealthInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof appControllerGetHealth>>
->;
-export type AppControllerGetHealthInfiniteQueryError = unknown;
 
-export function useAppControllerGetHealthInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerGetHealth>>> = ({ signal }) => appControllerGetHealth({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AppControllerGetHealthQueryResult = NonNullable<Awaited<ReturnType<typeof appControllerGetHealth>>>
+export type AppControllerGetHealthQueryError = unknown
+
+
+export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof appControllerGetHealth>>,
           TError,
           Awaited<ReturnType<typeof appControllerGetHealth>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerGetHealthInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof appControllerGetHealth>>,
           TError,
           Awaited<ReturnType<typeof appControllerGetHealth>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerGetHealthInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useAppControllerGetHealthInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerGetHealth>>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getAppControllerGetHealthInfiniteQueryOptions(options);
+export function useAppControllerGetHealth<TData = Awaited<ReturnType<typeof appControllerGetHealth>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerGetHealth>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getAppControllerGetHealthQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getAppControllerGetHealthQueryOptions = <
-  TData = Awaited<ReturnType<typeof appControllerGetHealth>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof appControllerGetHealth>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getAppControllerGetHealthQueryKey();
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof appControllerGetHealth>>
-  > = ({ signal }) => appControllerGetHealth({ signal });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof appControllerGetHealth>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type AppControllerGetHealthQueryResult = NonNullable<
-  Awaited<ReturnType<typeof appControllerGetHealth>>
->;
-export type AppControllerGetHealthQueryError = unknown;
-
-export function useAppControllerGetHealth<
-  TData = Awaited<ReturnType<typeof appControllerGetHealth>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof appControllerGetHealth>>,
-          TError,
-          Awaited<ReturnType<typeof appControllerGetHealth>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerGetHealth<
-  TData = Awaited<ReturnType<typeof appControllerGetHealth>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof appControllerGetHealth>>,
-          TError,
-          Awaited<ReturnType<typeof appControllerGetHealth>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerGetHealth<
-  TData = Awaited<ReturnType<typeof appControllerGetHealth>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-
-export function useAppControllerGetHealth<
-  TData = Awaited<ReturnType<typeof appControllerGetHealth>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerGetHealth>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getAppControllerGetHealthQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 export type appControllerDebugSentryResponse200 = {
-  data: void;
-  status: 200;
-};
+  data: void
+  status: 200
+}
 
-export type appControllerDebugSentryResponseSuccess =
-  appControllerDebugSentryResponse200 & {
-    headers: Headers;
-  };
-export type appControllerDebugSentryResponse =
-  appControllerDebugSentryResponseSuccess;
+export type appControllerDebugSentryResponseSuccess = (appControllerDebugSentryResponse200) & {
+  headers: Headers;
+};
+;
+
+export type appControllerDebugSentryResponse = (appControllerDebugSentryResponseSuccess)
 
 export const getAppControllerDebugSentryUrl = () => {
-  return `/sentry-debug`;
-};
 
-export const appControllerDebugSentry = async (
-  options?: RequestInit,
-): Promise<appControllerDebugSentryResponse> => {
-  return customInstance<appControllerDebugSentryResponse>(
-    getAppControllerDebugSentryUrl(),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getAppControllerDebugSentryInfiniteQueryKey = () => {
-  return ["infinite", `/sentry-debug`] as const;
-};
+
+
+  return `/sentry-debug`
+}
+
+export const appControllerDebugSentry = async ( options?: RequestInit): Promise<appControllerDebugSentryResponse> => {
+
+  const res = await fetch(getAppControllerDebugSentryUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: appControllerDebugSentryResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as appControllerDebugSentryResponse
+}
+
+
+
+
 
 export const getAppControllerDebugSentryQueryKey = () => {
-  return [`/sentry-debug`] as const;
-};
+    return [
+    `/sentry-debug`
+    ] as const;
+    }
 
-export const getAppControllerDebugSentryInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseInfiniteQueryOptions<
-      Awaited<ReturnType<typeof appControllerDebugSentry>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getAppControllerDebugSentryInfiniteQueryKey();
+export const getAppControllerDebugSentryQueryOptions = <TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, fetch?: RequestInit}
+) => {
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof appControllerDebugSentry>>
-  > = ({ signal }) => appControllerDebugSentry({ signal });
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof appControllerDebugSentry>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+  const queryKey =  queryOptions?.queryKey ?? getAppControllerDebugSentryQueryKey();
 
-export type AppControllerDebugSentryInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof appControllerDebugSentry>>
->;
-export type AppControllerDebugSentryInfiniteQueryError = unknown;
 
-export function useAppControllerDebugSentryInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof appControllerDebugSentry>>> = ({ signal }) => appControllerDebugSentry({ signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type AppControllerDebugSentryQueryResult = NonNullable<Awaited<ReturnType<typeof appControllerDebugSentry>>>
+export type AppControllerDebugSentryQueryError = unknown
+
+
+export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof appControllerDebugSentry>>,
           TError,
           Awaited<ReturnType<typeof appControllerDebugSentry>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerDebugSentryInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof appControllerDebugSentry>>,
           TError,
           Awaited<ReturnType<typeof appControllerDebugSentry>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerDebugSentryInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
-export function useAppControllerDebugSentryInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof appControllerDebugSentry>>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getAppControllerDebugSentryInfiniteQueryOptions(options);
+export function useAppControllerDebugSentry<TData = Awaited<ReturnType<typeof appControllerDebugSentry>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof appControllerDebugSentry>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getAppControllerDebugSentryQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getAppControllerDebugSentryQueryOptions = <
-  TData = Awaited<ReturnType<typeof appControllerDebugSentry>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<
-    UseQueryOptions<
-      Awaited<ReturnType<typeof appControllerDebugSentry>>,
-      TError,
-      TData
-    >
-  >;
-}) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getAppControllerDebugSentryQueryKey();
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof appControllerDebugSentry>>
-  > = ({ signal }) => appControllerDebugSentry({ signal });
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof appControllerDebugSentry>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type AppControllerDebugSentryQueryResult = NonNullable<
-  Awaited<ReturnType<typeof appControllerDebugSentry>>
->;
-export type AppControllerDebugSentryQueryError = unknown;
-
-export function useAppControllerDebugSentry<
-  TData = Awaited<ReturnType<typeof appControllerDebugSentry>>,
-  TError = unknown,
->(
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof appControllerDebugSentry>>,
-          TError,
-          Awaited<ReturnType<typeof appControllerDebugSentry>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerDebugSentry<
-  TData = Awaited<ReturnType<typeof appControllerDebugSentry>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof appControllerDebugSentry>>,
-          TError,
-          Awaited<ReturnType<typeof appControllerDebugSentry>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useAppControllerDebugSentry<
-  TData = Awaited<ReturnType<typeof appControllerDebugSentry>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-
-export function useAppControllerDebugSentry<
-  TData = Awaited<ReturnType<typeof appControllerDebugSentry>>,
-  TError = unknown,
->(
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof appControllerDebugSentry>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getAppControllerDebugSentryQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}

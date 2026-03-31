@@ -5,1436 +5,761 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
-  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
-  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseInfiniteQueryOptions,
-  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
+  BadRequestErrorDto,
   GalleryControllerGetGalleryParams,
   GalleryControllerUploadImageBody,
   GalleryImageResponseDto,
   GalleryStatsResponseDto,
+  InternalServerErrorDto,
   MessageResponseDto,
+  NotFoundErrorDto,
   PaginatedGalleryImagesResponseDto,
-} from "../model";
+  UnauthorizedErrorDto
+} from '../model';
 
-import { customInstance } from "../../mutator/custom-instance";
+
+
+
 
 /**
  * @summary Upload image to spot gallery
  */
 export type galleryControllerUploadImageResponse201 = {
-  data: GalleryImageResponseDto;
-  status: 201;
-};
+  data: GalleryImageResponseDto
+  status: 201
+}
 
 export type galleryControllerUploadImageResponse400 = {
-  data: void;
-  status: 400;
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type galleryControllerUploadImageResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type galleryControllerUploadImageResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type galleryControllerUploadImageResponseSuccess = (galleryControllerUploadImageResponse201) & {
+  headers: Headers;
+};
+export type galleryControllerUploadImageResponseError = (galleryControllerUploadImageResponse400 | galleryControllerUploadImageResponse401 | galleryControllerUploadImageResponse500) & {
+  headers: Headers;
 };
 
-export type galleryControllerUploadImageResponseSuccess =
-  galleryControllerUploadImageResponse201 & {
-    headers: Headers;
-  };
-export type galleryControllerUploadImageResponseError =
-  galleryControllerUploadImageResponse400 & {
-    headers: Headers;
-  };
+export type galleryControllerUploadImageResponse = (galleryControllerUploadImageResponseSuccess | galleryControllerUploadImageResponseError)
 
-export type galleryControllerUploadImageResponse =
-  | galleryControllerUploadImageResponseSuccess
-  | galleryControllerUploadImageResponseError;
+export const getGalleryControllerUploadImageUrl = (spotId: string,) => {
 
-export const getGalleryControllerUploadImageUrl = (spotId: string) => {
-  return `/gallery/upload/${spotId}`;
-};
 
-export const galleryControllerUploadImage = async (
-  spotId: string,
-  galleryControllerUploadImageBody: GalleryControllerUploadImageBody,
-  options?: RequestInit,
-): Promise<galleryControllerUploadImageResponse> => {
-  const formData = new FormData();
-  if (galleryControllerUploadImageBody.image !== undefined) {
-    formData.append(`image`, galleryControllerUploadImageBody.image);
+
+
+  return `/gallery/upload/${spotId}`
+}
+
+export const galleryControllerUploadImage = async (spotId: string,
+    galleryControllerUploadImageBody: GalleryControllerUploadImageBody, options?: RequestInit): Promise<galleryControllerUploadImageResponse> => {
+    const formData = new FormData();
+if(galleryControllerUploadImageBody.image !== undefined) {
+ formData.append(`image`, galleryControllerUploadImageBody.image);
+ }
+
+  const res = await fetch(getGalleryControllerUploadImageUrl(spotId),
+  {
+    ...options,
+    method: 'POST'
+    ,
+    body:
+      formData,
   }
+)
 
-  return customInstance<galleryControllerUploadImageResponse>(
-    getGalleryControllerUploadImageUrl(spotId),
-    {
-      ...options,
-      method: "POST",
-      body: formData,
-    },
-  );
-};
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-export const getGalleryControllerUploadImageMutationOptions = <
-  TError = void,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof galleryControllerUploadImage>>,
-    TError,
-    { spotId: string; data: GalleryControllerUploadImageBody },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof galleryControllerUploadImage>>,
-  TError,
-  { spotId: string; data: GalleryControllerUploadImageBody },
-  TContext
-> => {
-  const mutationKey = ["galleryControllerUploadImage"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
+  const data: galleryControllerUploadImageResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as galleryControllerUploadImageResponse
+}
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof galleryControllerUploadImage>>,
-    { spotId: string; data: GalleryControllerUploadImageBody }
-  > = (props) => {
-    const { spotId, data } = props ?? {};
 
-    return galleryControllerUploadImage(spotId, data);
-  };
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type GalleryControllerUploadImageMutationResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerUploadImage>>
->;
-export type GalleryControllerUploadImageMutationBody =
-  GalleryControllerUploadImageBody;
-export type GalleryControllerUploadImageMutationError = void;
+export const getGalleryControllerUploadImageMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string;data: GalleryControllerUploadImageBody}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string;data: GalleryControllerUploadImageBody}, TContext> => {
 
-/**
+const mutationKey = ['galleryControllerUploadImage'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof galleryControllerUploadImage>>, {spotId: string;data: GalleryControllerUploadImageBody}> = (props) => {
+          const {spotId,data} = props ?? {};
+
+          return  galleryControllerUploadImage(spotId,data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GalleryControllerUploadImageMutationResult = NonNullable<Awaited<ReturnType<typeof galleryControllerUploadImage>>>
+    export type GalleryControllerUploadImageMutationBody = GalleryControllerUploadImageBody
+    export type GalleryControllerUploadImageMutationError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Upload image to spot gallery
  */
-export const useGalleryControllerUploadImage = <
-  TError = void,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof galleryControllerUploadImage>>,
-      TError,
-      { spotId: string; data: GalleryControllerUploadImageBody },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof galleryControllerUploadImage>>,
-  TError,
-  { spotId: string; data: GalleryControllerUploadImageBody },
-  TContext
-> => {
-  return useMutation(
-    getGalleryControllerUploadImageMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useGalleryControllerUploadImage = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerUploadImage>>, TError,{spotId: string;data: GalleryControllerUploadImageBody}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof galleryControllerUploadImage>>,
+        TError,
+        {spotId: string;data: GalleryControllerUploadImageBody},
+        TContext
+      > => {
+      return useMutation(getGalleryControllerUploadImageMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get gallery images for a spot
  */
 export type galleryControllerGetGalleryResponse200 = {
-  data: PaginatedGalleryImagesResponseDto;
-  status: 200;
+  data: PaginatedGalleryImagesResponseDto
+  status: 200
+}
+
+export type galleryControllerGetGalleryResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type galleryControllerGetGalleryResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type galleryControllerGetGalleryResponseSuccess = (galleryControllerGetGalleryResponse200) & {
+  headers: Headers;
+};
+export type galleryControllerGetGalleryResponseError = (galleryControllerGetGalleryResponse400 | galleryControllerGetGalleryResponse500) & {
+  headers: Headers;
 };
 
-export type galleryControllerGetGalleryResponseSuccess =
-  galleryControllerGetGalleryResponse200 & {
-    headers: Headers;
-  };
-export type galleryControllerGetGalleryResponse =
-  galleryControllerGetGalleryResponseSuccess;
+export type galleryControllerGetGalleryResponse = (galleryControllerGetGalleryResponseSuccess | galleryControllerGetGalleryResponseError)
 
-export const getGalleryControllerGetGalleryUrl = (
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-) => {
+export const getGalleryControllerGetGalleryUrl = (spotId: string,
+    params?: GalleryControllerGetGalleryParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/gallery/spot/${spotId}?${stringifiedParams}`
-    : `/gallery/spot/${spotId}`;
-};
-
-export const galleryControllerGetGallery = async (
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: RequestInit,
-): Promise<galleryControllerGetGalleryResponse> => {
-  return customInstance<galleryControllerGetGalleryResponse>(
-    getGalleryControllerGetGalleryUrl(spotId, params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getGalleryControllerGetGalleryInfiniteQueryKey = (
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-) => {
-  return [
-    "infinite",
-    `/gallery/spot/${spotId}`,
-    ...(params ? [params] : []),
-  ] as const;
-};
-
-export const getGalleryControllerGetGalleryQueryKey = (
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-) => {
-  return [`/gallery/spot/${spotId}`, ...(params ? [params] : [])] as const;
-};
-
-export const getGalleryControllerGetGalleryInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    GalleryControllerGetGalleryParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData,
-        QueryKey,
-        GalleryControllerGetGalleryParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGalleryControllerGetGalleryInfiniteQueryKey(spotId, params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    QueryKey,
-    GalleryControllerGetGalleryParams["skip"]
-  > = ({ signal, pageParam }) =>
-    galleryControllerGetGallery(
-      spotId,
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!spotId,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    TError,
-    TData,
-    QueryKey,
-    GalleryControllerGetGalleryParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GalleryControllerGetGalleryInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerGetGallery>>
->;
-export type GalleryControllerGetGalleryInfiniteQueryError = unknown;
-
-export function useGalleryControllerGetGalleryInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    GalleryControllerGetGalleryParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params: undefined | GalleryControllerGetGalleryParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData,
-        QueryKey,
-        GalleryControllerGetGalleryParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-          TError,
-          Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetGalleryInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    GalleryControllerGetGalleryParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData,
-        QueryKey,
-        GalleryControllerGetGalleryParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-          TError,
-          Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetGalleryInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    GalleryControllerGetGalleryParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData,
-        QueryKey,
-        GalleryControllerGetGalleryParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get gallery images for a spot
- */
-
-export function useGalleryControllerGetGalleryInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    GalleryControllerGetGalleryParams["skip"]
-  >,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData,
-        QueryKey,
-        GalleryControllerGetGalleryParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGalleryControllerGetGalleryInfiniteQueryOptions(
-    spotId,
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/gallery/spot/${spotId}?${stringifiedParams}` : `/gallery/spot/${spotId}`
 }
 
-export const getGalleryControllerGetGalleryQueryOptions = <
-  TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const galleryControllerGetGallery = async (spotId: string,
+    params?: GalleryControllerGetGalleryParams, options?: RequestInit): Promise<galleryControllerGetGalleryResponse> => {
+
+  const res = await fetch(getGalleryControllerGetGalleryUrl(spotId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: galleryControllerGetGalleryResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as galleryControllerGetGalleryResponse
+}
+
+
+
+
+
+export const getGalleryControllerGetGalleryQueryKey = (spotId: string,
+    params?: GalleryControllerGetGalleryParams,) => {
+    return [
+    `/gallery/spot/${spotId}`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getGalleryControllerGetGalleryQueryOptions = <TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError = BadRequestErrorDto | InternalServerErrorDto>(spotId: string,
+    params?: GalleryControllerGetGalleryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGalleryControllerGetGalleryQueryKey(spotId, params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>
-  > = ({ signal }) => galleryControllerGetGallery(spotId, params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getGalleryControllerGetGalleryQueryKey(spotId,params);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!spotId,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type GalleryControllerGetGalleryQueryResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerGetGallery>>
->;
-export type GalleryControllerGetGalleryQueryError = unknown;
 
-export function useGalleryControllerGetGallery<
-  TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-  TError = unknown,
->(
-  spotId: string,
-  params: undefined | GalleryControllerGetGalleryParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof galleryControllerGetGallery>>> = ({ signal }) => galleryControllerGetGallery(spotId,params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(spotId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GalleryControllerGetGalleryQueryResult = NonNullable<Awaited<ReturnType<typeof galleryControllerGetGallery>>>
+export type GalleryControllerGetGalleryQueryError = BadRequestErrorDto | InternalServerErrorDto
+
+
+export function useGalleryControllerGetGallery<TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params: undefined |  GalleryControllerGetGalleryParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof galleryControllerGetGallery>>,
           TError,
           Awaited<ReturnType<typeof galleryControllerGetGallery>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetGallery<
-  TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryControllerGetGallery<TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params?: GalleryControllerGetGalleryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof galleryControllerGetGallery>>,
           TError,
           Awaited<ReturnType<typeof galleryControllerGetGallery>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetGallery<
-  TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryControllerGetGallery<TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params?: GalleryControllerGetGalleryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get gallery images for a spot
  */
 
-export function useGalleryControllerGetGallery<
-  TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-  TError = unknown,
->(
-  spotId: string,
-  params?: GalleryControllerGetGalleryParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetGallery>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGalleryControllerGetGalleryQueryOptions(
-    spotId,
-    params,
-    options,
-  );
+export function useGalleryControllerGetGallery<TData = Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ spotId: string,
+    params?: GalleryControllerGetGalleryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetGallery>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getGalleryControllerGetGalleryQueryOptions(spotId,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Get single gallery image
  */
 export type galleryControllerGetImageResponse200 = {
-  data: GalleryImageResponseDto;
-  status: 200;
+  data: GalleryImageResponseDto
+  status: 200
+}
+
+export type galleryControllerGetImageResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type galleryControllerGetImageResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type galleryControllerGetImageResponseSuccess = (galleryControllerGetImageResponse200) & {
+  headers: Headers;
+};
+export type galleryControllerGetImageResponseError = (galleryControllerGetImageResponse404 | galleryControllerGetImageResponse500) & {
+  headers: Headers;
 };
 
-export type galleryControllerGetImageResponseSuccess =
-  galleryControllerGetImageResponse200 & {
-    headers: Headers;
-  };
-export type galleryControllerGetImageResponse =
-  galleryControllerGetImageResponseSuccess;
+export type galleryControllerGetImageResponse = (galleryControllerGetImageResponseSuccess | galleryControllerGetImageResponseError)
 
-export const getGalleryControllerGetImageUrl = (id: string) => {
-  return `/gallery/${id}`;
-};
+export const getGalleryControllerGetImageUrl = (id: string,) => {
 
-export const galleryControllerGetImage = async (
-  id: string,
-  options?: RequestInit,
-): Promise<galleryControllerGetImageResponse> => {
-  return customInstance<galleryControllerGetImageResponse>(
-    getGalleryControllerGetImageUrl(id),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getGalleryControllerGetImageInfiniteQueryKey = (id: string) => {
-  return ["infinite", `/gallery/${id}`] as const;
-};
 
-export const getGalleryControllerGetImageQueryKey = (id: string) => {
-  return [`/gallery/${id}`] as const;
-};
 
-export const getGalleryControllerGetImageInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetImage>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    >;
-  },
+  return `/gallery/${id}`
+}
+
+export const galleryControllerGetImage = async (id: string, options?: RequestInit): Promise<galleryControllerGetImageResponse> => {
+
+  const res = await fetch(getGalleryControllerGetImageUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: galleryControllerGetImageResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as galleryControllerGetImageResponse
+}
+
+
+
+
+
+export const getGalleryControllerGetImageQueryKey = (id: string,) => {
+    return [
+    `/gallery/${id}`
+    ] as const;
+    }
+
+
+export const getGalleryControllerGetImageQueryOptions = <TData = Awaited<ReturnType<typeof galleryControllerGetImage>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetImage>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGalleryControllerGetImageInfiniteQueryKey(id);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof galleryControllerGetImage>>
-  > = ({ signal }) => galleryControllerGetImage(id, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getGalleryControllerGetImageQueryKey(id);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof galleryControllerGetImage>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type GalleryControllerGetImageInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerGetImage>>
->;
-export type GalleryControllerGetImageInfiniteQueryError = unknown;
 
-export function useGalleryControllerGetImageInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetImage>>>,
-  TError = unknown,
->(
-  id: string,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof galleryControllerGetImage>>> = ({ signal }) => galleryControllerGetImage(id, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetImage>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GalleryControllerGetImageQueryResult = NonNullable<Awaited<ReturnType<typeof galleryControllerGetImage>>>
+export type GalleryControllerGetImageQueryError = NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useGalleryControllerGetImage<TData = Awaited<ReturnType<typeof galleryControllerGetImage>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetImage>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof galleryControllerGetImage>>,
           TError,
           Awaited<ReturnType<typeof galleryControllerGetImage>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetImageInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetImage>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryControllerGetImage<TData = Awaited<ReturnType<typeof galleryControllerGetImage>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetImage>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof galleryControllerGetImage>>,
           TError,
           Awaited<ReturnType<typeof galleryControllerGetImage>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetImageInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetImage>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryControllerGetImage<TData = Awaited<ReturnType<typeof galleryControllerGetImage>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetImage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get single gallery image
  */
 
-export function useGalleryControllerGetImageInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetImage>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGalleryControllerGetImageInfiniteQueryOptions(
-    id,
-    options,
-  );
+export function useGalleryControllerGetImage<TData = Awaited<ReturnType<typeof galleryControllerGetImage>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetImage>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getGalleryControllerGetImageQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getGalleryControllerGetImageQueryOptions = <
-  TData = Awaited<ReturnType<typeof galleryControllerGetImage>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGalleryControllerGetImageQueryKey(id);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof galleryControllerGetImage>>
-  > = ({ signal }) => galleryControllerGetImage(id, { signal });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof galleryControllerGetImage>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GalleryControllerGetImageQueryResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerGetImage>>
->;
-export type GalleryControllerGetImageQueryError = unknown;
-
-export function useGalleryControllerGetImage<
-  TData = Awaited<ReturnType<typeof galleryControllerGetImage>>,
-  TError = unknown,
->(
-  id: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof galleryControllerGetImage>>,
-          TError,
-          Awaited<ReturnType<typeof galleryControllerGetImage>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetImage<
-  TData = Awaited<ReturnType<typeof galleryControllerGetImage>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof galleryControllerGetImage>>,
-          TError,
-          Awaited<ReturnType<typeof galleryControllerGetImage>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetImage<
-  TData = Awaited<ReturnType<typeof galleryControllerGetImage>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get single gallery image
- */
-
-export function useGalleryControllerGetImage<
-  TData = Awaited<ReturnType<typeof galleryControllerGetImage>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetImage>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGalleryControllerGetImageQueryOptions(id, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Delete own gallery image
  */
 export type galleryControllerDeleteImageResponse200 = {
-  data: MessageResponseDto;
-  status: 200;
+  data: MessageResponseDto
+  status: 200
+}
+
+export type galleryControllerDeleteImageResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type galleryControllerDeleteImageResponse403 = {
+  data: NotFoundErrorDto
+  status: 403
+}
+
+export type galleryControllerDeleteImageResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type galleryControllerDeleteImageResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type galleryControllerDeleteImageResponseSuccess = (galleryControllerDeleteImageResponse200) & {
+  headers: Headers;
+};
+export type galleryControllerDeleteImageResponseError = (galleryControllerDeleteImageResponse401 | galleryControllerDeleteImageResponse403 | galleryControllerDeleteImageResponse404 | galleryControllerDeleteImageResponse500) & {
+  headers: Headers;
 };
 
-export type galleryControllerDeleteImageResponseSuccess =
-  galleryControllerDeleteImageResponse200 & {
-    headers: Headers;
-  };
-export type galleryControllerDeleteImageResponse =
-  galleryControllerDeleteImageResponseSuccess;
+export type galleryControllerDeleteImageResponse = (galleryControllerDeleteImageResponseSuccess | galleryControllerDeleteImageResponseError)
 
-export const getGalleryControllerDeleteImageUrl = (id: string) => {
-  return `/gallery/${id}`;
-};
+export const getGalleryControllerDeleteImageUrl = (id: string,) => {
 
-export const galleryControllerDeleteImage = async (
-  id: string,
-  options?: RequestInit,
-): Promise<galleryControllerDeleteImageResponse> => {
-  return customInstance<galleryControllerDeleteImageResponse>(
-    getGalleryControllerDeleteImageUrl(id),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
 
-export const getGalleryControllerDeleteImageMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof galleryControllerDeleteImage>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof galleryControllerDeleteImage>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["galleryControllerDeleteImage"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof galleryControllerDeleteImage>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
 
-    return galleryControllerDeleteImage(id);
-  };
+  return `/gallery/${id}`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const galleryControllerDeleteImage = async (id: string, options?: RequestInit): Promise<galleryControllerDeleteImageResponse> => {
 
-export type GalleryControllerDeleteImageMutationResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerDeleteImage>>
->;
+  const res = await fetch(getGalleryControllerDeleteImageUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
 
-export type GalleryControllerDeleteImageMutationError = unknown;
 
-/**
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: galleryControllerDeleteImageResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as galleryControllerDeleteImageResponse
+}
+
+
+
+
+export const getGalleryControllerDeleteImageMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerDeleteImage>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof galleryControllerDeleteImage>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['galleryControllerDeleteImage'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof galleryControllerDeleteImage>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  galleryControllerDeleteImage(id,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GalleryControllerDeleteImageMutationResult = NonNullable<Awaited<ReturnType<typeof galleryControllerDeleteImage>>>
+
+    export type GalleryControllerDeleteImageMutationError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Delete own gallery image
  */
-export const useGalleryControllerDeleteImage = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof galleryControllerDeleteImage>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof galleryControllerDeleteImage>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  return useMutation(
-    getGalleryControllerDeleteImageMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useGalleryControllerDeleteImage = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerDeleteImage>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof galleryControllerDeleteImage>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getGalleryControllerDeleteImageMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Report inappropriate gallery image
  */
 export type galleryControllerFlagImageResponse200 = {
-  data: MessageResponseDto;
-  status: 200;
+  data: MessageResponseDto
+  status: 200
+}
+
+export type galleryControllerFlagImageResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type galleryControllerFlagImageResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type galleryControllerFlagImageResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type galleryControllerFlagImageResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type galleryControllerFlagImageResponseSuccess = (galleryControllerFlagImageResponse200) & {
+  headers: Headers;
+};
+export type galleryControllerFlagImageResponseError = (galleryControllerFlagImageResponse400 | galleryControllerFlagImageResponse401 | galleryControllerFlagImageResponse404 | galleryControllerFlagImageResponse500) & {
+  headers: Headers;
 };
 
-export type galleryControllerFlagImageResponseSuccess =
-  galleryControllerFlagImageResponse200 & {
-    headers: Headers;
-  };
-export type galleryControllerFlagImageResponse =
-  galleryControllerFlagImageResponseSuccess;
+export type galleryControllerFlagImageResponse = (galleryControllerFlagImageResponseSuccess | galleryControllerFlagImageResponseError)
 
-export const getGalleryControllerFlagImageUrl = (id: string) => {
-  return `/gallery/${id}/flag`;
-};
+export const getGalleryControllerFlagImageUrl = (id: string,) => {
 
-export const galleryControllerFlagImage = async (
-  id: string,
-  options?: RequestInit,
-): Promise<galleryControllerFlagImageResponse> => {
-  return customInstance<galleryControllerFlagImageResponse>(
-    getGalleryControllerFlagImageUrl(id),
-    {
-      ...options,
-      method: "POST",
-    },
-  );
-};
 
-export const getGalleryControllerFlagImageMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof galleryControllerFlagImage>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof galleryControllerFlagImage>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["galleryControllerFlagImage"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof galleryControllerFlagImage>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
 
-    return galleryControllerFlagImage(id);
-  };
+  return `/gallery/${id}/flag`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const galleryControllerFlagImage = async (id: string, options?: RequestInit): Promise<galleryControllerFlagImageResponse> => {
 
-export type GalleryControllerFlagImageMutationResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerFlagImage>>
->;
+  const res = await fetch(getGalleryControllerFlagImageUrl(id),
+  {
+    ...options,
+    method: 'POST'
 
-export type GalleryControllerFlagImageMutationError = unknown;
 
-/**
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: galleryControllerFlagImageResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as galleryControllerFlagImageResponse
+}
+
+
+
+
+export const getGalleryControllerFlagImageMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerFlagImage>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof galleryControllerFlagImage>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['galleryControllerFlagImage'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof galleryControllerFlagImage>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  galleryControllerFlagImage(id,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GalleryControllerFlagImageMutationResult = NonNullable<Awaited<ReturnType<typeof galleryControllerFlagImage>>>
+
+    export type GalleryControllerFlagImageMutationError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Report inappropriate gallery image
  */
-export const useGalleryControllerFlagImage = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof galleryControllerFlagImage>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof galleryControllerFlagImage>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  return useMutation(
-    getGalleryControllerFlagImageMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useGalleryControllerFlagImage = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof galleryControllerFlagImage>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof galleryControllerFlagImage>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getGalleryControllerFlagImageMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get gallery statistics for a spot
  */
 export type galleryControllerGetStatsResponse200 = {
-  data: GalleryStatsResponseDto;
-  status: 200;
+  data: GalleryStatsResponseDto
+  status: 200
+}
+
+export type galleryControllerGetStatsResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type galleryControllerGetStatsResponseSuccess = (galleryControllerGetStatsResponse200) & {
+  headers: Headers;
+};
+export type galleryControllerGetStatsResponseError = (galleryControllerGetStatsResponse500) & {
+  headers: Headers;
 };
 
-export type galleryControllerGetStatsResponseSuccess =
-  galleryControllerGetStatsResponse200 & {
-    headers: Headers;
-  };
-export type galleryControllerGetStatsResponse =
-  galleryControllerGetStatsResponseSuccess;
+export type galleryControllerGetStatsResponse = (galleryControllerGetStatsResponseSuccess | galleryControllerGetStatsResponseError)
 
-export const getGalleryControllerGetStatsUrl = (spotId: string) => {
-  return `/gallery/spot/${spotId}/stats`;
-};
+export const getGalleryControllerGetStatsUrl = (spotId: string,) => {
 
-export const galleryControllerGetStats = async (
-  spotId: string,
-  options?: RequestInit,
-): Promise<galleryControllerGetStatsResponse> => {
-  return customInstance<galleryControllerGetStatsResponse>(
-    getGalleryControllerGetStatsUrl(spotId),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getGalleryControllerGetStatsInfiniteQueryKey = (
-  spotId: string,
+
+
+  return `/gallery/spot/${spotId}/stats`
+}
+
+export const galleryControllerGetStats = async (spotId: string, options?: RequestInit): Promise<galleryControllerGetStatsResponse> => {
+
+  const res = await fetch(getGalleryControllerGetStatsUrl(spotId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: galleryControllerGetStatsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as galleryControllerGetStatsResponse
+}
+
+
+
+
+
+export const getGalleryControllerGetStatsQueryKey = (spotId: string,) => {
+    return [
+    `/gallery/spot/${spotId}/stats`
+    ] as const;
+    }
+
+
+export const getGalleryControllerGetStatsQueryOptions = <TData = Awaited<ReturnType<typeof galleryControllerGetStats>>, TError = InternalServerErrorDto>(spotId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetStats>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  return ["infinite", `/gallery/spot/${spotId}/stats`] as const;
-};
 
-export const getGalleryControllerGetStatsQueryKey = (spotId: string) => {
-  return [`/gallery/spot/${spotId}/stats`] as const;
-};
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-export const getGalleryControllerGetStatsInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetStats>>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
+  const queryKey =  queryOptions?.queryKey ?? getGalleryControllerGetStatsQueryKey(spotId);
 
-  const queryKey =
-    queryOptions?.queryKey ??
-    getGalleryControllerGetStatsInfiniteQueryKey(spotId);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof galleryControllerGetStats>>
-  > = ({ signal }) => galleryControllerGetStats(spotId, { signal });
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!spotId,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof galleryControllerGetStats>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof galleryControllerGetStats>>> = ({ signal }) => galleryControllerGetStats(spotId, { signal, ...fetchOptions });
 
-export type GalleryControllerGetStatsInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerGetStats>>
->;
-export type GalleryControllerGetStatsInfiniteQueryError = unknown;
 
-export function useGalleryControllerGetStatsInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetStats>>>,
-  TError = unknown,
->(
-  spotId: string,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+
+
+
+   return  { queryKey, queryFn, enabled: !!(spotId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GalleryControllerGetStatsQueryResult = NonNullable<Awaited<ReturnType<typeof galleryControllerGetStats>>>
+export type GalleryControllerGetStatsQueryError = InternalServerErrorDto
+
+
+export function useGalleryControllerGetStats<TData = Awaited<ReturnType<typeof galleryControllerGetStats>>, TError = InternalServerErrorDto>(
+ spotId: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetStats>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof galleryControllerGetStats>>,
           TError,
           Awaited<ReturnType<typeof galleryControllerGetStats>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetStatsInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetStats>>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryControllerGetStats<TData = Awaited<ReturnType<typeof galleryControllerGetStats>>, TError = InternalServerErrorDto>(
+ spotId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetStats>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof galleryControllerGetStats>>,
           TError,
           Awaited<ReturnType<typeof galleryControllerGetStats>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetStatsInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetStats>>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGalleryControllerGetStats<TData = Awaited<ReturnType<typeof galleryControllerGetStats>>, TError = InternalServerErrorDto>(
+ spotId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetStats>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get gallery statistics for a spot
  */
 
-export function useGalleryControllerGetStatsInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof galleryControllerGetStats>>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGalleryControllerGetStatsInfiniteQueryOptions(
-    spotId,
-    options,
-  );
+export function useGalleryControllerGetStats<TData = Awaited<ReturnType<typeof galleryControllerGetStats>>, TError = InternalServerErrorDto>(
+ spotId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof galleryControllerGetStats>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getGalleryControllerGetStatsQueryOptions(spotId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getGalleryControllerGetStatsQueryOptions = <
-  TData = Awaited<ReturnType<typeof galleryControllerGetStats>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGalleryControllerGetStatsQueryKey(spotId);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof galleryControllerGetStats>>
-  > = ({ signal }) => galleryControllerGetStats(spotId, { signal });
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!spotId,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof galleryControllerGetStats>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type GalleryControllerGetStatsQueryResult = NonNullable<
-  Awaited<ReturnType<typeof galleryControllerGetStats>>
->;
-export type GalleryControllerGetStatsQueryError = unknown;
-
-export function useGalleryControllerGetStats<
-  TData = Awaited<ReturnType<typeof galleryControllerGetStats>>,
-  TError = unknown,
->(
-  spotId: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof galleryControllerGetStats>>,
-          TError,
-          Awaited<ReturnType<typeof galleryControllerGetStats>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetStats<
-  TData = Awaited<ReturnType<typeof galleryControllerGetStats>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof galleryControllerGetStats>>,
-          TError,
-          Awaited<ReturnType<typeof galleryControllerGetStats>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useGalleryControllerGetStats<
-  TData = Awaited<ReturnType<typeof galleryControllerGetStats>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get gallery statistics for a spot
- */
-
-export function useGalleryControllerGetStats<
-  TData = Awaited<ReturnType<typeof galleryControllerGetStats>>,
-  TError = unknown,
->(
-  spotId: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof galleryControllerGetStats>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getGalleryControllerGetStatsQueryOptions(
-    spotId,
-    options,
-  );
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}

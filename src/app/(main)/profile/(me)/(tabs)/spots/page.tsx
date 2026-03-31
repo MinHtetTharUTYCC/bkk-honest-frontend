@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   dehydrate,
 } from "@tanstack/react-query";
-import { getSpotsControllerFindByUserInfiniteQueryOptions } from "@/api/generated/spots/spots";
+import { getSpotsControllerFindByUserQueryOptions } from "@/api/generated/spots/spots";
 import UserSpotsInfiniteTab from "@/components/profile/user-spots-infinite-tab";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
 export default async function MySpotsPage() {
   const queryClient = new QueryClient();
 
-  // Prefetch infinite query using 'me' as the userId
-  const infiniteQueryOptions = getSpotsControllerFindByUserInfiniteQueryOptions(
+  // Prefetch query using 'me' as the userId
+  const queryOptions = getSpotsControllerFindByUserQueryOptions(
     "me",
     { take: 10 },
   );
 
-  await queryClient.prefetchInfiniteQuery(infiniteQueryOptions);
+  await queryClient.prefetchQuery(queryOptions);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

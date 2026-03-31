@@ -5,8 +5,8 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { ReputationBreakdownDto } from "./reputationBreakdownDto";
-import type { ReputationStatsDtoLevel } from "./reputationStatsDtoLevel";
+import type { ReputationBreakdownDto } from './reputationBreakdownDto';
+import type { ReputationStatsDtoLevel } from './reputationStatsDtoLevel';
 
 export interface ReputationStatsDto {
   reputation: number;

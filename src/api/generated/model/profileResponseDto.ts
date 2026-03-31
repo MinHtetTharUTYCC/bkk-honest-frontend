@@ -5,26 +5,37 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { ImageVariantsDto } from "./imageVariantsDto";
-import type { ProfileResponseDtoLevel } from "./profileResponseDtoLevel";
+import type { ImageVariantsDto } from './imageVariantsDto';
+import type { ProfileResponseDtoAvatarUrl } from './profileResponseDtoAvatarUrl';
+import type { ProfileResponseDtoBio } from './profileResponseDtoBio';
+import type { ProfileResponseDtoBlurPlaceholder } from './profileResponseDtoBlurPlaceholder';
+import type { ProfileResponseDtoCountry } from './profileResponseDtoCountry';
+import type { ProfileResponseDtoImageHeight } from './profileResponseDtoImageHeight';
+import type { ProfileResponseDtoImageMimeType } from './profileResponseDtoImageMimeType';
+import type { ProfileResponseDtoImageSize } from './profileResponseDtoImageSize';
+import type { ProfileResponseDtoImageWidth } from './profileResponseDtoImageWidth';
+import type { ProfileResponseDtoIsDegraded } from './profileResponseDtoIsDegraded';
+import type { ProfileResponseDtoLevel } from './profileResponseDtoLevel';
+import type { ProfileResponseDtoName } from './profileResponseDtoName';
+import type { ProfileResponseDtoQualityScore } from './profileResponseDtoQualityScore';
 
 export interface ProfileResponseDto {
   id: string;
   email: string;
-  name?: string;
-  avatarUrl?: string;
-  bio?: string;
-  country?: string;
+  name?: ProfileResponseDtoName;
+  avatarUrl?: ProfileResponseDtoAvatarUrl;
+  bio?: ProfileResponseDtoBio;
+  country?: ProfileResponseDtoCountry;
   level: ProfileResponseDtoLevel;
   reputation: number;
   createdAt: string;
   updatedAt: string;
   imageVariants?: ImageVariantsDto;
-  imageWidth?: number;
-  imageHeight?: number;
-  imageSize?: number;
-  imageMimeType?: string;
-  blurPlaceholder?: string;
-  isDegraded?: boolean;
-  qualityScore?: number;
+  imageWidth?: ProfileResponseDtoImageWidth;
+  imageHeight?: ProfileResponseDtoImageHeight;
+  imageSize?: ProfileResponseDtoImageSize;
+  imageMimeType?: ProfileResponseDtoImageMimeType;
+  blurPlaceholder?: ProfileResponseDtoBlurPlaceholder;
+  isDegraded?: ProfileResponseDtoIsDegraded;
+  qualityScore?: ProfileResponseDtoQualityScore;
 }

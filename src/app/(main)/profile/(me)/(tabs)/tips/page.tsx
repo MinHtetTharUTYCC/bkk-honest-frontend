@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   dehydrate,
 } from "@tanstack/react-query";
-import { getCommunityTipsControllerFindByUserInfiniteQueryOptions } from "@/api/generated/community-tips/community-tips";
+import { getCommunityTipsControllerFindByUserQueryOptions } from "@/api/generated/community-tips/community-tips";
 import UserTipsInfiniteTab from "@/components/profile/user-tips-infinite-tab";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
 export default async function MyTipsPage() {
   const queryClient = new QueryClient();
 
-  // Prefetch infinite query using 'me' as the userId
-  const infiniteQueryOptions =
-    getCommunityTipsControllerFindByUserInfiniteQueryOptions("me", {
+  // Prefetch query using 'me' as the userId
+  const queryOptions =
+    getCommunityTipsControllerFindByUserQueryOptions("me", {
       take: 10,
     });
 
-  await queryClient.prefetchInfiniteQuery(infiniteQueryOptions);
+  await queryClient.prefetchQuery(queryOptions);
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

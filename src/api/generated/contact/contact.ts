@@ -5,130 +5,123 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import { useMutation } from "@tanstack/react-query";
+import {
+  useMutation
+} from '@tanstack/react-query';
 import type {
   MutationFunction,
   QueryClient,
   UseMutationOptions,
-  UseMutationResult,
-} from "@tanstack/react-query";
+  UseMutationResult
+} from '@tanstack/react-query';
 
-import type { ContactFormDto } from "../model";
+import type {
+  BadRequestErrorDto,
+  ContactFormDto,
+  InternalServerErrorDto
+} from '../model';
 
-import { customInstance } from "../../mutator/custom-instance";
+
+
+
 
 /**
  * @summary Send a contact form email
  */
 export type contactControllerSubmitContactFormResponse201 = {
-  data: void;
-  status: 201;
-};
+  data: void
+  status: 201
+}
 
 export type contactControllerSubmitContactFormResponse400 = {
-  data: void;
-  status: 400;
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type contactControllerSubmitContactFormResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type contactControllerSubmitContactFormResponseSuccess = (contactControllerSubmitContactFormResponse201) & {
+  headers: Headers;
+};
+export type contactControllerSubmitContactFormResponseError = (contactControllerSubmitContactFormResponse400 | contactControllerSubmitContactFormResponse500) & {
+  headers: Headers;
 };
 
-export type contactControllerSubmitContactFormResponseSuccess =
-  contactControllerSubmitContactFormResponse201 & {
-    headers: Headers;
-  };
-export type contactControllerSubmitContactFormResponseError =
-  contactControllerSubmitContactFormResponse400 & {
-    headers: Headers;
-  };
-
-export type contactControllerSubmitContactFormResponse =
-  | contactControllerSubmitContactFormResponseSuccess
-  | contactControllerSubmitContactFormResponseError;
+export type contactControllerSubmitContactFormResponse = (contactControllerSubmitContactFormResponseSuccess | contactControllerSubmitContactFormResponseError)
 
 export const getContactControllerSubmitContactFormUrl = () => {
-  return `/contact`;
-};
 
-export const contactControllerSubmitContactForm = async (
-  contactFormDto: ContactFormDto,
-  options?: RequestInit,
-): Promise<contactControllerSubmitContactFormResponse> => {
-  return customInstance<contactControllerSubmitContactFormResponse>(
-    getContactControllerSubmitContactFormUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(contactFormDto),
-    },
-  );
-};
 
-export const getContactControllerSubmitContactFormMutationOptions = <
-  TError = void,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
-    TError,
-    { data: ContactFormDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
-  TError,
-  { data: ContactFormDto },
-  TContext
-> => {
-  const mutationKey = ["contactControllerSubmitContactForm"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
-    { data: ContactFormDto }
-  > = (props) => {
-    const { data } = props ?? {};
 
-    return contactControllerSubmitContactForm(data);
-  };
+  return `/contact`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const contactControllerSubmitContactForm = async (contactFormDto: ContactFormDto, options?: RequestInit): Promise<contactControllerSubmitContactFormResponse> => {
 
-export type ContactControllerSubmitContactFormMutationResult = NonNullable<
-  Awaited<ReturnType<typeof contactControllerSubmitContactForm>>
->;
-export type ContactControllerSubmitContactFormMutationBody = ContactFormDto;
-export type ContactControllerSubmitContactFormMutationError = void;
+  const res = await fetch(getContactControllerSubmitContactFormUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      contactFormDto,)
+  }
+)
 
-/**
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: contactControllerSubmitContactFormResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as contactControllerSubmitContactFormResponse
+}
+
+
+
+
+export const getContactControllerSubmitContactFormMutationOptions = <TError = BadRequestErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext> => {
+
+const mutationKey = ['contactControllerSubmitContactForm'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, {data: ContactFormDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  contactControllerSubmitContactForm(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type ContactControllerSubmitContactFormMutationResult = NonNullable<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>>
+    export type ContactControllerSubmitContactFormMutationBody = ContactFormDto
+    export type ContactControllerSubmitContactFormMutationError = BadRequestErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Send a contact form email
  */
-export const useContactControllerSubmitContactForm = <
-  TError = void,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
-      TError,
-      { data: ContactFormDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
-  TError,
-  { data: ContactFormDto },
-  TContext
-> => {
-  return useMutation(
-    getContactControllerSubmitContactFormMutationOptions(options),
-    queryClient,
-  );
-};
+export const useContactControllerSubmitContactForm = <TError = BadRequestErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
+        TError,
+        {data: ContactFormDto},
+        TContext
+      > => {
+      return useMutation(getContactControllerSubmitContactFormMutationOptions(options), queryClient);
+    }

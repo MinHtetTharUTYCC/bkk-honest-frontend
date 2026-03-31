@@ -6,10 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export type CreateCommentDtoTargetType =
-  (typeof CreateCommentDtoTargetType)[keyof typeof CreateCommentDtoTargetType];
+export type CreateCommentDtoTargetType = typeof CreateCommentDtoTargetType[keyof typeof CreateCommentDtoTargetType];
+
 
 export const CreateCommentDtoTargetType = {
-  COMMUNITY_TIP: "COMMUNITY_TIP",
-  SCAM_ALERT: "SCAM_ALERT",
+  COMMUNITY_TIP: 'COMMUNITY_TIP',
+  SCAM_ALERT: 'SCAM_ALERT',
 } as const;

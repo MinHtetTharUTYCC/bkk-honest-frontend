@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ReputationStatsDtoLevel =
-  (typeof ReputationStatsDtoLevel)[keyof typeof ReputationStatsDtoLevel];
+export type ReputationStatsDtoLevel = typeof ReputationStatsDtoLevel[keyof typeof ReputationStatsDtoLevel];
+
 
 export const ReputationStatsDtoLevel = {
-  NEWBIE: "NEWBIE",
-  EXPLORER: "EXPLORER",
-  LOCAL_GURU: "LOCAL_GURU",
+  NEWBIE: 'NEWBIE',
+  EXPLORER: 'EXPLORER',
+  LOCAL_GURU: 'LOCAL_GURU',
 } as const;

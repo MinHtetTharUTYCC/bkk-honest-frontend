@@ -5,17 +5,17 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { _SpotWithStatsResponseDtoCount } from "./_spotWithStatsResponseDtoCount";
-import type { ImageVariantsDto } from "./imageVariantsDto";
-import type { SpotWithStatsResponseDtoActivityStats } from "./spotWithStatsResponseDtoActivityStats";
-import type { SpotWithStatsResponseDtoCategory } from "./spotWithStatsResponseDtoCategory";
-import type { SpotWithStatsResponseDtoCity } from "./spotWithStatsResponseDtoCity";
-import type { SpotWithStatsResponseDtoMissionId } from "./spotWithStatsResponseDtoMissionId";
-import type { SpotWithStatsResponseDtoPriceStats } from "./spotWithStatsResponseDtoPriceStats";
-import type { SpotWithStatsResponseDtoTipStats } from "./spotWithStatsResponseDtoTipStats";
-import type { SpotWithStatsResponseDtoUser } from "./spotWithStatsResponseDtoUser";
-import type { SpotWithStatsResponseDtoVibeStats } from "./spotWithStatsResponseDtoVibeStats";
-import type { SpotWithStatsResponseDtoVoteId } from "./spotWithStatsResponseDtoVoteId";
+import type { _SpotWithStatsResponseDtoCount } from './_spotWithStatsResponseDtoCount';
+import type { ImageVariantsDto } from './imageVariantsDto';
+import type { SpotWithStatsResponseDtoActivityStats } from './spotWithStatsResponseDtoActivityStats';
+import type { SpotWithStatsResponseDtoCategory } from './spotWithStatsResponseDtoCategory';
+import type { SpotWithStatsResponseDtoCity } from './spotWithStatsResponseDtoCity';
+import type { SpotWithStatsResponseDtoMissionId } from './spotWithStatsResponseDtoMissionId';
+import type { SpotWithStatsResponseDtoPriceStats } from './spotWithStatsResponseDtoPriceStats';
+import type { SpotWithStatsResponseDtoTipStats } from './spotWithStatsResponseDtoTipStats';
+import type { SpotWithStatsResponseDtoUser } from './spotWithStatsResponseDtoUser';
+import type { SpotWithStatsResponseDtoVibeStats } from './spotWithStatsResponseDtoVibeStats';
+import type { SpotWithStatsResponseDtoVoteId } from './spotWithStatsResponseDtoVoteId';
 
 export interface SpotWithStatsResponseDto {
   /** Spot ID (cuid) */
@@ -63,9 +63,9 @@ export interface SpotWithStatsResponseDto {
   /** Whether the current user has voted on this spot (only present when authenticated) */
   hasVoted?: boolean;
   /**
-   * Vote ID (cuid) if user has voted, null otherwise
-   * @nullable
-   */
+     * Vote ID (cuid) if user has voted, null otherwise
+     * @nullable
+     */
   voteId?: SpotWithStatsResponseDtoVoteId;
   /** Aggregated activity and reliability statistics */
   activityStats: SpotWithStatsResponseDtoActivityStats;
@@ -78,8 +78,8 @@ export interface SpotWithStatsResponseDto {
   /** Whether the spot is in the current user's mission checklist (only present when authenticated) */
   isInMission?: boolean;
   /**
-   * ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
-   * @nullable
-   */
+     * ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
+     * @nullable
+     */
   missionId?: SpotWithStatsResponseDtoMissionId;
 }

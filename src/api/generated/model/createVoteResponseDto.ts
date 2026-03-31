@@ -5,7 +5,7 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { CreateVoteResponseDtoVoteType } from "./createVoteResponseDtoVoteType";
+import type { CreateVoteResponseDtoVoteType } from './createVoteResponseDtoVoteType';
 
 export interface CreateVoteResponseDto {
   /** Vote ID (cuid) */

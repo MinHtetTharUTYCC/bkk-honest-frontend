@@ -12,6 +12,4 @@ export interface CityDto {
   slug: string;
   lat: number;
   lng: number;
-  createdAt: string;
-  updatedAt: string;
 }

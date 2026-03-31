@@ -1,11 +1,12 @@
 "use client";
 
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  useCommunityTipsControllerFindBySpotInfinite,
   useCommunityTipsControllerFindBySpot,
   useCommunityTipsControllerCreate,
   useCommunityTipsControllerUpdate,
   useCommunityTipsControllerDelete,
+  communityTipsControllerFindBySpot,
 } from "@/api/generated/community-tips/community-tips";
 import { getNextSkipFromPage } from "./base";
 
@@ -26,23 +27,22 @@ export function useInfiniteSpotTips(
 
   const normalizedSort = sort === "popular" ? "popular" : "newest";
 
-  return useCommunityTipsControllerFindBySpotInfinite(
-    spotId,
-    {
-      type: normalizedType,
-      sort: normalizedSort,
-      take: 10,
+  return useInfiniteQuery({
+    queryKey: ["tips-infinite", spotId, normalizedType, normalizedSort],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return communityTipsControllerFindBySpot(spotId, {
+        type: normalizedType,
+        sort: normalizedSort,
+        take: 10,
+        skip,
+      });
     },
-    {
-      query: {
-        queryKey: ["tips-infinite", spotId, normalizedType, normalizedSort],
-        staleTime: 5 * 60 * 1000,
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) =>
-          getNextSkipFromPage(lastPage, true),
-      },
-    },
-  );
+    staleTime: 5 * 60 * 1000,
+    getNextPageParam: (lastPage: unknown) =>
+      getNextSkipFromPage(lastPage, true),
+    initialPageParam: 0,
+  });
 }
 
 export function useCreateCommunityTip() {

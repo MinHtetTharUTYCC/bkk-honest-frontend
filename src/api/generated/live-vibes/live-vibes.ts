@@ -5,1053 +5,616 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
-  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
-  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
-  UseInfiniteQueryOptions,
-  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query';
 
 import type {
+  BadRequestErrorDto,
   CreateLiveVibeDto,
+  InternalServerErrorDto,
   LiveVibeDto,
   LiveVibesControllerFindAllParams,
+  NotFoundErrorDto,
   PaginatedLiveVibesDto,
-  UpdateLiveVibeDto,
-} from "../model";
+  UnauthorizedErrorDto,
+  UpdateLiveVibeDto
+} from '../model';
 
-import { customInstance } from "../../mutator/custom-instance";
+
+
+
 
 /**
  * @summary Create a live vibe check
  */
 export type liveVibesControllerCreateResponse201 = {
-  data: LiveVibeDto;
-  status: 201;
+  data: LiveVibeDto
+  status: 201
+}
+
+export type liveVibesControllerCreateResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type liveVibesControllerCreateResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type liveVibesControllerCreateResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type liveVibesControllerCreateResponseSuccess = (liveVibesControllerCreateResponse201) & {
+  headers: Headers;
+};
+export type liveVibesControllerCreateResponseError = (liveVibesControllerCreateResponse400 | liveVibesControllerCreateResponse401 | liveVibesControllerCreateResponse500) & {
+  headers: Headers;
 };
 
-export type liveVibesControllerCreateResponseSuccess =
-  liveVibesControllerCreateResponse201 & {
-    headers: Headers;
-  };
-export type liveVibesControllerCreateResponse =
-  liveVibesControllerCreateResponseSuccess;
+export type liveVibesControllerCreateResponse = (liveVibesControllerCreateResponseSuccess | liveVibesControllerCreateResponseError)
 
 export const getLiveVibesControllerCreateUrl = () => {
-  return `/live-vibes`;
-};
 
-export const liveVibesControllerCreate = async (
-  createLiveVibeDto: CreateLiveVibeDto,
-  options?: RequestInit,
-): Promise<liveVibesControllerCreateResponse> => {
-  return customInstance<liveVibesControllerCreateResponse>(
-    getLiveVibesControllerCreateUrl(),
-    {
-      ...options,
-      method: "POST",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(createLiveVibeDto),
-    },
-  );
-};
 
-export const getLiveVibesControllerCreateMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof liveVibesControllerCreate>>,
-    TError,
-    { data: CreateLiveVibeDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof liveVibesControllerCreate>>,
-  TError,
-  { data: CreateLiveVibeDto },
-  TContext
-> => {
-  const mutationKey = ["liveVibesControllerCreate"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof liveVibesControllerCreate>>,
-    { data: CreateLiveVibeDto }
-  > = (props) => {
-    const { data } = props ?? {};
 
-    return liveVibesControllerCreate(data);
-  };
+  return `/live-vibes`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const liveVibesControllerCreate = async (createLiveVibeDto: CreateLiveVibeDto, options?: RequestInit): Promise<liveVibesControllerCreateResponse> => {
 
-export type LiveVibesControllerCreateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerCreate>>
->;
-export type LiveVibesControllerCreateMutationBody = CreateLiveVibeDto;
-export type LiveVibesControllerCreateMutationError = unknown;
+  const res = await fetch(getLiveVibesControllerCreateUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      createLiveVibeDto,)
+  }
+)
 
-/**
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: liveVibesControllerCreateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as liveVibesControllerCreateResponse
+}
+
+
+
+
+export const getLiveVibesControllerCreateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerCreate>>, TError,{data: CreateLiveVibeDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerCreate>>, TError,{data: CreateLiveVibeDto}, TContext> => {
+
+const mutationKey = ['liveVibesControllerCreate'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof liveVibesControllerCreate>>, {data: CreateLiveVibeDto}> = (props) => {
+          const {data} = props ?? {};
+
+          return  liveVibesControllerCreate(data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LiveVibesControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof liveVibesControllerCreate>>>
+    export type LiveVibesControllerCreateMutationBody = CreateLiveVibeDto
+    export type LiveVibesControllerCreateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Create a live vibe check
  */
-export const useLiveVibesControllerCreate = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof liveVibesControllerCreate>>,
-      TError,
-      { data: CreateLiveVibeDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof liveVibesControllerCreate>>,
-  TError,
-  { data: CreateLiveVibeDto },
-  TContext
-> => {
-  return useMutation(
-    getLiveVibesControllerCreateMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useLiveVibesControllerCreate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerCreate>>, TError,{data: CreateLiveVibeDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof liveVibesControllerCreate>>,
+        TError,
+        {data: CreateLiveVibeDto},
+        TContext
+      > => {
+      return useMutation(getLiveVibesControllerCreateMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Get live vibes
  */
 export type liveVibesControllerFindAllResponse200 = {
-  data: PaginatedLiveVibesDto;
-  status: 200;
+  data: PaginatedLiveVibesDto
+  status: 200
+}
+
+export type liveVibesControllerFindAllResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type liveVibesControllerFindAllResponseSuccess = (liveVibesControllerFindAllResponse200) & {
+  headers: Headers;
+};
+export type liveVibesControllerFindAllResponseError = (liveVibesControllerFindAllResponse500) & {
+  headers: Headers;
 };
 
-export type liveVibesControllerFindAllResponseSuccess =
-  liveVibesControllerFindAllResponse200 & {
-    headers: Headers;
-  };
-export type liveVibesControllerFindAllResponse =
-  liveVibesControllerFindAllResponseSuccess;
+export type liveVibesControllerFindAllResponse = (liveVibesControllerFindAllResponseSuccess | liveVibesControllerFindAllResponseError)
 
-export const getLiveVibesControllerFindAllUrl = (
-  params?: LiveVibesControllerFindAllParams,
-) => {
+export const getLiveVibesControllerFindAllUrl = (params?: LiveVibesControllerFindAllParams,) => {
   const normalizedParams = new URLSearchParams();
 
   Object.entries(params || {}).forEach(([key, value]) => {
+
     if (value !== undefined) {
-      normalizedParams.append(key, value === null ? "null" : value.toString());
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
   });
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0
-    ? `/live-vibes?${stringifiedParams}`
-    : `/live-vibes`;
-};
-
-export const liveVibesControllerFindAll = async (
-  params?: LiveVibesControllerFindAllParams,
-  options?: RequestInit,
-): Promise<liveVibesControllerFindAllResponse> => {
-  return customInstance<liveVibesControllerFindAllResponse>(
-    getLiveVibesControllerFindAllUrl(params),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
-
-export const getLiveVibesControllerFindAllInfiniteQueryKey = (
-  params?: LiveVibesControllerFindAllParams,
-) => {
-  return ["infinite", `/live-vibes`, ...(params ? [params] : [])] as const;
-};
-
-export const getLiveVibesControllerFindAllQueryKey = (
-  params?: LiveVibesControllerFindAllParams,
-) => {
-  return [`/live-vibes`, ...(params ? [params] : [])] as const;
-};
-
-export const getLiveVibesControllerFindAllInfiniteQueryOptions = <
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    LiveVibesControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        LiveVibesControllerFindAllParams["skip"]
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
-
-  const queryKey =
-    queryOptions?.queryKey ??
-    getLiveVibesControllerFindAllInfiniteQueryKey(params);
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    QueryKey,
-    LiveVibesControllerFindAllParams["skip"]
-  > = ({ signal, pageParam }) =>
-    liveVibesControllerFindAll(
-      { ...params, skip: pageParam || params?.["skip"] },
-      { signal },
-    );
-
-  return { queryKey, queryFn, ...queryOptions } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    TError,
-    TData,
-    QueryKey,
-    LiveVibesControllerFindAllParams["skip"]
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type LiveVibesControllerFindAllInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerFindAll>>
->;
-export type LiveVibesControllerFindAllInfiniteQueryError = unknown;
-
-export function useLiveVibesControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    LiveVibesControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params: undefined | LiveVibesControllerFindAllParams,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        LiveVibesControllerFindAllParams["skip"]
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    LiveVibesControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        LiveVibesControllerFindAllParams["skip"]
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-          TError,
-          Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-          QueryKey
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    LiveVibesControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        LiveVibesControllerFindAllParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get live vibes
- */
-
-export function useLiveVibesControllerFindAllInfinite<
-  TData = InfiniteData<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    LiveVibesControllerFindAllParams["skip"]
-  >,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData,
-        QueryKey,
-        LiveVibesControllerFindAllParams["skip"]
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getLiveVibesControllerFindAllInfiniteQueryOptions(
-    params,
-    options,
-  );
-
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+  return stringifiedParams.length > 0 ? `/live-vibes?${stringifiedParams}` : `/live-vibes`
 }
 
-export const getLiveVibesControllerFindAllQueryOptions = <
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData
-      >
-    >;
-  },
+export const liveVibesControllerFindAll = async (params?: LiveVibesControllerFindAllParams, options?: RequestInit): Promise<liveVibesControllerFindAllResponse> => {
+
+  const res = await fetch(getLiveVibesControllerFindAllUrl(params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: liveVibesControllerFindAllResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as liveVibesControllerFindAllResponse
+}
+
+
+
+
+
+export const getLiveVibesControllerFindAllQueryKey = (params?: LiveVibesControllerFindAllParams,) => {
+    return [
+    `/live-vibes`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getLiveVibesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError = InternalServerErrorDto>(params?: LiveVibesControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getLiveVibesControllerFindAllQueryKey(params);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>
-  > = ({ signal }) => liveVibesControllerFindAll(params, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getLiveVibesControllerFindAllQueryKey(params);
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type LiveVibesControllerFindAllQueryResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerFindAll>>
->;
-export type LiveVibesControllerFindAllQueryError = unknown;
 
-export function useLiveVibesControllerFindAll<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-  TError = unknown,
->(
-  params: undefined | LiveVibesControllerFindAllParams,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof liveVibesControllerFindAll>>> = ({ signal }) => liveVibesControllerFindAll(params, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LiveVibesControllerFindAllQueryResult = NonNullable<Awaited<ReturnType<typeof liveVibesControllerFindAll>>>
+export type LiveVibesControllerFindAllQueryError = InternalServerErrorDto
+
+
+export function useLiveVibesControllerFindAll<TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError = InternalServerErrorDto>(
+ params: undefined |  LiveVibesControllerFindAllParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof liveVibesControllerFindAll>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindAll<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useLiveVibesControllerFindAll<TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError = InternalServerErrorDto>(
+ params?: LiveVibesControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
           TError,
           Awaited<ReturnType<typeof liveVibesControllerFindAll>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindAll<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useLiveVibesControllerFindAll<TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError = InternalServerErrorDto>(
+ params?: LiveVibesControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get live vibes
  */
 
-export function useLiveVibesControllerFindAll<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-  TError = unknown,
->(
-  params?: LiveVibesControllerFindAllParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindAll>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getLiveVibesControllerFindAllQueryOptions(
-    params,
-    options,
-  );
+export function useLiveVibesControllerFindAll<TData = Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError = InternalServerErrorDto>(
+ params?: LiveVibesControllerFindAllParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+  const queryOptions = getLiveVibesControllerFindAllQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+
+
 
 /**
  * @summary Get a single live vibe
  */
 export type liveVibesControllerFindOneResponse200 = {
-  data: LiveVibeDto;
-  status: 200;
+  data: LiveVibeDto
+  status: 200
+}
+
+export type liveVibesControllerFindOneResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type liveVibesControllerFindOneResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type liveVibesControllerFindOneResponseSuccess = (liveVibesControllerFindOneResponse200) & {
+  headers: Headers;
+};
+export type liveVibesControllerFindOneResponseError = (liveVibesControllerFindOneResponse404 | liveVibesControllerFindOneResponse500) & {
+  headers: Headers;
 };
 
-export type liveVibesControllerFindOneResponseSuccess =
-  liveVibesControllerFindOneResponse200 & {
-    headers: Headers;
-  };
-export type liveVibesControllerFindOneResponse =
-  liveVibesControllerFindOneResponseSuccess;
+export type liveVibesControllerFindOneResponse = (liveVibesControllerFindOneResponseSuccess | liveVibesControllerFindOneResponseError)
 
-export const getLiveVibesControllerFindOneUrl = (id: string) => {
-  return `/live-vibes/${id}`;
-};
+export const getLiveVibesControllerFindOneUrl = (id: string,) => {
 
-export const liveVibesControllerFindOne = async (
-  id: string,
-  options?: RequestInit,
-): Promise<liveVibesControllerFindOneResponse> => {
-  return customInstance<liveVibesControllerFindOneResponse>(
-    getLiveVibesControllerFindOneUrl(id),
-    {
-      ...options,
-      method: "GET",
-    },
-  );
-};
 
-export const getLiveVibesControllerFindOneInfiniteQueryKey = (id: string) => {
-  return ["infinite", `/live-vibes/${id}`] as const;
-};
 
-export const getLiveVibesControllerFindOneQueryKey = (id: string) => {
-  return [`/live-vibes/${id}`] as const;
-};
 
-export const getLiveVibesControllerFindOneInfiniteQueryOptions = <
-  TData = InfiniteData<Awaited<ReturnType<typeof liveVibesControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
+  return `/live-vibes/${id}`
+}
+
+export const liveVibesControllerFindOne = async (id: string, options?: RequestInit): Promise<liveVibesControllerFindOneResponse> => {
+
+  const res = await fetch(getLiveVibesControllerFindOneUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: liveVibesControllerFindOneResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as liveVibesControllerFindOneResponse
+}
+
+
+
+
+
+export const getLiveVibesControllerFindOneQueryKey = (id: string,) => {
+    return [
+    `/live-vibes/${id}`
+    ] as const;
+    }
+
+
+export const getLiveVibesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
 ) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getLiveVibesControllerFindOneInfiniteQueryKey(id);
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof liveVibesControllerFindOne>>
-  > = ({ signal }) => liveVibesControllerFindOne(id, { signal });
+  const queryKey =  queryOptions?.queryKey ?? getLiveVibesControllerFindOneQueryKey(id);
 
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseInfiniteQueryOptions<
-    Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
 
-export type LiveVibesControllerFindOneInfiniteQueryResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerFindOne>>
->;
-export type LiveVibesControllerFindOneInfiniteQueryError = unknown;
 
-export function useLiveVibesControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof liveVibesControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options: {
-    query: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof liveVibesControllerFindOne>>> = ({ signal }) => liveVibesControllerFindOne(id, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type LiveVibesControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof liveVibesControllerFindOne>>>
+export type LiveVibesControllerFindOneQueryError = NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useLiveVibesControllerFindOne<TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof liveVibesControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof liveVibesControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useLiveVibesControllerFindOne<TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
           TError,
           Awaited<ReturnType<typeof liveVibesControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof liveVibesControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useLiveVibesControllerFindOne<TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary Get a single live vibe
  */
 
-export function useLiveVibesControllerFindOneInfinite<
-  TData = InfiniteData<Awaited<ReturnType<typeof liveVibesControllerFindOne>>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseInfiniteQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseInfiniteQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getLiveVibesControllerFindOneInfiniteQueryOptions(
-    id,
-    options,
-  );
+export function useLiveVibesControllerFindOne<TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof liveVibesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const query = useInfiniteQuery(
-    queryOptions,
-    queryClient,
-  ) as UseInfiniteQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
+  const queryOptions = getLiveVibesControllerFindOneQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
 
-export const getLiveVibesControllerFindOneQueryOptions = <
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-) => {
-  const { query: queryOptions } = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getLiveVibesControllerFindOneQueryKey(id);
 
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof liveVibesControllerFindOne>>
-  > = ({ signal }) => liveVibesControllerFindOne(id, { signal });
-
-  return {
-    queryKey,
-    queryFn,
-    enabled: !!id,
-    ...queryOptions,
-  } as UseQueryOptions<
-    Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-    TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
-
-export type LiveVibesControllerFindOneQueryResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerFindOne>>
->;
-export type LiveVibesControllerFindOneQueryError = unknown;
-
-export function useLiveVibesControllerFindOne<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options: {
-    query: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof liveVibesControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindOne<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    > &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof liveVibesControllerFindOne>>
-        >,
-        "initialData"
-      >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-export function useLiveVibesControllerFindOne<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-};
-/**
- * @summary Get a single live vibe
- */
-
-export function useLiveVibesControllerFindOne<
-  TData = Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-  TError = unknown,
->(
-  id: string,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<
-        Awaited<ReturnType<typeof liveVibesControllerFindOne>>,
-        TError,
-        TData
-      >
-    >;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & {
-  queryKey: DataTag<QueryKey, TData, TError>;
-} {
-  const queryOptions = getLiveVibesControllerFindOneQueryOptions(id, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
-    TData,
-    TError
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
 
 /**
  * @summary Update a live vibe
  */
 export type liveVibesControllerUpdateResponse200 = {
-  data: LiveVibeDto;
-  status: 200;
+  data: LiveVibeDto
+  status: 200
+}
+
+export type liveVibesControllerUpdateResponse400 = {
+  data: BadRequestErrorDto
+  status: 400
+}
+
+export type liveVibesControllerUpdateResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type liveVibesControllerUpdateResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type liveVibesControllerUpdateResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type liveVibesControllerUpdateResponseSuccess = (liveVibesControllerUpdateResponse200) & {
+  headers: Headers;
+};
+export type liveVibesControllerUpdateResponseError = (liveVibesControllerUpdateResponse400 | liveVibesControllerUpdateResponse401 | liveVibesControllerUpdateResponse404 | liveVibesControllerUpdateResponse500) & {
+  headers: Headers;
 };
 
-export type liveVibesControllerUpdateResponseSuccess =
-  liveVibesControllerUpdateResponse200 & {
-    headers: Headers;
-  };
-export type liveVibesControllerUpdateResponse =
-  liveVibesControllerUpdateResponseSuccess;
+export type liveVibesControllerUpdateResponse = (liveVibesControllerUpdateResponseSuccess | liveVibesControllerUpdateResponseError)
 
-export const getLiveVibesControllerUpdateUrl = (id: string) => {
-  return `/live-vibes/${id}`;
-};
+export const getLiveVibesControllerUpdateUrl = (id: string,) => {
 
-export const liveVibesControllerUpdate = async (
-  id: string,
-  updateLiveVibeDto: UpdateLiveVibeDto,
-  options?: RequestInit,
-): Promise<liveVibesControllerUpdateResponse> => {
-  return customInstance<liveVibesControllerUpdateResponse>(
-    getLiveVibesControllerUpdateUrl(id),
-    {
-      ...options,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", ...options?.headers },
-      body: JSON.stringify(updateLiveVibeDto),
-    },
-  );
-};
 
-export const getLiveVibesControllerUpdateMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof liveVibesControllerUpdate>>,
-    TError,
-    { id: string; data: UpdateLiveVibeDto },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof liveVibesControllerUpdate>>,
-  TError,
-  { id: string; data: UpdateLiveVibeDto },
-  TContext
-> => {
-  const mutationKey = ["liveVibesControllerUpdate"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof liveVibesControllerUpdate>>,
-    { id: string; data: UpdateLiveVibeDto }
-  > = (props) => {
-    const { id, data } = props ?? {};
 
-    return liveVibesControllerUpdate(id, data);
-  };
+  return `/live-vibes/${id}`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const liveVibesControllerUpdate = async (id: string,
+    updateLiveVibeDto: UpdateLiveVibeDto, options?: RequestInit): Promise<liveVibesControllerUpdateResponse> => {
 
-export type LiveVibesControllerUpdateMutationResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerUpdate>>
->;
-export type LiveVibesControllerUpdateMutationBody = UpdateLiveVibeDto;
-export type LiveVibesControllerUpdateMutationError = unknown;
+  const res = await fetch(getLiveVibesControllerUpdateUrl(id),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      updateLiveVibeDto,)
+  }
+)
 
-/**
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: liveVibesControllerUpdateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as liveVibesControllerUpdateResponse
+}
+
+
+
+
+export const getLiveVibesControllerUpdateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerUpdate>>, TError,{id: string;data: UpdateLiveVibeDto}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerUpdate>>, TError,{id: string;data: UpdateLiveVibeDto}, TContext> => {
+
+const mutationKey = ['liveVibesControllerUpdate'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof liveVibesControllerUpdate>>, {id: string;data: UpdateLiveVibeDto}> = (props) => {
+          const {id,data} = props ?? {};
+
+          return  liveVibesControllerUpdate(id,data,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LiveVibesControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof liveVibesControllerUpdate>>>
+    export type LiveVibesControllerUpdateMutationBody = UpdateLiveVibeDto
+    export type LiveVibesControllerUpdateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Update a live vibe
  */
-export const useLiveVibesControllerUpdate = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof liveVibesControllerUpdate>>,
-      TError,
-      { id: string; data: UpdateLiveVibeDto },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof liveVibesControllerUpdate>>,
-  TError,
-  { id: string; data: UpdateLiveVibeDto },
-  TContext
-> => {
-  return useMutation(
-    getLiveVibesControllerUpdateMutationOptions(options),
-    queryClient,
-  );
-};
-/**
+export const useLiveVibesControllerUpdate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerUpdate>>, TError,{id: string;data: UpdateLiveVibeDto}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof liveVibesControllerUpdate>>,
+        TError,
+        {id: string;data: UpdateLiveVibeDto},
+        TContext
+      > => {
+      return useMutation(getLiveVibesControllerUpdateMutationOptions(options), queryClient);
+    }
+    /**
  * @summary Delete a live vibe
  */
 export type liveVibesControllerDeleteResponse200 = {
-  data: void;
-  status: 200;
+  data: void
+  status: 200
+}
+
+export type liveVibesControllerDeleteResponse401 = {
+  data: UnauthorizedErrorDto
+  status: 401
+}
+
+export type liveVibesControllerDeleteResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type liveVibesControllerDeleteResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type liveVibesControllerDeleteResponseSuccess = (liveVibesControllerDeleteResponse200) & {
+  headers: Headers;
+};
+export type liveVibesControllerDeleteResponseError = (liveVibesControllerDeleteResponse401 | liveVibesControllerDeleteResponse404 | liveVibesControllerDeleteResponse500) & {
+  headers: Headers;
 };
 
-export type liveVibesControllerDeleteResponseSuccess =
-  liveVibesControllerDeleteResponse200 & {
-    headers: Headers;
-  };
-export type liveVibesControllerDeleteResponse =
-  liveVibesControllerDeleteResponseSuccess;
+export type liveVibesControllerDeleteResponse = (liveVibesControllerDeleteResponseSuccess | liveVibesControllerDeleteResponseError)
 
-export const getLiveVibesControllerDeleteUrl = (id: string) => {
-  return `/live-vibes/${id}`;
-};
+export const getLiveVibesControllerDeleteUrl = (id: string,) => {
 
-export const liveVibesControllerDelete = async (
-  id: string,
-  options?: RequestInit,
-): Promise<liveVibesControllerDeleteResponse> => {
-  return customInstance<liveVibesControllerDeleteResponse>(
-    getLiveVibesControllerDeleteUrl(id),
-    {
-      ...options,
-      method: "DELETE",
-    },
-  );
-};
 
-export const getLiveVibesControllerDeleteMutationOptions = <
-  TError = unknown,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof liveVibesControllerDelete>>,
-    TError,
-    { id: string },
-    TContext
-  >;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof liveVibesControllerDelete>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  const mutationKey = ["liveVibesControllerDelete"];
-  const { mutation: mutationOptions } = options
-    ? options.mutation &&
-      "mutationKey" in options.mutation &&
-      options.mutation.mutationKey
-      ? options
-      : { ...options, mutation: { ...options.mutation, mutationKey } }
-    : { mutation: { mutationKey } };
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof liveVibesControllerDelete>>,
-    { id: string }
-  > = (props) => {
-    const { id } = props ?? {};
 
-    return liveVibesControllerDelete(id);
-  };
+  return `/live-vibes/${id}`
+}
 
-  return { mutationFn, ...mutationOptions };
-};
+export const liveVibesControllerDelete = async (id: string, options?: RequestInit): Promise<liveVibesControllerDeleteResponse> => {
 
-export type LiveVibesControllerDeleteMutationResult = NonNullable<
-  Awaited<ReturnType<typeof liveVibesControllerDelete>>
->;
+  const res = await fetch(getLiveVibesControllerDeleteUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
 
-export type LiveVibesControllerDeleteMutationError = unknown;
 
-/**
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: liveVibesControllerDeleteResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as liveVibesControllerDeleteResponse
+}
+
+
+
+
+export const getLiveVibesControllerDeleteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+): UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerDelete>>, TError,{id: string}, TContext> => {
+
+const mutationKey = ['liveVibesControllerDelete'];
+const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, fetch: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof liveVibesControllerDelete>>, {id: string}> = (props) => {
+          const {id} = props ?? {};
+
+          return  liveVibesControllerDelete(id,fetchOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type LiveVibesControllerDeleteMutationResult = NonNullable<Awaited<ReturnType<typeof liveVibesControllerDelete>>>
+
+    export type LiveVibesControllerDeleteMutationError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+    /**
  * @summary Delete a live vibe
  */
-export const useLiveVibesControllerDelete = <
-  TError = unknown,
-  TContext = unknown,
->(
-  options?: {
-    mutation?: UseMutationOptions<
-      Awaited<ReturnType<typeof liveVibesControllerDelete>>,
-      TError,
-      { id: string },
-      TContext
-    >;
-  },
-  queryClient?: QueryClient,
-): UseMutationResult<
-  Awaited<ReturnType<typeof liveVibesControllerDelete>>,
-  TError,
-  { id: string },
-  TContext
-> => {
-  return useMutation(
-    getLiveVibesControllerDeleteMutationOptions(options),
-    queryClient,
-  );
-};
+export const useLiveVibesControllerDelete = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof liveVibesControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof liveVibesControllerDelete>>,
+        TError,
+        {id: string},
+        TContext
+      > => {
+      return useMutation(getLiveVibesControllerDeleteMutationOptions(options), queryClient);
+    }

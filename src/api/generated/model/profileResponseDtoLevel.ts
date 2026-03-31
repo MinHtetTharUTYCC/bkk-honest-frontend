@@ -6,11 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export type ProfileResponseDtoLevel =
-  (typeof ProfileResponseDtoLevel)[keyof typeof ProfileResponseDtoLevel];
+export type ProfileResponseDtoLevel = typeof ProfileResponseDtoLevel[keyof typeof ProfileResponseDtoLevel];
+
 
 export const ProfileResponseDtoLevel = {
-  NEWBIE: "NEWBIE",
-  EXPLORER: "EXPLORER",
-  LOCAL_GURU: "LOCAL_GURU",
+  NEWBIE: 'NEWBIE',
+  EXPLORER: 'EXPLORER',
+  LOCAL_GURU: 'LOCAL_GURU',
 } as const;
