@@ -5,12 +5,13 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import type { PriceReportUserDtoAvatarUrl } from './priceReportUserDtoAvatarUrl';
-import type { PriceReportUserDtoName } from './priceReportUserDtoName';
+import type { PriceReportUserDtoLevel } from './priceReportUserDtoLevel';
 
 export interface PriceReportUserDto {
   id: string;
-  name?: PriceReportUserDtoName;
-  avatarUrl?: PriceReportUserDtoAvatarUrl;
-  level: string;
+  /** @nullable */
+  name?: string | null;
+  /** @nullable */
+  avatarUrl?: string | null;
+  level: PriceReportUserDtoLevel;
 }

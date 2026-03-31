@@ -6,24 +6,36 @@
  * OpenAPI spec version: 1.0
  */
 import type { ImageVariantsDto } from './imageVariantsDto';
+import type { ProfileResponseDtoLevel } from './profileResponseDtoLevel';
 
 export interface ProfileResponseDto {
   id: string;
   email: string;
+  /** @nullable */
   name?: string | null;
+  /** @nullable */
   avatarUrl?: string | null;
+  /** @nullable */
   bio?: string | null;
+  /** @nullable */
   country?: string | null;
-  level: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU';
+  level: ProfileResponseDtoLevel;
   reputation: number;
   createdAt: string;
   updatedAt: string;
   imageVariants?: ImageVariantsDto;
+  /** @nullable */
   imageWidth?: number | null;
+  /** @nullable */
   imageHeight?: number | null;
+  /** @nullable */
   imageSize?: number | null;
+  /** @nullable */
   imageMimeType?: string | null;
+  /** @nullable */
   blurPlaceholder?: string | null;
+  /** @nullable */
   isDegraded?: boolean | null;
+  /** @nullable */
   qualityScore?: number | null;
 }
