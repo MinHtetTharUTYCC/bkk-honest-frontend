@@ -42,7 +42,7 @@ export function useDeleteVote() {
     return useMutation({
         mutationFn: async ({
             voteId,
-            type: _type,
+            type: type,
         }: {
             voteId: string;
             type: 'tip' | 'alert' | 'image' | 'spot';

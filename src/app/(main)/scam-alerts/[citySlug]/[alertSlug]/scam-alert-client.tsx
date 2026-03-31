@@ -387,7 +387,7 @@ export default function ScamAlertClient() {
       };
     });
 
-    const result = await toggleVote(localAlert as ScamAlertResponseDto);
+    const result = await toggleVote(localAlert as Omit<ScamAlertResponseDto, 'voteId'> & { voteId?: string | null | undefined });
 
     setLocalAlert((prev) => {
       if (!prev) return prev;

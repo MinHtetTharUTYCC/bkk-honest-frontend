@@ -58,7 +58,7 @@ export type ScamAlertData = Omit<
   userId?: string;
   categoryId?: string;
   cityId?: string;
-  voteId?: string | Record<string, unknown> | null;
+  voteId?: string | null | undefined;
   _count?: AlertCount;
   city?: AlertCity;
   category?: AlertCategory;

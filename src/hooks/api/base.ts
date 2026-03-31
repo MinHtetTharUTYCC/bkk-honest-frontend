@@ -19,7 +19,7 @@ export type PaginationLike = {
  */
 export function getNextSkipFromPage(
     lastPage: unknown,
-    _requireHasMore?: boolean,
+    requireMore?: boolean,
 ): number | undefined {
     if (!lastPage || typeof lastPage !== 'object') {
         return undefined;
@@ -37,6 +37,6 @@ export function getNextSkipFromPage(
         return undefined;
     }
 
-    const nextSkip = skip + take;
+    const nextSkip = skip != null ? skip + take : undefined;
     return nextSkip < total ? nextSkip : undefined;
 }
