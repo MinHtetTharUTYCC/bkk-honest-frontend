@@ -533,6 +533,134 @@ export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<t
 
 
 /**
+ * @summary Get profile by ID
+ */
+export type profilesControllerFindOneResponse200 = {
+  data: ProfileResponseDto
+  status: 200
+}
+
+export type profilesControllerFindOneResponse404 = {
+  data: NotFoundErrorDto
+  status: 404
+}
+
+export type profilesControllerFindOneResponse500 = {
+  data: InternalServerErrorDto
+  status: 500
+}
+
+export type profilesControllerFindOneResponseSuccess = (profilesControllerFindOneResponse200) & {
+  headers: Headers;
+};
+export type profilesControllerFindOneResponseError = (profilesControllerFindOneResponse404 | profilesControllerFindOneResponse500) & {
+  headers: Headers;
+};
+
+export type profilesControllerFindOneResponse = (profilesControllerFindOneResponseSuccess | profilesControllerFindOneResponseError)
+
+export const getProfilesControllerFindOneUrl = (id: string,) => {
+
+
+
+
+  return `/profiles/${id}`
+}
+
+export const profilesControllerFindOne = async (id: string, options?: RequestInit): Promise<profilesControllerFindOneResponse> => {
+
+  const res = await fetch(getProfilesControllerFindOneUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: profilesControllerFindOneResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as profilesControllerFindOneResponse
+}
+
+
+
+
+
+export const getProfilesControllerFindOneQueryKey = (id: string,) => {
+    return [
+    `/profiles/${id}`
+    ] as const;
+    }
+
+
+export const getProfilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+) => {
+
+const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerFindOneQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal, ...fetchOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ProfilesControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerFindOne>>>
+export type ProfilesControllerFindOneQueryError = NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerFindOne>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof profilesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof profilesControllerFindOne>>
+        > , 'initialData'
+      >, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get profile by ID
+ */
+
+export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ , queryClient?: QueryClient
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getProfilesControllerFindOneQueryOptions(id,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+/**
  * @summary Get reputation stats
  */
 export type profilesControllerGetReputationStatsResponse200 = {

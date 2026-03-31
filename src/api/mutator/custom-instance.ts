@@ -1,4 +1,4 @@
-import Axios, { AxiosRequestConfig, AxiosInstance } from "axios";
+import Axios, { AxiosRequestConfig, AxiosInstance, AxiosRequestHeaders } from "axios";
 
 export const AXIOS_INSTANCE: AxiosInstance = Axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
@@ -38,7 +38,7 @@ export const customInstance = <T>(
   if (options?.headers && typeof options.headers === "object") {
     requestConfig.headers = {
       ...requestConfig.headers,
-      ...(options.headers as any),
+      ...(options.headers as AxiosRequestHeaders),
     };
   }
 
