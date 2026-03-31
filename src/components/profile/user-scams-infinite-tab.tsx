@@ -1,11 +1,9 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/auth-provider';
+import { useEffect, useMemo } from 'react';
 import { useInfiniteUserScamAlerts } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
 import { getScamAlertUrl } from '@/lib/slug';
 import Link from 'next/link';
 import OptimizedImage from '@/components/ui/OptimizedImage';
@@ -13,61 +11,34 @@ import OptimizedImage from '@/components/ui/OptimizedImage';
 interface UserScamsInfiniteTabProps {
     userId: string;
 }
-
-import type { ScamAlertResponseDto } from '@/api/generated/model/scamAlertResponseDto';
-import type { PaginationMetaDto } from '@/api/generated/model/paginationMetaDto';
-
-interface ScamAlertPage {
-    data: ScamAlertResponseDto[];
-    pagination: PaginationMetaDto;
-}
+import { PaginatedScamAlertsResponseDto } from '@/api/generated/model/paginatedScamAlertsResponseDto';
 
 export default function UserScamsInfiniteTab({ userId }: UserScamsInfiniteTabProps) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { user: authUser } = useAuth();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const router = useRouter();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const pathname = usePathname();
-
     const {
-        data: scamsData,
-        fetchNextPage: fetchNextScams,
-        hasNextPage: hasNextScams,
-        isFetchingNextPage: isFetchingNextScams,
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
         isLoading: scamsLoading,
-    } = useInfiniteUserScamAlerts(userId) as {
-        data:
-            | {
-                  pages: { data: ScamAlertPage; status: number }[];
-              }
-            | undefined;
-        fetchNextPage: () => void;
-        hasNextPage: boolean | undefined;
-        isFetchingNextPage: boolean;
-        isLoading: boolean;
-    };
+    } = useInfiniteUserScamAlerts(userId);
 
-    const scams: ScamAlertResponseDto[] = useMemo(() => {
-        return scamsData?.pages.flatMap((page) => page.data.data || []) || [];
-    }, [scamsData]);
-
+    const scams = useMemo(
+        () =>
+            data?.pages.flatMap(
+                (page) => (page.data as PaginatedScamAlertsResponseDto).data ?? [],
+            ) ?? [],
+        [data],
+    );
     const { ref: observerTarget, inView } = useInView({
         threshold: 0.1,
         rootMargin: '200px',
     });
-    const hasFetchedScamsRef = useRef(false);
 
     useEffect(() => {
-        if (inView && hasNextScams && !isFetchingNextScams && !hasFetchedScamsRef.current) {
-            hasFetchedScamsRef.current = true;
-            fetchNextScams();
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-    }, [inView, hasNextScams, isFetchingNextScams, fetchNextScams]);
-
-    useEffect(() => {
-        if (!inView) hasFetchedScamsRef.current = false;
-    }, [inView]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     return (
         <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">
@@ -131,9 +102,9 @@ export default function UserScamsInfiniteTab({ userId }: UserScamsInfiniteTabPro
                     ))}
 
                     <div ref={observerTarget} className="py-6 flex justify-center">
-                        {isFetchingNextScams ? (
+                        {isFetchingNextPage ? (
                             <Loader2 size={20} className="text-red-400 animate-spin" />
-                        ) : hasNextScams ? (
+                        ) : hasNextPage ? (
                             <div className="h-4 w-4" />
                         ) : (
                             <p className="text-[10px] font-semibold text-white/40 tracking-wide">

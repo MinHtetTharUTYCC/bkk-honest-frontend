@@ -5,786 +5,1043 @@
  * The Honest Bangkok API for locals and tourists to share tips, prices, and scam alerts.
  * OpenAPI spec version: 1.0
  */
-import {
-  useMutation,
-  useQuery
-} from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult
+    DataTag,
+    DefinedInitialDataOptions,
+    DefinedUseQueryResult,
+    MutationFunction,
+    QueryClient,
+    QueryFunction,
+    QueryKey,
+    UndefinedInitialDataOptions,
+    UseMutationOptions,
+    UseMutationResult,
+    UseQueryOptions,
+    UseQueryResult,
 } from '@tanstack/react-query';
 
 import type {
-  BadRequestErrorDto,
-  CreateProfileDto,
-  InternalServerErrorDto,
-  LeaderboardProfileDto,
-  NotFoundErrorDto,
-  ProfileResponseDto,
-  ProfilesControllerGetLeaderboardParams,
-  ReputationStatsDto,
-  UnauthorizedErrorDto,
-  UpdateProfileDto
+    BadRequestErrorDto,
+    CreateProfileDto,
+    InternalServerErrorDto,
+    LeaderboardProfileDto,
+    NotFoundErrorDto,
+    ProfileResponseDto,
+    ProfilesControllerGetLeaderboardParams,
+    ReputationStatsDto,
+    UnauthorizedErrorDto,
+    UpdateProfileDto,
 } from '../model';
-
-
-
-
 
 /**
  * @summary Create a profile
  */
 export type profilesControllerCreateResponse201 = {
-  data: ProfileResponseDto
-  status: 201
-}
+    data: ProfileResponseDto;
+    status: 201;
+};
 
 export type profilesControllerCreateResponse400 = {
-  data: BadRequestErrorDto
-  status: 400
-}
+    data: BadRequestErrorDto;
+    status: 400;
+};
 
 export type profilesControllerCreateResponse401 = {
-  data: UnauthorizedErrorDto
-  status: 401
-}
+    data: UnauthorizedErrorDto;
+    status: 401;
+};
 
 export type profilesControllerCreateResponse500 = {
-  data: InternalServerErrorDto
-  status: 500
-}
-
-export type profilesControllerCreateResponseSuccess = (profilesControllerCreateResponse201) & {
-  headers: Headers;
-};
-export type profilesControllerCreateResponseError = (profilesControllerCreateResponse400 | profilesControllerCreateResponse401 | profilesControllerCreateResponse500) & {
-  headers: Headers;
+    data: InternalServerErrorDto;
+    status: 500;
 };
 
-export type profilesControllerCreateResponse = (profilesControllerCreateResponseSuccess | profilesControllerCreateResponseError)
+export type profilesControllerCreateResponseSuccess = profilesControllerCreateResponse201 & {
+    headers: Headers;
+};
+export type profilesControllerCreateResponseError = (
+    | profilesControllerCreateResponse400
+    | profilesControllerCreateResponse401
+    | profilesControllerCreateResponse500
+) & {
+    headers: Headers;
+};
+
+export type profilesControllerCreateResponse =
+    | profilesControllerCreateResponseSuccess
+    | profilesControllerCreateResponseError;
 
 export const getProfilesControllerCreateUrl = () => {
+    return `/profiles`;
+};
 
+export const profilesControllerCreate = async (
+    createProfileDto: CreateProfileDto,
+    options?: RequestInit,
+): Promise<profilesControllerCreateResponse> => {
+    const res = await fetch(getProfilesControllerCreateUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...options?.headers },
+        body: JSON.stringify(createProfileDto),
+    });
 
+    const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
+    const data: profilesControllerCreateResponse['data'] = body ? JSON.parse(body) : {};
+    return { data, status: res.status, headers: res.headers } as profilesControllerCreateResponse;
+};
 
-  return `/profiles`
-}
-
-export const profilesControllerCreate = async (createProfileDto: CreateProfileDto, options?: RequestInit): Promise<profilesControllerCreateResponse> => {
-
-  const res = await fetch(getProfilesControllerCreateUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      createProfileDto,)
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: profilesControllerCreateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as profilesControllerCreateResponse
-}
-
-
-
-
-export const getProfilesControllerCreateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext> => {
-
-const mutationKey = ['profilesControllerCreate'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof profilesControllerCreate>>, {data: CreateProfileDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  profilesControllerCreate(data,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ProfilesControllerCreateMutationResult = NonNullable<Awaited<ReturnType<typeof profilesControllerCreate>>>
-    export type ProfilesControllerCreateMutationBody = CreateProfileDto
-    export type ProfilesControllerCreateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto
-
-    /**
- * @summary Create a profile
- */
-export const useProfilesControllerCreate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerCreate>>, TError,{data: CreateProfileDto}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
+export const getProfilesControllerCreateMutationOptions = <
+    TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof profilesControllerCreate>>,
         TError,
-        {data: CreateProfileDto},
+        { data: CreateProfileDto },
         TContext
-      > => {
-      return useMutation(getProfilesControllerCreateMutationOptions(options), queryClient);
-    }
-    /**
+    >;
+    fetch?: RequestInit;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof profilesControllerCreate>>,
+    TError,
+    { data: CreateProfileDto },
+    TContext
+> => {
+    const mutationKey = ['profilesControllerCreate'];
+    const { mutation: mutationOptions, fetch: fetchOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, fetch: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof profilesControllerCreate>>,
+        { data: CreateProfileDto }
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return profilesControllerCreate(data, fetchOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type ProfilesControllerCreateMutationResult = NonNullable<
+    Awaited<ReturnType<typeof profilesControllerCreate>>
+>;
+export type ProfilesControllerCreateMutationBody = CreateProfileDto;
+export type ProfilesControllerCreateMutationError =
+    | BadRequestErrorDto
+    | UnauthorizedErrorDto
+    | InternalServerErrorDto;
+
+/**
+ * @summary Create a profile
+ */
+export const useProfilesControllerCreate = <
+    TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof profilesControllerCreate>>,
+            TError,
+            { data: CreateProfileDto },
+            TContext
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof profilesControllerCreate>>,
+    TError,
+    { data: CreateProfileDto },
+    TContext
+> => {
+    return useMutation(getProfilesControllerCreateMutationOptions(options), queryClient);
+};
+/**
  * @summary Get current user profile
  */
 export type profilesControllerGetMeResponse200 = {
-  data: ProfileResponseDto
-  status: 200
-}
+    data: ProfileResponseDto;
+    status: 200;
+};
 
 export type profilesControllerGetMeResponse401 = {
-  data: UnauthorizedErrorDto
-  status: 401
-}
+    data: UnauthorizedErrorDto;
+    status: 401;
+};
 
 export type profilesControllerGetMeResponse404 = {
-  data: NotFoundErrorDto
-  status: 404
-}
+    data: NotFoundErrorDto;
+    status: 404;
+};
 
 export type profilesControllerGetMeResponse500 = {
-  data: InternalServerErrorDto
-  status: 500
-}
-
-export type profilesControllerGetMeResponseSuccess = (profilesControllerGetMeResponse200) & {
-  headers: Headers;
-};
-export type profilesControllerGetMeResponseError = (profilesControllerGetMeResponse401 | profilesControllerGetMeResponse404 | profilesControllerGetMeResponse500) & {
-  headers: Headers;
+    data: InternalServerErrorDto;
+    status: 500;
 };
 
-export type profilesControllerGetMeResponse = (profilesControllerGetMeResponseSuccess | profilesControllerGetMeResponseError)
+export type profilesControllerGetMeResponseSuccess = profilesControllerGetMeResponse200 & {
+    headers: Headers;
+};
+export type profilesControllerGetMeResponseError = (
+    | profilesControllerGetMeResponse401
+    | profilesControllerGetMeResponse404
+    | profilesControllerGetMeResponse500
+) & {
+    headers: Headers;
+};
+
+export type profilesControllerGetMeResponse =
+    | profilesControllerGetMeResponseSuccess
+    | profilesControllerGetMeResponseError;
 
 export const getProfilesControllerGetMeUrl = () => {
+    return `/profiles/me`;
+};
 
+export const profilesControllerGetMe = async (
+    options?: RequestInit,
+): Promise<profilesControllerGetMeResponse> => {
+    const res = await fetch(getProfilesControllerGetMeUrl(), {
+        ...options,
+        method: 'GET',
+    });
 
+    const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-
-  return `/profiles/me`
-}
-
-export const profilesControllerGetMe = async ( options?: RequestInit): Promise<profilesControllerGetMeResponse> => {
-
-  const res = await fetch(getProfilesControllerGetMeUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: profilesControllerGetMeResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as profilesControllerGetMeResponse
-}
-
-
-
-
+    const data: profilesControllerGetMeResponse['data'] = body ? JSON.parse(body) : {};
+    return { data, status: res.status, headers: res.headers } as profilesControllerGetMeResponse;
+};
 
 export const getProfilesControllerGetMeQueryKey = () => {
-    return [
-    `/profiles/me`
-    ] as const;
-    }
+    return [`/profiles/me`] as const;
+};
 
+export const getProfilesControllerGetMeQueryOptions = <
+    TData = Awaited<ReturnType<typeof profilesControllerGetMe>>,
+    TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+>(options?: {
+    query?: Partial<
+        UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>
+    >;
+    fetch?: RequestInit;
+}) => {
+    const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-export const getProfilesControllerGetMeQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, fetch?: RequestInit}
-) => {
+    const queryKey = queryOptions?.queryKey ?? getProfilesControllerGetMeQueryKey();
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({
+        signal,
+    }) => profilesControllerGetMe({ signal, ...fetchOptions });
 
-  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetMeQueryKey();
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof profilesControllerGetMe>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ProfilesControllerGetMeQueryResult = NonNullable<
+    Awaited<ReturnType<typeof profilesControllerGetMe>>
+>;
+export type ProfilesControllerGetMeQueryError =
+    | UnauthorizedErrorDto
+    | NotFoundErrorDto
+    | InternalServerErrorDto;
 
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetMe>>> = ({ signal }) => profilesControllerGetMe({ signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ProfilesControllerGetMeQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerGetMe>>>
-export type ProfilesControllerGetMeQueryError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
-
-
-export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerGetMe>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerGetMe>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerGetMe>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerGetMe>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetMe<
+    TData = Awaited<ReturnType<typeof profilesControllerGetMe>>,
+    TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+>(
+    options: {
+        query: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerGetMe>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerGetMe>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerGetMe<
+    TData = Awaited<ReturnType<typeof profilesControllerGetMe>>,
+    TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+>(
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerGetMe>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerGetMe>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerGetMe<
+    TData = Awaited<ReturnType<typeof profilesControllerGetMe>>,
+    TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+>(
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get current user profile
  */
 
-export function useProfilesControllerGetMe<TData = Awaited<ReturnType<typeof profilesControllerGetMe>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useProfilesControllerGetMe<
+    TData = Awaited<ReturnType<typeof profilesControllerGetMe>>,
+    TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+>(
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetMe>>, TError, TData>
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getProfilesControllerGetMeQueryOptions(options);
 
-  const queryOptions = getProfilesControllerGetMeQueryOptions(options)
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+    return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Update profile
  */
 export type profilesControllerUpdateResponse200 = {
-  data: ProfileResponseDto
-  status: 200
-}
+    data: ProfileResponseDto;
+    status: 200;
+};
 
 export type profilesControllerUpdateResponse400 = {
-  data: BadRequestErrorDto
-  status: 400
-}
+    data: BadRequestErrorDto;
+    status: 400;
+};
 
 export type profilesControllerUpdateResponse401 = {
-  data: UnauthorizedErrorDto
-  status: 401
-}
+    data: UnauthorizedErrorDto;
+    status: 401;
+};
 
 export type profilesControllerUpdateResponse404 = {
-  data: NotFoundErrorDto
-  status: 404
-}
+    data: NotFoundErrorDto;
+    status: 404;
+};
 
 export type profilesControllerUpdateResponse500 = {
-  data: InternalServerErrorDto
-  status: 500
-}
-
-export type profilesControllerUpdateResponseSuccess = (profilesControllerUpdateResponse200) & {
-  headers: Headers;
-};
-export type profilesControllerUpdateResponseError = (profilesControllerUpdateResponse400 | profilesControllerUpdateResponse401 | profilesControllerUpdateResponse404 | profilesControllerUpdateResponse500) & {
-  headers: Headers;
+    data: InternalServerErrorDto;
+    status: 500;
 };
 
-export type profilesControllerUpdateResponse = (profilesControllerUpdateResponseSuccess | profilesControllerUpdateResponseError)
+export type profilesControllerUpdateResponseSuccess = profilesControllerUpdateResponse200 & {
+    headers: Headers;
+};
+export type profilesControllerUpdateResponseError = (
+    | profilesControllerUpdateResponse400
+    | profilesControllerUpdateResponse401
+    | profilesControllerUpdateResponse404
+    | profilesControllerUpdateResponse500
+) & {
+    headers: Headers;
+};
+
+export type profilesControllerUpdateResponse =
+    | profilesControllerUpdateResponseSuccess
+    | profilesControllerUpdateResponseError;
 
 export const getProfilesControllerUpdateUrl = () => {
+    return `/profiles/me`;
+};
 
-
-
-
-  return `/profiles/me`
-}
-
-export const profilesControllerUpdate = async (updateProfileDto: UpdateProfileDto, options?: RequestInit): Promise<profilesControllerUpdateResponse> => {
+export const profilesControllerUpdate = async (
+    updateProfileDto: UpdateProfileDto,
+    options?: RequestInit,
+): Promise<profilesControllerUpdateResponse> => {
     const formData = new FormData();
-if(updateProfileDto.name !== undefined) {
- formData.append(`name`, updateProfileDto.name);
- }
-if(updateProfileDto.avatarUrl !== undefined) {
- formData.append(`avatarUrl`, updateProfileDto.avatarUrl);
- }
-if(updateProfileDto.bio !== undefined) {
- formData.append(`bio`, updateProfileDto.bio);
- }
-if(updateProfileDto.country !== undefined) {
- formData.append(`country`, updateProfileDto.country);
- }
+    if (updateProfileDto.name !== undefined) {
+        formData.append(`name`, updateProfileDto.name);
+    }
+    if (updateProfileDto.avatarUrl !== undefined) {
+        formData.append(`avatarUrl`, updateProfileDto.avatarUrl);
+    }
+    if (updateProfileDto.bio !== undefined) {
+        formData.append(`bio`, updateProfileDto.bio);
+    }
+    if (updateProfileDto.country !== undefined) {
+        formData.append(`country`, updateProfileDto.country);
+    }
 
-  const res = await fetch(getProfilesControllerUpdateUrl(),
-  {
-    ...options,
-    method: 'PATCH'
-    ,
-    body:
-      formData,
-  }
-)
+    const res = await fetch(getProfilesControllerUpdateUrl(), {
+        ...options,
+        method: 'PATCH',
+        body: formData,
+    });
 
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+    const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  const data: profilesControllerUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as profilesControllerUpdateResponse
-}
+    const data: profilesControllerUpdateResponse['data'] = body ? JSON.parse(body) : {};
+    return { data, status: res.status, headers: res.headers } as profilesControllerUpdateResponse;
+};
 
-
-
-
-export const getProfilesControllerUpdateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext>, fetch?: RequestInit}
-): UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext> => {
-
-const mutationKey = ['profilesControllerUpdate'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof profilesControllerUpdate>>, {data: UpdateProfileDto}> = (props) => {
-          const {data} = props ?? {};
-
-          return  profilesControllerUpdate(data,fetchOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ProfilesControllerUpdateMutationResult = NonNullable<Awaited<ReturnType<typeof profilesControllerUpdate>>>
-    export type ProfilesControllerUpdateMutationBody = UpdateProfileDto
-    export type ProfilesControllerUpdateMutationError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
-
-    /**
- * @summary Update profile
- */
-export const useProfilesControllerUpdate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof profilesControllerUpdate>>, TError,{data: UpdateProfileDto}, TContext>, fetch?: RequestInit}
- , queryClient?: QueryClient): UseMutationResult<
+export const getProfilesControllerUpdateMutationOptions = <
+    TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof profilesControllerUpdate>>,
         TError,
-        {data: UpdateProfileDto},
+        { data: UpdateProfileDto },
         TContext
-      > => {
-      return useMutation(getProfilesControllerUpdateMutationOptions(options), queryClient);
-    }
-    /**
+    >;
+    fetch?: RequestInit;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof profilesControllerUpdate>>,
+    TError,
+    { data: UpdateProfileDto },
+    TContext
+> => {
+    const mutationKey = ['profilesControllerUpdate'];
+    const { mutation: mutationOptions, fetch: fetchOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, fetch: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof profilesControllerUpdate>>,
+        { data: UpdateProfileDto }
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return profilesControllerUpdate(data, fetchOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type ProfilesControllerUpdateMutationResult = NonNullable<
+    Awaited<ReturnType<typeof profilesControllerUpdate>>
+>;
+export type ProfilesControllerUpdateMutationBody = UpdateProfileDto;
+export type ProfilesControllerUpdateMutationError =
+    | BadRequestErrorDto
+    | UnauthorizedErrorDto
+    | NotFoundErrorDto
+    | InternalServerErrorDto;
+
+/**
+ * @summary Update profile
+ */
+export const useProfilesControllerUpdate = <
+    TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof profilesControllerUpdate>>,
+            TError,
+            { data: UpdateProfileDto },
+            TContext
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof profilesControllerUpdate>>,
+    TError,
+    { data: UpdateProfileDto },
+    TContext
+> => {
+    return useMutation(getProfilesControllerUpdateMutationOptions(options), queryClient);
+};
+/**
  * @summary Get leaderboard
  */
 export type profilesControllerGetLeaderboardResponse200 = {
-  data: LeaderboardProfileDto[]
-  status: 200
-}
+    data: LeaderboardProfileDto[];
+    status: 200;
+};
 
 export type profilesControllerGetLeaderboardResponse500 = {
-  data: InternalServerErrorDto
-  status: 500
-}
-
-export type profilesControllerGetLeaderboardResponseSuccess = (profilesControllerGetLeaderboardResponse200) & {
-  headers: Headers;
-};
-export type profilesControllerGetLeaderboardResponseError = (profilesControllerGetLeaderboardResponse500) & {
-  headers: Headers;
+    data: InternalServerErrorDto;
+    status: 500;
 };
 
-export type profilesControllerGetLeaderboardResponse = (profilesControllerGetLeaderboardResponseSuccess | profilesControllerGetLeaderboardResponseError)
+export type profilesControllerGetLeaderboardResponseSuccess =
+    profilesControllerGetLeaderboardResponse200 & {
+        headers: Headers;
+    };
+export type profilesControllerGetLeaderboardResponseError =
+    profilesControllerGetLeaderboardResponse500 & {
+        headers: Headers;
+    };
 
-export const getProfilesControllerGetLeaderboardUrl = (params: ProfilesControllerGetLeaderboardParams,) => {
-  const normalizedParams = new URLSearchParams();
+export type profilesControllerGetLeaderboardResponse =
+    | profilesControllerGetLeaderboardResponseSuccess
+    | profilesControllerGetLeaderboardResponseError;
 
-  Object.entries(params || {}).forEach(([key, value]) => {
-
-    if (value !== undefined) {
-      normalizedParams.append(key, value === null ? 'null' : value.toString())
-    }
-  });
-
-  const stringifiedParams = normalizedParams.toString();
-
-  return stringifiedParams.length > 0 ? `/profiles/leaderboard/top?${stringifiedParams}` : `/profiles/leaderboard/top`
-}
-
-export const profilesControllerGetLeaderboard = async (params: ProfilesControllerGetLeaderboardParams, options?: RequestInit): Promise<profilesControllerGetLeaderboardResponse> => {
-
-  const res = await fetch(getProfilesControllerGetLeaderboardUrl(params),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: profilesControllerGetLeaderboardResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as profilesControllerGetLeaderboardResponse
-}
-
-
-
-
-
-export const getProfilesControllerGetLeaderboardQueryKey = (params?: ProfilesControllerGetLeaderboardParams,) => {
-    return [
-    `/profiles/leaderboard/top`, ...(params ? [params] : [])
-    ] as const;
-    }
-
-
-export const getProfilesControllerGetLeaderboardQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = InternalServerErrorDto>(params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, fetch?: RequestInit}
+export const getProfilesControllerGetLeaderboardUrl = (
+    params: ProfilesControllerGetLeaderboardParams,
 ) => {
+    const normalizedParams = new URLSearchParams();
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : value.toString());
+        }
+    });
 
-  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetLeaderboardQueryKey(params);
+    const stringifiedParams = normalizedParams.toString();
 
+    return stringifiedParams.length > 0
+        ? `/profiles/leaderboard/top?${stringifiedParams}`
+        : `/profiles/leaderboard/top`;
+};
 
+export const profilesControllerGetLeaderboard = async (
+    params: ProfilesControllerGetLeaderboardParams,
+    options?: RequestInit,
+): Promise<profilesControllerGetLeaderboardResponse> => {
+    const res = await fetch(getProfilesControllerGetLeaderboardUrl(params), {
+        ...options,
+        method: 'GET',
+    });
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>> = ({ signal }) => profilesControllerGetLeaderboard(params, { signal, ...fetchOptions });
+    const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
+    const data: profilesControllerGetLeaderboardResponse['data'] = body ? JSON.parse(body) : {};
+    return {
+        data,
+        status: res.status,
+        headers: res.headers,
+    } as profilesControllerGetLeaderboardResponse;
+};
 
+export const getProfilesControllerGetLeaderboardQueryKey = (
+    params?: ProfilesControllerGetLeaderboardParams,
+) => {
+    return [`/profiles/leaderboard/top`, ...(params ? [params] : [])] as const;
+};
 
+export const getProfilesControllerGetLeaderboardQueryOptions = <
+    TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+    TError = InternalServerErrorDto,
+>(
+    params: ProfilesControllerGetLeaderboardParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                TError,
+                TData
+            >
+        >;
+        fetch?: RequestInit;
+    },
+) => {
+    const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
+    const queryKey = queryOptions?.queryKey ?? getProfilesControllerGetLeaderboardQueryKey(params);
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>> = ({
+        signal,
+    }) => profilesControllerGetLeaderboard(params, { signal, ...fetchOptions });
 
-export type ProfilesControllerGetLeaderboardQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>>
-export type ProfilesControllerGetLeaderboardQueryError = InternalServerErrorDto
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ProfilesControllerGetLeaderboardQueryResult = NonNullable<
+    Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
+>;
+export type ProfilesControllerGetLeaderboardQueryError = InternalServerErrorDto;
 
-export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = InternalServerErrorDto>(
- params: ProfilesControllerGetLeaderboardParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = InternalServerErrorDto>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = InternalServerErrorDto>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetLeaderboard<
+    TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+    TError = InternalServerErrorDto,
+>(
+    params: ProfilesControllerGetLeaderboardParams,
+    options: {
+        query: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                TError,
+                TData
+            >
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerGetLeaderboard<
+    TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+    TError = InternalServerErrorDto,
+>(
+    params: ProfilesControllerGetLeaderboardParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                TError,
+                TData
+            >
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerGetLeaderboard<
+    TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+    TError = InternalServerErrorDto,
+>(
+    params: ProfilesControllerGetLeaderboardParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                TError,
+                TData
+            >
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get leaderboard
  */
 
-export function useProfilesControllerGetLeaderboard<TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError = InternalServerErrorDto>(
- params: ProfilesControllerGetLeaderboardParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useProfilesControllerGetLeaderboard<
+    TData = Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+    TError = InternalServerErrorDto,
+>(
+    params: ProfilesControllerGetLeaderboardParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetLeaderboard>>,
+                TError,
+                TData
+            >
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getProfilesControllerGetLeaderboardQueryOptions(params, options);
 
-  const queryOptions = getProfilesControllerGetLeaderboardQueryOptions(params,options)
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+    return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get profile by ID
  */
 export type profilesControllerFindOneResponse200 = {
-  data: ProfileResponseDto
-  status: 200
-}
+    data: ProfileResponseDto;
+    status: 200;
+};
 
 export type profilesControllerFindOneResponse404 = {
-  data: NotFoundErrorDto
-  status: 404
-}
+    data: NotFoundErrorDto;
+    status: 404;
+};
 
 export type profilesControllerFindOneResponse500 = {
-  data: InternalServerErrorDto
-  status: 500
-}
-
-export type profilesControllerFindOneResponseSuccess = (profilesControllerFindOneResponse200) & {
-  headers: Headers;
-};
-export type profilesControllerFindOneResponseError = (profilesControllerFindOneResponse404 | profilesControllerFindOneResponse500) & {
-  headers: Headers;
+    data: InternalServerErrorDto;
+    status: 500;
 };
 
-export type profilesControllerFindOneResponse = (profilesControllerFindOneResponseSuccess | profilesControllerFindOneResponseError)
+export type profilesControllerFindOneResponseSuccess = profilesControllerFindOneResponse200 & {
+    headers: Headers;
+};
+export type profilesControllerFindOneResponseError = (
+    | profilesControllerFindOneResponse404
+    | profilesControllerFindOneResponse500
+) & {
+    headers: Headers;
+};
 
-export const getProfilesControllerFindOneUrl = (id: string,) => {
+export type profilesControllerFindOneResponse =
+    | profilesControllerFindOneResponseSuccess
+    | profilesControllerFindOneResponseError;
 
+export const getProfilesControllerFindOneUrl = (id: string) => {
+    return `/profiles/${id}`;
+};
 
+export const profilesControllerFindOne = async (
+    id: string,
+    options?: RequestInit,
+): Promise<profilesControllerFindOneResponse> => {
+    const res = await fetch(getProfilesControllerFindOneUrl(id), {
+        ...options,
+        method: 'GET',
+    });
 
+    const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  return `/profiles/${id}`
-}
+    const data: profilesControllerFindOneResponse['data'] = body ? JSON.parse(body) : {};
+    return { data, status: res.status, headers: res.headers } as profilesControllerFindOneResponse;
+};
 
-export const profilesControllerFindOne = async (id: string, options?: RequestInit): Promise<profilesControllerFindOneResponse> => {
+export const getProfilesControllerFindOneQueryKey = (id: string) => {
+    return [`/profiles/${id}`] as const;
+};
 
-  const res = await fetch(getProfilesControllerFindOneUrl(id),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: profilesControllerFindOneResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as profilesControllerFindOneResponse
-}
-
-
-
-
-
-export const getProfilesControllerFindOneQueryKey = (id: string,) => {
-    return [
-    `/profiles/${id}`
-    ] as const;
-    }
-
-
-export const getProfilesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+export const getProfilesControllerFindOneQueryOptions = <
+    TData = Awaited<ReturnType<typeof profilesControllerFindOne>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>
+        >;
+        fetch?: RequestInit;
+    },
 ) => {
+    const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+    const queryKey = queryOptions?.queryKey ?? getProfilesControllerFindOneQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerFindOneQueryKey(id);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({
+        signal,
+    }) => profilesControllerFindOne(id, { signal, ...fetchOptions });
 
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof profilesControllerFindOne>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ProfilesControllerFindOneQueryResult = NonNullable<
+    Awaited<ReturnType<typeof profilesControllerFindOne>>
+>;
+export type ProfilesControllerFindOneQueryError = NotFoundErrorDto | InternalServerErrorDto;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerFindOne>>> = ({ signal }) => profilesControllerFindOne(id, { signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ProfilesControllerFindOneQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerFindOne>>>
-export type ProfilesControllerFindOneQueryError = NotFoundErrorDto | InternalServerErrorDto
-
-
-export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerFindOne>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerFindOne>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerFindOne>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerFindOne<
+    TData = Awaited<ReturnType<typeof profilesControllerFindOne>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options: {
+        query: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerFindOne>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerFindOne>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerFindOne<
+    TData = Awaited<ReturnType<typeof profilesControllerFindOne>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerFindOne>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerFindOne>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerFindOne<
+    TData = Awaited<ReturnType<typeof profilesControllerFindOne>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get profile by ID
  */
 
-export function useProfilesControllerFindOne<TData = Awaited<ReturnType<typeof profilesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useProfilesControllerFindOne<
+    TData = Awaited<ReturnType<typeof profilesControllerFindOne>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof profilesControllerFindOne>>, TError, TData>
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getProfilesControllerFindOneQueryOptions(id, options);
 
-  const queryOptions = getProfilesControllerFindOneQueryOptions(id,options)
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+    return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
 
 /**
  * @summary Get reputation stats
  */
 export type profilesControllerGetReputationStatsResponse200 = {
-  data: ReputationStatsDto
-  status: 200
-}
+    data: ReputationStatsDto;
+    status: 200;
+};
 
 export type profilesControllerGetReputationStatsResponse404 = {
-  data: NotFoundErrorDto
-  status: 404
-}
+    data: NotFoundErrorDto;
+    status: 404;
+};
 
 export type profilesControllerGetReputationStatsResponse500 = {
-  data: InternalServerErrorDto
-  status: 500
-}
-
-export type profilesControllerGetReputationStatsResponseSuccess = (profilesControllerGetReputationStatsResponse200) & {
-  headers: Headers;
-};
-export type profilesControllerGetReputationStatsResponseError = (profilesControllerGetReputationStatsResponse404 | profilesControllerGetReputationStatsResponse500) & {
-  headers: Headers;
+    data: InternalServerErrorDto;
+    status: 500;
 };
 
-export type profilesControllerGetReputationStatsResponse = (profilesControllerGetReputationStatsResponseSuccess | profilesControllerGetReputationStatsResponseError)
+export type profilesControllerGetReputationStatsResponseSuccess =
+    profilesControllerGetReputationStatsResponse200 & {
+        headers: Headers;
+    };
+export type profilesControllerGetReputationStatsResponseError = (
+    | profilesControllerGetReputationStatsResponse404
+    | profilesControllerGetReputationStatsResponse500
+) & {
+    headers: Headers;
+};
 
-export const getProfilesControllerGetReputationStatsUrl = (id: string,) => {
+export type profilesControllerGetReputationStatsResponse =
+    | profilesControllerGetReputationStatsResponseSuccess
+    | profilesControllerGetReputationStatsResponseError;
 
+export const getProfilesControllerGetReputationStatsUrl = (id: string) => {
+    return `/profiles/${id}/reputation`;
+};
 
+export const profilesControllerGetReputationStats = async (
+    id: string,
+    options?: RequestInit,
+): Promise<profilesControllerGetReputationStatsResponse> => {
+    const res = await fetch(getProfilesControllerGetReputationStatsUrl(id), {
+        ...options,
+        method: 'GET',
+    });
 
+    const body = [204, 205, 304].includes(res.status) ? null : await res.text();
 
-  return `/profiles/${id}/reputation`
-}
+    const data: profilesControllerGetReputationStatsResponse['data'] = body ? JSON.parse(body) : {};
+    return {
+        data,
+        status: res.status,
+        headers: res.headers,
+    } as profilesControllerGetReputationStatsResponse;
+};
 
-export const profilesControllerGetReputationStats = async (id: string, options?: RequestInit): Promise<profilesControllerGetReputationStatsResponse> => {
+export const getProfilesControllerGetReputationStatsQueryKey = (id: string) => {
+    return [`/profiles/${id}/reputation`] as const;
+};
 
-  const res = await fetch(getProfilesControllerGetReputationStatsUrl(id),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: profilesControllerGetReputationStatsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as profilesControllerGetReputationStatsResponse
-}
-
-
-
-
-
-export const getProfilesControllerGetReputationStatsQueryKey = (id: string,) => {
-    return [
-    `/profiles/${id}/reputation`
-    ] as const;
-    }
-
-
-export const getProfilesControllerGetReputationStatsQueryOptions = <TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, fetch?: RequestInit}
+export const getProfilesControllerGetReputationStatsQueryOptions = <
+    TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                TError,
+                TData
+            >
+        >;
+        fetch?: RequestInit;
+    },
 ) => {
+    const { query: queryOptions, fetch: fetchOptions } = options ?? {};
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+    const queryKey = queryOptions?.queryKey ?? getProfilesControllerGetReputationStatsQueryKey(id);
 
-  const queryKey =  queryOptions?.queryKey ?? getProfilesControllerGetReputationStatsQueryKey(id);
+    const queryFn: QueryFunction<
+        Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
+    > = ({ signal }) => profilesControllerGetReputationStats(id, { signal, ...fetchOptions });
 
+    return { queryKey, queryFn, enabled: !!id, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type ProfilesControllerGetReputationStatsQueryResult = NonNullable<
+    Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
+>;
+export type ProfilesControllerGetReputationStatsQueryError =
+    | NotFoundErrorDto
+    | InternalServerErrorDto;
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>> = ({ signal }) => profilesControllerGetReputationStats(id, { signal, ...fetchOptions });
-
-
-
-
-
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type ProfilesControllerGetReputationStatsQueryResult = NonNullable<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>>
-export type ProfilesControllerGetReputationStatsQueryError = NotFoundErrorDto | InternalServerErrorDto
-
-
-export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
-          TError,
-          Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
-        > , 'initialData'
-      >, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useProfilesControllerGetReputationStats<
+    TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options: {
+        query: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                TError,
+                TData
+            >
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerGetReputationStats<
+    TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                TError,
+                TData
+            >
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                    TError,
+                    Awaited<ReturnType<typeof profilesControllerGetReputationStats>>
+                >,
+                'initialData'
+            >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useProfilesControllerGetReputationStats<
+    TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                TError,
+                TData
+            >
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Get reputation stats
  */
 
-export function useProfilesControllerGetReputationStats<TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof profilesControllerGetReputationStats>>, TError, TData>>, fetch?: RequestInit}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+export function useProfilesControllerGetReputationStats<
+    TData = Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+    TError = NotFoundErrorDto | InternalServerErrorDto,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<
+                Awaited<ReturnType<typeof profilesControllerGetReputationStats>>,
+                TError,
+                TData
+            >
+        >;
+        fetch?: RequestInit;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getProfilesControllerGetReputationStatsQueryOptions(id, options);
 
-  const queryOptions = getProfilesControllerGetReputationStatsQueryOptions(id,options)
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
 
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return { ...query, queryKey: queryOptions.queryKey };
+    return { ...query, queryKey: queryOptions.queryKey };
 }
-
-
-
-

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useInfiniteUserPriceReports } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
@@ -13,44 +13,25 @@ interface UserReportsInfiniteTabProps {
 }
 
 export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTabProps) {
-    const {
-        data: reportsData,
-        fetchNextPage: fetchNextReports,
-        hasNextPage: hasNextReports,
-        isFetchingNextPage: isFetchingNextReports,
-        isLoading: reportsLoading,
-    } = useInfiniteUserPriceReports(userId) as {
-        data:
-            | {
-                  pages: { data: PaginatedPriceReportsDto; status: number }[];
-              }
-            | undefined;
-        fetchNextPage: () => void;
-        hasNextPage: boolean | undefined;
-        isFetchingNextPage: boolean;
-        isLoading: boolean;
-    };
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+        useInfiniteUserPriceReports(userId);
 
     const reports: PriceReportDto[] = useMemo(() => {
-        return reportsData?.pages.flatMap((page) => page.data.data || []) || [];
-    }, [reportsData]);
+        return (
+            data?.pages.flatMap((page) => (page.data as PaginatedPriceReportsDto)?.data || []) || []
+        );
+    }, [data]);
 
     const { ref: observerTarget, inView } = useInView({
         threshold: 0.1,
         rootMargin: '200px',
     });
-    const hasFetchedReportsRef = useRef(false);
 
     useEffect(() => {
-        if (inView && hasNextReports && !isFetchingNextReports && !hasFetchedReportsRef.current) {
-            hasFetchedReportsRef.current = true;
-            fetchNextReports();
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-    }, [inView, hasNextReports, isFetchingNextReports, fetchNextReports]);
-
-    useEffect(() => {
-        if (!inView) hasFetchedReportsRef.current = false;
-    }, [inView]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     return (
         <div className="space-y-4 w-full max-w-2xl mx-auto px-4 py-6">
@@ -58,7 +39,7 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
                 <h2 className="text-xl font-bold text-white">Price Reports</h2>
             </div>
 
-            {reportsLoading ? (
+            {isLoading ? (
                 <div className="py-20 flex justify-center">
                     <Loader2 size={24} className="text-green-400 animate-spin" />
                 </div>
@@ -90,9 +71,9 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
                     ))}
 
                     <div ref={observerTarget} className="py-6 flex justify-center">
-                        {isFetchingNextReports ? (
+                        {isFetchingNextPage ? (
                             <Loader2 size={20} className="text-green-400 animate-spin" />
-                        ) : hasNextReports ? (
+                        ) : hasNextPage ? (
                             <div className="h-4 w-4" />
                         ) : (
                             <p className="text-[10px] font-semibold text-white/40 tracking-wide">

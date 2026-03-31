@@ -8,7 +8,6 @@ import { Loader2 } from 'lucide-react';
 import { TipCard } from '@/components/tips/tip-card';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { toast } from 'sonner';
-import type { CommunityTipResponseDto } from '@/api/generated/model';
 import type { PaginatedCommunityTipsResponseDto } from '@/api/generated/model';
 
 interface UserTipsInfiniteTabProps {
@@ -19,26 +18,20 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
     const { user: authUser } = useAuth();
 
     const {
-        data: tipsData,
-        fetchNextPage: fetchNextTips,
-        hasNextPage: hasNextTips,
-        isFetchingNextPage: isFetchingNextTips,
+        data,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
         isLoading: tipsLoading,
-    } = useInfiniteUserCommunityTips(userId) as {
-        data:
-            | {
-                  pages: { data: PaginatedCommunityTipsResponseDto; status: number }[];
-              }
-            | undefined;
-        fetchNextPage: () => void;
-        hasNextPage: boolean | undefined;
-        isFetchingNextPage: boolean;
-        isLoading: boolean;
-    };
+    } = useInfiniteUserCommunityTips(userId);
 
-    const tips: CommunityTipResponseDto[] = useMemo(() => {
-        return tipsData?.pages.flatMap((page) => page.data.data || []) || [];
-    }, [tipsData]);
+    const tips = useMemo(
+        () =>
+            data?.pages.flatMap(
+                (page) => (page.data as PaginatedCommunityTipsResponseDto).data ?? [],
+            ) ?? [],
+        [data],
+    );
 
     const { ref: observerTarget, inView } = useInView({
         threshold: 0.1,
@@ -47,11 +40,10 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
     const hasFetchedTipsRef = useRef(false);
 
     useEffect(() => {
-        if (inView && hasNextTips && !isFetchingNextTips && !hasFetchedTipsRef.current) {
-            hasFetchedTipsRef.current = true;
-            fetchNextTips();
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
         }
-    }, [inView, hasNextTips, isFetchingNextTips, fetchNextTips]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     useEffect(() => {
         if (!inView) hasFetchedTipsRef.current = false;
@@ -94,9 +86,9 @@ export default function UserTipsInfiniteTab({ userId }: UserTipsInfiniteTabProps
                     ))}
 
                     <div ref={observerTarget} className="py-6 flex justify-center">
-                        {isFetchingNextTips ? (
+                        {isFetchingNextPage ? (
                             <Loader2 size={20} className="text-amber-400 animate-spin" />
-                        ) : hasNextTips ? (
+                        ) : hasNextPage ? (
                             <div className="h-4 w-4" />
                         ) : (
                             <p className="text-[10px] font-semibold text-white/40 tracking-wide">

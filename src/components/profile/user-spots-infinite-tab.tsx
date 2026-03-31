@@ -1,52 +1,30 @@
 'use client';
 
 import { useRef, useEffect, useMemo } from 'react';
-import { useAuth } from '@/components/providers/auth-provider';
 import { useInfiniteUserSpots } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { useRouter, usePathname } from 'next/navigation';
 import { getSpotUrl } from '@/lib/slug';
 import Link from 'next/link';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import type {
-    PaginatedSpotsWithStatsResponseDto,
-    SpotWithStatsResponseDto,
-} from '@/api/generated/model';
+import type { PaginatedSpotsWithStatsResponseDto } from '@/api/generated/model';
 import type { ImageVariantsDto } from '@/api/generated/model';
+
 interface UserSpotsInfiniteTabProps {
     userId: string;
 }
 
 export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabProps) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { user: authUser } = useAuth();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const router = useRouter();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const pathname = usePathname();
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+        useInfiniteUserSpots(userId);
 
-    const {
-        data: spotsData,
-        fetchNextPage: fetchNextSpots,
-        hasNextPage: hasNextSpots,
-        isFetchingNextPage: isFetchingNextSpots,
-        isLoading: spotsLoading,
-    } = useInfiniteUserSpots(userId) as {
-        data:
-            | {
-                  pages: { data: PaginatedSpotsWithStatsResponseDto; status: number }[];
-              }
-            | undefined;
-        fetchNextPage: () => void;
-        hasNextPage: boolean | undefined;
-        isFetchingNextPage: boolean;
-        isLoading: boolean;
-    };
-
-    const spots: SpotWithStatsResponseDto[] = useMemo(() => {
-        return spotsData?.pages.flatMap((page) => page.data.data || []) || [];
-    }, [spotsData]);
+    const spots = useMemo(
+        () =>
+            data?.pages.flatMap(
+                (page) => (page.data as PaginatedSpotsWithStatsResponseDto).data ?? [],
+            ) ?? [],
+        [data],
+    );
 
     const { ref: observerTarget, inView } = useInView({
         threshold: 0.1,
@@ -55,11 +33,11 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
     const hasFetchedSpotsRef = useRef(false);
 
     useEffect(() => {
-        if (inView && hasNextSpots && !isFetchingNextSpots && !hasFetchedSpotsRef.current) {
+        if (inView && hasNextPage && !isFetchingNextPage && !hasFetchedSpotsRef.current) {
             hasFetchedSpotsRef.current = true;
-            fetchNextSpots();
+            fetchNextPage();
         }
-    }, [inView, hasNextSpots, isFetchingNextSpots, fetchNextSpots]);
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
     useEffect(() => {
         if (!inView) hasFetchedSpotsRef.current = false;
@@ -71,7 +49,7 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
                 <h2 className="text-xl font-bold text-white">Visited Spots</h2>
             </div>
 
-            {spotsLoading ? (
+            {isLoading ? (
                 <div className="py-20 flex justify-center">
                     <Loader2 size={24} className="text-cyan-400 animate-spin" />
                 </div>
@@ -134,9 +112,9 @@ export default function UserSpotsInfiniteTab({ userId }: UserSpotsInfiniteTabPro
                     ))}
 
                     <div ref={observerTarget} className="py-6 flex justify-center">
-                        {isFetchingNextSpots ? (
+                        {isFetchingNextPage ? (
                             <Loader2 size={20} className="text-cyan-400 animate-spin" />
-                        ) : hasNextSpots ? (
+                        ) : hasNextPage ? (
                             <div className="h-4 w-4" />
                         ) : (
                             <p className="text-[10px] font-semibold text-white/40 tracking-wide">
