@@ -1,12 +1,13 @@
 "use client";
 
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
   useSpotsControllerFindOne,
   useSpotsControllerFindBySlug,
   useSpotsControllerFindAll,
   useSpotsControllerFindNearby,
   useSpotsControllerSearch,
-  useSpotsControllerFindAllInfinite,
+  spotsControllerFindAll,
   useSpotsControllerCreate,
   useSpotsControllerUpdate,
   useSpotsControllerReverseGeocode,
@@ -76,12 +77,15 @@ export function useInfiniteSpots(params?: {
     cleanParams.take = params.take || 10;
   }
 
-  return useSpotsControllerFindAllInfinite(cleanParams, {
-    query: {
-      queryKey: ["spots-infinite", cleanParams],
-      getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
-      staleTime: 5 * 60 * 1000,
+  return useInfiniteQuery({
+    queryKey: ["spots-infinite", cleanParams],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return spotsControllerFindAll({ ...cleanParams, skip });
     },
+    getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
+    staleTime: 5 * 60 * 1000,
+    initialPageParam: 0,
   });
 }
 

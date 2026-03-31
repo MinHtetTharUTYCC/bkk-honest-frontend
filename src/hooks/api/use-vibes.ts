@@ -1,9 +1,10 @@
 "use client";
 
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  useLiveVibesControllerFindAllInfinite,
   useLiveVibesControllerFindAll as _useLiveVibesControllerFindAll,
   useLiveVibesControllerCreate,
+  liveVibesControllerFindAll,
 } from "@/api/generated/live-vibes/live-vibes";
 import { getNextSkipFromPage } from "./base";
 
@@ -37,16 +38,18 @@ export function useInfiniteLiveVibes(params?: {
     ...params,
     take: (params?.take || 10).toString(),
   };
-  return useLiveVibesControllerFindAllInfinite(queryParams, {
-    query: {
-      queryKey: ["live-vibes-infinite", params],
-      staleTime: 60 * 1000,
-      initialPageParam: "0",
-      getNextPageParam: (lastPage: unknown) => {
-        const skip = getNextSkipFromPage(lastPage, false);
-        return skip ? String(skip) : undefined;
-      },
+  return useInfiniteQuery({
+    queryKey: ["live-vibes-infinite", params],
+    queryFn: async ({ pageParam = "0" }) => {
+      const skip = Number(pageParam) > 0 ? pageParam : undefined;
+      return liveVibesControllerFindAll({ ...queryParams, skip });
     },
+    staleTime: 60 * 1000,
+    getNextPageParam: (lastPage: unknown) => {
+      const skip = getNextSkipFromPage(lastPage, false);
+      return skip ? String(skip) : undefined;
+    },
+    initialPageParam: "0",
   });
 }
 

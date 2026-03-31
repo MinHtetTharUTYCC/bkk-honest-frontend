@@ -1,12 +1,13 @@
 "use client";
 
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import {
   useChecklistControllerCreate,
   useChecklistControllerUpdate,
   useChecklistControllerDelete,
-  useChecklistControllerFindAllInfinite,
+  useChecklistControllerFindAll,
   useChecklistControllerGetStats,
+  checklistControllerFindAll,
 } from "@/api/generated/checklist/checklist";
 import type { ChecklistItemDto } from "@/api/generated/model";
 import { getNextSkipFromPage } from "./base";
@@ -21,15 +22,18 @@ export function useMissions(
     sort: sort,
     take: "10",
   };
-  return useChecklistControllerFindAllInfinite(params, {
-    query: {
-      queryKey: ["missions-infinite", userId, status, sort] as const,
-      getNextPageParam: (lastPage: unknown) => {
-        const skip = getNextSkipFromPage(lastPage);
-        return skip ? String(skip) : undefined;
-      },
-      enabled: userId === "me",
+  return useInfiniteQuery({
+    queryKey: ["missions-infinite", userId, status, sort] as const,
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? String(pageParam) : undefined;
+      return checklistControllerFindAll({ ...params, skip });
     },
+    getNextPageParam: (lastPage: unknown) => {
+      const skip = getNextSkipFromPage(lastPage);
+      return skip ? skip : undefined;
+    },
+    enabled: userId === "me",
+    initialPageParam: 0,
   });
 }
 
@@ -285,9 +289,7 @@ export function useDeleteMission() {
                 for (const page of cacheData.pages) {
                   const found = page.data?.find((m) => m?.id === id);
                   if (found) {
-                    deletedSpotId =
-                      found.spotId ||
-                      (found.spot as { id?: string } | undefined)?.id;
+                    deletedSpotId = (found.spot as { id?: string } | undefined)?.id;
                     break;
                   }
                 }

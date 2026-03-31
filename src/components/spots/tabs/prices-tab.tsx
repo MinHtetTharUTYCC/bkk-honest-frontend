@@ -156,7 +156,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
                                         suppressHydrationWarning
                                     >
                                         {/* eslint-disable-next-line react-hooks/purity */}
-                                        {new Date(r.createdAt || Date.now()).toLocaleDateString()}
+                                        {new Date(r.timestamp || Date.now()).toLocaleDateString()}
                                     </td>
                                 </tr>
                             ))

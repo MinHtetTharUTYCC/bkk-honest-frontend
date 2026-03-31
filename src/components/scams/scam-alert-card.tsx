@@ -125,8 +125,8 @@ export default function ScamAlertCard({
           image: editFile || undefined,
         },
       });
-      if (result?.data) {
-        setAlert(result.data);
+      if (result?.data && 'id' in result.data) {
+        setAlert(result.data as ScamAlertResponseDto);
       }
       setIsEditing(false);
     } catch (err) {

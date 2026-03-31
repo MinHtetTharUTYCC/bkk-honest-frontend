@@ -29,7 +29,7 @@ export type ScreenContext = "mobile" | "tablet" | "desktop";
  */
 export interface SafeImageVariant {
   variants?: ImageVariantsDto;
-  blurPlaceholder?: string;
+  blurPlaceholder?: string | null;
 }
 
 /**
@@ -292,7 +292,7 @@ export interface RenderableImage {
   url: string;
   thumbnailUrl?: string;
   displayUrl?: string;
-  blurPlaceholder?: string;
+  blurPlaceholder?: string | null;
   width?: number;
   height?: number;
   isDegraded: boolean;

@@ -132,7 +132,7 @@ export default function VibesTab({ spot }: VibesTabProps) {
                   <p className="text-sm font-semibold text-white">
                     Crowd: {vibe.crowdLevel}/5
                   </p>
-                  {vibe.waitTimeMinutes != null && (
+                  {typeof vibe.waitTimeMinutes === 'number' && vibe.waitTimeMinutes != null && (
                     <p className="text-xs text-white/50">
                       {vibe.waitTimeMinutes} min wait
                     </p>
@@ -140,7 +140,7 @@ export default function VibesTab({ spot }: VibesTabProps) {
                 </div>
               </div>
               <p className="text-[10px] text-white/30 whitespace-nowrap">
-                {new Date(vibe.createdAt).toLocaleTimeString([], {
+                {new Date(vibe.timestamp).toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",
                 })}

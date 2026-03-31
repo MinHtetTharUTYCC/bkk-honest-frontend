@@ -266,7 +266,9 @@ export default function ScamAlertClient() {
         scamAlertId: alertId,
       });
 
-      const updatedComment = response?.data || response;
+      // Extract the data from the response, handling the Orval response wrapper
+      const updatedComment = response?.data ?? response;
+      const commentText = (updatedComment as unknown as Record<string, unknown>)?.text || editContent;
 
       // Update the infinite query cache
       queryClient.setQueryData(
@@ -289,7 +291,7 @@ export default function ScamAlertClient() {
                     id?: string;
                   };
                   return c.id === commentId
-                    ? { ...c, ...updatedComment, content: updatedComment.text }
+                    ? { ...c, ...updatedComment, content: commentText }
                     : comment;
                 }),
               };

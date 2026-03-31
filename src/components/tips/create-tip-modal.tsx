@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import TipForm from "./tip-form";
 import { TipFormValues } from "@/lib/validations/tip";
 import { useQueryClient } from "@tanstack/react-query";
+import type { CommunityTipResponseDto } from "@/api/generated/model";
 
 interface CreateTipModalProps {
   spotId: string;
@@ -35,7 +36,12 @@ export default function CreateTipModal({
         ...values,
       });
 
-      const newTip = response?.data || response;
+      if (!response || !('type' in response?.data || 'type' in response)) {
+        window.alert("Failed to create tip");
+        return;
+      }
+
+      const newTip = (response?.data || response) as CommunityTipResponseDto;
 
       // Manually update the infinite query cache to show the new tip at index 0 immediately
       // This works for both 'newest' and 'popular' sort modes by forcefully prepending

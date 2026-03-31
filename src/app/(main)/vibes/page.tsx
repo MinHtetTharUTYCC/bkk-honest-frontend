@@ -156,7 +156,7 @@ function VibesPageContent() {
                                     className="text-white/40 font-bold text-[10px] uppercase tracking-tighter bg-white/5 px-3 py-1.5 rounded-xl border border-white/5"
                                     suppressHydrationWarning
                                 >
-                                    {new Date(vibe.createdAt).toLocaleTimeString([], {
+                                    {new Date(vibe.timestamp).toLocaleTimeString([], {
                                         hour: '2-digit',
                                         minute: '2-digit',
                                     })}
@@ -184,7 +184,7 @@ function VibesPageContent() {
                                               : 'Quiet'}
                                     </div>
                                     <div className="bg-white/5 border border-white/10 text-white/60 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">
-                                        {vibe.waitTimeMinutes}m wait
+                                        {typeof vibe.waitTimeMinutes === 'number' ? vibe.waitTimeMinutes : 'N/A'}m wait
                                     </div>
                                 </div>
 

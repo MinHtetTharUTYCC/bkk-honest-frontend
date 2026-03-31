@@ -6,36 +6,24 @@
  * OpenAPI spec version: 1.0
  */
 import type { ImageVariantsDto } from './imageVariantsDto';
-import type { ProfileResponseDtoAvatarUrl } from './profileResponseDtoAvatarUrl';
-import type { ProfileResponseDtoBio } from './profileResponseDtoBio';
-import type { ProfileResponseDtoBlurPlaceholder } from './profileResponseDtoBlurPlaceholder';
-import type { ProfileResponseDtoCountry } from './profileResponseDtoCountry';
-import type { ProfileResponseDtoImageHeight } from './profileResponseDtoImageHeight';
-import type { ProfileResponseDtoImageMimeType } from './profileResponseDtoImageMimeType';
-import type { ProfileResponseDtoImageSize } from './profileResponseDtoImageSize';
-import type { ProfileResponseDtoImageWidth } from './profileResponseDtoImageWidth';
-import type { ProfileResponseDtoIsDegraded } from './profileResponseDtoIsDegraded';
-import type { ProfileResponseDtoLevel } from './profileResponseDtoLevel';
-import type { ProfileResponseDtoName } from './profileResponseDtoName';
-import type { ProfileResponseDtoQualityScore } from './profileResponseDtoQualityScore';
 
 export interface ProfileResponseDto {
   id: string;
   email: string;
-  name?: ProfileResponseDtoName;
-  avatarUrl?: ProfileResponseDtoAvatarUrl;
-  bio?: ProfileResponseDtoBio;
-  country?: ProfileResponseDtoCountry;
-  level: ProfileResponseDtoLevel;
+  name?: string | null;
+  avatarUrl?: string | null;
+  bio?: string | null;
+  country?: string | null;
+  level: 'NEWBIE' | 'EXPLORER' | 'LOCAL_GURU';
   reputation: number;
   createdAt: string;
   updatedAt: string;
   imageVariants?: ImageVariantsDto;
-  imageWidth?: ProfileResponseDtoImageWidth;
-  imageHeight?: ProfileResponseDtoImageHeight;
-  imageSize?: ProfileResponseDtoImageSize;
-  imageMimeType?: ProfileResponseDtoImageMimeType;
-  blurPlaceholder?: ProfileResponseDtoBlurPlaceholder;
-  isDegraded?: ProfileResponseDtoIsDegraded;
-  qualityScore?: ProfileResponseDtoQualityScore;
+  imageWidth?: number | null;
+  imageHeight?: number | null;
+  imageSize?: number | null;
+  imageMimeType?: string | null;
+  blurPlaceholder?: string | null;
+  isDegraded?: boolean | null;
+  qualityScore?: number | null;
 }

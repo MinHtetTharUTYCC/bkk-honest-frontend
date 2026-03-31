@@ -288,7 +288,7 @@ export default function HomeFeedClient({
                         className="text-white/40 font-bold text-[12px] uppercase tracking-tighter"
                         suppressHydrationWarning
                       >
-                        {new Date(vibe.createdAt || "").toLocaleTimeString([], {
+                        {new Date(vibe.timestamp || "").toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
@@ -319,7 +319,7 @@ export default function HomeFeedClient({
                         Level {vibe.crowdLevel}/5
                       </div>
                       <div className="bg-white/10 text-white/60 px-2 py-1 rounded-lg text-[12px] font-bold tracking-widest uppercase border border-white/5">
-                        {vibe.waitTimeMinutes}m Wait
+                        {typeof vibe.waitTimeMinutes === 'number' ? vibe.waitTimeMinutes : 'N/A'}m Wait
                       </div>
                     </div>
                   </Link>

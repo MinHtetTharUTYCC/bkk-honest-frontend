@@ -81,7 +81,6 @@ export default function ReportPage() {
         cityId: formData.cityId,
         latitude: formData.latitude,
         longitude: formData.longitude,
-        image: formData.imageFile || undefined,
       });
       setSubmitted(true);
     } catch (err: unknown) {

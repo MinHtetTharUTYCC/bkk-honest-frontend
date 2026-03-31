@@ -1,11 +1,11 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useInfiniteQuery } from "@tanstack/react-query";
 import {
-  useGalleryControllerGetGalleryInfinite,
   useGalleryControllerGetGallery,
   useGalleryControllerDeleteImage,
   useGalleryControllerFlagImage,
+  galleryControllerGetGallery,
 } from "@/api/generated/gallery/gallery";
 import { GalleryControllerGetGallerySort } from "@/api/generated/model/galleryControllerGetGallerySort";
 import { AXIOS_INSTANCE } from "@/api/mutator/custom-instance";
@@ -38,22 +38,21 @@ export function useInfiniteSpotGallery(
       ? GalleryControllerGetGallerySort.popular
       : GalleryControllerGetGallerySort.newest;
 
-  return useGalleryControllerGetGalleryInfinite(
-    spotId,
-    {
-      take: 12,
-      sort: normalizedSort,
+  return useInfiniteQuery({
+    queryKey: ["gallery-infinite", spotId, normalizedSort],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return galleryControllerGetGallery(spotId, {
+        take: 12,
+        sort: normalizedSort,
+        skip,
+      });
     },
-    {
-      query: {
-        queryKey: ["gallery-infinite", spotId, normalizedSort],
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) =>
-          getNextSkipFromPage(lastPage, true),
-        enabled: !!spotId,
-      },
-    },
-  );
+    getNextPageParam: (lastPage: unknown) =>
+      getNextSkipFromPage(lastPage, true),
+    enabled: !!spotId,
+    initialPageParam: 0,
+  });
 }
 
 export function useUploadSpotImage() {

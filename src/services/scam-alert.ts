@@ -7,6 +7,7 @@ import type {
 import type {
   CommentsControllerFindByScamAlertParams,
   ScamAlertsControllerFindAllParams,
+  ScamAlertResponseDto,
 } from "@/api/generated/model";
 import {
   scamAlertsControllerFindBySlug,
@@ -23,12 +24,15 @@ export const getScamAlert = cache(
   async (
     citySlug: string,
     alertSlug: string,
-  ): Promise<scamAlertsControllerFindBySlugResponse["data"] | null> => {
+  ): Promise<ScamAlertResponseDto | null> => {
     try {
       const res = await scamAlertsControllerFindBySlug(citySlug, alertSlug, {
         next: { revalidate: 3600 },
       } as RequestInit);
-      return res.data;
+      if (res.status === 200 && res.data && typeof res.data === "object" && "id" in res.data) {
+        return res.data as ScamAlertResponseDto;
+      }
+      return null;
     } catch (error) {
       console.error(
         `[getScamAlert] Error fetching ${citySlug}/${alertSlug}:`,

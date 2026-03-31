@@ -1,12 +1,13 @@
 "use client";
 
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  useScamAlertsControllerFindAllInfinite,
   useScamAlertsControllerFindBySlug,
   useScamAlertsControllerFindAll,
   useScamAlertsControllerCreate,
   useScamAlertsControllerUpdate,
   useScamAlertsControllerDelete,
+  scamAlertsControllerFindAll,
 } from "@/api/generated/scam-alerts/scam-alerts";
 import { ScamAlertsControllerFindAllSort } from "@/api/generated/model/scamAlertsControllerFindAllSort";
 import type { ScamAlertsControllerFindAllParams } from "@/api/generated/model/scamAlertsControllerFindAllParams";
@@ -74,13 +75,16 @@ export function useInfiniteScamAlerts(params?: {
     cleanParams.take = params.take || 10;
   }
 
-  return useScamAlertsControllerFindAllInfinite(cleanParams, {
-    query: {
-      queryKey: ["scam-alerts-infinite", cleanParams],
-      staleTime: 5 * 60 * 1000,
-      getNextPageParam: (lastPage: unknown) =>
-        getNextSkipFromPage(lastPage, false),
+  return useInfiniteQuery({
+    queryKey: ["scam-alerts-infinite", cleanParams],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return scamAlertsControllerFindAll({ ...cleanParams, skip });
     },
+    staleTime: 5 * 60 * 1000,
+    getNextPageParam: (lastPage: unknown) =>
+      getNextSkipFromPage(lastPage, false),
+    initialPageParam: 0,
   });
 }
 

@@ -83,7 +83,7 @@ export default function UserReportsInfiniteTab({ userId }: UserReportsInfiniteTa
                                     </span>
                                 </div>
                                 <div className="flex gap-2 mt-2 text-[10px] text-white/40">
-                                    <span>{new Date(report.createdAt).toLocaleDateString()}</span>
+                                    <span>{new Date(report.timestamp).toLocaleDateString()}</span>
                                 </div>
                             </div>
                         </div>

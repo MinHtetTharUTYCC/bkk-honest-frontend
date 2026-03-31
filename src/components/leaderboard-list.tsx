@@ -14,11 +14,10 @@ const LEVEL_COLORS = [
   "bg-purple-400/15 text-purple-400",
 ];
 
-interface LeaderboardItem {
+import type { LeaderboardProfileDto } from "@/api/generated/model";
+
+interface LeaderboardItem extends Omit<LeaderboardProfileDto, 'level'> {
   id: string;
-  name?: string;
-  avatarUrl?: string;
-  reputation?: number;
 }
 
 /** Horizontal scroll card list for mobile */
@@ -61,19 +60,19 @@ export function LeaderboardList({ take = 5 }: { take?: number }) {
             >
               {c.avatarUrl ? (
                 <Image
-                  src={c.avatarUrl}
-                  alt={c.name || "User avatar"}
+                  src={c.avatarUrl as unknown as string}
+                  alt={(c.name as unknown as string) || "User avatar"}
                   fill
                   sizes="40px"
                   className="object-cover rounded-2xl"
                 />
               ) : (
-                (c.name?.charAt(0) || "?").toUpperCase()
+                ((c.name as unknown as string)?.charAt(0) || "?").toUpperCase()
               )}
             </div>
             <div className="flex flex-col">
               <span className="text-xs font-bold text-foreground truncate max-w-30">
-                {c.name || "Anonymous"}
+                {(c.name as unknown as string) || "Anonymous"}
               </span>
               <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
                 {c.reputation ?? 0} XP
@@ -120,19 +119,19 @@ export function LeaderboardSidebarList({ take = 5 }: { take?: number }) {
           >
             {c.avatarUrl ? (
               <Image
-                src={c.avatarUrl}
-                alt={c.name || "User avatar"}
+                src={c.avatarUrl as unknown as string}
+                alt={(c.name as unknown as string) || "User avatar"}
                 fill
                 sizes="40px"
                 className="object-cover"
               />
             ) : (
-              (c.name?.charAt(0) || "?").toUpperCase()
+              ((c.name as unknown as string)?.charAt(0) || "?").toUpperCase()
             )}
           </div>
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-foreground leading-tight truncate max-w-40 group-hover:text-amber-400 transition-colors">
-              {c.name || "Anonymous"}
+              {(c.name as unknown as string) || "Anonymous"}
             </span>
             <span className="text-[10px] font-bold text-white/40 uppercase tracking-tighter">
               {c.reputation ?? 0} XP

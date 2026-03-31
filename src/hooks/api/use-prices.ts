@@ -1,9 +1,10 @@
 "use client";
 
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  usePriceReportsControllerFindBySpotInfinite,
   usePriceReportsControllerFindBySpot,
   usePriceReportsControllerCreate,
+  priceReportsControllerFindBySpot,
 } from "@/api/generated/price-reports/price-reports";
 import { getNextSkipFromPage } from "./base";
 
@@ -15,21 +16,17 @@ export function useSpotPriceReports(spotId: string) {
 }
 
 export function useInfiniteSpotPriceReports(spotId: string) {
-  return usePriceReportsControllerFindBySpotInfinite(
-    spotId,
-    {
-      take: 10,
+  return useInfiniteQuery({
+    queryKey: ["price-reports-infinite", spotId],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return priceReportsControllerFindBySpot(spotId, { take: 10, skip });
     },
-    {
-      query: {
-        queryKey: ["price-reports-infinite", spotId],
-        initialPageParam: 0,
-        getNextPageParam: (lastPage: unknown) =>
-          getNextSkipFromPage(lastPage, false),
-        enabled: !!spotId,
-      },
-    },
-  );
+    getNextPageParam: (lastPage: unknown) =>
+      getNextSkipFromPage(lastPage, false),
+    enabled: !!spotId,
+    initialPageParam: 0,
+  });
 }
 
 export function useCreatePriceReport() {

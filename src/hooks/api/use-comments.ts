@@ -1,11 +1,14 @@
 "use client";
 
+import { useInfiniteQuery } from "@tanstack/react-query";
 import {
-  useCommentsControllerFindByTipInfinite,
-  useCommentsControllerFindByScamAlertInfinite,
   useCommentsControllerCreate,
   useCommentsControllerUpdate,
   useCommentsControllerDelete,
+  useCommentsControllerFindByTip,
+  useCommentsControllerFindByScamAlert,
+  commentsControllerFindByTip,
+  commentsControllerFindByScamAlert,
 } from "@/api/generated/comments/comments";
 import {
   useCommentReactionsControllerToggleReaction,
@@ -15,37 +18,31 @@ import type { CreateCommentDto } from "@/api/generated/model";
 import { getNextSkipFromPage } from "./base";
 
 export function useTipComments(tipId: string) {
-  return useCommentsControllerFindByTipInfinite(
-    tipId,
-    {
-      take: 10,
+  return useInfiniteQuery({
+    queryKey: ["tip-comments", tipId],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return commentsControllerFindByTip(tipId, { take: 10, skip });
     },
-    {
-      query: {
-        queryKey: ["tip-comments", tipId],
-        getNextPageParam: (lastPage: unknown) =>
-          getNextSkipFromPage(lastPage, true),
-        enabled: !!tipId,
-      },
-    },
-  );
+    getNextPageParam: (lastPage: unknown) =>
+      getNextSkipFromPage(lastPage, true),
+    enabled: !!tipId,
+    initialPageParam: 0,
+  });
 }
 
 export function useScamComments(scamAlertId: string) {
-  return useCommentsControllerFindByScamAlertInfinite(
-    scamAlertId,
-    {
-      take: 10,
+  return useInfiniteQuery({
+    queryKey: ["scam-comments", scamAlertId],
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      return commentsControllerFindByScamAlert(scamAlertId, { take: 10, skip });
     },
-    {
-      query: {
-        queryKey: ["scam-comments", scamAlertId],
-        getNextPageParam: (lastPage: unknown) =>
-          getNextSkipFromPage(lastPage, true),
-        enabled: !!scamAlertId,
-      },
-    },
-  );
+    getNextPageParam: (lastPage: unknown) =>
+      getNextSkipFromPage(lastPage, true),
+    enabled: !!scamAlertId,
+    initialPageParam: 0,
+  });
 }
 
 export function useCreateComment() {

@@ -13,6 +13,7 @@ export interface CommunityTipResponseDto {
   userId: string;
   title: string;
   description: string;
+  type: 'TRY' | 'AVOID';
   createdAt: string;
   updatedAt?: string;
   user: UserSummaryResponseDto;
