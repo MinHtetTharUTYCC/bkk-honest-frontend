@@ -12,6 +12,6 @@ export interface PriceReportDto {
   userId: string;
   itemName: string;
   priceThb: number;
-  createdAt: string;
+  timestamp: string;
   updatedAt: string;
 }
