@@ -51,7 +51,7 @@ export function useScamAlerts(params?: {
       staleTime: 5 * 60 * 1000,
     },
   });
-  return { ...query, data: query.data?.data || [] };
+  return { ...query, data: query.data || [] };
 }
 
 export function useInfiniteScamAlerts(params?: {

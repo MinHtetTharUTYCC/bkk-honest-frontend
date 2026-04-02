@@ -40,7 +40,7 @@ export function useMissionStats() {
     const query = useChecklistControllerGetStats({
         query: { queryKey: ['mission-stats'] },
     });
-    return { ...query, data: query.data?.data };
+    return { ...query, data: query.data };
 }
 
 /**

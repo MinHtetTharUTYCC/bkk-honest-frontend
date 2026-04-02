@@ -29,11 +29,11 @@ export default function PricesTab({ spot }: PricesTabProps) {
         isFetchingNextPage: isFetchingNextReports,
     } = useInfiniteSpotPriceReports(spotId);
 
-    // Each page is { data: PaginatedPriceReportsDto, status: number }
+    // Each page is PaginatedPriceReportsDto (mutator unwraps the response envelope)
     const reports: PriceReportDto[] = useMemo(() => {
         return (
             reportsData?.pages.flatMap(
-                (page) => (page as { data: { data: PriceReportDto[] } })?.data.data || [],
+                (page) => (page as unknown as { data: PriceReportDto[] })?.data || [],
             ) || []
         );
     }, [reportsData]);

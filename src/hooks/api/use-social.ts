@@ -80,5 +80,5 @@ export function useGetReports(status?: string, limit = 10, offset = 0) {
         },
         { query: { queryKey: ['reports', status, limit, offset] } },
     );
-    return { ...query, data: query.data?.data || [] };
+    return { ...query, data: query.data || [] };
 }

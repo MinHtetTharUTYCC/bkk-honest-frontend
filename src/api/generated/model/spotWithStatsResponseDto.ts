@@ -6,16 +6,15 @@
  * OpenAPI spec version: 1.0
  */
 import type { _SpotWithStatsResponseDtoCount } from './_spotWithStatsResponseDtoCount';
+import type { CategoryDto } from './categoryDto';
+import type { CityDto } from './cityDto';
 import type { ImageVariantsDto } from './imageVariantsDto';
+import type { ProfileResponseDto } from './profileResponseDto';
 import type { SpotWithStatsResponseDtoActivityStats } from './spotWithStatsResponseDtoActivityStats';
-import type { SpotWithStatsResponseDtoCategory } from './spotWithStatsResponseDtoCategory';
-import type { SpotWithStatsResponseDtoCity } from './spotWithStatsResponseDtoCity';
 import type { SpotWithStatsResponseDtoMissionId } from './spotWithStatsResponseDtoMissionId';
 import type { SpotWithStatsResponseDtoPriceStats } from './spotWithStatsResponseDtoPriceStats';
 import type { SpotWithStatsResponseDtoTipStats } from './spotWithStatsResponseDtoTipStats';
-import type { SpotWithStatsResponseDtoUser } from './spotWithStatsResponseDtoUser';
 import type { SpotWithStatsResponseDtoVibeStats } from './spotWithStatsResponseDtoVibeStats';
-import type { SpotWithStatsResponseDtoVoteId } from './spotWithStatsResponseDtoVoteId';
 
 export interface SpotWithStatsResponseDto {
   /** Spot ID (cuid) */
@@ -51,11 +50,11 @@ export interface SpotWithStatsResponseDto {
   /** Owner user ID (uuid) */
   userId: string;
   /** Owning user summary */
-  user: SpotWithStatsResponseDtoUser;
+  user: ProfileResponseDto;
   /** City the spot belongs to */
-  city: SpotWithStatsResponseDtoCity;
+  city: CityDto;
   /** Category the spot belongs to */
-  category: SpotWithStatsResponseDtoCategory;
+  category: CategoryDto;
   /** Raw activity counts */
   _count: _SpotWithStatsResponseDtoCount;
   /** Creation timestamp */
@@ -66,7 +65,7 @@ export interface SpotWithStatsResponseDto {
      * Vote ID (cuid) if user has voted, null otherwise
      * @nullable
      */
-  voteId?: SpotWithStatsResponseDtoVoteId;
+  voteId?: string | null;
   /** Aggregated activity and reliability statistics */
   activityStats: SpotWithStatsResponseDtoActivityStats;
   /** Aggregated price statistics from all price reports for this spot */

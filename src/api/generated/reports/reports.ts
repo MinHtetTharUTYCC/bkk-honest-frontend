@@ -6,18 +6,23 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -35,7 +40,10 @@ import type {
   UnauthorizedErrorDto
 } from '../model';
 
+import { customInstance } from '../../mutator/custom-instance';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -81,7 +89,7 @@ export const getReportsControllerCreateReportUrl = () => {
 
 export const reportsControllerCreateReport = async (createReportDto: CreateReportDto, options?: RequestInit): Promise<reportsControllerCreateReportResponse> => {
 
-  const res = await fetch(getReportsControllerCreateReportUrl(),
+  return customInstance<reportsControllerCreateReportResponse>(getReportsControllerCreateReportUrl(),
   {
     ...options,
     method: 'POST',
@@ -89,27 +97,21 @@ export const reportsControllerCreateReport = async (createReportDto: CreateRepor
     body: JSON.stringify(
       createReportDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: reportsControllerCreateReportResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as reportsControllerCreateReportResponse
-}
+);}
 
 
 
 
 export const getReportsControllerCreateReportMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerCreateReport>>, TError,{data: CreateReportDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerCreateReport>>, TError,{data: CreateReportDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof reportsControllerCreateReport>>, TError,{data: CreateReportDto}, TContext> => {
 
 const mutationKey = ['reportsControllerCreateReport'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -117,7 +119,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof reportsControllerCreateReport>>, {data: CreateReportDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  reportsControllerCreateReport(data,fetchOptions)
+          return  reportsControllerCreateReport(data,requestOptions)
         }
 
 
@@ -135,7 +137,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a report for content
  */
 export const useReportsControllerCreateReport = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerCreateReport>>, TError,{data: CreateReportDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerCreateReport>>, TError,{data: CreateReportDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof reportsControllerCreateReport>>,
         TError,
@@ -193,24 +195,24 @@ export const getReportsControllerGetReportsUrl = (params: ReportsControllerGetRe
 
 export const reportsControllerGetReports = async (params: ReportsControllerGetReportsParams, options?: RequestInit): Promise<reportsControllerGetReportsResponse> => {
 
-  const res = await fetch(getReportsControllerGetReportsUrl(params),
+  return customInstance<reportsControllerGetReportsResponse>(getReportsControllerGetReportsUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: reportsControllerGetReportsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as reportsControllerGetReportsResponse
-}
+);}
 
 
 
 
+
+export const getReportsControllerGetReportsInfiniteQueryKey = (params?: ReportsControllerGetReportsParams,) => {
+    return [
+    'infinite', `/reports`, ...(params ? [params] : [])
+    ] as const;
+    }
 
 export const getReportsControllerGetReportsQueryKey = (params?: ReportsControllerGetReportsParams,) => {
     return [
@@ -219,16 +221,81 @@ export const getReportsControllerGetReportsQueryKey = (params?: ReportsControlle
     }
 
 
-export const getReportsControllerGetReportsQueryOptions = <TData = Awaited<ReturnType<typeof reportsControllerGetReports>>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData>>, fetch?: RequestInit}
+export const getReportsControllerGetReportsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReports>>, ReportsControllerGetReportsParams['skip']>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData, QueryKey, ReportsControllerGetReportsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReportsControllerGetReportsInfiniteQueryKey(params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReports>>, QueryKey, ReportsControllerGetReportsParams['skip']> = ({ signal, pageParam }) => reportsControllerGetReports({...params, 'skip': pageParam || params?.['skip']}, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData, QueryKey, ReportsControllerGetReportsParams['skip']> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ReportsControllerGetReportsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof reportsControllerGetReports>>>
+export type ReportsControllerGetReportsInfiniteQueryError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto
+
+
+export function useReportsControllerGetReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReports>>, ReportsControllerGetReportsParams['skip']>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
+ params: ReportsControllerGetReportsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData, QueryKey, ReportsControllerGetReportsParams['skip']>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerGetReports>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerGetReports>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReportsControllerGetReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReports>>, ReportsControllerGetReportsParams['skip']>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
+ params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData, QueryKey, ReportsControllerGetReportsParams['skip']>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerGetReports>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerGetReports>>, QueryKey
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReportsControllerGetReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReports>>, ReportsControllerGetReportsParams['skip']>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
+ params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData, QueryKey, ReportsControllerGetReportsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary List all reports (admin only)
+ */
+
+export function useReportsControllerGetReportsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReports>>, ReportsControllerGetReportsParams['skip']>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
+ params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData, QueryKey, ReportsControllerGetReportsParams['skip']>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getReportsControllerGetReportsInfiniteQueryOptions(params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+export const getReportsControllerGetReportsQueryOptions = <TData = Awaited<ReturnType<typeof reportsControllerGetReports>>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getReportsControllerGetReportsQueryKey(params);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReports>>> = ({ signal }) => reportsControllerGetReports(params, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReports>>> = ({ signal }) => reportsControllerGetReports(params, { signal, ...requestOptions });
 
 
 
@@ -248,7 +315,7 @@ export function useReportsControllerGetReports<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof reportsControllerGetReports>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReportsControllerGetReports<TData = Awaited<ReturnType<typeof reportsControllerGetReports>>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
@@ -258,11 +325,11 @@ export function useReportsControllerGetReports<TData = Awaited<ReturnType<typeof
           TError,
           Awaited<ReturnType<typeof reportsControllerGetReports>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReportsControllerGetReports<TData = Awaited<ReturnType<typeof reportsControllerGetReports>>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
- params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData>>, fetch?: RequestInit}
+ params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -270,7 +337,7 @@ export function useReportsControllerGetReports<TData = Awaited<ReturnType<typeof
  */
 
 export function useReportsControllerGetReports<TData = Awaited<ReturnType<typeof reportsControllerGetReports>>, TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto>(
- params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData>>, fetch?: RequestInit}
+ params: ReportsControllerGetReportsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReports>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -326,24 +393,24 @@ export const getReportsControllerGetReportDetailsUrl = (id: string,) => {
 
 export const reportsControllerGetReportDetails = async (id: string, options?: RequestInit): Promise<reportsControllerGetReportDetailsResponse> => {
 
-  const res = await fetch(getReportsControllerGetReportDetailsUrl(id),
+  return customInstance<reportsControllerGetReportDetailsResponse>(getReportsControllerGetReportDetailsUrl(id),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: reportsControllerGetReportDetailsResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as reportsControllerGetReportDetailsResponse
-}
+);}
 
 
 
 
+
+export const getReportsControllerGetReportDetailsInfiniteQueryKey = (id: string,) => {
+    return [
+    'infinite', `/reports/${id}`
+    ] as const;
+    }
 
 export const getReportsControllerGetReportDetailsQueryKey = (id: string,) => {
     return [
@@ -352,16 +419,81 @@ export const getReportsControllerGetReportDetailsQueryKey = (id: string,) => {
     }
 
 
-export const getReportsControllerGetReportDetailsQueryOptions = <TData = Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, fetch?: RequestInit}
+export const getReportsControllerGetReportDetailsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReportsControllerGetReportDetailsInfiniteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>> = ({ signal }) => reportsControllerGetReportDetails(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ReportsControllerGetReportDetailsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>>
+export type ReportsControllerGetReportDetailsInfiniteQueryError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useReportsControllerGetReportDetailsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerGetReportDetails>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerGetReportDetails>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReportsControllerGetReportDetailsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerGetReportDetails>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerGetReportDetails>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReportsControllerGetReportDetailsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get report details (admin only)
+ */
+
+export function useReportsControllerGetReportDetailsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getReportsControllerGetReportDetailsInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+export const getReportsControllerGetReportDetailsQueryOptions = <TData = Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getReportsControllerGetReportDetailsQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>> = ({ signal }) => reportsControllerGetReportDetails(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>> = ({ signal }) => reportsControllerGetReportDetails(id, { signal, ...requestOptions });
 
 
 
@@ -381,7 +513,7 @@ export function useReportsControllerGetReportDetails<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof reportsControllerGetReportDetails>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReportsControllerGetReportDetails<TData = Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
@@ -391,11 +523,11 @@ export function useReportsControllerGetReportDetails<TData = Awaited<ReturnType<
           TError,
           Awaited<ReturnType<typeof reportsControllerGetReportDetails>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReportsControllerGetReportDetails<TData = Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -403,7 +535,7 @@ export function useReportsControllerGetReportDetails<TData = Awaited<ReturnType<
  */
 
 export function useReportsControllerGetReportDetails<TData = Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportDetails>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -465,7 +597,7 @@ export const getReportsControllerResolveReportUrl = (id: string,) => {
 export const reportsControllerResolveReport = async (id: string,
     resolveReportDto: ResolveReportDto, options?: RequestInit): Promise<reportsControllerResolveReportResponse> => {
 
-  const res = await fetch(getReportsControllerResolveReportUrl(id),
+  return customInstance<reportsControllerResolveReportResponse>(getReportsControllerResolveReportUrl(id),
   {
     ...options,
     method: 'PATCH',
@@ -473,27 +605,21 @@ export const reportsControllerResolveReport = async (id: string,
     body: JSON.stringify(
       resolveReportDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: reportsControllerResolveReportResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as reportsControllerResolveReportResponse
-}
+);}
 
 
 
 
 export const getReportsControllerResolveReportMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerResolveReport>>, TError,{id: string;data: ResolveReportDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerResolveReport>>, TError,{id: string;data: ResolveReportDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof reportsControllerResolveReport>>, TError,{id: string;data: ResolveReportDto}, TContext> => {
 
 const mutationKey = ['reportsControllerResolveReport'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -501,7 +627,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof reportsControllerResolveReport>>, {id: string;data: ResolveReportDto}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  reportsControllerResolveReport(id,data,fetchOptions)
+          return  reportsControllerResolveReport(id,data,requestOptions)
         }
 
 
@@ -519,7 +645,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Resolve a report (admin only)
  */
 export const useReportsControllerResolveReport = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerResolveReport>>, TError,{id: string;data: ResolveReportDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof reportsControllerResolveReport>>, TError,{id: string;data: ResolveReportDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof reportsControllerResolveReport>>,
         TError,
@@ -567,24 +693,25 @@ export const getReportsControllerGetReportsForTargetUrl = (reportType: string,
 export const reportsControllerGetReportsForTarget = async (reportType: string,
     targetId: string, options?: RequestInit): Promise<reportsControllerGetReportsForTargetResponse> => {
 
-  const res = await fetch(getReportsControllerGetReportsForTargetUrl(reportType,targetId),
+  return customInstance<reportsControllerGetReportsForTargetResponse>(getReportsControllerGetReportsForTargetUrl(reportType,targetId),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: reportsControllerGetReportsForTargetResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as reportsControllerGetReportsForTargetResponse
-}
+);}
 
 
 
 
+
+export const getReportsControllerGetReportsForTargetInfiniteQueryKey = (reportType: string,
+    targetId: string,) => {
+    return [
+    'infinite', `/reports/target/${reportType}/${targetId}`
+    ] as const;
+    }
 
 export const getReportsControllerGetReportsForTargetQueryKey = (reportType: string,
     targetId: string,) => {
@@ -594,17 +721,87 @@ export const getReportsControllerGetReportsForTargetQueryKey = (reportType: stri
     }
 
 
-export const getReportsControllerGetReportsForTargetQueryOptions = <TData = Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError = BadRequestErrorDto | InternalServerErrorDto>(reportType: string,
-    targetId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, fetch?: RequestInit}
+export const getReportsControllerGetReportsForTargetInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>>, TError = BadRequestErrorDto | InternalServerErrorDto>(reportType: string,
+    targetId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getReportsControllerGetReportsForTargetInfiniteQueryKey(reportType,targetId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>> = ({ signal }) => reportsControllerGetReportsForTarget(reportType,targetId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(reportType && targetId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type ReportsControllerGetReportsForTargetInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>>
+export type ReportsControllerGetReportsForTargetInfiniteQueryError = BadRequestErrorDto | InternalServerErrorDto
+
+
+export function useReportsControllerGetReportsForTargetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ reportType: string,
+    targetId: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReportsControllerGetReportsForTargetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ reportType: string,
+    targetId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>,
+          TError,
+          Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useReportsControllerGetReportsForTargetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ reportType: string,
+    targetId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all reports for a specific target
+ */
+
+export function useReportsControllerGetReportsForTargetInfinite<TData = InfiniteData<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
+ reportType: string,
+    targetId: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getReportsControllerGetReportsForTargetInfiniteQueryOptions(reportType,targetId,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+export const getReportsControllerGetReportsForTargetQueryOptions = <TData = Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError = BadRequestErrorDto | InternalServerErrorDto>(reportType: string,
+    targetId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getReportsControllerGetReportsForTargetQueryKey(reportType,targetId);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>> = ({ signal }) => reportsControllerGetReportsForTarget(reportType,targetId, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>> = ({ signal }) => reportsControllerGetReportsForTarget(reportType,targetId, { signal, ...requestOptions });
 
 
 
@@ -625,7 +822,7 @@ export function useReportsControllerGetReportsForTarget<TData = Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReportsControllerGetReportsForTarget<TData = Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
@@ -636,12 +833,12 @@ export function useReportsControllerGetReportsForTarget<TData = Awaited<ReturnTy
           TError,
           Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useReportsControllerGetReportsForTarget<TData = Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
  reportType: string,
-    targetId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, fetch?: RequestInit}
+    targetId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -650,7 +847,7 @@ export function useReportsControllerGetReportsForTarget<TData = Awaited<ReturnTy
 
 export function useReportsControllerGetReportsForTarget<TData = Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError = BadRequestErrorDto | InternalServerErrorDto>(
  reportType: string,
-    targetId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, fetch?: RequestInit}
+    targetId: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof reportsControllerGetReportsForTarget>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

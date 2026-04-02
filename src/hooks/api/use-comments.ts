@@ -125,6 +125,6 @@ export function useGetCommentReaction(commentId: string) {
     });
     return {
         ...query,
-        data: query.data?.data || { reactionCount: 0, userHasReacted: false },
+        data: query.data || { reactionCount: 0, userHasReacted: false },
     };
 }

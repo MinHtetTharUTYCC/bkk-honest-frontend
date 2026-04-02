@@ -33,12 +33,12 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
                 ...values,
             });
 
-            if (!response || !('type' in response?.data || 'type' in response)) {
+            if (!response || !('type' in (response as unknown as Record<string, unknown>))) {
                 window.alert('Failed to create tip');
                 return;
             }
 
-            const newTip = response?.data as CommunityTipResponseDto;
+            const newTip = response as unknown as CommunityTipResponseDto;
 
             // Manually update the infinite query cache to show the new tip at index 0 immediately
             // This works for both 'newest' and 'popular' sort modes by forcefully prepending

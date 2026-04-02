@@ -33,4 +33,6 @@ export interface CreateSpotDto {
      * @maximum 180
      */
   longitude: number;
+  /** Spot image file */
+  image?: Blob;
 }

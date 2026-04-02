@@ -62,20 +62,13 @@ function VibesPageContent() {
     } = useInfiniteLiveVibes({
         cityId: selectedCityId,
         categoryId: selectedCategory || undefined,
-    }) as {
-        data:
-            | {
-                  pages: { data: PaginatedLiveVibesDto; status: number }[];
-              }
-            | undefined;
-        isLoading: boolean;
-        fetchNextPage: () => void;
-        hasNextPage: boolean | undefined;
-        isFetchingNextPage: boolean;
-    };
+    });
 
     const vibes: LiveVibeDto[] = useMemo(
-        () => vibesData?.pages.flatMap((page) => page.data.data || []) || [],
+        () => vibesData?.pages.flatMap((page) => {
+            const pageData = page as unknown as PaginatedLiveVibesDto;
+            return pageData.data || [];
+        }) || [],
         [vibesData],
     );
 

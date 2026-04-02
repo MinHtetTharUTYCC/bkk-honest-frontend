@@ -27,12 +27,12 @@ import { getNextSkipFromPage } from './base';
 
 export function useMyProfile() {
     const query = useProfilesControllerGetMe({ query: { retry: false } });
-    return { ...query, data: query.data?.data };
+    return { ...query, data: query.data };
 }
 
 export function useVisitProfile(id: string) {
     const query = useProfilesControllerFindOne(id, { query: { retry: false } });
-    return { ...query, data: query.data?.data };
+    return { ...query, data: query.data };
 }
 
 export function useLeaderboard(take = 5) {
@@ -40,7 +40,7 @@ export function useLeaderboard(take = 5) {
     const query = useProfilesControllerGetLeaderboard(params, {
         query: { staleTime: 5 * 60 * 1000 },
     });
-    return { ...query, data: query.data?.data };
+    return { ...query, data: query.data };
 }
 
 export function useCreateProfile() {

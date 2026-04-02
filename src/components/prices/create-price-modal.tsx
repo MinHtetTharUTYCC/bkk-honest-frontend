@@ -36,7 +36,7 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
                 priceThb: Number(formData.get('priceThb')),
             });
 
-            const newReport = response?.data || response;
+            const newReport = response;
 
             // Update the infinite query cache to show new report at index 0
             queryClient.setQueryData(

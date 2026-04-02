@@ -45,7 +45,7 @@ export default function CreateVibeForm({
                 waitTimeMinutes: waitTime ? Number(waitTime) : undefined,
             });
 
-            const newVibe = response?.data as LiveVibeDto;
+            const newVibe = response as unknown as LiveVibeDto;
 
             // Update the infinite query cache to show new vibe at index 0
             queryClient.setQueryData<InfiniteData<liveVibesControllerFindAllResponse>>(

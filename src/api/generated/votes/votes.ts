@@ -28,7 +28,10 @@ import type {
   UnauthorizedErrorDto
 } from '../model';
 
+import { customInstance } from '../../mutator/custom-instance';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -79,7 +82,7 @@ export const getVotesControllerCreateTipVoteUrl = () => {
 
 export const votesControllerCreateTipVote = async (tipVoteDto: TipVoteDto, options?: RequestInit): Promise<votesControllerCreateTipVoteResponse> => {
 
-  const res = await fetch(getVotesControllerCreateTipVoteUrl(),
+  return customInstance<votesControllerCreateTipVoteResponse>(getVotesControllerCreateTipVoteUrl(),
   {
     ...options,
     method: 'POST',
@@ -87,27 +90,21 @@ export const votesControllerCreateTipVote = async (tipVoteDto: TipVoteDto, optio
     body: JSON.stringify(
       tipVoteDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerCreateTipVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerCreateTipVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerCreateTipVoteMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateTipVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -115,7 +112,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, {data: TipVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateTipVote(data,fetchOptions)
+          return  votesControllerCreateTipVote(data,requestOptions)
         }
 
 
@@ -133,7 +130,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a community tip vote
  */
 export const useVotesControllerCreateTipVote = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateTipVote>>, TError,{data: TipVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
         TError,
@@ -189,7 +186,7 @@ export const getVotesControllerCreateAlertVoteUrl = () => {
 
 export const votesControllerCreateAlertVote = async (alertVoteDto: AlertVoteDto, options?: RequestInit): Promise<votesControllerCreateAlertVoteResponse> => {
 
-  const res = await fetch(getVotesControllerCreateAlertVoteUrl(),
+  return customInstance<votesControllerCreateAlertVoteResponse>(getVotesControllerCreateAlertVoteUrl(),
   {
     ...options,
     method: 'POST',
@@ -197,27 +194,21 @@ export const votesControllerCreateAlertVote = async (alertVoteDto: AlertVoteDto,
     body: JSON.stringify(
       alertVoteDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerCreateAlertVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerCreateAlertVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerCreateAlertVoteMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateAlertVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -225,7 +216,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, {data: AlertVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateAlertVote(data,fetchOptions)
+          return  votesControllerCreateAlertVote(data,requestOptions)
         }
 
 
@@ -243,7 +234,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a scam alert vote
  */
 export const useVotesControllerCreateAlertVote = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateAlertVote>>, TError,{data: AlertVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateAlertVote>>,
         TError,
@@ -299,7 +290,7 @@ export const getVotesControllerCreateImageVoteUrl = () => {
 
 export const votesControllerCreateImageVote = async (imageVoteDto: ImageVoteDto, options?: RequestInit): Promise<votesControllerCreateImageVoteResponse> => {
 
-  const res = await fetch(getVotesControllerCreateImageVoteUrl(),
+  return customInstance<votesControllerCreateImageVoteResponse>(getVotesControllerCreateImageVoteUrl(),
   {
     ...options,
     method: 'POST',
@@ -307,27 +298,21 @@ export const votesControllerCreateImageVote = async (imageVoteDto: ImageVoteDto,
     body: JSON.stringify(
       imageVoteDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerCreateImageVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerCreateImageVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerCreateImageVoteMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateImageVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -335,7 +320,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, {data: ImageVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateImageVote(data,fetchOptions)
+          return  votesControllerCreateImageVote(data,requestOptions)
         }
 
 
@@ -353,7 +338,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a gallery image vote
  */
 export const useVotesControllerCreateImageVote = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateImageVote>>, TError,{data: ImageVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateImageVote>>,
         TError,
@@ -409,7 +394,7 @@ export const getVotesControllerCreateSpotVoteUrl = () => {
 
 export const votesControllerCreateSpotVote = async (spotVoteDto: SpotVoteDto, options?: RequestInit): Promise<votesControllerCreateSpotVoteResponse> => {
 
-  const res = await fetch(getVotesControllerCreateSpotVoteUrl(),
+  return customInstance<votesControllerCreateSpotVoteResponse>(getVotesControllerCreateSpotVoteUrl(),
   {
     ...options,
     method: 'POST',
@@ -417,27 +402,21 @@ export const votesControllerCreateSpotVote = async (spotVoteDto: SpotVoteDto, op
     body: JSON.stringify(
       spotVoteDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerCreateSpotVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerCreateSpotVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerCreateSpotVoteMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext> => {
 
 const mutationKey = ['votesControllerCreateSpotVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -445,7 +424,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, {data: SpotVoteDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  votesControllerCreateSpotVote(data,fetchOptions)
+          return  votesControllerCreateSpotVote(data,requestOptions)
         }
 
 
@@ -463,7 +442,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a spot vote
  */
 export const useVotesControllerCreateSpotVote = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerCreateSpotVote>>, TError,{data: SpotVoteDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerCreateSpotVote>>,
         TError,
@@ -514,34 +493,28 @@ export const getVotesControllerDeleteVoteUrl = (id: string,) => {
 
 export const votesControllerDeleteVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteVoteResponse> => {
 
-  const res = await fetch(getVotesControllerDeleteVoteUrl(id),
+  return customInstance<votesControllerDeleteVoteResponse>(getVotesControllerDeleteVoteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerDeleteVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerDeleteVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerDeleteVoteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -549,7 +522,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteVote(id,fetchOptions)
+          return  votesControllerDeleteVote(id,requestOptions)
         }
 
 
@@ -567,7 +540,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete a vote (unvote)
  */
 export const useVotesControllerDeleteVote = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteVote>>,
         TError,
@@ -618,34 +591,28 @@ export const getVotesControllerDeleteImageVoteUrl = (id: string,) => {
 
 export const votesControllerDeleteImageVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteImageVoteResponse> => {
 
-  const res = await fetch(getVotesControllerDeleteImageVoteUrl(id),
+  return customInstance<votesControllerDeleteImageVoteResponse>(getVotesControllerDeleteImageVoteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerDeleteImageVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerDeleteImageVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerDeleteImageVoteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteImageVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -653,7 +620,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteImageVote(id,fetchOptions)
+          return  votesControllerDeleteImageVote(id,requestOptions)
         }
 
 
@@ -671,7 +638,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete an image vote (unvote)
  */
 export const useVotesControllerDeleteImageVote = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteImageVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteImageVote>>,
         TError,
@@ -722,34 +689,28 @@ export const getVotesControllerDeleteTipVoteUrl = (id: string,) => {
 
 export const votesControllerDeleteTipVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteTipVoteResponse> => {
 
-  const res = await fetch(getVotesControllerDeleteTipVoteUrl(id),
+  return customInstance<votesControllerDeleteTipVoteResponse>(getVotesControllerDeleteTipVoteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerDeleteTipVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerDeleteTipVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerDeleteTipVoteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteTipVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -757,7 +718,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteTipVote(id,fetchOptions)
+          return  votesControllerDeleteTipVote(id,requestOptions)
         }
 
 
@@ -775,7 +736,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete a tip vote (unvote)
  */
 export const useVotesControllerDeleteTipVote = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteTipVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteTipVote>>,
         TError,
@@ -826,34 +787,28 @@ export const getVotesControllerDeleteAlertVoteUrl = (id: string,) => {
 
 export const votesControllerDeleteAlertVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteAlertVoteResponse> => {
 
-  const res = await fetch(getVotesControllerDeleteAlertVoteUrl(id),
+  return customInstance<votesControllerDeleteAlertVoteResponse>(getVotesControllerDeleteAlertVoteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerDeleteAlertVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerDeleteAlertVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerDeleteAlertVoteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteAlertVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -861,7 +816,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteAlertVote(id,fetchOptions)
+          return  votesControllerDeleteAlertVote(id,requestOptions)
         }
 
 
@@ -879,7 +834,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete a scam alert vote (unvote)
  */
 export const useVotesControllerDeleteAlertVote = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteAlertVote>>,
         TError,
@@ -930,34 +885,28 @@ export const getVotesControllerDeleteSpotVoteUrl = (id: string,) => {
 
 export const votesControllerDeleteSpotVote = async (id: string, options?: RequestInit): Promise<votesControllerDeleteSpotVoteResponse> => {
 
-  const res = await fetch(getVotesControllerDeleteSpotVoteUrl(id),
+  return customInstance<votesControllerDeleteSpotVoteResponse>(getVotesControllerDeleteSpotVoteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerDeleteSpotVoteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerDeleteSpotVoteResponse
-}
+);}
 
 
 
 
 export const getVotesControllerDeleteSpotVoteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteSpotVote'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -965,7 +914,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  votesControllerDeleteSpotVote(id,fetchOptions)
+          return  votesControllerDeleteSpotVote(id,requestOptions)
         }
 
 
@@ -983,7 +932,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete a spot vote (unvote)
  */
 export const useVotesControllerDeleteSpotVote = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteSpotVote>>,
         TError,
@@ -1036,34 +985,28 @@ export const getVotesControllerDeleteVoteByTypeUrl = (type: string,
 export const votesControllerDeleteVoteByType = async (type: string,
     id: string, options?: RequestInit): Promise<votesControllerDeleteVoteByTypeResponse> => {
 
-  const res = await fetch(getVotesControllerDeleteVoteByTypeUrl(type,id),
+  return customInstance<votesControllerDeleteVoteByTypeResponse>(getVotesControllerDeleteVoteByTypeUrl(type,id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: votesControllerDeleteVoteByTypeResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as votesControllerDeleteVoteByTypeResponse
-}
+);}
 
 
 
 
 export const getVotesControllerDeleteVoteByTypeMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext> => {
 
 const mutationKey = ['votesControllerDeleteVoteByType'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -1071,7 +1014,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, {type: string;id: string}> = (props) => {
           const {type,id} = props ?? {};
 
-          return  votesControllerDeleteVoteByType(type,id,fetchOptions)
+          return  votesControllerDeleteVoteByType(type,id,requestOptions)
         }
 
 
@@ -1089,7 +1032,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete a vote by type and id (unvote)
  */
 export const useVotesControllerDeleteVoteByType = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>, TError,{type: string;id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof votesControllerDeleteVoteByType>>,
         TError,

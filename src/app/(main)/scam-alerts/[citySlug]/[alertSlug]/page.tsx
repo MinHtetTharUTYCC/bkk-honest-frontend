@@ -63,7 +63,7 @@ export default async function ScamAlertPage({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ScamAlertClient />
+      <ScamAlertClient alert={alert} />
     </HydrationBoundary>
   );
 }

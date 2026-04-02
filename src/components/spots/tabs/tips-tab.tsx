@@ -125,7 +125,7 @@ export default function TipsTab({ spot }: TipsTabProps) {
                 spotId,
                 ...values,
             });
-            const updatedTip = response?.data as CommunityTipResponseDto;
+            const updatedTip = response as unknown as CommunityTipResponseDto;
             const updatedAt = getUpdatedAt(updatedTip);
 
             // Manually update all sort variations of the infinite query cache

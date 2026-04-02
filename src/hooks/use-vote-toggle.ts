@@ -149,26 +149,28 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     };
 
     const getPageItems = (page: unknown): Voteable[] => {
-        const orvalPage = page as OrvalPage;
-        // Infinite query: page.data.data (Orval wrapper → paginated DTO → array)
-        if (orvalPage?.data?.data && Array.isArray(orvalPage.data.data)) {
-            return orvalPage.data.data;
+        // Note: Orval types say page is { data: PaginatedDto, status: number }
+        // but customInstance only returns the data, so page IS PaginatedDto
+        // Try PaginatedDto structure first: { data: items[], pagination: ... }
+        const paginatedDto = page as { data?: Voteable[] };
+        if (paginatedDto?.data && Array.isArray(paginatedDto.data)) {
+            return paginatedDto.data;
         }
-        // Fallback: page.data directly
-        const flat = page as { data?: Voteable[] };
-        if (Array.isArray(flat?.data)) return flat.data;
+        // Fallback: direct array
+        if (Array.isArray(page)) return page;
         return [];
     };
 
     const setPageItems = (page: unknown, items: Voteable[]): unknown => {
-        const orvalPage = page as OrvalPage;
-        if (orvalPage?.data?.data && Array.isArray(orvalPage.data.data)) {
+        // Match the structure we found in getPageItems
+        const paginatedDto = page as { data?: Voteable[]; pagination?: unknown };
+        if (paginatedDto?.data && Array.isArray(paginatedDto.data)) {
             return {
-                ...orvalPage,
-                data: { ...orvalPage.data, data: items },
+                ...paginatedDto,
+                data: items,
             };
         }
-        return { ...(page as object), data: items };
+        return { data: items };
     };
 
     const applyUpdate = (

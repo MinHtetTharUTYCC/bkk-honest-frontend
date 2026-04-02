@@ -21,7 +21,10 @@ import type {
   InternalServerErrorDto
 } from '../model';
 
+import { customInstance } from '../../mutator/custom-instance';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -62,7 +65,7 @@ export const getContactControllerSubmitContactFormUrl = () => {
 
 export const contactControllerSubmitContactForm = async (contactFormDto: ContactFormDto, options?: RequestInit): Promise<contactControllerSubmitContactFormResponse> => {
 
-  const res = await fetch(getContactControllerSubmitContactFormUrl(),
+  return customInstance<contactControllerSubmitContactFormResponse>(getContactControllerSubmitContactFormUrl(),
   {
     ...options,
     method: 'POST',
@@ -70,27 +73,21 @@ export const contactControllerSubmitContactForm = async (contactFormDto: Contact
     body: JSON.stringify(
       contactFormDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: contactControllerSubmitContactFormResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as contactControllerSubmitContactFormResponse
-}
+);}
 
 
 
 
 export const getContactControllerSubmitContactFormMutationOptions = <TError = BadRequestErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext> => {
 
 const mutationKey = ['contactControllerSubmitContactForm'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -98,7 +95,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, {data: ContactFormDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  contactControllerSubmitContactForm(data,fetchOptions)
+          return  contactControllerSubmitContactForm(data,requestOptions)
         }
 
 
@@ -116,7 +113,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Send a contact form email
  */
 export const useContactControllerSubmitContactForm = <TError = BadRequestErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof contactControllerSubmitContactForm>>, TError,{data: ContactFormDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof contactControllerSubmitContactForm>>,
         TError,

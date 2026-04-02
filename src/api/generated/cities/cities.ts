@@ -6,18 +6,23 @@
  * OpenAPI spec version: 1.0
  */
 import {
+  useInfiniteQuery,
   useMutation,
   useQuery
 } from '@tanstack/react-query';
 import type {
   DataTag,
   DefinedInitialDataOptions,
+  DefinedUseInfiniteQueryResult,
   DefinedUseQueryResult,
+  InfiniteData,
   MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
   UndefinedInitialDataOptions,
+  UseInfiniteQueryOptions,
+  UseInfiniteQueryResult,
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
@@ -34,7 +39,10 @@ import type {
   UpdateCityDto
 } from '../model';
 
+import { customInstance } from '../../mutator/custom-instance';
 
+
+type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 
 
@@ -80,7 +88,7 @@ export const getCitiesControllerCreateUrl = () => {
 
 export const citiesControllerCreate = async (createCityDto: CreateCityDto, options?: RequestInit): Promise<citiesControllerCreateResponse> => {
 
-  const res = await fetch(getCitiesControllerCreateUrl(),
+  return customInstance<citiesControllerCreateResponse>(getCitiesControllerCreateUrl(),
   {
     ...options,
     method: 'POST',
@@ -88,27 +96,21 @@ export const citiesControllerCreate = async (createCityDto: CreateCityDto, optio
     body: JSON.stringify(
       createCityDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: citiesControllerCreateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as citiesControllerCreateResponse
-}
+);}
 
 
 
 
 export const getCitiesControllerCreateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext> => {
 
 const mutationKey = ['citiesControllerCreate'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -116,7 +118,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof citiesControllerCreate>>, {data: CreateCityDto}> = (props) => {
           const {data} = props ?? {};
 
-          return  citiesControllerCreate(data,fetchOptions)
+          return  citiesControllerCreate(data,requestOptions)
         }
 
 
@@ -134,7 +136,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Create a city
  */
 export const useCitiesControllerCreate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerCreate>>, TError,{data: CreateCityDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof citiesControllerCreate>>,
         TError,
@@ -175,24 +177,24 @@ export const getCitiesControllerFindAllUrl = () => {
 
 export const citiesControllerFindAll = async ( options?: RequestInit): Promise<citiesControllerFindAllResponse> => {
 
-  const res = await fetch(getCitiesControllerFindAllUrl(),
+  return customInstance<citiesControllerFindAllResponse>(getCitiesControllerFindAllUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: citiesControllerFindAllResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as citiesControllerFindAllResponse
-}
+);}
 
 
 
 
+
+export const getCitiesControllerFindAllInfiniteQueryKey = () => {
+    return [
+    'infinite', `/cities`
+    ] as const;
+    }
 
 export const getCitiesControllerFindAllQueryKey = () => {
     return [
@@ -201,16 +203,81 @@ export const getCitiesControllerFindAllQueryKey = () => {
     }
 
 
-export const getCitiesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = InternalServerErrorDto>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+export const getCitiesControllerFindAllInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = InternalServerErrorDto>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindAllInfiniteQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindAll>>> = ({ signal }) => citiesControllerFindAll({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CitiesControllerFindAllInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindAll>>>
+export type CitiesControllerFindAllInfiniteQueryError = InternalServerErrorDto
+
+
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = InternalServerErrorDto>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindAll>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindAll>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindAll>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get all cities
+ */
+
+export function useCitiesControllerFindAllInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindAll>>>, TError = InternalServerErrorDto>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCitiesControllerFindAllInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+export const getCitiesControllerFindAllQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = InternalServerErrorDto>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindAllQueryKey();
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindAll>>> = ({ signal }) => citiesControllerFindAll({ signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindAll>>> = ({ signal }) => citiesControllerFindAll({ signal, ...requestOptions });
 
 
 
@@ -230,7 +297,7 @@ export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof cit
           TError,
           Awaited<ReturnType<typeof citiesControllerFindAll>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = InternalServerErrorDto>(
@@ -240,11 +307,11 @@ export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof cit
           TError,
           Awaited<ReturnType<typeof citiesControllerFindAll>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = InternalServerErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -252,7 +319,7 @@ export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof cit
  */
 
 export function useCitiesControllerFindAll<TData = Awaited<ReturnType<typeof citiesControllerFindAll>>, TError = InternalServerErrorDto>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, fetch?: RequestInit}
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindAll>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -303,24 +370,24 @@ export const getCitiesControllerFindOneUrl = (id: string,) => {
 
 export const citiesControllerFindOne = async (id: string, options?: RequestInit): Promise<citiesControllerFindOneResponse> => {
 
-  const res = await fetch(getCitiesControllerFindOneUrl(id),
+  return customInstance<citiesControllerFindOneResponse>(getCitiesControllerFindOneUrl(id),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: citiesControllerFindOneResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as citiesControllerFindOneResponse
-}
+);}
 
 
 
 
+
+export const getCitiesControllerFindOneInfiniteQueryKey = (id: string,) => {
+    return [
+    'infinite', `/cities/${id}`
+    ] as const;
+    }
 
 export const getCitiesControllerFindOneQueryKey = (id: string,) => {
     return [
@@ -329,16 +396,81 @@ export const getCitiesControllerFindOneQueryKey = (id: string,) => {
     }
 
 
-export const getCitiesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+export const getCitiesControllerFindOneInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
 ) => {
 
-const {query: queryOptions, fetch: fetchOptions} = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindOneInfiniteQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindOne>>> = ({ signal }) => citiesControllerFindOne(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type CitiesControllerFindOneInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof citiesControllerFindOne>>>
+export type CitiesControllerFindOneInfiniteQueryError = NotFoundErrorDto | InternalServerErrorDto
+
+
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindOne>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof citiesControllerFindOne>>,
+          TError,
+          Awaited<ReturnType<typeof citiesControllerFindOne>>
+        > , 'initialData'
+      >, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get city by ID
+ */
+
+export function useCitiesControllerFindOneInfinite<TData = InfiniteData<Awaited<ReturnType<typeof citiesControllerFindOne>>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
+ id: string, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+ , queryClient?: QueryClient
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getCitiesControllerFindOneInfiniteQueryOptions(id,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+
+
+
+export const getCitiesControllerFindOneQueryOptions = <TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
   const queryKey =  queryOptions?.queryKey ?? getCitiesControllerFindOneQueryKey(id);
 
 
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindOne>>> = ({ signal }) => citiesControllerFindOne(id, { signal, ...fetchOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof citiesControllerFindOne>>> = ({ signal }) => citiesControllerFindOne(id, { signal, ...requestOptions });
 
 
 
@@ -358,7 +490,7 @@ export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof cit
           TError,
           Awaited<ReturnType<typeof citiesControllerFindOne>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
@@ -368,11 +500,11 @@ export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof cit
           TError,
           Awaited<ReturnType<typeof citiesControllerFindOne>>
         > , 'initialData'
-      >, fetch?: RequestInit}
+      >, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -380,7 +512,7 @@ export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof cit
  */
 
 export function useCitiesControllerFindOne<TData = Awaited<ReturnType<typeof citiesControllerFindOne>>, TError = NotFoundErrorDto | InternalServerErrorDto>(
- id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, fetch?: RequestInit}
+ id: string, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof citiesControllerFindOne>>, TError, TData>>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -442,7 +574,7 @@ export const getCitiesControllerUpdateUrl = (id: string,) => {
 export const citiesControllerUpdate = async (id: string,
     updateCityDto: UpdateCityDto, options?: RequestInit): Promise<citiesControllerUpdateResponse> => {
 
-  const res = await fetch(getCitiesControllerUpdateUrl(id),
+  return customInstance<citiesControllerUpdateResponse>(getCitiesControllerUpdateUrl(id),
   {
     ...options,
     method: 'PATCH',
@@ -450,27 +582,21 @@ export const citiesControllerUpdate = async (id: string,
     body: JSON.stringify(
       updateCityDto,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: citiesControllerUpdateResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as citiesControllerUpdateResponse
-}
+);}
 
 
 
 
 export const getCitiesControllerUpdateMutationOptions = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext> => {
 
 const mutationKey = ['citiesControllerUpdate'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -478,7 +604,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof citiesControllerUpdate>>, {id: string;data: UpdateCityDto}> = (props) => {
           const {id,data} = props ?? {};
 
-          return  citiesControllerUpdate(id,data,fetchOptions)
+          return  citiesControllerUpdate(id,data,requestOptions)
         }
 
 
@@ -496,7 +622,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Update a city
  */
 export const useCitiesControllerUpdate = <TError = BadRequestErrorDto | UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerUpdate>>, TError,{id: string;data: UpdateCityDto}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof citiesControllerUpdate>>,
         TError,
@@ -547,34 +673,28 @@ export const getCitiesControllerDeleteUrl = (id: string,) => {
 
 export const citiesControllerDelete = async (id: string, options?: RequestInit): Promise<citiesControllerDeleteResponse> => {
 
-  const res = await fetch(getCitiesControllerDeleteUrl(id),
+  return customInstance<citiesControllerDeleteResponse>(getCitiesControllerDeleteUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: citiesControllerDeleteResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as citiesControllerDeleteResponse
-}
+);}
 
 
 
 
 export const getCitiesControllerDeleteMutationOptions = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
 ): UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext> => {
 
 const mutationKey = ['citiesControllerDelete'];
-const {mutation: mutationOptions, fetch: fetchOptions} = options ?
+const {mutation: mutationOptions, request: requestOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
       : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, fetch: undefined};
+      : {mutation: { mutationKey, }, request: undefined};
 
 
 
@@ -582,7 +702,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
       const mutationFn: MutationFunction<Awaited<ReturnType<typeof citiesControllerDelete>>, {id: string}> = (props) => {
           const {id} = props ?? {};
 
-          return  citiesControllerDelete(id,fetchOptions)
+          return  citiesControllerDelete(id,requestOptions)
         }
 
 
@@ -600,7 +720,7 @@ const {mutation: mutationOptions, fetch: fetchOptions} = options ?
  * @summary Delete a city
  */
 export const useCitiesControllerDelete = <TError = UnauthorizedErrorDto | NotFoundErrorDto | InternalServerErrorDto,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext>, fetch?: RequestInit}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof citiesControllerDelete>>, TError,{id: string}, TContext>, request?: SecondParameter<typeof customInstance>}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof citiesControllerDelete>>,
         TError,

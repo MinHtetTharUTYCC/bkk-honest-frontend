@@ -58,7 +58,7 @@ export function useSpots(params?: {
   const query = useSpotsControllerFindAll(cleanParams, {
     query: { staleTime: 5 * 60 * 1000 },
   });
-  return { ...query, data: query.data?.data || [] };
+  return { ...query, data: query.data || [] };
 }
 
 export function useInfiniteSpots(params?: {
@@ -143,9 +143,10 @@ export function useCreateSpot() {
   const mutation = useSpotsControllerCreate();
   return {
     ...mutation,
-    mutate: (payload: CreateSpotDto) => mutation.mutate({ data: payload }),
-    mutateAsync: (payload: CreateSpotDto) =>
-      mutation.mutateAsync({ data: payload }),
+    mutate: (payload: CreateSpotDto | FormData) =>
+      mutation.mutate({ data: payload as any }),
+    mutateAsync: (payload: CreateSpotDto | FormData) =>
+      mutation.mutateAsync({ data: payload as any }),
   };
 }
 
@@ -153,10 +154,20 @@ export function useUpdateSpot() {
   const mutation = useSpotsControllerUpdate();
   return {
     ...mutation,
-    mutate: ({ id, payload }: { id: string; payload: UpdateSpotDto }) =>
-      mutation.mutate({ id, data: payload }),
-    mutateAsync: ({ id, payload }: { id: string; payload: UpdateSpotDto }) =>
-      mutation.mutateAsync({ id, data: payload }),
+    mutate: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdateSpotDto | FormData;
+    }) => mutation.mutate({ id, data: payload as any }),
+    mutateAsync: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: UpdateSpotDto | FormData;
+    }) => mutation.mutateAsync({ id, data: payload as any }),
   };
 }
 

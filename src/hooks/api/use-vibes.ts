@@ -25,7 +25,7 @@ export function useLiveVibes(params?: {
       },
     },
   );
-  return { ...query, data: query.data?.data || [] };
+  return { ...query, data: query.data || [] };
 }
 
 export function useInfiniteLiveVibes(params?: {

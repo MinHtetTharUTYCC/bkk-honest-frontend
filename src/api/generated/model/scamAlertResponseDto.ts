@@ -6,11 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 import type { _ScamAlertResponseDtoCount } from './_scamAlertResponseDtoCount';
+import type { CategoryDto } from './categoryDto';
+import type { CityDto } from './cityDto';
 import type { ImageVariantsDto } from './imageVariantsDto';
-import type { ScamAlertResponseDtoCategory } from './scamAlertResponseDtoCategory';
-import type { ScamAlertResponseDtoCity } from './scamAlertResponseDtoCity';
-import type { ScamAlertResponseDtoUser } from './scamAlertResponseDtoUser';
-import type { ScamAlertResponseDtoVoteId } from './scamAlertResponseDtoVoteId';
+import type { ProfileResponseDto } from './profileResponseDto';
 
 export interface ScamAlertResponseDto {
   /** Scam alert ID (cuid) */
@@ -44,11 +43,11 @@ export interface ScamAlertResponseDto {
   /** Creation timestamp */
   createdAt: string;
   /** Category the scam belongs to */
-  category: ScamAlertResponseDtoCategory;
+  category: CategoryDto;
   /** City the scam was reported in */
-  city: ScamAlertResponseDtoCity;
+  city: CityDto;
   /** User who reported the scam */
-  user: ScamAlertResponseDtoUser;
+  user: ProfileResponseDto;
   /** Counts of related comments and votes */
   _count: _ScamAlertResponseDtoCount;
   /** Whether the current user has voted (only present when authenticated) */
@@ -57,5 +56,5 @@ export interface ScamAlertResponseDto {
      * Vote ID (cuid) if user has voted, null otherwise
      * @nullable
      */
-  voteId?: ScamAlertResponseDtoVoteId;
+  voteId?: string | null;
 }

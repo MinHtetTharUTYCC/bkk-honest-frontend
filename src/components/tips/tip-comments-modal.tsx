@@ -135,7 +135,7 @@ export default function TipCommentsModal({
         content: newComment.trim(),
       });
 
-      const newCommentData = response?.data || response;
+      const newCommentData = response;
 
       // Update the infinite query cache to show new comment at index 0
       queryClient.setQueryData(
@@ -171,7 +171,7 @@ export default function TipCommentsModal({
         communityTipId: tip.id,
       });
 
-      const updatedComment = response?.data || response;
+      const updatedComment = response as unknown as CommentResponseDto;
 
       // Update the infinite query cache
       queryClient.setQueryData(

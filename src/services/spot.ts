@@ -9,6 +9,7 @@ import type { SpotWithStatsResponseDto } from "@/api/generated/model";
  * Automatically handles Supabase Auth headers if a session exists.
  */
 export const getSpot = cache(async (citySlug: string, spotSlug: string): Promise<SpotWithStatsResponseDto | null> => {
+  console.log('[getSpot] Fetching slug:', `${citySlug}/${spotSlug}`);
   try {
     const supabase = await createServerClient();
     const {
@@ -23,9 +24,15 @@ export const getSpot = cache(async (citySlug: string, spotSlug: string): Promise
       headers,
     } as RequestInit);
 
-    if (res.status === 200 && res.data && typeof res.data === "object" && "id" in res.data) {
+    console.log('[getSpot] Response:', res ? 'exists' : 'null');
+    console.log('[getSpot] Response.data:', res?.data ? 'exists' : 'null');
+    console.log('[getSpot] Has id?:', res?.data && "id" in res.data);
+
+    if (res && res.data && typeof res.data === "object" && "id" in res.data) {
+      console.log('[getSpot] SUCCESS - Returning spot:', res.data.id);
       return res.data as SpotWithStatsResponseDto;
     }
+    console.log('[getSpot] FAILED - Returning null');
     return null;
   } catch (error) {
     console.error(`[getSpot] Error fetching ${citySlug}/${spotSlug}:`, error);

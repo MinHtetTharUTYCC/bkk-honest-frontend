@@ -15,7 +15,7 @@ export function useSpotTips(spotId: string) {
   const query = useCommunityTipsControllerFindBySpot(spotId, params, {
     query: { enabled: !!spotId },
   });
-  return { ...query, data: query.data?.data || [] };
+  return { ...query, data: query.data || [] };
 }
 
 export function useInfiniteSpotTips(

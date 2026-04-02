@@ -17,16 +17,13 @@ export type PaginationLike = {
 /**
  * Helper to calculate the next skip value for infinite queries.
  */
-export function getNextSkipFromPage(
-    lastPage: unknown,
-    requireMore?: boolean,
-): number | undefined {
+export function getNextSkipFromPage(lastPage: unknown, requireMore?: boolean): number | undefined {
     if (!lastPage || typeof lastPage !== 'object') {
         return undefined;
     }
 
-    // Account for Orval wrapper { data, status, headers }
-    const page = (lastPage as Record<string, unknown>).data || lastPage;
+    // Mutator already unwraps the response envelope
+    const page = lastPage;
 
     const source = (page as Record<string, unknown>).pagination ?? page;
     const skip = (source as Record<string, unknown>)?.skip;
@@ -38,5 +35,5 @@ export function getNextSkipFromPage(
     }
 
     const nextSkip = skip != null ? skip + take : undefined;
-    return nextSkip < total ? nextSkip : undefined;
+    return nextSkip != null && nextSkip < total ? nextSkip : undefined;
 }

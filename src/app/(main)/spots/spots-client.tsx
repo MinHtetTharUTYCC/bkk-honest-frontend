@@ -127,20 +127,12 @@ function DiscoveryPageContent() {
     }, [inView]);
 
     const spots: SpotCardData[] = useMemo(() => {
-        console.log('[Discovery] spotsData:', spotsData);
-        console.log('[Discovery] pages:', spotsData?.pages);
-        const result = spotsData?.pages.flatMap((page) => {
-            console.log('[Discovery] page:', page);
-            console.log('[Discovery] page.data:', page.data);
-            // The API directly returns PaginatedSpotsWithStatsResponseDto
-            // which is { data: SpotWithStatsResponseDto[], pagination: PaginationMetaDto }
-            // So page is already that object, not wrapped in { data, status }
+        // The API directly returns PaginatedSpotsWithStatsResponseDto
+        // which is { data: SpotWithStatsResponseDto[], pagination: PaginationMetaDto }
+        return spotsData?.pages.flatMap((page) => {
             const pageData = page as unknown as PaginatedSpotsWithStatsResponseDto;
-            console.log('[Discovery] pageData.data:', pageData.data);
             return pageData.data || [];
         }) || [];
-        console.log('[Discovery] final spots:', result);
-        return result;
     }, [spotsData]);
 
     return (
@@ -258,7 +250,7 @@ function DiscoveryPageContent() {
     );
 }
 
-export default function DiscoveryPage() {
+export default function SpotsClient() {
     return (
         <Suspense fallback={<div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />}>
             <DiscoveryPageContent />
