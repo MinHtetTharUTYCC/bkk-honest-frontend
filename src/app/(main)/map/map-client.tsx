@@ -1,6 +1,6 @@
 "use client";
 import OptimizedImage from "@/components/ui/OptimizedImage";
-import type { ImageVariantsDto } from "@/api/generated/model";
+import type { ImageVariantsDto } from "@/types/api-models";
 import { Suspense, useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Map, { Marker, ViewState, MapRef } from "react-map-gl/mapbox";
@@ -25,9 +25,9 @@ import {
   AlertTriangle,
   Activity,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { motion, AnimatePresence } from "framer-motion";
-import { getSpotUrl } from "@/lib/slug";
+import { getSpotUrl } from "@/lib/utils/slug";
 import TransitOverlay from "@/components/map/transit-overlay";
 import { useMapTransitVisible } from "@/hooks/use-map-transit";
 import { CategorySelector } from "@/components/ui/category-selector";

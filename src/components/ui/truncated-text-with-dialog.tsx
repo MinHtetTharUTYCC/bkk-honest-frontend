@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useLayoutEffect } from "react";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 interface TruncatedTextWithDialogProps {
   text: string;

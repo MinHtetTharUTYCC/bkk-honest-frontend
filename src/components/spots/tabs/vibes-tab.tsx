@@ -4,11 +4,12 @@ import { useRef, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useInfiniteLiveVibes } from "@/hooks/use-api";
 import { Zap, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { LiveVibeDto, SpotWithStatsResponseDto } from "@/api/generated/model";
+import { cn } from "@/lib/utils/core";
+import { LiveVibeDto, SpotWithStatsResponseDto } from "@/types/api-models";
 import CreateVibeModal from "@/components/vibes/create-vibe-modal";
 import { useInView } from "react-intersection-observer";
 import { useRouter, usePathname } from "next/navigation";
+import { PaginatedLiveVibesDto } from "@/types/api-models";
 
 interface VibesTabProps {
   spot: SpotWithStatsResponseDto;
@@ -33,8 +34,7 @@ export default function VibesTab({ spot }: VibesTabProps) {
   const spotVibes: LiveVibeDto[] = useMemo(() => {
     const rawVibes =
       vibesData?.pages.flatMap(
-        (page) =>
-          (page as unknown as { data?: LiveVibeDto[] })?.data || [],
+        (page) => (page.data as PaginatedLiveVibesDto)?.data || [],
       ) || [];
 
     return rawVibes;

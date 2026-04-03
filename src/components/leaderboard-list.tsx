@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 import { useLeaderboard } from "@/hooks/use-api";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
 
@@ -14,7 +14,7 @@ const LEVEL_COLORS = [
   "bg-purple-400/15 text-purple-400",
 ];
 
-import type { LeaderboardProfileDto } from "@/api/generated/model";
+import type { LeaderboardProfileDto } from "@/types/api-models";
 
 interface LeaderboardItem extends Omit<LeaderboardProfileDto, 'level'> {
   id: string;

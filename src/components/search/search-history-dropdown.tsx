@@ -2,7 +2,7 @@
 
 import { X } from "lucide-react";
 import { SearchHistoryItem } from "@/hooks/use-search-history";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 interface SearchHistoryDropdownProps {
   history: SearchHistoryItem[];

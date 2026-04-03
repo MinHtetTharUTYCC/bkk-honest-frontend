@@ -12,7 +12,7 @@ import {
 } from "@/hooks/use-search-history";
 import { useCity } from "@/components/providers/city-provider";
 import { MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 function SearchPageContent() {
   const router = useRouter();

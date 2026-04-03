@@ -1,6 +1,6 @@
 "use client";
 import OptimizedImage from "@/components/ui/OptimizedImage";
-import type { ImageVariantsDto } from "@/api/generated/model";
+import type { ImageVariantsDto } from "@/types/api-models";
 import { Suspense, useState, useEffect } from "react";
 
 import {
@@ -24,8 +24,8 @@ import {
   ImageIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
-import { getSpotUrl } from "@/lib/slug";
+import { cn } from "@/lib/utils/core";
+import { getSpotUrl } from "@/lib/utils/slug";
 import { useAuth } from "@/components/providers/auth-provider";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useInView } from "react-intersection-observer";

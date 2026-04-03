@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useCategories } from "@/hooks/use-api";
 import { Dropdown } from "@/components/ui/dropdown";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 interface SearchFiltersProps {
   categoryId?: string;

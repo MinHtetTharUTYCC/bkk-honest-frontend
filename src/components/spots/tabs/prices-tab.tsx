@@ -4,11 +4,11 @@ import { useRef, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInfiniteSpotPriceReports } from '@/hooks/use-api';
 import { Zap, TrendingDown, TrendingUp, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import CreatePriceModal from '@/components/prices/create-price-modal';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, usePathname } from 'next/navigation';
-import { PriceReportDto, SpotWithStatsResponseDto } from '@/api/generated/model';
+import { PriceReportDto, SpotWithStatsResponseDto } from '@/types/api-models';
 
 interface PricesTabProps {
     spot: SpotWithStatsResponseDto;

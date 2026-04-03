@@ -5,7 +5,7 @@ import { useAuth } from '@/components/providers/auth-provider';
 import { useInfiniteSpotTips, useUpdateCommunityTip, useDeleteCommunityTip } from '@/hooks/use-api';
 import { useQueryClient, InfiniteData } from '@tanstack/react-query';
 import { Zap, Loader2, CheckCircle2, AlertTriangle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import { TipCard } from '@/components/tips/tip-card';
 import CreateTipModal from '@/components/tips/create-tip-modal';
 import EditTipModal from '@/components/tips/edit-tip-modal';
@@ -13,6 +13,7 @@ import TipCommentsModal from '@/components/tips/tip-comments-modal';
 import { useInView } from 'react-intersection-observer';
 import { TipFormValues } from '@/lib/validations/tip';
 import { toast } from 'sonner';
+import { toastApiError } from '@/lib/errors/throw-api-error';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import {
@@ -26,11 +27,9 @@ import {
     CommunityTipResponseDto,
     PaginatedCommunityTipsResponseDto,
     SpotWithStatsResponseDto,
-} from '@/api/generated/model';
-import { communityTipsControllerFindBySpot } from '@/api/generated/community-tips/community-tips';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
+} from '@/types/api-models';
 
-type TipsPage = Awaited<ReturnType<typeof communityTipsControllerFindBySpot>>;
+type TipsPage = { data: PaginatedCommunityTipsResponseDto };
 
 function getUpdatedAt(value: unknown): string | undefined {
     if (typeof value !== 'object' || value === null || !('updatedAt' in value)) return undefined;
@@ -161,7 +160,7 @@ export default function TipsTab({ spot }: TipsTabProps) {
             setEditingTip(null);
             toast.success('Tip updated');
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err, 'Failed to update tip'));
+            toastApiError(err, 'Failed to update tip');
         }
     };
 
@@ -194,7 +193,7 @@ export default function TipsTab({ spot }: TipsTabProps) {
 
             toast.success('Tip deleted');
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err, 'Failed to delete tip'));
+            toastApiError(err, 'Failed to delete tip');
         }
     };
 
@@ -214,21 +213,9 @@ export default function TipsTab({ spot }: TipsTabProps) {
             {selectedTip && (
                 <TipCommentsModal
                     tip={{
-                        ...selectedTip,
-                        spotId: spotId,
-                        content: selectedTip.description,
-                        type: selectedTip.type as 'TRY' | 'AVOID',
-                        voteId:
-                            typeof selectedTip.voteId === 'string' ? selectedTip.voteId : undefined,
-                        user: selectedTip.user
-                            ? {
-                                  ...selectedTip.user,
-                                  level: selectedTip.user.level
-                                      ? String(selectedTip.user.level)
-                                      : undefined,
-                                  avatarUrl: selectedTip.user.avatarUrl ?? undefined,
-                              }
-                            : undefined,
+                        id: selectedTip.id,
+                        title: selectedTip.title,
+                        type: selectedTip.type,
                     }}
                     onClose={() => setSelectedTip(null)}
                 />

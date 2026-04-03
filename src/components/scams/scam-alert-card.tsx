@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import type { ImageVariantsDto, ScamAlertResponseDto } from '@/api/generated/model';
+import type { ImageVariantsDto, ScamAlertResponseDto } from '@/types/api-models';
 
 import {
     AlertTriangle,
@@ -22,31 +22,26 @@ import { LikeButton } from '@/components/ui/like-button';
 import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/components/providers/auth-provider';
 import { toast } from 'sonner';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
 
 type AlertUser = {
     id?: string;
-    name?: string;
+    name?: string | null;
     level?: string;
     avatarUrl?: string | null;
-    [key: string]: unknown;
 };
 
 type AlertCity = {
     name?: string;
     slug?: string;
-    [key: string]: unknown;
 };
 
 type AlertCategory = {
     name?: string;
-    [key: string]: unknown;
 };
 
 type AlertCount = {
     votes?: number;
     comments?: number;
-    [key: string]: unknown;
 };
 
 export type ScamAlertData = Omit<
@@ -130,7 +125,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
             }
             setIsEditing(false);
         } catch (err: unknown) {
-            const errMessage = getApiErrorMessage(err, 'Failed to update scam alert');
+            const errMessage = err instanceof Error ? err.message : 'Failed to update scam alert';
             console.error(errMessage);
             toast.error(errMessage);
         }

@@ -1,7 +1,7 @@
 'use client';
 
 import { AlertCircle, DollarSign, Zap, MapPin } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 
 interface TabSwitcherProps {
     activeTab: 'price' | 'scam' | 'vibe' | 'spot';

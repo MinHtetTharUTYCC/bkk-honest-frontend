@@ -5,13 +5,13 @@ import { useInfiniteSpots, useCategories } from '@/hooks/use-api';
 import SpotCard from '@/components/spots/spot-card';
 import { SearchInput } from '@/components/ui/search-input';
 import { Filter, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import { useCity } from '@/components/providers/city-provider';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
 import type { SpotCardData } from '@/components/spots/spot-card';
-import { PaginatedSpotsWithStatsResponseDto } from '@/api/generated/model';
+import { PaginatedSpotsWithStatsResponseDto } from '@/types/api-models';
 
 function DiscoveryPageContent() {
     const router = useRouter();

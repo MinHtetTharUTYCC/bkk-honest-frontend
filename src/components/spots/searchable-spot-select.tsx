@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useSpotSearch } from "@/hooks/use-api";
 import { MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 interface SearchableSpotSelectProps {
   name: string;

@@ -4,12 +4,12 @@ import { Zap, MapPin, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useInfiniteLiveVibes, useCategories } from '@/hooks/use-api';
 import { useCity } from '@/components/providers/city-provider';
-import { cn } from '@/lib/utils';
-import { getSpotUrl } from '@/lib/slug';
+import { cn } from '@/lib/utils/core';
+import { getSpotUrl } from '@/lib/utils/slug';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 import { CategorySelector } from '@/components/ui/category-selector';
-import { LiveVibeDto, PaginatedLiveVibesDto } from '@/api/generated/model';
+import { LiveVibeDto, PaginatedLiveVibesDto } from '@/types/api-models';
 
 function VibesPageContent() {
     const router = useRouter();

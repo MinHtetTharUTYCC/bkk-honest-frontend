@@ -70,7 +70,7 @@ export default function ReportPage() {
             latitude: formData.latitude,
             longitude: formData.longitude,
             image: formData.imageFile || undefined,
-        } as any);
+        });
     };
 
     // Loading state

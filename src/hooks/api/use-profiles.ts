@@ -1,64 +1,111 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
-import {
-    useProfilesControllerGetMe,
-    useProfilesControllerFindOne,
-    useProfilesControllerGetLeaderboard,
-    useProfilesControllerCreate,
-    useProfilesControllerUpdate,
-} from '@/api/generated/profiles/profiles';
-import type { CreateProfileDto } from '@/api/generated/model/createProfileDto';
-import type { UpdateProfileDto } from '@/api/generated/model/updateProfileDto';
-import {
-    priceReportsControllerFindMyReports,
-    priceReportsControllerFindByUser,
-} from '@/api/generated/price-reports/price-reports';
-import {
-    scamAlertsControllerFindMyAlerts,
-    scamAlertsControllerFindByUser,
-} from '@/api/generated/scam-alerts/scam-alerts';
-import {
-    communityTipsControllerFindMyTips,
-    communityTipsControllerFindByUser,
-} from '@/api/generated/community-tips/community-tips';
-import { spotsControllerFindMySpots, spotsControllerFindByUser } from '@/api/generated/spots/spots';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import type {
+    CreateProfileDto,
+    LeaderboardProfileDto,
+    ProfileResponseDto,
+    UpdateProfileDto,
+} from '@/types/api-models';
+import { unwrapApiSuccessData } from '@/lib/api/api-envelope';
+import { throwApiError } from '@/lib/errors/throw-api-error';
+import { openApiClient } from '@/lib/api/openapi-client';
+import type {
+    PaginatedCommunityTipsResponseDto,
+    PaginatedPriceReportsDto,
+    PaginatedScamAlertsResponseDto,
+    PaginatedSpotsWithStatsResponseDto,
+} from '@/types/api-models';
 import { getNextSkipFromPage } from './base';
 
 export function useMyProfile() {
-    const query = useProfilesControllerGetMe({ query: { retry: false } });
+    const query = useQuery({
+        queryKey: ['profile-me'],
+        retry: false,
+        queryFn: async () => {
+            const { data, error } = await openApiClient.GET('/profiles/me');
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ProfileResponseDto>(data);
+        },
+    });
     return { ...query, data: query.data };
 }
 
 export function useVisitProfile(id: string) {
-    const query = useProfilesControllerFindOne(id, { query: { retry: false } });
+    const query = useQuery({
+        queryKey: ['profile', id],
+        enabled: !!id,
+        retry: false,
+        queryFn: async () => {
+            const { data, error } = await openApiClient.GET('/profiles/{id}', {
+                params: { path: { id } },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ProfileResponseDto>(data);
+        },
+    });
     return { ...query, data: query.data };
 }
 
 export function useLeaderboard(take = 5) {
-    const params = { take: String(take) };
-    const query = useProfilesControllerGetLeaderboard(params, {
-        query: { staleTime: 5 * 60 * 1000 },
+    const query = useQuery({
+        queryKey: ['leaderboard', take],
+        staleTime: 5 * 60 * 1000,
+        queryFn: async () => {
+            const { data, error } = await openApiClient.GET('/profiles/leaderboard/top', {
+                params: { query: { take: String(take) } },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<LeaderboardProfileDto[]>(data);
+        },
     });
     return { ...query, data: query.data };
 }
 
 export function useCreateProfile() {
-    const mutation = useProfilesControllerCreate();
-    return {
-        ...mutation,
-        mutate: (data: CreateProfileDto) => mutation.mutate({ data }),
-        mutateAsync: (data: CreateProfileDto) => mutation.mutateAsync({ data }),
-    };
+    return useMutation({
+        mutationKey: ['profile-create'],
+        mutationFn: async (data: CreateProfileDto) => {
+            const { data: responseData, error } = await openApiClient.POST('/profiles', {
+                body: data,
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ProfileResponseDto>(responseData);
+        },
+    });
 }
 
 export function useUpdateProfile() {
-    const mutation = useProfilesControllerUpdate();
-    return {
-        ...mutation,
-        mutate: (data: UpdateProfileDto) => mutation.mutate({ data }),
-        mutateAsync: (data: UpdateProfileDto) => mutation.mutateAsync({ data }),
-    };
+    return useMutation({
+        mutationKey: ['profile-update'],
+        mutationFn: async (data: UpdateProfileDto) => {
+            const { data: responseData, error } = await openApiClient.PATCH('/profiles/me', {
+                body: data,
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ProfileResponseDto>(responseData);
+        },
+    });
 }
 
 export function useInfiniteUserPriceReports(userId: string) {
@@ -67,9 +114,23 @@ export function useInfiniteUserPriceReports(userId: string) {
         queryKey: ['user-price-reports-infinite', userId],
         queryFn: async ({ pageParam = 0 }) => {
             const skip = pageParam > 0 ? pageParam : undefined;
-            return isMe
-                ? priceReportsControllerFindMyReports({ take: 10, skip })
-                : priceReportsControllerFindByUser(userId, { take: 10, skip });
+            const response = isMe
+                ? await openApiClient.GET('/price-reports/mine', {
+                      params: { query: { take: 10, skip } },
+                  })
+                : await openApiClient.GET('/price-reports/user/{userId}', {
+                      params: { path: { userId }, query: { take: 10, skip } },
+                  });
+
+            const { data, error } = response;
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return {
+                data: unwrapApiSuccessData<PaginatedPriceReportsDto>(data),
+            };
         },
         getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
         enabled: !!userId,
@@ -83,9 +144,23 @@ export function useInfiniteUserScamAlerts(userId: string) {
         queryKey: ['user-scam-alerts-infinite', userId],
         queryFn: async ({ pageParam = 0 }) => {
             const skip = pageParam > 0 ? pageParam : undefined;
-            return isMe
-                ? scamAlertsControllerFindMyAlerts({ take: 10, skip })
-                : scamAlertsControllerFindByUser(userId, { take: 10, skip });
+            const response = isMe
+                ? await openApiClient.GET('/scam-alerts/mine', {
+                      params: { query: { take: 10, skip } },
+                  })
+                : await openApiClient.GET('/scam-alerts/user/{userId}', {
+                      params: { path: { userId }, query: { take: 10, skip } },
+                  });
+
+            const { data, error } = response;
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return {
+                data: unwrapApiSuccessData<PaginatedScamAlertsResponseDto>(data),
+            };
         },
         getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
         enabled: !!userId,
@@ -101,9 +176,23 @@ export function useInfiniteUserCommunityTips(userId: string) {
         queryKey: ['user-community-tips-infinite', userId],
         queryFn: async ({ pageParam = 0 }) => {
             const skip = pageParam > 0 ? pageParam : undefined;
-            return isMe
-                ? communityTipsControllerFindMyTips({ take: 10, skip })
-                : communityTipsControllerFindByUser(userId, { take: 10, skip });
+            const response = isMe
+                ? await openApiClient.GET('/community-tips/mine', {
+                      params: { query: { take: 10, skip } },
+                  })
+                : await openApiClient.GET('/community-tips/user/{userId}', {
+                      params: { path: { userId }, query: { take: 10, skip } },
+                  });
+
+            const { data, error } = response;
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return {
+                data: unwrapApiSuccessData<PaginatedCommunityTipsResponseDto>(data),
+            };
         },
         getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
         enabled: !!userId,
@@ -118,9 +207,23 @@ export function useInfiniteUserSpots(userId: string) {
         queryKey: ['user-spots-infinite', userId],
         queryFn: async ({ pageParam = 0 }) => {
             const skip = pageParam > 0 ? pageParam : undefined;
-            return isMe
-                ? spotsControllerFindMySpots({ take: 10, skip })
-                : spotsControllerFindByUser(userId, { take: 10, skip });
+            const response = isMe
+                ? await openApiClient.GET('/spots/mine', {
+                      params: { query: { take: 10, skip } },
+                  })
+                : await openApiClient.GET('/spots/user/{userId}', {
+                      params: { path: { userId }, query: { take: 10, skip } },
+                  });
+
+            const { data, error } = response;
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return {
+                data: unwrapApiSuccessData<PaginatedSpotsWithStatsResponseDto>(data),
+            };
         },
         getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage),
         enabled: !!userId,

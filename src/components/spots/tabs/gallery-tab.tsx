@@ -11,7 +11,7 @@ import {
 } from '@/hooks/use-api';
 import { useQueryClient, InfiniteData } from '@tanstack/react-query';
 import { Camera, Upload, Loader2, User, Calendar, Trash2, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import { LikeButton } from '@/components/ui/like-button';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import Link from 'next/link';
 import { ImageViewer } from '@/components/ui/image-viewer';
+import { toastApiError } from '@/lib/errors/throw-api-error';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -35,15 +36,13 @@ import {
     GalleryImageResponseDto,
     PaginatedGalleryImagesResponseDto,
     SpotWithStatsResponseDto,
-} from '@/api/generated/model';
-import { galleryControllerGetGallery } from '@/api/generated/gallery/gallery';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
+} from '@/types/api-models';
 
 interface GalleryTabProps {
     spot: SpotWithStatsResponseDto;
 }
 
-type GalleryPage = Awaited<ReturnType<typeof galleryControllerGetGallery>>;
+type GalleryPage = { data: PaginatedGalleryImagesResponseDto };
 
 export default function GalleryTab({ spot }: GalleryTabProps) {
     const { user: authUser } = useAuth();
@@ -80,15 +79,13 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
     const images = useMemo(() => {
         const rawImages =
             galleryData?.pages.flatMap(
-                (page) => (page as unknown as { data?: GalleryImageResponseDto[] })?.data || [],
+                (page) => (page.data as PaginatedGalleryImagesResponseDto)?.data || [],
             ) || [];
         // Deduplicate items just in case
         return Array.from(new Map(rawImages.map((img) => [img.id, img])).values());
     }, [galleryData]);
 
-    const totalCount =
-        (galleryData?.pages?.[0] as { pagination?: { total: number } } | undefined)?.pagination
-            ?.total || images.length;
+    const totalCount = galleryData?.pages?.[0]?.data?.pagination?.total || images.length;
 
     const { ref: observerTarget, inView } = useInView({
         threshold: 0.1,
@@ -161,7 +158,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
 
             toast.success('Photo uploaded successfully!');
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err, 'Failed to upload photo'));
+            toastApiError(err, 'Failed to upload photo');
         } finally {
             if (e.target) e.target.value = '';
         }
@@ -186,7 +183,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                 description: 'Our moderators will review it soon.',
             });
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err, 'Failed to report photo'));
+            toastApiError(err, 'Failed to report photo');
         }
     };
 
@@ -196,7 +193,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
             await deleteMutation.mutateAsync({ id: deleteImageId });
             toast.success('Photo deleted successfully');
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err, 'Failed to delete photo'));
+            toastApiError(err, 'Failed to delete photo');
         } finally {
             setDeleteImageId(null);
         }
@@ -383,7 +380,11 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                                             size="display"
                                             fill
                                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                            blurDataURL={img.blurPlaceholder}
+                                            blurDataURL={
+                                                typeof img.blurPlaceholder === 'string'
+                                                    ? img.blurPlaceholder
+                                                    : undefined
+                                            }
                                         />
                                     )}
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
@@ -400,7 +401,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                                                 href={`/profile/${img.userId}`}
                                                 className="relative w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-white/40 overflow-hidden hover:border-amber-400 border border-transparent transition-colors shrink-0"
                                             >
-                                                {img.user?.avatarUrl ? (
+                                                {typeof img.user?.avatarUrl === 'string' ? (
                                                     <Image
                                                         src={img.user.avatarUrl}
                                                         alt=""
@@ -417,7 +418,9 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                                                     href={`/profile/${img.userId}`}
                                                     className="text-[9px] font-black text-foreground uppercase truncate hover:text-amber-400 transition-colors tracking-tight"
                                                 >
-                                                    {img.user?.name || 'Local'}
+                                                    {typeof img.user?.name === 'string'
+                                                        ? img.user.name
+                                                        : 'Local'}
                                                 </Link>
                                                 <span className="text-[8px] font-medium text-white/30 uppercase flex items-center gap-1">
                                                     <Calendar size={8} />

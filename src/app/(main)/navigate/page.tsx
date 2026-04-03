@@ -13,7 +13,7 @@ import {
   Train,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import ManualLocationModal from "./ManualLocationModal";
 import TransitOverlay from "@/components/map/transit-overlay";
 import { useMapTransitVisible } from "@/hooks/use-map-transit";

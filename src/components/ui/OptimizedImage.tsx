@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { ImageIcon } from 'lucide-react';
-import type { ImageVariantsDto } from '@/api/generated/model';
-import { getImageVariant } from '@/lib/image-utils';
+import type { ImageVariantsDto } from '@/types/api-models';
+import { getImageVariant } from '@/lib/utils/image-utils';
 
 type VariantSize = 'thumbnail' | 'display';
 

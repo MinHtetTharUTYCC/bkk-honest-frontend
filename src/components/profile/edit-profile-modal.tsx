@@ -3,11 +3,11 @@
 import { useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { toastApiError } from '@/lib/errors/throw-api-error';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useUpdateProfile } from '@/hooks/use-api';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
 
 const editProfileSchema = z.object({
     name: z
@@ -74,7 +74,7 @@ export function EditProfileModal({ isOpen, onClose, profile, onSuccess }: EditPr
             onSuccess?.();
             onClose();
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err) || 'Failed to update profile');
+            toastApiError(err, 'Failed to update profile');
         }
     };
 

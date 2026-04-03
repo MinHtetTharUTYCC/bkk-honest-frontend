@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Upload, X, MapPin } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import LocationPicker from '@/components/spots/location-picker';
 import { Dropdown } from '@/components/ui/dropdown';
 import {
@@ -20,8 +20,7 @@ import {
     FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
-import { spotsControllerReverseGeocode } from '@/api/generated/spots/spots';
+import { unwrapApiSuccessData } from '@/lib/api/api-envelope';
 
 export interface SpotFormData extends SpotFormValues {
     imageFile?: File | null;
@@ -76,14 +75,20 @@ export default function SpotForm({
         async (lat: number, lng: number) => {
             setIsFetchingAddress(true);
             try {
-                const response = await spotsControllerReverseGeocode({
+                const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+                const response = await fetch(`${baseUrl}/spots/reverse-geocode`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ latitude: lat, longitude: lng }),
                 });
 
-                // Mutator unwraps the response envelope
-                const addr = (response as any)?.address || null;
+                if (!response.ok) {
+                    throw new Error('Reverse geocode failed');
+                }
+
+                const payload: unknown = await response.json();
+                const normalized = unwrapApiSuccessData<{ address?: string }>(payload);
+                const addr = normalized?.address || null;
 
                 if (addr) {
                     setValue('address', addr, { shouldValidate: true });
@@ -145,7 +150,7 @@ export default function SpotForm({
             });
             onSuccess?.();
         } catch (err: unknown) {
-            const errMsg = getApiErrorMessage(err, 'Failed to submit spot report');
+            const errMsg = err instanceof Error ? err.message : 'Failed to submit spot report';
             onError?.(errMsg);
             console.error('Form submission error:', err);
         }

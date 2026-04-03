@@ -5,6 +5,7 @@ import { Query, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import type {
     CommunityTipResponseDto,
+    CreateVoteResponseDto,
     ScamAlertResponseDto,
     GalleryImageResponseDto,
     SpotWithStatsResponseDto,
@@ -12,8 +13,7 @@ import type {
     LiveVibeDto,
     PriceReportDto,
     UnauthorizedErrorDto,
-} from '@/api/generated/model';
-import { votesControllerCreateTipVote } from '@/api/generated/votes/votes';
+} from '@/types/api-models';
 
 type Voteable =
     | (CommunityTipResponseDto & { hasVoted?: boolean; voteId?: string | null })
@@ -60,10 +60,26 @@ type OrvalPage = {
     headers: unknown;
 };
 
-type CreateVoteSuccess = Extract<
-    Awaited<ReturnType<typeof votesControllerCreateTipVote>>,
-    { status: 201 }
->;
+function extractVoteId(response: unknown): string {
+    if (
+        response &&
+        typeof response === 'object' &&
+        'data' in response &&
+        response.data &&
+        typeof response.data === 'object' &&
+        'voteId' in response.data
+    ) {
+        const voteId = (response.data as Partial<CreateVoteResponseDto>).voteId;
+        if (typeof voteId === 'string') return voteId;
+    }
+
+    if (response && typeof response === 'object' && 'voteId' in response) {
+        const voteId = (response as Partial<CreateVoteResponseDto>).voteId;
+        if (typeof voteId === 'string') return voteId;
+    }
+
+    throw new Error('Vote created but no voteId returned');
+}
 
 export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?: string) {
     const createVote = useCreateVote();
@@ -334,8 +350,7 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
                     type,
                 });
                 // After successful create, set state directly (not toggle)
-                const success = response as CreateVoteSuccess;
-                const newVoteId = success.data.voteId; // no ?? needed, voteId is always string
+                const newVoteId = extractVoteId(response);
 
                 queryClient.setQueriesData<CacheFormat | CacheFormat[]>({ predicate }, (old) =>
                     setItemState(old, item.id, {

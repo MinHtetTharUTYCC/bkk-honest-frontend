@@ -1,4 +1,5 @@
 import Axios, { AxiosRequestConfig, AxiosInstance } from 'axios';
+import { unwrapApiSuccessData } from '@/lib/api/api-envelope';
 
 export const AXIOS_INSTANCE: AxiosInstance = Axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
@@ -61,12 +62,7 @@ export const customInstance = <T>(
         ...requestConfig,
         cancelToken: source.token,
     }).then(({ data }) => {
-        // Unwrap backend API response envelope if it has status field (e.g., { data: DTO, status: 200 })
-        // Only unwrap if there's both 'data' and 'status' to avoid unwrapping legitimate data DTOs
-        if (data && typeof data === 'object' && 'data' in data && 'status' in data) {
-            return (data as { data: T; status: number }).data;
-        }
-        return data;
+        return unwrapApiSuccessData<T>(data);
     }) as PromiseWithCancel<T>;
 
     promise.cancel = () => {

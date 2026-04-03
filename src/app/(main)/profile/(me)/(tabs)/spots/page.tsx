@@ -4,7 +4,9 @@ import {
   HydrationBoundary,
   dehydrate,
 } from "@tanstack/react-query";
-import { getSpotsControllerFindByUserQueryOptions } from "@/api/generated/spots/spots";
+import { apiFetch } from "@/lib/api/api-server";
+import { unwrapApiSuccessData } from "@/lib/api/api-envelope";
+import type { PaginatedSpotsWithStatsResponseDto } from "@/types/api-models";
 import UserSpotsInfiniteTab from "@/components/profile/user-spots-infinite-tab";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
@@ -20,13 +22,24 @@ export const metadata: Metadata = {
 export default async function MySpotsPage() {
   const queryClient = new QueryClient();
 
-  // Prefetch query using 'me' as the userId
-  const queryOptions = getSpotsControllerFindByUserQueryOptions(
-    "me",
-    { take: 10 },
-  );
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ["user-spots-infinite", "me"],
+    initialPageParam: 0,
+    queryFn: async ({ pageParam = 0 }) => {
+      const skip = pageParam > 0 ? pageParam : undefined;
+      const query = new URLSearchParams();
+      query.set("take", "10");
+      if (typeof skip === "number") {
+        query.set("skip", String(skip));
+      }
 
-  await queryClient.prefetchQuery(queryOptions);
+      const response = await apiFetch(`/spots/mine?${query.toString()}`);
+      const payload: unknown = await response.json();
+      return {
+        data: unwrapApiSuccessData<PaginatedSpotsWithStatsResponseDto>(payload),
+      };
+    },
+  });
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

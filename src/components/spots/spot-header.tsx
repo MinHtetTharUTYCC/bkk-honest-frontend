@@ -1,8 +1,8 @@
 "use client";
 import { MapPin, Zap, CheckCircle2, Target, Navigation, ImageIcon, Share2, Edit2, Trash2, Flag, Loader2, ArrowLeft, MoreVertical, } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
-import { SpotWithStatsResponseDto } from "@/api/generated/model";
+import { cn } from "@/lib/utils/core";
+import { SpotWithStatsResponseDto } from "@/types/api-models";
 import OptimizedImage from "@/components/ui/OptimizedImage";
 import { LikeButton } from "@/components/ui/like-button";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
@@ -28,10 +28,17 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick, }: Sp
   const deleteMissionMutation = useDeleteMission();
   const { toggleVote: toggleSpotVote } = useVoteToggle("spot");
   
-  // Handle voteId type compatibility
-  const voteId = typeof spot.voteId === 'string' 
-    ? spot.voteId 
-    : spot.voteId?.id || null;
+  // Handle voteId type compatibility across generated DTO variants
+  const voteIdRaw = spot.voteId as unknown;
+  const voteId =
+    typeof voteIdRaw === "string"
+      ? voteIdRaw
+      : voteIdRaw &&
+          typeof voteIdRaw === "object" &&
+          "id" in voteIdRaw &&
+          typeof (voteIdRaw as { id?: unknown }).id === "string"
+        ? ((voteIdRaw as { id: string }).id ?? null)
+        : null;
 
   const spotCategory = spot.category;
   const spotVibeStats = spot.vibeStats;
@@ -123,7 +130,11 @@ export default function SpotHeader({ spot, onEdit, onDelete, onImageClick, }: Sp
                 width={spot.imageWidth} 
                 height={spot.imageHeight} 
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                blurDataURL={spot.blurPlaceholder}
+                blurDataURL={
+                  typeof spot.blurPlaceholder === "string"
+                    ? spot.blurPlaceholder
+                    : undefined
+                }
               />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">

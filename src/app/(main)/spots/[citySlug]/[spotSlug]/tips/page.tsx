@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { QueryClient, HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import TipsTab from '@/components/spots/tabs/tips-tab';
-import { SpotWithStatsResponseDto } from '@/api/generated/model';
+import { PaginatedCommunityTipsResponseDto, SpotWithStatsResponseDto } from '@/types/api-models';
 import { getSpot } from '@/services/spot';
-import { communityTipsControllerFindBySpot } from '@/api/generated/community-tips/community-tips';
-import { createClient as createServerClient } from '@/lib/supabase/server';
+import { apiFetch } from '@/lib/api/api-server';
+import { unwrapApiSuccessData } from '@/lib/api/api-envelope';
 import { getNextSkipFromPage } from '@/hooks/api/base';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bkkhonest.com';
@@ -40,17 +40,9 @@ export default async function TipsPage({
         return <div>Spot not found</div>;
     }
 
-    const supabase = await createServerClient();
-    const {
-        data: { session },
-    } = await supabase.auth.getSession();
-    const headers = session?.access_token
-        ? { Authorization: `Bearer ${session.access_token}` }
-        : {};
-
     const queryClient = new QueryClient();
 
-    queryClient.setQueryData(['spot', citySlug, spotSlug], spot);
+    queryClient.setQueryData(['spot-by-slug', citySlug, spotSlug], spot);
 
     const normalizedType = type === 'AVOID' ? 'AVOID' : 'TRY';
     const normalizedSort = sort === 'newest' ? 'newest' : 'popular';
@@ -59,17 +51,22 @@ export default async function TipsPage({
         queryKey: ['tips-infinite', spot.id, normalizedType, normalizedSort],
         initialPageParam: 0,
         queryFn: async ({ pageParam = 0 }) => {
-            const res = await communityTipsControllerFindBySpot(
-                spot.id,
-                {
-                    skip: pageParam,
-                    take: 10,
-                    type: normalizedType,
-                    sort: normalizedSort,
-                },
-                { headers, next: { revalidate: 60 } } as RequestInit,
-            );
-            return res;
+            const query = new URLSearchParams();
+            query.set('take', '10');
+            query.set('type', normalizedType);
+            query.set('sort', normalizedSort);
+            if (typeof pageParam === 'number' && pageParam > 0) {
+                query.set('skip', String(pageParam));
+            }
+
+            const response = await apiFetch(`/community-tips/spot/${spot.id}?${query.toString()}`, {
+                next: { revalidate: 60 },
+            });
+            const payload: unknown = await response.json();
+
+            return {
+                data: unwrapApiSuccessData<PaginatedCommunityTipsResponseDto>(payload),
+            };
         },
         getNextPageParam: (lastPage: unknown) => getNextSkipFromPage(lastPage, true),
     });

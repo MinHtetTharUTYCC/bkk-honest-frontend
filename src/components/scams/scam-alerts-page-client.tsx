@@ -11,7 +11,7 @@ import {
   Clock,
   Loader2,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { useCity } from "@/components/providers/city-provider";
 import { useInView } from "react-intersection-observer";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";

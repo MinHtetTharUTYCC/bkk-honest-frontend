@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { ScamAlertResponseDto, CommentResponseDto } from '@/api/generated/model';
+import { ScamAlertResponseDto, CommentResponseDto } from '@/types/api-models';
 import { useQueryClient } from '@tanstack/react-query';
 import {
     useScamAlertBySlug,
@@ -27,7 +27,7 @@ import {
     Flag,
     Share2,
 } from 'lucide-react';
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInView } from 'react-intersection-observer';
 import ReactionButton from '@/components/reactions/reaction-button';
@@ -49,12 +49,14 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
 
 // Type extensions for properly typed nested objects in ScamAlertResponseDto
 type ScamAlert = ScamAlertResponseDto & {
     city: { name?: string; slug?: string } & Record<string, unknown>;
-    user: { id?: string; name?: string; level?: string; avatarUrl?: string } & Record<string, unknown>;
+    user: { id?: string; name?: string; level?: string; avatarUrl?: string } & Record<
+        string,
+        unknown
+    >;
     _count: { votes?: number; comments?: number } & Record<string, unknown>;
 };
 
@@ -89,7 +91,8 @@ export default function ScamAlertClient({ alert: initialAlert }: { alert: ScamAl
     const comments: CommentResponseDto[] =
         (commentsResponse?.pages as unknown as Array<{ data?: CommentResponseDto[] }>)?.flatMap(
             (page) =>
-                page?.data || (Array.isArray(page) ? (page as unknown as CommentResponseDto[]) : []),
+                page?.data ||
+                (Array.isArray(page) ? (page as unknown as CommentResponseDto[]) : []),
         ) || [];
     const createCommentMutation = useCreateComment();
     const { toggleVote, isPending: votePending } = useVoteToggle('alert');
@@ -104,15 +107,18 @@ export default function ScamAlertClient({ alert: initialAlert }: { alert: ScamAl
     const { ref, inView } = useInView();
     const hasFetchedRef = useRef(false);
 
-    // Fetch next page when scrolling
-    if (inView && hasNextPage && !isFetchingNextPage && alertId && !hasFetchedRef.current) {
-        hasFetchedRef.current = true;
-        fetchNextPage();
-    }
+    useEffect(() => {
+        if (inView && hasNextPage && !isFetchingNextPage && alertId && !hasFetchedRef.current) {
+            hasFetchedRef.current = true;
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isFetchingNextPage, alertId, fetchNextPage]);
 
-    if (!inView) {
-        hasFetchedRef.current = false;
-    }
+    useEffect(() => {
+        if (!inView) {
+            hasFetchedRef.current = false;
+        }
+    }, [inView]);
 
     const handleSendComment = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -252,7 +258,7 @@ export default function ScamAlertClient({ alert: initialAlert }: { alert: ScamAl
             setCommentToDelete(null);
             toast.success('Comment deleted');
         } catch (err) {
-            const errMessage = getApiErrorMessage(err, 'Failed to delete comment');
+            const errMessage = err instanceof Error ? err.message : 'Failed to delete comment';
             console.error(errMessage);
             toast.error(errMessage);
         }
@@ -278,7 +284,7 @@ export default function ScamAlertClient({ alert: initialAlert }: { alert: ScamAl
             toast.success('Scam alert deleted');
             router.push('/scam-alerts');
         } catch (err) {
-            const errMessage = getApiErrorMessage(err, 'Failed to delete alert');
+            const errMessage = err instanceof Error ? err.message : 'Failed to delete alert';
             console.error(errMessage);
             toast.error(errMessage);
         }
@@ -619,7 +625,10 @@ export default function ScamAlertClient({ alert: initialAlert }: { alert: ScamAl
                                                     </span>
                                                     {comment.user?.level && (
                                                         <span className="text-[7px] font-bold text-amber-400/60 border border-amber-400/10 px-1 py-0.5 rounded uppercase tracking-tighter">
-                                                            {(comment.user.level as string).replace('_', ' ')}
+                                                            {(comment.user.level as string).replace(
+                                                                '_',
+                                                                ' ',
+                                                            )}
                                                         </span>
                                                     )}
                                                 </div>

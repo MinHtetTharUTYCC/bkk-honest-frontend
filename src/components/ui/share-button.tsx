@@ -3,7 +3,7 @@
 import * as React from "react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Share2, Copy, Twitter, Facebook, Check, Loader2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { DropdownMenu, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 
 interface ShareButtonProps {

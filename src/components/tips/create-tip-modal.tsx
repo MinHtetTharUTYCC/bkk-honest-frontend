@@ -10,9 +10,9 @@ import {
     CommunityTipResponseDtoType,
     PaginatedCommunityTipsResponseDto,
     type CommunityTipResponseDto,
-} from '@/api/generated/model';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
-import { communityTipsControllerFindBySpotResponse } from '@/api/generated/community-tips/community-tips';
+} from '@/types/api-models';
+
+type CommunityTipsPageResponse = { data: PaginatedCommunityTipsResponseDto };
 
 const sortTypes = ['popular', 'newest'] as const; // TODO - extract from api
 const tipTypes = [CommunityTipResponseDtoType.TRY, CommunityTipResponseDtoType.AVOID];
@@ -45,7 +45,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
             tipTypes.forEach((type) => {
                 sortTypes.forEach((sort) => {
                     queryClient.setQueryData<
-                        InfiniteData<communityTipsControllerFindBySpotResponse>
+                        InfiniteData<CommunityTipsPageResponse>
                     >(['tips-infinite', spotId, type, sort], (oldData) => {
                         if (!oldData || !oldData.pages) return oldData;
                         if (newTip.type !== type) return oldData;
@@ -63,7 +63,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
                                     },
                                 };
                             }),
-                        } as InfiniteData<communityTipsControllerFindBySpotResponse>;
+                        } as InfiniteData<CommunityTipsPageResponse>;
                     });
                 });
             });
@@ -71,7 +71,7 @@ export default function CreateTipModal({ spotId, onClose }: CreateTipModalProps)
             toast.success('Tip shared with the community!');
             onClose();
         } catch (error: unknown) {
-            toast.error(getApiErrorMessage(error) || 'Failed to share tip');
+            toast.error(error instanceof Error ? error.message : 'Failed to share tip');
         }
     };
 

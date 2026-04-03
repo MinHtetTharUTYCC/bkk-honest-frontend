@@ -1,5 +1,5 @@
-import { SpotWithStatsResponseDto } from "@/api/generated/model";
-import { cn } from "@/lib/utils";
+import { SpotWithStatsResponseDto } from "@/types/api-models";
+import { cn } from "@/lib/utils/core";
 
 export default function SpotStatsGrid({
   spot,
@@ -12,8 +12,7 @@ export default function SpotStatsGrid({
   const lastActivity = activityStats?.lastActivity;
   const safeLastActivity =
     typeof lastActivity === "string" ||
-    typeof lastActivity === "number" ||
-    lastActivity instanceof Date
+    typeof lastActivity === "number"
       ? lastActivity
       : null;
   const minPrice = typeof priceStats?.min === "number" ? priceStats.min : null;

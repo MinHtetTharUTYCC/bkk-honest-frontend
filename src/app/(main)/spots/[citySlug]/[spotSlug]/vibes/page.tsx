@@ -5,10 +5,10 @@ import {
   dehydrate,
 } from "@tanstack/react-query";
 import VibesTab from "@/components/spots/tabs/vibes-tab";
-import { SpotWithStatsResponseDto } from "@/api/generated/model";
+import { PaginatedLiveVibesDto, SpotWithStatsResponseDto } from "@/types/api-models";
 import { getSpot } from "@/services/spot";
-import { liveVibesControllerFindAll } from "@/api/generated/live-vibes/live-vibes";
-import { createClient as createServerClient } from "@/lib/supabase/server";
+import { apiFetch } from "@/lib/api/api-server";
+import { unwrapApiSuccessData } from "@/lib/api/api-envelope";
 import { getNextSkipFromPage } from "@/hooks/api/base";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bkkhonest.com";
@@ -40,35 +40,38 @@ export default async function VibesPage({
     return <div>Spot not found</div>;
   }
 
-  const supabase = await createServerClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-  const headers = session?.access_token
-    ? { Authorization: `Bearer ${session.access_token}` }
-    : {};
-
   const queryClient = new QueryClient();
 
   // Prefetch the spot data so the shared header finds it in cache
-  queryClient.setQueryData(["spot", citySlug, spotSlug], spot);
+  queryClient.setQueryData(["spot-by-slug", citySlug, spotSlug], spot);
 
   await queryClient.prefetchInfiniteQuery({
     queryKey: ["live-vibes-infinite", { spotId: spot.id }],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
-      const res = await liveVibesControllerFindAll(
-        {
-          spotId: spot.id,
-          skip: pageParam.toString(),
-          take: "10",
-        },
-        { headers, next: { revalidate: 60 } } as RequestInit,
-      );
-      return res;
+      const query = new URLSearchParams();
+      query.set("spotId", spot.id);
+      query.set("take", "10");
+      if (typeof pageParam === "number" && pageParam > 0) {
+        query.set("skip", String(pageParam));
+      }
+
+      const response = await apiFetch(`/live-vibes?${query.toString()}`, {
+        next: { revalidate: 60 },
+      });
+      const payload: unknown = await response.json();
+
+      return {
+        data: unwrapApiSuccessData<PaginatedLiveVibesDto>(payload),
+      };
     },
-    getNextPageParam: (lastPage: unknown) =>
-      getNextSkipFromPage(lastPage, true),
+    getNextPageParam: (lastPage: unknown) => {
+      const pageData =
+        typeof lastPage === "object" && lastPage !== null && "data" in lastPage
+          ? (lastPage as { data: unknown }).data
+          : lastPage;
+      return getNextSkipFromPage(pageData, true);
+    },
   });
 
   return (

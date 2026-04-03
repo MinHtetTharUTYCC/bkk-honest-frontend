@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { useState } from "react";
 import { MessageSquare, User as UserIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { LikeButton } from "@/components/ui/like-button";
 import { TipActionsMenu } from "./tip-actions-menu";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
-import { CommunityTipResponseDto } from "@/api/generated/model/communityTipResponseDto";
+import { CommunityTipResponseDto } from "@/types/api-models";
 
 interface TipCardProps {
   tip: CommunityTipResponseDto;
@@ -105,8 +105,8 @@ export function TipCard({
           >
             {tip.user?.avatarUrl ? (
               <Image
-                src={tip.user.avatarUrl}
-                alt={tip.user.name}
+                src={typeof tip.user.avatarUrl === 'string' ? tip.user.avatarUrl : ''}
+                alt={typeof tip.user.name === 'string' ? tip.user.name : 'Local'}
                 fill
                 sizes="48px"
                 className="object-cover"
@@ -124,7 +124,7 @@ export function TipCard({
                 href={`/profile/${tip.userId}`}
                 className="font-bold text-white text-sm md:text-base truncate hover:text-amber-400 transition-colors"
               >
-                {tip.user?.name || "Local"}
+                {typeof tip.user?.name === 'string' ? tip.user.name : "Local"}
               </Link>
               {tip.user?.level && (
                 <span

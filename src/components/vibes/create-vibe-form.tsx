@@ -5,10 +5,11 @@ import { useCreateLiveVibe } from '@/hooks/use-api';
 import { Zap, Loader2 } from 'lucide-react';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
 import { toast } from 'sonner';
+import { toastApiError } from '@/lib/errors/throw-api-error';
 import { InfiniteData, useQueryClient } from '@tanstack/react-query';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
-import { liveVibesControllerFindAllResponse } from '@/api/generated/live-vibes/live-vibes';
-import { LiveVibeDto, PaginatedLiveVibesDto } from '@/api/generated/model';
+import { LiveVibeDto, PaginatedLiveVibesDto } from '@/types/api-models';
+
+type LiveVibesPageResponse = { data: PaginatedLiveVibesDto };
 
 interface CreateVibeFormProps {
     spotId?: string;
@@ -48,7 +49,7 @@ export default function CreateVibeForm({
             const newVibe = response as unknown as LiveVibeDto;
 
             // Update the infinite query cache to show new vibe at index 0
-            queryClient.setQueryData<InfiniteData<liveVibesControllerFindAllResponse>>(
+            queryClient.setQueryData<InfiniteData<LiveVibesPageResponse>>(
                 ['live-vibes-infinite', { spotId: finalSpotId }],
                 (oldData) => {
                     if (!oldData || !oldData.pages) return oldData;
@@ -66,7 +67,7 @@ export default function CreateVibeForm({
                                 },
                             };
                         }),
-                    } as InfiniteData<liveVibesControllerFindAllResponse>;
+                    } as InfiniteData<LiveVibesPageResponse>;
                 },
             );
 
@@ -76,7 +77,7 @@ export default function CreateVibeForm({
             onSuccess?.();
             toast.success('Vibe checked in!');
         } catch (err: unknown) {
-            toast.error(getApiErrorMessage(err) || 'Failed to check in vibe');
+            toastApiError(err, 'Failed to check in vibe');
         } finally {
             setIsSubmitting(false);
         }

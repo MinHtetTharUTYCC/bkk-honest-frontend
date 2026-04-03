@@ -2,13 +2,13 @@
 
 import { MapPin, Zap, ImageIcon } from 'lucide-react';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
-import { getSpotUrl } from '@/lib/slug';
+import { getSpotUrl } from '@/lib/utils/slug';
 import { LikeButton } from '@/components/ui/like-button';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 import Link from 'next/link';
 import { useMemo } from 'react';
 
-import type { SpotWithStatsResponseDto } from '@/api/generated/model';
+import type { SpotWithStatsResponseDto } from '@/types/api-models';
 
 export type SpotCardData = SpotWithStatsResponseDto;
 
@@ -41,12 +41,7 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
     // Helper for "Pulse" freshness - memoized to avoid recalculating on every render
     const pulseLabel = useMemo(() => {
         const timestamp = activityStats?.lastActivity;
-        if (
-            typeof timestamp !== 'string' &&
-            typeof timestamp !== 'number' &&
-            !(timestamp instanceof Date)
-        )
-            return null;
+        if (typeof timestamp !== 'string' && typeof timestamp !== 'number') return null;
         const date = new Date(timestamp);
         // eslint-disable-next-line react-hooks/purity
         const now = Date.now();
@@ -89,7 +84,11 @@ export default function SpotCard({ spot }: { spot: SpotCardData }) {
                         width={spot.imageWidth}
                         height={spot.imageHeight}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        blurDataURL={spot.blurPlaceholder}
+                        blurDataURL={
+                            typeof spot.blurPlaceholder === 'string'
+                                ? spot.blurPlaceholder
+                                : undefined
+                        }
                     />
                 ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center text-white/20 gap-2">

@@ -6,7 +6,7 @@ import { useMyProfile } from '@/hooks/use-api';
 import { ProfileUserInfo } from '@/components/profile/profile-user-info';
 import { EditProfileModal } from '@/components/profile/edit-profile-modal';
 import { Loader2 } from 'lucide-react';
-import { ProfileResponseDto } from '@/api/generated/model';
+import { ProfileResponseDto } from '@/types/api-models';
 
 function ProfileLayoutContent({ children }: { children: React.ReactNode }) {
     const { loading: authLoading } = useAuth();

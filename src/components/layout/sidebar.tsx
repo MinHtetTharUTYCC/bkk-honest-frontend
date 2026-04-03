@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MapPin, ArrowUpRight } from "lucide-react";
 import { usePathname } from "next/navigation";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { useCity } from "@/components/providers/city-provider";
 import { useCategories } from "@/hooks/use-api";
 import { LeaderboardSidebarList } from "@/components/leaderboard-list";

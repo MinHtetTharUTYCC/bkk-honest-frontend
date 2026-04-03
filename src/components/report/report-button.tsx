@@ -1,7 +1,7 @@
 "use client";
 
 import { Flag } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { useAuth } from "@/components/providers/auth-provider";
 import { toast } from "sonner";
 

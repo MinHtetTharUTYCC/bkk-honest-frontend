@@ -4,14 +4,14 @@ import { useEffect, useMemo } from 'react';
 import { useInfiniteUserScamAlerts } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { getScamAlertUrl } from '@/lib/slug';
+import { getScamAlertUrl } from '@/lib/utils/slug';
 import Link from 'next/link';
 import OptimizedImage from '@/components/ui/OptimizedImage';
 
 interface UserScamsInfiniteTabProps {
     userId: string;
 }
-import { PaginatedScamAlertsResponseDto } from '@/api/generated/model/paginatedScamAlertsResponseDto';
+import { PaginatedScamAlertsResponseDto } from '@/types/api-models';
 
 export default function UserScamsInfiniteTab({ userId }: UserScamsInfiniteTabProps) {
     const {

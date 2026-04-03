@@ -5,8 +5,8 @@ import { useInfiniteUserPriceReports } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
 
-import type { PriceReportDto } from '@/api/generated/model';
-import type { PaginatedPriceReportsDto } from '@/api/generated/model';
+import type { PriceReportDto } from '@/types/api-models';
+import type { PaginatedPriceReportsDto } from '@/types/api-models';
 
 interface UserReportsInfiniteTabProps {
     userId: string;

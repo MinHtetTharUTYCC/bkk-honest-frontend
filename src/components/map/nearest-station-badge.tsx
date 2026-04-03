@@ -1,12 +1,12 @@
 import { Train } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import {
   formatDistance,
   formatWalkingTime,
   getSystemColor,
   getSystemDisplayName,
   type NearestStation,
-} from "@/lib/transit-utils";
+} from "@/lib/utils/transit-utils";
 
 interface NearestStationBadgeProps {
   nearestStation: NearestStation | null;

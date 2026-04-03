@@ -5,7 +5,7 @@ import {
   findNearestStations,
   type Station,
   type NearestStation,
-} from "@/lib/transit-utils";
+} from "@/lib/utils/transit-utils";
 
 interface UseNearestStationReturn {
   stations: Station[];
