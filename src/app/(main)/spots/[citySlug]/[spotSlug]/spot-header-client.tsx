@@ -47,7 +47,7 @@ export default function SpotHeaderClient({
     // Sync initialSpot to TanStack cache if it's not there
     // This ensures other components (like TipsTab) can benefit from the SSR data
     useState(() => {
-        queryClient.setQueryData(['spot-by-slug', citySlug, spotSlug], { data: initialSpot });
+        queryClient.setQueryData(['spot-by-slug', citySlug, spotSlug], initialSpot);
     });
 
     // Use the authenticated spot from SSR as initial data

@@ -84,7 +84,7 @@ export default function TipsTab({ spot }: TipsTabProps) {
         // We can merge initialTips with react-query data, but for simplicity we rely on React Query hydration.
         const rawTips =
             tipsData?.pages.flatMap(
-                (page) => (page as unknown as { data?: CommunityTipResponseDto[] })?.data || [],
+                (page) => (page.data as unknown as PaginatedCommunityTipsResponseDto)?.data || [],
             ) || [];
         return rawTips;
     }, [tipsData]);

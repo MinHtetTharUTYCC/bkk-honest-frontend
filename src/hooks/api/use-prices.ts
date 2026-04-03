@@ -43,8 +43,13 @@ export function useInfiniteSpotPriceReports(spotId: string) {
         data: unwrapApiSuccessData<PaginatedPriceReportsDto>(data),
       };
     },
-    getNextPageParam: (lastPage: unknown) =>
-      getNextSkipFromPage(lastPage, false),
+    getNextPageParam: (lastPage: unknown) => {
+      const pageData =
+        typeof lastPage === "object" && lastPage !== null && "data" in lastPage
+          ? (lastPage as { data: unknown }).data
+          : lastPage;
+      return getNextSkipFromPage(pageData, false);
+    },
     enabled: !!spotId,
     initialPageParam: 0,
   });

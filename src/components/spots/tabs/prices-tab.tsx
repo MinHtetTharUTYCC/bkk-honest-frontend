@@ -8,7 +8,11 @@ import { cn } from '@/lib/utils/core';
 import CreatePriceModal from '@/components/prices/create-price-modal';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, usePathname } from 'next/navigation';
-import { PriceReportDto, SpotWithStatsResponseDto } from '@/types/api-models';
+import {
+    PaginatedPriceReportsDto,
+    PriceReportDto,
+    SpotWithStatsResponseDto,
+} from '@/types/api-models';
 
 interface PricesTabProps {
     spot: SpotWithStatsResponseDto;
@@ -33,7 +37,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
     const reports: PriceReportDto[] = useMemo(() => {
         return (
             reportsData?.pages.flatMap(
-                (page) => (page as unknown as { data: PriceReportDto[] })?.data || [],
+                (page) => (page.data as unknown as PaginatedPriceReportsDto)?.data || [],
             ) || []
         );
     }, [reportsData]);

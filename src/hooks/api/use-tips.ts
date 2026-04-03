@@ -65,8 +65,13 @@ export function useInfiniteSpotTips(
       };
     },
     staleTime: 5 * 60 * 1000,
-    getNextPageParam: (lastPage: unknown) =>
-      getNextSkipFromPage(lastPage, true),
+    getNextPageParam: (lastPage: unknown) => {
+      const pageData =
+        typeof lastPage === "object" && lastPage !== null && "data" in lastPage
+          ? (lastPage as { data: unknown }).data
+          : lastPage;
+      return getNextSkipFromPage(pageData, true);
+    },
     initialPageParam: 0,
   });
 }
