@@ -9,15 +9,14 @@ interface EndOfListProps {
 /**
  * Reusable component to indicate the end of a paginated list
  */
-export function EndOfList({ 
-    message = "You've reached the end", 
-    className 
-}: EndOfListProps) {
+export function EndOfList({ message = "You've reached the end", className }: EndOfListProps) {
     return (
-        <p className={cn(
-            "text-[10px] font-semibold text-white/30 uppercase tracking-[0.2em] py-8 text-center", 
-            className
-        )}>
+        <p
+            className={cn(
+                'text-[12px] font-semibold text-white/30 uppercase tracking-[0.2em] py-8 text-center',
+                className,
+            )}
+        >
             {message}
         </p>
     );
