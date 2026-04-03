@@ -21,6 +21,7 @@ import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import Link from 'next/link';
 import { ImageViewer } from '@/components/ui/image-viewer';
 import { toastApiError } from '@/lib/errors/throw-api-error';
+import { EndOfList } from '@/components/ui/end-of-list';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -475,9 +476,7 @@ export default function GalleryTab({ spot }: GalleryTabProps) {
                 ) : hasNextPage ? (
                     <div className="h-4 w-4" />
                 ) : (
-                    <p className="text-[10px] font-medium text-white/40 uppercase tracking-[0.2em]">
-                        End of gallery
-                    </p>
+                    <EndOfList message="End of gallery" />
                 )}
             </div>
         </div>

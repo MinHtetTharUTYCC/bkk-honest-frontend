@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils/core';
 import CreatePriceModal from '@/components/prices/create-price-modal';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, usePathname } from 'next/navigation';
+import { EndOfList } from '@/components/ui/end-of-list';
 import {
     PaginatedPriceReportsDto,
     PriceReportDto,
@@ -175,9 +176,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
                 ) : hasNextReports ? (
                     <div className="h-4 w-4" />
                 ) : (
-                    <p className="text-[10px] font-semibold text-white/40 tracking-wide">
-                        End of reports
-                    </p>
+                    <EndOfList message="End of reports" />
                 )}
             </div>
         </div>

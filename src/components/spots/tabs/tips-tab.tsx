@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { toastApiError } from '@/lib/errors/throw-api-error';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
+import { EndOfList } from '@/components/ui/end-of-list';
 import {
     Select,
     SelectContent,
@@ -351,9 +352,7 @@ export default function TipsTab({ spot }: TipsTabProps) {
                             {isFetchingNextTips ? (
                                 <Loader2 size={20} className="text-amber-400 animate-spin" />
                             ) : hasNextTips ? null : (
-                                <p className="text-[10px] font-semibold text-white/40 tracking-wide">
-                                    End of tips
-                                </p>
+                                <EndOfList message="End of tips" />
                             )}
                         </div>
                     </div>
