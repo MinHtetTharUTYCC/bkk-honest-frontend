@@ -94,6 +94,9 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
     const deleteCommentMutation = useDeleteComment();
     const [newComment, setNewComment] = useState('');
 
+    const firstPage = commentsResponse?.pages?.[0] as any;
+    const totalComments = firstPage?.pagination?.total ?? tip._count?.comments ?? 0;
+
     const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
     const [editContent, setEditContent] = useState('');
     const [commentToDelete, setCommentToDelete] = useState<string | null>(null);
@@ -114,6 +117,45 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
         }
     }, [inView]);
 
+
+    const updateTipListsCount = (increment: number) => {
+        queryClient.setQueriesData(
+            {
+                predicate: (query) => {
+                    const key = query.queryKey[0] as string;
+                    return key === 'tips-infinite' || key === 'user-community-tips-infinite';
+                },
+            },
+            (oldData: any) => {
+                if (!oldData || !oldData.pages) return oldData;
+                return {
+                    ...oldData,
+                    pages: oldData.pages.map((page: any) => {
+                        if (!page.data || !Array.isArray(page.data.data)) return page;
+                        return {
+                            ...page,
+                            data: {
+                                ...page.data,
+                                data: page.data.data.map((t: any) => {
+                                    if (t.id === tip.id) {
+                                        return {
+                                            ...t,
+                                            _count: {
+                                                ...t._count,
+                                                comments: Math.max(0, (t._count?.comments || 0) + increment),
+                                            },
+                                        };
+                                    }
+                                    return t;
+                                }),
+                            }
+                        };
+                    }),
+                };
+            }
+        );
+    };
+
     const handleSendComment = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newComment.trim() || !user) return;
@@ -133,10 +175,19 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                     if (!oldData || !oldData.pages) return oldData;
                     const newPages = [...oldData.pages];
                     if (newPages.length === 0) {
-                        newPages[0] = { data: [newCommentData] };
+                        newPages[0] = { 
+                            data: [newCommentData], 
+                            pagination: { total: (tip._count?.comments || 0) + 1 }
+                        } as any;
                     } else {
-                        const firstPage = { ...newPages[0] };
+                        const firstPage = { ...newPages[0] } as any;
                         firstPage.data = [newCommentData, ...(firstPage.data || [])];
+                        if (firstPage.pagination) {
+                            firstPage.pagination = {
+                                ...firstPage.pagination,
+                                total: (firstPage.pagination.total || 0) + 1
+                            };
+                        }
                         newPages[0] = firstPage;
                     }
                     return { ...oldData, pages: newPages };
@@ -144,9 +195,10 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
             );
 
             setNewComment('');
+            updateTipListsCount(1);
             toast.success('Comment posted');
         } catch (err) {
-            console.error(err);
+            console.error('ERROR IN POST COMMENT', err);
             toast.error('Failed to post comment');
         }
     };
@@ -209,25 +261,31 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                 ['tip-comments', tip.id],
                 (oldData: { pages?: Array<{ data?: unknown[] }> } | undefined) => {
                     if (!oldData || !oldData.pages) return oldData;
-                    return {
-                        ...oldData,
-                        pages: oldData.pages.map((page: unknown) => {
-                            const pageData = page as { data?: unknown[] };
-                            return {
-                                ...pageData,
-                                data: (pageData.data as TipComment[])?.filter(
-                                    (comment: TipComment) => comment.id !== commentToDelete,
-                                ),
+                    const newPages = oldData.pages.map((page: unknown, index: number) => {
+                        const pageData = page as any;
+                        const newPage = {
+                            ...pageData,
+                            data: (pageData.data as TipComment[])?.filter(
+                                (comment: TipComment) => comment.id !== commentToDelete,
+                            ),
+                        };
+                        if (index === 0 && newPage.pagination) {
+                            newPage.pagination = {
+                                ...newPage.pagination,
+                                total: Math.max(0, (newPage.pagination.total || 0) - 1)
                             };
-                        }),
-                    };
+                        }
+                        return newPage;
+                    });
+                    return { ...oldData, pages: newPages };
                 },
             );
 
             setCommentToDelete(null);
+            updateTipListsCount(-1);
             toast.success('Comment deleted');
         } catch (err) {
-            console.error(err);
+            console.error('ERROR IN DELETE COMMENT', err);
             toast.error('Failed to delete comment');
         }
     };
@@ -323,7 +381,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                         />
                         <div className="flex flex-col pr-8 overflow-hidden">
                             <h3 className="text-xl font-display font-bold truncate">
-                                Comments ({tip._count?.comments || 0})
+                                Comments ({totalComments})
                             </h3>
                             <p className="text-sm font-semibold text-white/50 tracking-wide truncate">
                                 {tip.title}
@@ -381,7 +439,7 @@ export default function TipCommentsModal({ tip, onClose }: TipCommentsModalProps
                                         >
                                             <Link
                                                 href={`/profile/${comment.userId}`}
-                                                className="w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
+                                                className="relative w-8 h-8 rounded-lg bg-white/5 border border-border flex items-center justify-center text-white/40 shrink-0 mt-1 overflow-hidden hover:border-amber-400 transition-colors"
                                             >
                                                 {comment.user?.avatarUrl ? (
                                                     <Image

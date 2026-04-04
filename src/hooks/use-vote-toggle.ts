@@ -94,12 +94,12 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
                 const isGallery =
                     key === 'gallery' ||
                     key === 'gallery-infinite' ||
-                    key.startsWith('/gallery/spot/');
+                    (typeof key === 'string' && key.startsWith('/gallery/spot/'));
                 return (
                     isGallery &&
                     (!spotId ||
                         query.queryKey.some((k) => k === spotId) ||
-                        key.includes(spotId || ''))
+                        (typeof key === 'string' && key.includes(spotId || '')))
                 );
             };
         if (type === 'tip')
@@ -109,12 +109,12 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
                 const isTips =
                     key === 'tips' ||
                     key === 'tips-infinite' ||
-                    key.startsWith('/community-tips/spot/');
+                    (typeof key === 'string' && key.startsWith('/community-tips/spot/'));
                 return (
                     isTips &&
                     (!spotId ||
                         query.queryKey.some((k) => k === spotId) ||
-                        key.includes(spotId || ''))
+                        (typeof key === 'string' && key.includes(spotId || '')))
                 );
             };
         if (type === 'alert')
@@ -135,6 +135,7 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
                         'spots',
                         'spots-infinite',
                         'spot',
+                        'spot-by-slug',
                         'spot-search',
                         'user-spots-infinite',
                         'spots-nearby',
@@ -153,11 +154,36 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
             voteId: isRemoving ? null : 'temp-id',
         } as Partial<Voteable>;
 
-        if ('voteCount' in target && typeof target.voteCount === 'number') {
+        // Ensure we update 'voteCount' at the top level if it exists
+        if ('voteCount' in target) {
+            const currentCount = (target as { voteCount?: number }).voteCount ?? 0;
+            nextState.voteCount = Math.max(0, currentCount + (isRemoving ? -1 : 1));
+        }
+
+        // Support for SpotWithStatsResponseDto which uses _count.votes
+        // Also supports generic objects where counts are in _count
+        if (
+            '_count' in target &&
+            target._count &&
+            typeof target._count === 'object'
+        ) {
+            const countObj = target._count as Record<string, unknown>;
+            const nextCountState = { ...countObj };
+
+            // Update 'votes' if it exists
+            if ('votes' in countObj && typeof countObj.votes === 'number') {
+                nextCountState.votes = Math.max(0, countObj.votes + (isRemoving ? -1 : 1));
+            }
+            
+            // Update 'voteCount' if it exists inside _count (backend variation)
+            if ('voteCount' in countObj && typeof countObj.voteCount === 'number') {
+                nextCountState.voteCount = Math.max(0, countObj.voteCount + (isRemoving ? -1 : 1));
+            }
+
             return {
                 ...target,
                 ...nextState,
-                voteCount: Math.max(0, target.voteCount + (isRemoving ? -1 : 1)),
+                _count: nextCountState,
             } as Voteable;
         }
 
@@ -165,28 +191,37 @@ export function useVoteToggle(type: 'tip' | 'alert' | 'image' | 'spot', spotId?:
     };
 
     const getPageItems = (page: unknown): Voteable[] => {
-        // Note: Orval types say page is { data: PaginatedDto, status: number }
-        // but customInstance only returns the data, so page IS PaginatedDto
+        // Handle TanStack Query InfiniteData page structure
+        const pageData = page && typeof page === 'object' && 'data' in page ? page.data : page;
+
         // Try PaginatedDto structure first: { data: items[], pagination: ... }
-        const paginatedDto = page as { data?: Voteable[] };
+        const paginatedDto = pageData as { data?: Voteable[] };
         if (paginatedDto?.data && Array.isArray(paginatedDto.data)) {
             return paginatedDto.data;
         }
         // Fallback: direct array
-        if (Array.isArray(page)) return page;
+        if (Array.isArray(pageData)) return pageData;
         return [];
     };
 
     const setPageItems = (page: unknown, items: Voteable[]): unknown => {
         // Match the structure we found in getPageItems
-        const paginatedDto = page as { data?: Voteable[]; pagination?: unknown };
+        const isWrapped = page && typeof page === 'object' && 'data' in page;
+        const pageData = isWrapped ? (page as { data: unknown }).data : page;
+
+        const paginatedDto = pageData as { data?: Voteable[]; pagination?: unknown };
+        let updatedData: unknown;
+
         if (paginatedDto?.data && Array.isArray(paginatedDto.data)) {
-            return {
+            updatedData = {
                 ...paginatedDto,
                 data: items,
             };
+        } else {
+            updatedData = items;
         }
-        return { data: items };
+
+        return isWrapped ? { ...page, data: updatedData } : updatedData;
     };
 
     const applyUpdate = (

@@ -336,7 +336,7 @@ export default function ScamAlertCard({ alert: initialAlert }: ScamAlertCardProp
                     }}
                 >
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
+                        <div className="relative w-8 h-8 bg-white/10 backdrop-blur-md border border-white/20 rounded-full flex items-center justify-center text-white/60 overflow-hidden shrink-0 shadow-lg group-hover/author:border-amber-400 transition-colors">
                             {typeof alert.user?.avatarUrl === 'string' && alert.user.avatarUrl ? (
                                 <Image
                                     src={alert.user.avatarUrl}

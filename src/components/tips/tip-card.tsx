@@ -50,17 +50,8 @@ export function TipCard({
     await onVoteClick();
   };
 
-  const handleConfirmDelete = async () => {
-    setIsDeleting(true);
-    try {
-      if (onDeleteClick) {
-        await onDeleteClick();
-      }
-      setShowDeleteDialog(false);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+  const voteCount = tip.voteCount ?? (tip._count && typeof tip._count === 'object' && 'votes' in tip._count ? (tip._count as { votes: number }).votes : 0);
+  const commentCount = tip.commentCount ?? (tip._count && typeof tip._count === 'object' && 'comments' in tip._count ? (tip._count as { comments: number }).comments : 0);
 
   return (
     <div
@@ -174,12 +165,12 @@ export function TipCard({
         >
           <MessageSquare size={16} className="transition-colors duration-200" />
           <span className="transition-colors duration-200">
-            {tip.voteCount || 0}
+            {commentCount}
           </span>
         </button>
 
         <LikeButton
-          count={tip.voteCount || 0}
+          count={voteCount}
           isVoted={tip.hasVoted}
           onVote={handleVote}
           isPending={isVotePending || isDeleting}
@@ -199,13 +190,13 @@ export function TipCard({
         >
           <MessageSquare size={14} className="transition-colors duration-200" />
           <span className="transition-colors duration-200">
-            {tip.commentCount || 0}
+            {commentCount}
           </span>
         </button>
 
         <div className="flex-1">
           <LikeButton
-            count={tip.voteCount || 0}
+            count={voteCount}
             isVoted={tip.hasVoted}
             onVote={handleVote}
             isPending={isVotePending || isDeleting}
