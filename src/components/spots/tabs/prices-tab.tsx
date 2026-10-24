@@ -4,11 +4,16 @@ import { useRef, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/components/providers/auth-provider';
 import { useInfiniteSpotPriceReports } from '@/hooks/use-api';
 import { Zap, TrendingDown, TrendingUp, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import CreatePriceModal from '@/components/prices/create-price-modal';
 import { useInView } from 'react-intersection-observer';
 import { useRouter, usePathname } from 'next/navigation';
-import { PriceReportDto, SpotWithStatsResponseDto } from '@/api/generated/model';
+import { EndOfList } from '@/components/ui/end-of-list';
+import {
+    PaginatedPriceReportsDto,
+    PriceReportDto,
+    SpotWithStatsResponseDto,
+} from '@/types/api-models';
 
 interface PricesTabProps {
     spot: SpotWithStatsResponseDto;
@@ -33,7 +38,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
     const reports: PriceReportDto[] = useMemo(() => {
         return (
             reportsData?.pages.flatMap(
-                (page) => (page as unknown as { data: PriceReportDto[] })?.data || [],
+                (page) => (page.data as unknown as PaginatedPriceReportsDto)?.data || [],
             ) || []
         );
     }, [reportsData]);
@@ -171,9 +176,7 @@ export default function PricesTab({ spot }: PricesTabProps) {
                 ) : hasNextReports ? (
                     <div className="h-4 w-4" />
                 ) : (
-                    <p className="text-[10px] font-semibold text-white/40 tracking-wide">
-                        End of reports
-                    </p>
+                    <EndOfList message="End of reports" />
                 )}
             </div>
         </div>

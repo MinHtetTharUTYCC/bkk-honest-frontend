@@ -4,2486 +4,6394 @@
  */
 
 export interface paths {
-  "/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Health check */
+        get: operations["AppController_getHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["AppController_getHealth"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/profiles": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/sentry-debug": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Trigger Sentry test error */
+        get: operations["AppController_debugSentry"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ProfilesController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/profiles/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a profile */
+        post: operations["ProfilesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ProfilesController_getMe"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch: operations["ProfilesController_update"];
-    trace?: never;
-  };
-  "/profiles/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/profiles/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user profile */
+        get: operations["ProfilesController_getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update profile */
+        patch: operations["ProfilesController_update"];
+        trace?: never;
     };
-    get: operations["ProfilesController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/profiles/{id}/reputation": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/profiles/leaderboard/top": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get leaderboard */
+        get: operations["ProfilesController_getLeaderboard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ProfilesController_getReputationStats"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/categories": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/profiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get profile by ID */
+        get: operations["ProfilesController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["CategoriesController_findAll"];
-    put?: never;
-    post: operations["CategoriesController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/categories/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/profiles/{id}/reputation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get reputation stats */
+        get: operations["ProfilesController_getReputationStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["CategoriesController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch: operations["CategoriesController_update"];
-    trace?: never;
-  };
-  "/cities": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/categories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all categories */
+        get: operations["CategoriesController_findAll"];
+        put?: never;
+        /** Create a new category */
+        post: operations["CategoriesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["CitiesController_findAll"];
-    put?: never;
-    post: operations["CitiesController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cities/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/categories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get category by ID */
+        get: operations["CategoriesController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update a category */
+        patch: operations["CategoriesController_update"];
+        trace?: never;
     };
-    get: operations["CitiesController_findOne"];
-    put?: never;
-    post?: never;
-    delete: operations["CitiesController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["CitiesController_update"];
-    trace?: never;
-  };
-  "/spots": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/cities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all cities */
+        get: operations["CitiesController_findAll"];
+        put?: never;
+        /** Create a city */
+        post: operations["CitiesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get all spots */
-    get: operations["SpotsController_findAll"];
-    put?: never;
-    /** Create a new spot */
-    post: operations["SpotsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/spots/stats/total-spots": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/cities/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get city by ID */
+        get: operations["CitiesController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete a city */
+        delete: operations["CitiesController_delete"];
+        options?: never;
+        head?: never;
+        /** Update a city */
+        patch: operations["CitiesController_update"];
+        trace?: never;
     };
-    /** Get total number of spots */
-    get: operations["SpotsController_getTotalSpots"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/spots/nearby": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all spots */
+        get: operations["SpotsController_findAll"];
+        put?: never;
+        /** Create a new spot */
+        post: operations["SpotsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Find nearby spots */
-    get: operations["SpotsController_findNearby"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/spots/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/stats/total-spots": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get total number of spots */
+        get: operations["SpotsController_getTotalSpots"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a single spot */
-    get: operations["SpotsController_findOne"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** Update a spot */
-    patch: operations["SpotsController_update"];
-    trace?: never;
-  };
-  "/price-reports": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/popular-area": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get popular area coordinates */
+        get: operations["SpotsController_getPopularArea"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["PriceReportsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/price-reports/spot/{spotId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/nearby": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Find nearby spots */
+        get: operations["SpotsController_findNearby"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["PriceReportsController_findBySpot"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/price-reports/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user spots */
+        get: operations["SpotsController_findMySpots"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["PriceReportsController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["PriceReportsController_update"];
-    trace?: never;
-  };
-  "/community-tips": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Search spots by name or address */
+        get: operations["SpotsController_search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get all community tips */
-    get: operations["CommunityTipsController_findAll"];
-    put?: never;
-    /** Create a community tip */
-    post: operations["CommunityTipsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/community-tips/spot/{spotId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/by-slug/{citySlug}/{spotSlug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get spot by city and slug (SEO-friendly URL) */
+        get: operations["SpotsController_findBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get community tips for a specific spot */
-    get: operations["CommunityTipsController_findBySpot"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/community-tips/stats/total-tips": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a single spot */
+        get: operations["SpotsController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete own spot */
+        delete: operations["SpotsController_delete"];
+        options?: never;
+        head?: never;
+        /** Update own spot */
+        patch: operations["SpotsController_update"];
+        trace?: never;
     };
-    /** Get total number of community tips */
-    get: operations["CommunityTipsController_getTotalTips"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/community-tips/{id}/counts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/user/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get spots by user */
+        get: operations["SpotsController_findByUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get counts for a community tip */
-    get: operations["CommunityTipsController_getCounts"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/community-tips/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/spots/reverse-geocode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reverse geocode coordinates to address */
+        post: operations["SpotsController_reverseGeocode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete own community tip */
-    delete: operations["CommunityTipsController_delete"];
-    options?: never;
-    head?: never;
-    /** Update own community tip */
-    patch: operations["CommunityTipsController_update"];
-    trace?: never;
-  };
-  "/votes/tip": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/price-reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a price report */
+        post: operations["PriceReportsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Create a community tip vote */
-    post: operations["VotesController_createTipVote"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/votes/alert": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/price-reports/spot/{spotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get price reports by spot */
+        get: operations["PriceReportsController_findBySpot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Create a scam alert vote */
-    post: operations["VotesController_createAlertVote"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/votes/image": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/price-reports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a price report */
+        delete: operations["PriceReportsController_delete"];
+        options?: never;
+        head?: never;
+        /** Update a price report */
+        patch: operations["PriceReportsController_update"];
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Create a gallery image vote */
-    post: operations["VotesController_createImageVote"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/votes/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/price-reports/user/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get price reports by user */
+        get: operations["PriceReportsController_findByUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** Delete a vote (unvote) */
-    delete: operations["VotesController_deleteVote"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/comments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/price-reports/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get my price reports */
+        get: operations["PriceReportsController_findMyReports"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["CommentsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/comments/tip/{communityTipId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all community tips */
+        get: operations["CommunityTipsController_findAll"];
+        put?: never;
+        /** Create a community tip */
+        post: operations["CommunityTipsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["CommentsController_findByTip"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/comments/alert/{scamAlertId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips/spot/{spotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get community tips for a specific spot */
+        get: operations["CommunityTipsController_findBySpot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["CommentsController_findByScamAlert"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/comments/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips/stats/total-tips": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get total number of community tips */
+        get: operations["CommunityTipsController_getTotalTips"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["CommentsController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["CommentsController_update"];
-    trace?: never;
-  };
-  "/live-vibes": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips/{id}/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get counts for a community tip */
+        get: operations["CommunityTipsController_getCounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["LiveVibesController_findAll"];
-    put?: never;
-    post: operations["LiveVibesController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/live-vibes/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete own community tip */
+        delete: operations["CommunityTipsController_delete"];
+        options?: never;
+        head?: never;
+        /** Update own community tip */
+        patch: operations["CommunityTipsController_update"];
+        trace?: never;
     };
-    get: operations["LiveVibesController_findOne"];
-    put?: never;
-    post?: never;
-    delete: operations["LiveVibesController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["LiveVibesController_update"];
-    trace?: never;
-  };
-  "/checklist": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips/user/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get community tips by user */
+        get: operations["CommunityTipsController_findByUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ChecklistController_findAll"];
-    put?: never;
-    post: operations["ChecklistController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/checklist/stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/community-tips/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user community tips */
+        get: operations["CommunityTipsController_findMyTips"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ChecklistController_getStats"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/checklist/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/tip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a community tip vote */
+        post: operations["VotesController_createTipVote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["ChecklistController_findOne"];
-    put?: never;
-    post?: never;
-    delete: operations["ChecklistController_delete"];
-    options?: never;
-    head?: never;
-    patch: operations["ChecklistController_update"];
-    trace?: never;
-  };
-  "/scam-alerts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/alert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a scam alert vote */
+        post: operations["VotesController_createAlertVote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get all scam alerts */
-    get: operations["ScamAlertsController_findAll"];
-    put?: never;
-    /** Create a scam alert */
-    post: operations["ScamAlertsController_create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/scam-alerts/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/image": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a gallery image vote */
+        post: operations["VotesController_createImageVote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a single scam alert */
-    get: operations["ScamAlertsController_findOne"];
-    put?: never;
-    post?: never;
-    /** Delete own scam alert */
-    delete: operations["ScamAlertsController_delete"];
-    options?: never;
-    head?: never;
-    /** Update own scam alert */
-    patch: operations["ScamAlertsController_update"];
-    trace?: never;
-  };
-  "/gallery/upload/{spotId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/spot": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a spot vote */
+        post: operations["VotesController_createSpotVote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Upload image to spot gallery */
-    post: operations["GalleryController_uploadImage"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/gallery/spot/{spotId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a vote (unvote) */
+        delete: operations["VotesController_deleteVote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get gallery images for a spot */
-    get: operations["GalleryController_getGallery"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/gallery/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/image/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete an image vote (unvote) */
+        delete: operations["VotesController_deleteImageVote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get single gallery image */
-    get: operations["GalleryController_getImage"];
-    put?: never;
-    post?: never;
-    /** Delete own gallery image */
-    delete: operations["GalleryController_deleteImage"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/gallery/{id}/flag": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/tip/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a tip vote (unvote) */
+        delete: operations["VotesController_deleteTipVote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /** Report inappropriate gallery image */
-    post: operations["GalleryController_flagImage"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/gallery/spot/{spotId}/stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/votes/alert/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a scam alert vote (unvote) */
+        delete: operations["VotesController_deleteAlertVote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get gallery statistics for a spot */
-    get: operations["GalleryController_getStats"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/votes/spot/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a spot vote (unvote) */
+        delete: operations["VotesController_deleteSpotVote"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/votes/{type}/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a vote by type and id (unvote) */
+        delete: operations["VotesController_deleteVoteByType"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create a comment */
+        post: operations["CommentsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/tip/{communityTipId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get comments by tip ID */
+        get: operations["CommentsController_findByTip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/alert/{scamAlertId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get comments by scam alert ID */
+        get: operations["CommentsController_findByScamAlert"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/comments/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a comment */
+        delete: operations["CommentsController_delete"];
+        options?: never;
+        head?: never;
+        /** Update a comment */
+        patch: operations["CommentsController_update"];
+        trace?: never;
+    };
+    "/comments/{commentId}/reactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get reaction summary for a comment */
+        get: operations["CommentReactionsController_getReactionSummary"];
+        put?: never;
+        /** Toggle like reaction on a comment */
+        post: operations["CommentReactionsController_toggleReaction"];
+        /** Remove like reaction from a comment */
+        delete: operations["CommentReactionsController_removeReaction"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/live-vibes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get live vibes */
+        get: operations["LiveVibesController_findAll"];
+        put?: never;
+        /** Create a live vibe check */
+        post: operations["LiveVibesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/live-vibes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a single live vibe */
+        get: operations["LiveVibesController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete a live vibe */
+        delete: operations["LiveVibesController_delete"];
+        options?: never;
+        head?: never;
+        /** Update a live vibe */
+        patch: operations["LiveVibesController_update"];
+        trace?: never;
+    };
+    "/checklist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user checklist */
+        get: operations["ChecklistController_findAll"];
+        put?: never;
+        /** Add a spot to checklist */
+        post: operations["ChecklistController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/checklist/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get checklist stats */
+        get: operations["ChecklistController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/checklist/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a checklist item */
+        get: operations["ChecklistController_findOne"];
+        put?: never;
+        post?: never;
+        /** Remove a spot from checklist */
+        delete: operations["ChecklistController_delete"];
+        options?: never;
+        head?: never;
+        /** Update a checklist item */
+        patch: operations["ChecklistController_update"];
+        trace?: never;
+    };
+    "/scam-alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all scam alerts */
+        get: operations["ScamAlertsController_findAll"];
+        put?: never;
+        /** Create a scam alert */
+        post: operations["ScamAlertsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scam-alerts/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get current user scam alerts */
+        get: operations["ScamAlertsController_findMyAlerts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scam-alerts/user/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get scam alerts by user ID */
+        get: operations["ScamAlertsController_findByUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scam-alerts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a single scam alert */
+        get: operations["ScamAlertsController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete own scam alert */
+        delete: operations["ScamAlertsController_delete"];
+        options?: never;
+        head?: never;
+        /** Update own scam alert */
+        patch: operations["ScamAlertsController_update"];
+        trace?: never;
+    };
+    "/scam-alerts/by-slug/{citySlug}/{alertSlug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get scam alert by city and slug (SEO-friendly URL) */
+        get: operations["ScamAlertsController_findBySlug"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/gallery/upload/{spotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload image to spot gallery */
+        post: operations["GalleryController_uploadImage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/gallery/spot/{spotId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get gallery images for a spot */
+        get: operations["GalleryController_getGallery"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/gallery/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get single gallery image */
+        get: operations["GalleryController_getImage"];
+        put?: never;
+        post?: never;
+        /** Delete own gallery image */
+        delete: operations["GalleryController_deleteImage"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/gallery/{id}/flag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report inappropriate gallery image */
+        post: operations["GalleryController_flagImage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/gallery/spot/{spotId}/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get gallery statistics for a spot */
+        get: operations["GalleryController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all reports (admin only) */
+        get: operations["ReportsController_getReports"];
+        put?: never;
+        /** Create a report for content */
+        post: operations["ReportsController_createReport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/reports/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get report details (admin only) */
+        get: operations["ReportsController_getReportDetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Resolve a report (admin only) */
+        patch: operations["ReportsController_resolveReport"];
+        trace?: never;
+    };
+    "/reports/target/{reportType}/{targetId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all reports for a specific target */
+        get: operations["ReportsController_getReportsForTarget"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send a contact form email */
+        post: operations["ContactController_submitContactForm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    CreateProfileDto: Record<string, never>;
-    UpdateProfileDto: Record<string, never>;
-    CreateCategoryDto: Record<string, never>;
-    UpdateCategoryDto: Record<string, never>;
-    CreateCityDto: Record<string, never>;
-    UpdateCityDto: Record<string, never>;
-    CreateSpotDto: {
-      /**
-       * @description City ID (cuid)
-       * @example clx4qyxxx0000xxxaabbccdd1
-       */
-      cityId: string;
-      /**
-       * @description Category ID (cuid)
-       * @example clx4qyxxx0000xxxaabbccdd1
-       */
-      categoryId: string;
-      /**
-       * @description Spot name
-       * @example Jazz Bar Downtown
-       */
-      name: string;
-      /**
-       * @description Full street address
-       * @example 123 Main St, Bangkok
-       */
-      address: string;
-      /**
-       * @description Latitude coordinate
-       * @example 13.7563
-       */
-      latitude: number;
-      /**
-       * @description Longitude coordinate
-       * @example 100.5018
-       */
-      longitude: number;
+    schemas: {
+        HealthResponseDto: {
+            /** @example ok */
+            status: string;
+            /** @example 2026-04-02T18:00:00.000Z */
+            timestamp: string;
+        };
+        SentryDebugResponseDto: {
+            /** @example true */
+            success: boolean;
+            /** @example Sentry test triggered */
+            message: string;
+        };
+        ErrorDetailsDto: {
+            /**
+             * @description Machine-readable error code
+             * @example VALIDATION_ERROR
+             */
+            code: string;
+            /**
+             * @description Human-readable error message
+             * @example Request validation failed
+             */
+            message: string;
+            /**
+             * @description Additional error context or field-level details
+             * @example {
+             *       "field": "email",
+             *       "reason": "Invalid email format"
+             *     }
+             */
+            details?: Record<string, never>;
+        };
+        InternalServerErrorDto: {
+            /**
+             * @description Whether the request was successful
+             * @example false
+             */
+            success: boolean;
+            /** @description Error details (only present on error responses) */
+            error?: components["schemas"]["ErrorDetailsDto"];
+            /**
+             * @description HTTP status code for this error response
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description ISO timestamp when the error occurred
+             * @example 2026-04-02T09:15:00.000Z
+             */
+            timestamp: string;
+            /**
+             * @description Request correlation id if available
+             * @example 5f9ad00c-e198-4ca5-95c4-f250fbe9db58
+             */
+            requestId?: string;
+        };
+        CreateProfileDto: {
+            id: string;
+            email: string;
+            name?: string;
+            avatarUrl?: string;
+            bio?: string;
+            country?: string;
+        };
+        ImageVariantsDto: {
+            /**
+             * @description Thumbnail variant URL (smallest, for cards/avatars)
+             * @example https://pub-xxx.r2.dev/profiles/user-123/thumbnail.webp
+             */
+            thumbnail: string;
+            /**
+             * @description Display variant URL (for full view/modal)
+             * @example https://pub-xxx.r2.dev/profiles/user-123/display.webp
+             */
+            display: string;
+        };
+        ProfileResponseDto: {
+            id: string;
+            email: string;
+            name?: string | null;
+            avatarUrl?: string | null;
+            bio?: string | null;
+            country?: string | null;
+            /** @enum {string} */
+            level: "NEWBIE" | "EXPLORER" | "LOCAL_GURU";
+            reputation: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            imageVariants?: components["schemas"]["ImageVariantsDto"];
+            imageWidth?: number | null;
+            imageHeight?: number | null;
+            imageSize?: number | null;
+            imageMimeType?: string | null;
+            blurPlaceholder?: string | null;
+            isDegraded?: boolean | null;
+            qualityScore?: number | null;
+        };
+        BadRequestErrorDto: {
+            /**
+             * @description Whether the request was successful
+             * @example false
+             */
+            success: boolean;
+            /** @description Error details (only present on error responses) */
+            error?: components["schemas"]["ErrorDetailsDto"];
+            /**
+             * @description HTTP status code for this error response
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description ISO timestamp when the error occurred
+             * @example 2026-04-02T09:15:00.000Z
+             */
+            timestamp: string;
+            /**
+             * @description Request correlation id if available
+             * @example 5f9ad00c-e198-4ca5-95c4-f250fbe9db58
+             */
+            requestId?: string;
+        };
+        UnauthorizedErrorDto: {
+            /**
+             * @description Whether the request was successful
+             * @example false
+             */
+            success: boolean;
+            /** @description Error details (only present on error responses) */
+            error?: components["schemas"]["ErrorDetailsDto"];
+            /**
+             * @description HTTP status code for this error response
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description ISO timestamp when the error occurred
+             * @example 2026-04-02T09:15:00.000Z
+             */
+            timestamp: string;
+            /**
+             * @description Request correlation id if available
+             * @example 5f9ad00c-e198-4ca5-95c4-f250fbe9db58
+             */
+            requestId?: string;
+        };
+        NotFoundErrorDto: {
+            /**
+             * @description Whether the request was successful
+             * @example false
+             */
+            success: boolean;
+            /** @description Error details (only present on error responses) */
+            error?: components["schemas"]["ErrorDetailsDto"];
+            /**
+             * @description HTTP status code for this error response
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description ISO timestamp when the error occurred
+             * @example 2026-04-02T09:15:00.000Z
+             */
+            timestamp: string;
+            /**
+             * @description Request correlation id if available
+             * @example 5f9ad00c-e198-4ca5-95c4-f250fbe9db58
+             */
+            requestId?: string;
+        };
+        LeaderboardProfileDto: {
+            id: string;
+            name?: string | null;
+            avatarUrl?: string | null;
+            /** @enum {string} */
+            level: "NEWBIE" | "EXPLORER" | "LOCAL_GURU";
+            reputation: number;
+        };
+        ReputationBreakdownDto: {
+            tips: number;
+            alerts: number;
+            vibes: number;
+            votes: number;
+            completedChecklistItems: number;
+        };
+        ReputationStatsDto: {
+            reputation: number;
+            /** @enum {string} */
+            level: "NEWBIE" | "EXPLORER" | "LOCAL_GURU";
+            contributionCount: number;
+            breakdown: components["schemas"]["ReputationBreakdownDto"];
+        };
+        UpdateProfileDto: {
+            name?: string;
+            bio?: string;
+            country?: string;
+            /**
+             * Format: binary
+             * @description Profile image file (JPG, PNG, WebP - max 10MB)
+             */
+            image?: string;
+        };
+        CreateCategoryDto: {
+            name: string;
+            description?: string;
+            isActive?: boolean;
+        };
+        CategoryDto: {
+            id: string;
+            name: string;
+            description?: string;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateCategoryDto: {
+            name?: string;
+            description?: string;
+            isActive?: boolean;
+        };
+        CreateCityDto: {
+            name: string;
+            slug?: string;
+            lat: number;
+            lng: number;
+        };
+        CityDto: {
+            id: string;
+            name: string;
+            slug: string;
+            lat: number;
+            lng: number;
+        };
+        UpdateCityDto: {
+            name?: string;
+            slug?: string;
+            lat?: number;
+            lng?: number;
+        };
+        MessageResponseDto: {
+            /** @example true */
+            success: boolean;
+            /** @example Deleted successfully */
+            message: string;
+        };
+        CreateSpotDto: {
+            /**
+             * @description City ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd1
+             */
+            cityId: string;
+            /**
+             * @description Category ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd1
+             */
+            categoryId: string;
+            /**
+             * @description Spot name
+             * @example Jazz Bar Downtown
+             */
+            name: string;
+            /**
+             * @description Full street address (auto-populated from coordinates if not provided)
+             * @example 123 Main St, Bangkok
+             */
+            address?: string;
+            /**
+             * @description Latitude coordinate
+             * @example 13.7563
+             */
+            latitude: number;
+            /**
+             * @description Longitude coordinate
+             * @example 100.5018
+             */
+            longitude: number;
+            /**
+             * Format: binary
+             * @description Spot image file
+             */
+            image?: string;
+        };
+        UserSummaryDto: {
+            /**
+             * @description User ID (uuid)
+             * @example d0c7a6e6-afb8-40ec-9b0e-84092da694c4
+             */
+            id: string;
+            /**
+             * @description User display name
+             * @example John
+             */
+            name?: string | null;
+            /**
+             * @description User avatar URL
+             * @example https://example.com/avatar.jpg
+             */
+            avatarUrl?: string | null;
+            /**
+             * @description User level/tier
+             * @example EXPLORER
+             * @enum {string}
+             */
+            level: "NEWBIE" | "EXPLORER" | "LOCAL_GURU";
+        };
+        SpotWithStatsResponseDto: {
+            /**
+             * @description Spot ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd
+             */
+            id: string;
+            /**
+             * @description Spot name
+             * @example Jazz Bar Downtown
+             */
+            name: string;
+            /**
+             * @description URL-friendly slug for SEO routing
+             * @example jazz-bar-downtown
+             */
+            slug?: string;
+            /**
+             * @description Full street address
+             * @example 123 Main St, Bangkok
+             */
+            address: string;
+            /**
+             * @description City slug for routing
+             * @example bangkok
+             */
+            citySlug?: string;
+            /** @description Image variants (thumbnail, display) */
+            imageVariants?: components["schemas"]["ImageVariantsDto"] | null;
+            /**
+             * @description Image width in pixels
+             * @example 1920
+             */
+            imageWidth?: number;
+            /**
+             * @description Image height in pixels
+             * @example 1080
+             */
+            imageHeight?: number;
+            /**
+             * @description Image file size in bytes
+             * @example 245680
+             */
+            imageSize?: number;
+            /**
+             * @description Image MIME type
+             * @example image/webp
+             */
+            imageMimeType?: string;
+            /**
+             * @description Base64-encoded blur placeholder for progressive loading
+             * @example data:image/webp;base64,UklGRiQAAABXRUJQ...
+             */
+            blurPlaceholder?: string | null;
+            /**
+             * @description Whether image quality is degraded
+             * @example false
+             */
+            isDegraded?: boolean;
+            /**
+             * @description Image quality score (0-100)
+             * @example 85
+             */
+            qualityScore?: number;
+            /**
+             * @description Latitude coordinate
+             * @example 13.7563
+             */
+            latitude: number;
+            /**
+             * @description Longitude coordinate
+             * @example 100.5018
+             */
+            longitude: number;
+            /**
+             * @description Owner user ID (uuid)
+             * @example d0c7a6e6-afb8-40ec-9b0e-84092da694c4
+             */
+            userId: string;
+            /** @description Owning user summary */
+            user: components["schemas"]["UserSummaryDto"];
+            /** @description City the spot belongs to */
+            city: components["schemas"]["CityDto"];
+            /** @description Category the spot belongs to */
+            category: components["schemas"]["CategoryDto"];
+            /**
+             * @description Raw activity counts
+             * @example {
+             *       "priceReports": 5,
+             *       "vibeChecks": 12,
+             *       "communityTips": 3,
+             *       "missions": 7,
+             *       "votes": 42
+             *     }
+             */
+            _count: Record<string, never>;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-01-01T00:00:00.000Z
+             */
+            createdAt: string;
+            /** @description Whether the current user has voted on this spot (only present when authenticated) */
+            hasVoted?: boolean;
+            /**
+             * @description Vote ID (cuid) if user has voted, null otherwise
+             * @example clx4qyxxx0000xxxaabbccdd
+             */
+            voteId?: string | null;
+            /**
+             * @description Aggregated activity and reliability statistics
+             * @example {
+             *       "totalContributors": 15,
+             *       "lastActivity": "2025-01-01T00:00:00.000Z"
+             *     }
+             */
+            activityStats: Record<string, never>;
+            /**
+             * @description Aggregated price statistics from all price reports for this spot
+             * @example {
+             *       "avg": 150,
+             *       "min": 80,
+             *       "max": 250,
+             *       "count": 12
+             *     }
+             */
+            priceStats: Record<string, never>;
+            /**
+             * @description Aggregated vibe statistics from all live vibe check-ins
+             * @example {
+             *       "avgCrowdLevel": 3.2,
+             *       "count": 8
+             *     }
+             */
+            vibeStats: Record<string, never>;
+            /**
+             * @description Breakdown of community tips by type
+             * @example {
+             *       "tryCount": 10,
+             *       "avoidCount": 2
+             *     }
+             */
+            tipStats: Record<string, never>;
+            /** @description Whether the spot is in the current user's mission checklist (only present when authenticated) */
+            isInMission?: boolean;
+            /**
+             * @description ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
+             * @example clx4qyxxx0000xxxaabbccdd
+             */
+            missionId?: Record<string, never> | null;
+        };
+        /** @enum {string} */
+        SpotSort: "newest" | "popular";
+        PaginationMetaDto: {
+            skip: number;
+            take: number;
+            total: number;
+            hasMore: boolean;
+        };
+        PaginatedSpotsWithStatsResponseDto: {
+            data: components["schemas"]["SpotWithStatsResponseDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        PopularAreaDto: {
+            latitude: number;
+            longitude: number;
+            cityName: string;
+            spotCount: number;
+        };
+        SpotSearchDto: {
+            id: string;
+            name: string;
+            address: string;
+            city: Record<string, never>;
+            category: Record<string, never>;
+        };
+        UpdateSpotDto: {
+            /**
+             * @description City ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd1
+             */
+            cityId?: string;
+            /**
+             * @description Spot name
+             * @example Updated Bar Name
+             */
+            name?: string;
+            /**
+             * @description Full street address
+             * @example 456 New St
+             */
+            address?: string;
+            /**
+             * @description Category ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd1
+             */
+            categoryId?: string;
+            /**
+             * @description Latitude coordinate
+             * @example 13.7563
+             */
+            latitude?: number;
+            /**
+             * @description Longitude coordinate
+             * @example 100.5018
+             */
+            longitude?: number;
+            /**
+             * Format: binary
+             * @description Spot image file
+             */
+            image?: string;
+        };
+        GeocodeResponseDto: {
+            /** @example 123 Main St, Bangkok, Thailand */
+            address: string;
+        };
+        CreatePriceReportDto: {
+            spotId: string;
+            itemName: string;
+            priceThb: number;
+        };
+        PriceReportUserDto: {
+            id: string;
+            name?: string | null;
+            avatarUrl?: string | null;
+            /** @enum {string} */
+            level: "NEWBIE" | "EXPLORER" | "LOCAL_GURU";
+        };
+        PriceReportDto: {
+            id: string;
+            spotId: string;
+            itemName: string;
+            priceThb: number;
+            /** Format: date-time */
+            timestamp: string;
+            user?: components["schemas"]["PriceReportUserDto"];
+            /** @description Spot summary when listing a user's reports */
+            spot?: Record<string, never>;
+        };
+        PaginatedPriceReportsDto: {
+            data: components["schemas"]["PriceReportDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        UpdatePriceReportDto: {
+            itemName?: string;
+            priceThb?: number;
+        };
+        /** @enum {string} */
+        CommunityTipType: "TRY" | "AVOID";
+        UserSummaryResponseDto: {
+            id: string;
+            name?: string | null;
+            avatarUrl?: string | null;
+            /** @enum {string} */
+            level?: "NEWBIE" | "EXPLORER" | "LOCAL_GURU";
+        };
+        CommunityTipResponseDto: {
+            id: string;
+            spotId: string;
+            userId: string;
+            title: string;
+            description: string;
+            type: components["schemas"]["CommunityTipType"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            user: components["schemas"]["UserSummaryResponseDto"];
+            commentCount: number;
+            voteCount: number;
+            hasVoted?: boolean;
+            voteId?: string;
+        };
+        PaginatedCommunityTipsResponseDto: {
+            data: components["schemas"]["CommunityTipResponseDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        TipVoteDto: {
+            communityTipId: string;
+            isUpvote?: boolean;
+        };
+        CreateVoteResponseDto: {
+            /** @example true */
+            success: boolean;
+            /** @example Deleted successfully */
+            message: string;
+            /**
+             * @description Vote ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd
+             */
+            voteId: string;
+            /**
+             * @description Vote target type
+             * @enum {string}
+             */
+            voteType: "tip" | "alert" | "image";
+        };
+        AlertVoteDto: {
+            scamAlertId: string;
+            isUpvote?: boolean;
+        };
+        ImageVoteDto: {
+            galleryImageId: string;
+            isUpvote?: boolean;
+        };
+        SpotVoteDto: {
+            spotId: string;
+            isUpvote?: boolean;
+        };
+        CreateCommentDto: {
+            text: string;
+            /** @enum {string} */
+            targetType: "COMMUNITY_TIP" | "SCAM_ALERT";
+            communityTipId?: string;
+            scamAlertId?: string;
+        };
+        CommentResponseDto: {
+            id: string;
+            text: string;
+            userId: string;
+            communityTipId?: Record<string, never>;
+            scamAlertId?: Record<string, never>;
+            /** Format: date-time */
+            createdAt: string;
+            user?: components["schemas"]["UserSummaryDto"];
+            reactionCount: number;
+            userHasReacted?: boolean;
+        };
+        PaginatedCommentsDto: {
+            data: components["schemas"]["CommentResponseDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        UpdateCommentDto: {
+            text?: string;
+        };
+        CommentReactionResponseDto: {
+            commentId: string;
+            userHasReacted: boolean;
+        };
+        CreateLiveVibeDto: {
+            spotId: string;
+            crowdLevel: number;
+            waitTimeMinutes?: number;
+        };
+        LiveVibeDto: {
+            id: string;
+            crowdLevel: number;
+            waitTimeMinutes?: Record<string, never>;
+            /** Format: date-time */
+            timestamp: string;
+            spot?: {
+                id?: string;
+                name?: string;
+                slug?: string;
+                address?: string;
+                city?: {
+                    id?: string;
+                    name?: string;
+                    slug?: string;
+                };
+            };
+        };
+        PaginatedLiveVibesDto: {
+            data: components["schemas"]["LiveVibeDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        UpdateLiveVibeDto: {
+            crowdLevel?: number;
+            waitTimeMinutes?: number;
+        };
+        CreateChecklistItemDto: {
+            spotId: string;
+        };
+        ChecklistItemDto: {
+            id: string;
+            userId: string;
+            completed: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            spot?: Record<string, never>;
+        };
+        ConflictErrorDto: {
+            /**
+             * @description Whether the request was successful
+             * @example false
+             */
+            success: boolean;
+            /** @description Error details (only present on error responses) */
+            error?: components["schemas"]["ErrorDetailsDto"];
+            /**
+             * @description HTTP status code for this error response
+             * @example 400
+             */
+            statusCode: number;
+            /**
+             * @description ISO timestamp when the error occurred
+             * @example 2026-04-02T09:15:00.000Z
+             */
+            timestamp: string;
+            /**
+             * @description Request correlation id if available
+             * @example 5f9ad00c-e198-4ca5-95c4-f250fbe9db58
+             */
+            requestId?: string;
+        };
+        PaginatedChecklistItemResponseDto: {
+            data: components["schemas"]["ChecklistItemDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        ChecklistStatsDto: {
+            total: number;
+            completed: number;
+            remaining: number;
+        };
+        UpdateChecklistItemDto: {
+            completed?: boolean;
+        };
+        ScamAlertResponseDto: {
+            /**
+             * @description Scam alert ID (cuid)
+             * @example clx4qyxxx0000xxxaabbccdd
+             */
+            id: string;
+            /**
+             * @description Name of the scam
+             * @example Tuk-tuk gem scam
+             */
+            scamName: string;
+            /**
+             * @description URL-friendly slug for SEO routing
+             * @example tuk-tuk-gem-scam
+             */
+            slug?: string;
+            /**
+             * @description Detailed description of the scam
+             * @example Driver takes you to overpriced gem store...
+             */
+            description: string;
+            /**
+             * @description Tips to avoid the scam
+             * @example Refuse all unsolicited detours.
+             */
+            preventionTip: string;
+            /**
+             * @description City slug for routing
+             * @example bangkok
+             */
+            citySlug: string;
+            /** @description Image variants (thumbnail, display) */
+            imageVariants?: components["schemas"]["ImageVariantsDto"] | null;
+            /**
+             * @description Image width in pixels
+             * @example 1920
+             */
+            imageWidth?: number;
+            /**
+             * @description Image height in pixels
+             * @example 1080
+             */
+            imageHeight?: number;
+            /**
+             * @description Image file size in bytes
+             * @example 245680
+             */
+            imageSize?: number;
+            /**
+             * @description Image MIME type
+             * @example image/webp
+             */
+            imageMimeType?: string | null;
+            /**
+             * @description Base64-encoded blur placeholder
+             * @example data:image/webp;base64,UklGRiQAAABXRUJQ...
+             */
+            blurPlaceholder?: string | null;
+            /**
+             * @description Whether image quality is degraded
+             * @example false
+             */
+            isDegraded?: boolean;
+            /**
+             * @description Image quality score (0-100)
+             * @example 85
+             */
+            qualityScore?: number;
+            /**
+             * Format: date-time
+             * @description Creation timestamp
+             * @example 2025-01-01T00:00:00.000Z
+             */
+            createdAt: string;
+            /** @description Category the scam belongs to */
+            category: components["schemas"]["CategoryDto"];
+            /** @description City the scam was reported in */
+            city: components["schemas"]["CityDto"];
+            /** @description User who reported the scam */
+            user: components["schemas"]["UserSummaryDto"];
+            /**
+             * @description Counts of related comments and votes
+             * @example {
+             *       "comments": 10,
+             *       "votes": 50
+             *     }
+             */
+            _count: Record<string, never>;
+            /** @description Whether the current user has voted (only present when authenticated) */
+            hasVoted?: boolean;
+            /**
+             * @description Vote ID (cuid) if user has voted, null otherwise
+             * @example clx4qyxxx0000xxxaabbccdd
+             */
+            voteId?: string | null;
+        };
+        /** @enum {string} */
+        ScamAlertSort: "newest" | "popular";
+        PaginatedScamAlertsResponseDto: {
+            data: components["schemas"]["ScamAlertResponseDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        GalleryImageResponseDto: {
+            id: string;
+            spotId: string;
+            userId: string;
+            url: string;
+            isDegraded: boolean;
+            imageVariants?: components["schemas"]["ImageVariantsDto"];
+            blurPlaceholder?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            user: components["schemas"]["UserSummaryResponseDto"];
+            voteCount: number;
+            hasVoted?: boolean;
+            voteId?: string;
+        };
+        /** @enum {string} */
+        GallerySort: "newest" | "popular";
+        PaginatedGalleryImagesResponseDto: {
+            data: components["schemas"]["GalleryImageResponseDto"][];
+            pagination: components["schemas"]["PaginationMetaDto"];
+        };
+        GalleryStatsResponseDto: {
+            totalImages: number;
+            totalVotes: number;
+        };
+        ReportResponseDto: {
+            id: string;
+            reportType: string;
+            reason: string;
+            status: string;
+            /** Format: date-time */
+            resolvedAt?: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateReportDto: {
+            reportType: string;
+            targetId: string;
+            reason: string;
+            description?: string;
+        };
+        ResolveReportDto: {
+            status: string;
+            resolution?: string;
+        };
+        ContactFormDto: {
+            /** @example Min Htet */
+            name: string;
+            /** @example min@example.com */
+            email: string;
+            /** @example General Question */
+            subject: string;
+            /** @example How do I add a new spot? */
+            message: string;
+        };
+        ContactEmailResponseDto: {
+            /** @example true */
+            success: boolean;
+            /** @example Email sent successfully */
+            message?: string;
+            /** @example d9f2f9e2-00d2-4e04-86fe-1decbfe42380 */
+            id?: string;
+        };
     };
-    SpotWithStatsResponseDto: {
-      /**
-       * @description Spot ID (cuid)
-       * @example clx4qyxxx0000xxxaabbccdd
-       */
-      id: string;
-      /**
-       * @description Spot name
-       * @example Jazz Bar Downtown
-       */
-      name: string;
-      /**
-       * @description Full street address
-       * @example 123 Main St, Bangkok
-       */
-      address: string;
-      /**
-       * @description Spot image URL
-       * @example https://cdn.example.com/spots/jazz-bar.webp
-       */
-      imageUrl?: string;
-      /**
-       * @description Latitude coordinate
-       * @example 13.7563
-       */
-      latitude: number;
-      /**
-       * @description Longitude coordinate
-       * @example 100.5018
-       */
-      longitude: number;
-      /**
-       * @description Owner user ID (uuid)
-       * @example d0c7a6e6-afb8-40ec-9b0e-84092da694c4
-       */
-      userId: string;
-      /**
-       * @description Owning user summary
-       * @example {
-       *       "id": "d0c7a6e6-afb8-40ec-9b0e-84092da694c4",
-       *       "name": "John",
-       *       "avatarUrl": null
-       *     }
-       */
-      user: Record<string, never>;
-      /**
-       * @description City the spot belongs to
-       * @example {
-       *       "id": "clx4qyxxx0000xxxaabbccdd",
-       *       "name": "Bangkok"
-       *     }
-       */
-      city: Record<string, never>;
-      /**
-       * @description Category the spot belongs to
-       * @example {
-       *       "id": "clx4qyxxx0000xxxaabbccdd",
-       *       "name": "Bar"
-       *     }
-       */
-      category: Record<string, never>;
-      /**
-       * @description Raw activity counts
-       * @example {
-       *       "priceReports": 5,
-       *       "vibeChecks": 12,
-       *       "communityTips": 3,
-       *       "missions": 7
-       *     }
-       */
-      _count: Record<string, never>;
-      /**
-       * Format: date-time
-       * @description Creation timestamp
-       * @example 2025-01-01T00:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * @description Aggregated price statistics from all price reports for this spot
-       * @example {
-       *       "avg": 150,
-       *       "min": 80,
-       *       "max": 250,
-       *       "count": 12
-       *     }
-       */
-      priceStats: Record<string, never>;
-      /**
-       * @description Aggregated vibe statistics from all live vibe check-ins
-       * @example {
-       *       "avgCrowdLevel": 3.2,
-       *       "count": 8
-       *     }
-       */
-      vibeStats: Record<string, never>;
-      /** @description Whether the spot is in the current user's mission checklist (only present when authenticated) */
-      isInMission?: boolean;
-      /**
-       * @description ChecklistItem ID (cuid) if spot is in user's mission, null otherwise (only present when authenticated)
-       * @example clx4qyxxx0000xxxaabbccdd
-       */
-      missionId?: Record<string, never> | null;
-    };
-    PaginationMetaDto: Record<string, never>;
-    PaginatedSpotsWithStatsResponseDto: {
-      data: components["schemas"]["SpotWithStatsResponseDto"][];
-      pagination: components["schemas"]["PaginationMetaDto"];
-    };
-    UpdateSpotDto: {
-      /**
-       * @description Spot name
-       * @example Updated Bar Name
-       */
-      name?: string;
-      /**
-       * @description Full street address
-       * @example 456 New St
-       */
-      address?: string;
-      /**
-       * @description Category ID (cuid)
-       * @example clx4qyxxx0000xxxaabbccdd1
-       */
-      categoryId?: string;
-      /**
-       * @description Latitude coordinate
-       * @example 13.7563
-       */
-      latitude?: number;
-      /**
-       * @description Longitude coordinate
-       * @example 100.5018
-       */
-      longitude?: number;
-    };
-    CreatePriceReportDto: Record<string, never>;
-    UpdatePriceReportDto: Record<string, never>;
-    CreateCommunityTipDto: {
-      /**
-       * @description Spot ID
-       * @example spot-123
-       */
-      spotId: string;
-      /**
-       * @description Tip type
-       * @example TRY
-       * @enum {string}
-       */
-      type: "TRY" | "AVOID";
-      /**
-       * @description Tip title
-       * @example Great happy hour deals
-       */
-      title: string;
-      /**
-       * @description Tip description
-       * @example Best drink prices from 4-6 PM on weekdays
-       */
-      description: string;
-    };
-    CommunityTipResponseDto: Record<string, never>;
-    PaginatedCommunityTipsResponseDto: Record<string, never>;
-    UpdateCommunityTipDto: {
-      /**
-       * @description Tip title
-       * @example Updated title
-       */
-      title?: string;
-      /**
-       * @description Tip description
-       * @example Updated description
-       */
-      description?: string;
-    };
-    MessageResponseDto: Record<string, never>;
-    TipVoteDto: Record<string, never>;
-    CreateVoteResponseDto: {
-      /**
-       * @description Vote ID (cuid)
-       * @example clx4qyxxx0000xxxaabbccdd
-       */
-      voteId: string;
-      /**
-       * @description Vote target type
-       * @enum {string}
-       */
-      voteType: "tip" | "alert" | "image";
-    };
-    AlertVoteDto: Record<string, never>;
-    ImageVoteDto: Record<string, never>;
-    CreateCommentDto: Record<string, never>;
-    UpdateCommentDto: Record<string, never>;
-    CreateLiveVibeDto: Record<string, never>;
-    UpdateLiveVibeDto: Record<string, never>;
-    CreateChecklistItemDto: Record<string, never>;
-    UpdateChecklistItemDto: Record<string, never>;
-    CreateScamAlertDto: {
-      /**
-       * @description City ID
-       * @example city-123
-       */
-      cityId: string;
-      /**
-       * @description Category ID
-       * @example cat-456
-       */
-      categoryId: string;
-      /**
-       * @description Scam name
-       * @example Fake tourism agency
-       */
-      scamName: string;
-      /**
-       * @description Scam description
-       * @example Fraudulent tour booking site asking for deposits
-       */
-      description: string;
-      /**
-       * @description Prevention tip
-       * @example Always book through official tourism boards
-       */
-      preventionTip: string;
-      /**
-       * Format: binary
-       * @description Scam alert image (JPG, PNG, WebP - max 10MB, optional)
-       */
-      image?: string;
-    };
-    ScamAlertResponseDto: {
-      /**
-       * @description Scam alert ID (cuid)
-       * @example clx4qyxxx0000xxxaabbccdd
-       */
-      id: string;
-      /**
-       * @description Name of the scam
-       * @example Tuk-tuk gem scam
-       */
-      scamName: string;
-      /**
-       * @description Detailed description of the scam
-       * @example Driver takes you to overpriced gem store...
-       */
-      description: string;
-      /**
-       * @description Tips to avoid the scam
-       * @example Refuse all unsolicited detours.
-       */
-      preventionTip: string;
-      /**
-       * @description Warning/example image URL
-       * @example https://cdn.example.com/scam-alerts/tuk-tuk.webp
-       */
-      imageUrl?: string;
-      /**
-       * Format: date-time
-       * @description Creation timestamp
-       * @example 2025-01-01T00:00:00.000Z
-       */
-      createdAt: string;
-      /**
-       * @description Category the scam belongs to
-       * @example {
-       *       "id": "clx4qyxxx0000xxxaabbccdd",
-       *       "name": "Transport"
-       *     }
-       */
-      category: Record<string, never>;
-      /**
-       * @description City the scam was reported in
-       * @example {
-       *       "id": "clx4qyxxx0000xxxaabbccdd",
-       *       "name": "Bangkok"
-       *     }
-       */
-      city: Record<string, never>;
-      /**
-       * @description User who reported the scam
-       * @example {
-       *       "id": "d0c7a6e6-afb8-40ec-9b0e-84092da694c4",
-       *       "name": "John",
-       *       "avatarUrl": null,
-       *       "level": "EXPLORER"
-       *     }
-       */
-      user: Record<string, never>;
-      /**
-       * @description Counts of related comments and votes
-       * @example {
-       *       "comments": 10,
-       *       "votes": 50
-       *     }
-       */
-      _count: Record<string, never>;
-      /** @description Whether the current user has voted (only present when authenticated) */
-      hasVoted?: boolean;
-      /**
-       * @description Vote ID (cuid) if user has voted, null otherwise
-       * @example clx4qyxxx0000xxxaabbccdd
-       */
-      voteId?: Record<string, never> | null;
-    };
-    PaginatedScamAlertsResponseDto: {
-      data: components["schemas"]["ScamAlertResponseDto"][];
-      pagination: components["schemas"]["PaginationMetaDto"];
-    };
-    UpdateScamAlertDto: {
-      /**
-       * @description City ID
-       * @example city-123
-       */
-      cityId?: string;
-      /**
-       * @description Category ID
-       * @example cat-456
-       */
-      categoryId?: string;
-      /**
-       * @description Scam name
-       * @example Updated scam name
-       */
-      scamName?: string;
-      /**
-       * @description Scam description
-       * @example Updated description
-       */
-      description?: string;
-      /**
-       * @description Prevention tip
-       * @example Updated prevention tip
-       */
-      preventionTip?: string;
-      /**
-       * Format: binary
-       * @description Scam alert image (JPG, PNG, WebP - max 10MB, optional)
-       */
-      image?: string;
-    };
-    GalleryImageResponseDto: Record<string, never>;
-    PaginatedGalleryImagesResponseDto: Record<string, never>;
-    GalleryStatsResponseDto: Record<string, never>;
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  AppController_getHealth: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ProfilesController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateProfileDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ProfilesController_getMe: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ProfilesController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateProfileDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ProfilesController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ProfilesController_getReputationStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CategoriesController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CategoriesController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCategoryDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CategoriesController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CategoriesController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateCategoryDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CitiesController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CitiesController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCityDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CitiesController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CitiesController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CitiesController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateCityDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SpotsController_findAll: {
-    parameters: {
-      query?: {
-        /** @description Search text */
-        search?: string;
-        /** @description Filter by category ID */
-        categoryId?: string;
-        /** @description Filter by city ID */
-        cityId?: string;
-        /** @description Sort order */
-        sort?: "newest" | "popular";
-        /** @description Items per page */
-        take?: number;
-        /** @description Items to skip */
-        skip?: unknown;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns paginated spots */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
-        };
-      };
-    };
-  };
-  SpotsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["CreateSpotDto"];
-      };
-    };
-    responses: {
-      /** @description Spot created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SpotWithStatsResponseDto"];
-        };
-      };
-      /** @description Invalid file or validation error */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SpotsController_getTotalSpots: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns total count */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  SpotsController_findNearby: {
-    parameters: {
-      query: {
-        /** @description Latitude coordinate */
-        latitude: number;
-        /** @description Longitude coordinate */
-        longitude: number;
-        /** @description Search distance in km (default: 5) */
-        distance?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns nearby spots */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
-        };
-      };
-    };
-  };
-  SpotsController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Spot ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns spot details */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SpotWithStatsResponseDto"];
-        };
-      };
-    };
-  };
-  SpotsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Spot ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["UpdateSpotDto"];
-      };
-    };
-    responses: {
-      /** @description Spot updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SpotWithStatsResponseDto"];
-        };
-      };
-    };
-  };
-  PriceReportsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreatePriceReportDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PriceReportsController_findBySpot: {
-    parameters: {
-      query: {
-        skip: string;
-        take: string;
-      };
-      header?: never;
-      path: {
-        spotId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PriceReportsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  PriceReportsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdatePriceReportDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CommunityTipsController_findAll: {
-    parameters: {
-      query?: {
-        /** @description Items per page */
-        take?: number;
-        /** @description Items to skip */
-        skip?: unknown;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns paginated community tips */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
-        };
-      };
-    };
-  };
-  CommunityTipsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["CreateCommunityTipDto"];
-      };
-    };
-    responses: {
-      /** @description Community tip created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CommunityTipResponseDto"];
-        };
-      };
-    };
-  };
-  CommunityTipsController_findBySpot: {
-    parameters: {
-      query?: {
-        /** @description Items to skip */
-        skip?: string;
-        /** @description Items per page */
-        take?: number;
-      };
-      header?: never;
-      path: {
-        /** @description Spot ID */
-        spotId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns community tips for the spot */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
-        };
-      };
-    };
-  };
-  CommunityTipsController_getTotalTips: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns total count */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  CommunityTipsController_getCounts: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Community Tip ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns tip counts */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  CommunityTipsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Community Tip ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Community tip deleted successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MessageResponseDto"];
-        };
-      };
-    };
-  };
-  CommunityTipsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Community Tip ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["UpdateCommunityTipDto"];
-      };
-    };
-    responses: {
-      /** @description Community tip updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CommunityTipResponseDto"];
-        };
-      };
-    };
-  };
-  VotesController_createTipVote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TipVoteDto"];
-      };
-    };
-    responses: {
-      /** @description Tip vote created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateVoteResponseDto"];
-        };
-      };
-    };
-  };
-  VotesController_createAlertVote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AlertVoteDto"];
-      };
-    };
-    responses: {
-      /** @description Alert vote created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateVoteResponseDto"];
-        };
-      };
-    };
-  };
-  VotesController_createImageVote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ImageVoteDto"];
-      };
-    };
-    responses: {
-      /** @description Image vote created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CreateVoteResponseDto"];
-        };
-      };
-    };
-  };
-  VotesController_deleteVote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Vote deleted */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MessageResponseDto"];
-        };
-      };
-    };
-  };
-  CommentsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCommentDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CommentsController_findByTip: {
-    parameters: {
-      query: {
-        skip: string;
-        take: string;
-      };
-      header?: never;
-      path: {
-        communityTipId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CommentsController_findByScamAlert: {
-    parameters: {
-      query: {
-        skip: string;
-        take: string;
-      };
-      header?: never;
-      path: {
-        scamAlertId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CommentsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  CommentsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateCommentDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  LiveVibesController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  LiveVibesController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateLiveVibeDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  LiveVibesController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  LiveVibesController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  LiveVibesController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateLiveVibeDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistController_findAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateChecklistItemDto"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistController_getStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ChecklistController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateChecklistItemDto"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  ScamAlertsController_findAll: {
-    parameters: {
-      query?: {
-        /** @description Search text */
-        search?: unknown;
-        /** @description Sort order */
-        sort?: "newest" | "popular";
-        /** @description Filter by city ID */
-        cityId?: unknown;
-        /** @description Filter by category ID */
-        categoryId?: unknown;
-        /** @description Items per page */
-        take?: number;
-        /** @description Items to skip */
-        skip?: unknown;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns paginated scam alerts */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedScamAlertsResponseDto"];
-        };
-      };
-    };
-  };
-  ScamAlertsController_create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["CreateScamAlertDto"];
-      };
-    };
-    responses: {
-      /** @description Scam alert created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScamAlertResponseDto"];
-        };
-      };
-    };
-  };
-  ScamAlertsController_findOne: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Scam Alert ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns scam alert details */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScamAlertResponseDto"];
-        };
-      };
-    };
-  };
-  ScamAlertsController_delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Scam Alert ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Scam alert deleted successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MessageResponseDto"];
-        };
-      };
-    };
-  };
-  ScamAlertsController_update: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Scam Alert ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": components["schemas"]["UpdateScamAlertDto"];
-      };
-    };
-    responses: {
-      /** @description Scam alert updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScamAlertResponseDto"];
-        };
-      };
-    };
-  };
-  GalleryController_uploadImage: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        spotId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Image uploaded successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GalleryImageResponseDto"];
-        };
-      };
-      /** @description Invalid file or spot not found */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  GalleryController_getGallery: {
-    parameters: {
-      query?: {
-        /** @description Sort order */
-        sort?: "newest" | "popular";
-        /** @description Items per page */
-        take?: number;
-        /** @description Items to skip */
-        skip?: unknown;
-      };
-      header?: never;
-      path: {
-        /** @description Spot ID */
-        spotId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns paginated gallery images */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaginatedGalleryImagesResponseDto"];
-        };
-      };
-    };
-  };
-  GalleryController_getImage: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Image ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns image details */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GalleryImageResponseDto"];
-        };
-      };
-    };
-  };
-  GalleryController_deleteImage: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Image ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Image deleted successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MessageResponseDto"];
-        };
-      };
-    };
-  };
-  GalleryController_flagImage: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Image ID */
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Image reported successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["MessageResponseDto"];
-        };
-      };
-    };
-  };
-  GalleryController_getStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        /** @description Spot ID */
-        spotId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Returns gallery stats */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GalleryStatsResponseDto"];
-        };
-      };
-    };
-  };
+    AppController_getHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResponseDto"];
+                };
+            };
+        };
+    };
+    AppController_debugSentry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SentryDebugResponseDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ProfilesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProfileDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ProfilesController_getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ProfilesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UpdateProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ProfilesController_getLeaderboard: {
+        parameters: {
+            query: {
+                take: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaderboardProfileDto"][];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ProfilesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ProfilesController_getReputationStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReputationStatsDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"][];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCategoryDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CategoriesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCategoryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CategoryDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CitiesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CityDto"][];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CitiesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCityDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CityDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CitiesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CityDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CitiesController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description City deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CitiesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCityDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CityDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+                /** @description Search text */
+                search?: string;
+                /** @description Filter by category ID */
+                categoryId?: string;
+                /** @description Filter by city ID */
+                cityId?: string;
+                /** @description Sort order */
+                sort?: components["schemas"]["SpotSort"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns paginated spots */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateSpotDto"];
+            };
+        };
+        responses: {
+            /** @description Spot created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_getTotalSpots: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns total count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_getPopularArea: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns latitude and longitude of the most popular area */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PopularAreaDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_findNearby: {
+        parameters: {
+            query: {
+                /** @description Latitude coordinate */
+                latitude: number;
+                /** @description Longitude coordinate */
+                longitude: number;
+                /** @description Search distance in km (default: 5) */
+                distance?: number;
+                /** @description Filter spots by category ID */
+                categoryId?: string;
+                /** @description Max number of spots to return */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns nearby spots */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_findMySpots: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns current user spots */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_search: {
+        parameters: {
+            query?: {
+                /** @description Search query */
+                q?: string;
+                /** @description Filter by city */
+                cityId?: string;
+                /** @description Max results (default 20) */
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns matching spots */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpotSearchDto"][];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_findBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description City slug (e.g., bkk) */
+                citySlug: string;
+                /** @description Spot slug (e.g., golden-mount-temple) */
+                spotSlug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns spot details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Spot ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns spot details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Spot ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Spot deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Spot ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UpdateSpotDto"];
+            };
+        };
+        responses: {
+            /** @description Spot updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SpotWithStatsResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_findByUser: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path: {
+                /** @description User UUID */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns user spots */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedSpotsWithStatsResponseDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    SpotsController_reverseGeocode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns human-readable address */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GeocodeResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    PriceReportsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePriceReportDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceReportDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    PriceReportsController_findBySpot: {
+        parameters: {
+            query?: {
+                skip?: number;
+                take?: number;
+            };
+            header?: never;
+            path: {
+                spotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedPriceReportsDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    PriceReportsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Price report not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    PriceReportsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePriceReportDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriceReportDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Price report not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    PriceReportsController_findByUser: {
+        parameters: {
+            query?: {
+                skip?: number;
+                take?: number;
+            };
+            header?: never;
+            path: {
+                /** @description User ID */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedPriceReportsDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    PriceReportsController_findMyReports: {
+        parameters: {
+            query?: {
+                skip?: number;
+                take?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedPriceReportsDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns paginated community tips */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    spotId: string;
+                    /** @enum {string} */
+                    type: "TRY" | "AVOID";
+                    title: string;
+                    description: string;
+                    /** Format: binary */
+                    image?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Community tip created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommunityTipResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_findBySpot: {
+        parameters: {
+            query: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+                type: string;
+                sort: string;
+            };
+            header?: never;
+            path: {
+                /** @description Spot ID */
+                spotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns community tips for the spot */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
+                };
+            };
+            /** @description Spot not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_getTotalTips: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns total count */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    CommunityTipsController_getCounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Community Tip ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns tip counts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    CommunityTipsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Community Tip ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Community tip deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Community tip not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Community Tip ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    title?: string;
+                    description?: string;
+                    /** Format: binary */
+                    image?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Community tip updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommunityTipResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Community tip not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_findByUser: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path: {
+                /** @description User UUID */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns user community tips */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommunityTipsController_findMyTips: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns current user community tips */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedCommunityTipsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_createTipVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TipVoteDto"];
+            };
+        };
+        responses: {
+            /** @description Tip vote created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateVoteResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_createAlertVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AlertVoteDto"];
+            };
+        };
+        responses: {
+            /** @description Alert vote created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateVoteResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_createImageVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImageVoteDto"];
+            };
+        };
+        responses: {
+            /** @description Image vote created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateVoteResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_createSpotVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SpotVoteDto"];
+            };
+        };
+        responses: {
+            /** @description Spot vote created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateVoteResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_deleteVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vote deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Vote not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_deleteImageVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vote deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Vote not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_deleteTipVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vote deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Vote not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_deleteAlertVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vote deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Vote not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_deleteSpotVote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vote deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Vote not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    VotesController_deleteVoteByType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                type: string;
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Vote deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Vote not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCommentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentsController_findByTip: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path: {
+                communityTipId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedCommentsDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentsController_findByScamAlert: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path: {
+                scamAlertId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedCommentsDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCommentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentReactionsController_getReactionSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reaction summary */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentReactionResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Comment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentReactionsController_toggleReaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reaction toggled */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentReactionResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Comment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    CommentReactionsController_removeReaction: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                commentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reaction removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CommentReactionResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Comment not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    LiveVibesController_findAll: {
+        parameters: {
+            query?: {
+                skip?: string;
+                take?: string;
+                cityId?: string;
+                categoryId?: string;
+                spotId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedLiveVibesDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    LiveVibesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateLiveVibeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveVibeDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    LiveVibesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveVibeDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    LiveVibesController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    LiveVibesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLiveVibeDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LiveVibeDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ChecklistController_findAll: {
+        parameters: {
+            query?: {
+                skip?: string;
+                take?: string;
+                status?: string;
+                sort?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedChecklistItemResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ChecklistController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateChecklistItemDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistItemDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Item already in checklist */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConflictErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ChecklistController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistStatsDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ChecklistController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistItemDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ChecklistController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Item removed */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ChecklistController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateChecklistItemDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChecklistItemDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+                /** @description Search text */
+                search?: string;
+                /** @description Filter by city ID */
+                cityId?: string;
+                /** @description Filter by category ID */
+                categoryId?: string;
+                /** @description Sort order */
+                sort?: components["schemas"]["ScamAlertSort"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns paginated scam alerts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedScamAlertsResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    cityId: string;
+                    categoryId: string;
+                    scamName: string;
+                    description: string;
+                    preventionTip: string;
+                    /** Format: binary */
+                    image?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Scam alert created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScamAlertResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_findMyAlerts: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns current user scam alerts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedScamAlertsResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_findByUser: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+            };
+            header?: never;
+            path: {
+                /** @description User ID */
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns user scam alerts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedScamAlertsResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scam Alert ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns scam alert details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScamAlertResponseDto"];
+                };
+            };
+            /** @description Scam alert not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scam Alert ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Scam alert deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Scam alert not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Scam Alert ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    cityId?: string;
+                    categoryId?: string;
+                    scamName?: string;
+                    description?: string;
+                    preventionTip?: string;
+                    /** Format: binary */
+                    image?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Scam alert updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScamAlertResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Scam alert not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ScamAlertsController_findBySlug: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description City slug (e.g., bkk) */
+                citySlug: string;
+                /** @description Scam alert slug (e.g., fake-tour-scam) */
+                alertSlug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns scam alert details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScamAlertResponseDto"];
+                };
+            };
+            /** @description Scam alert not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    GalleryController_uploadImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                spotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    image?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Image uploaded successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GalleryImageResponseDto"];
+                };
+            };
+            /** @description Invalid file or spot not found */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    GalleryController_getGallery: {
+        parameters: {
+            query?: {
+                /** @description Items to skip */
+                skip?: number;
+                /** @description Items per page */
+                take?: number;
+                /** @description Sort order */
+                sort?: components["schemas"]["GallerySort"];
+            };
+            header?: never;
+            path: {
+                /** @description Spot ID */
+                spotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns paginated gallery images */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedGalleryImagesResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    GalleryController_getImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Image ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns image details */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GalleryImageResponseDto"];
+                };
+            };
+            /** @description Image not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    GalleryController_deleteImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Image ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Image not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    GalleryController_flagImage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Image ID */
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Image reported successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MessageResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Image not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    GalleryController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Spot ID */
+                spotId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns gallery stats */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GalleryStatsResponseDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ReportsController_getReports: {
+        parameters: {
+            query: {
+                limit: number;
+                offset: number;
+                status: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reports retrieved successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example true */
+                        success?: boolean;
+                        data?: components["schemas"]["ReportResponseDto"][];
+                        pagination?: {
+                            /** @example 10 */
+                            total?: number;
+                            /** @example 20 */
+                            limit?: number;
+                            /** @example 0 */
+                            offset?: number;
+                        };
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ReportsController_createReport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateReportDto"];
+            };
+        };
+        responses: {
+            /** @description Report created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ReportsController_getReportDetails: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Report retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResponseDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Report not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ReportsController_resolveReport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResolveReportDto"];
+            };
+        };
+        responses: {
+            /** @description Report resolved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportResponseDto"];
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnauthorizedErrorDto"];
+                };
+            };
+            /** @description Report not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotFoundErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ReportsController_getReportsForTarget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reportType: string;
+                targetId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Reports for target */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example true */
+                        success?: boolean;
+                        data?: {
+                            targetId?: string;
+                            reportType?: string;
+                            /** @example 2 */
+                            count?: number;
+                            reports?: components["schemas"]["ReportResponseDto"][];
+                        };
+                    };
+                };
+            };
+            /** @description Bad request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            /** @description Internal server error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
+    ContactController_submitContactForm: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactFormDto"];
+            };
+        };
+        responses: {
+            /** @description Email sent successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactEmailResponseDto"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BadRequestErrorDto"];
+                };
+            };
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorDto"];
+                };
+            };
+        };
+    };
 }

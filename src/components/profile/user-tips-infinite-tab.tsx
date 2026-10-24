@@ -8,7 +8,7 @@ import { Loader2 } from 'lucide-react';
 import { TipCard } from '@/components/tips/tip-card';
 import { useVoteToggle } from '@/hooks/use-vote-toggle';
 import { toast } from 'sonner';
-import type { PaginatedCommunityTipsResponseDto } from '@/api/generated/model';
+import type { PaginatedCommunityTipsResponseDto } from '@/types/api-models';
 
 interface UserTipsInfiniteTabProps {
     userId: string;

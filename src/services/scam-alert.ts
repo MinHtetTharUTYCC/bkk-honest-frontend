@@ -1,19 +1,26 @@
 import { cache } from "react";
-import type { commentsControllerFindByScamAlertResponse } from "@/api/generated/comments/comments";
+import { apiFetch } from "@/lib/api/api-server";
+import { unwrapApiSuccessData } from "@/lib/api/api-envelope";
 import type {
-  scamAlertsControllerFindAllResponse,
-  scamAlertsControllerFindBySlugResponse,
-} from "@/api/generated/scam-alerts/scam-alerts";
-import type {
+  PaginatedCommentsDto,
   CommentsControllerFindByScamAlertParams,
+  PaginatedScamAlertsResponseDto,
   ScamAlertsControllerFindAllParams,
   ScamAlertResponseDto,
-} from "@/api/generated/model";
-import {
-  scamAlertsControllerFindBySlug,
-  scamAlertsControllerFindAll,
-} from "@/api/generated/scam-alerts/scam-alerts";
-import { commentsControllerFindByScamAlert } from "@/api/generated/comments/comments";
+} from "@/types/api-models";
+
+function buildQueryString(params: Record<string, string | number | undefined>): string {
+  const query = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) {
+      query.append(key, String(value));
+    }
+  });
+
+  const serialized = query.toString();
+  return serialized.length > 0 ? `?${serialized}` : "";
+}
 
 /**
  * Shared server-side scam alert fetcher.
@@ -26,12 +33,21 @@ export const getScamAlert = cache(
     alertSlug: string,
   ): Promise<ScamAlertResponseDto | null> => {
     try {
-      const res = await scamAlertsControllerFindBySlug(citySlug, alertSlug, {
+      const response = await apiFetch(`/scam-alerts/by-slug/${citySlug}/${alertSlug}`, {
         next: { revalidate: 3600 },
-      } as RequestInit);
-      if (res.status === 200 && res.data && typeof res.data === "object" && "id" in res.data) {
-        return res.data as ScamAlertResponseDto;
+      });
+
+      if (!response.ok) {
+        return null;
       }
+
+      const payload: unknown = await response.json();
+      const data = unwrapApiSuccessData<ScamAlertResponseDto>(payload);
+
+      if (data && typeof data === "object" && "id" in data) {
+        return data;
+      }
+
       return null;
     } catch (error) {
       console.error(
@@ -52,17 +68,24 @@ export const getScamAlertsPage = cache(
     skip: number = 0,
     take: number = 10,
     params?: ScamAlertsControllerFindAllParams,
-  ): Promise<scamAlertsControllerFindAllResponse["data"] | null> => {
+  ): Promise<PaginatedScamAlertsResponseDto | null> => {
     try {
-      const res = await scamAlertsControllerFindAll(
-        {
-          ...params,
-          skip,
-          take,
-        },
-        { next: { revalidate: 300 } } as RequestInit,
-      );
-      return res.data;
+      const query = buildQueryString({
+        ...(params || {}),
+        skip,
+        take,
+      });
+
+      const response = await apiFetch(`/scam-alerts${query}`, {
+        next: { revalidate: 300 },
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const payload: unknown = await response.json();
+      return unwrapApiSuccessData<PaginatedScamAlertsResponseDto>(payload);
     } catch (error) {
       console.error("[getScamAlertsPage] Error fetching alerts:", error);
       return null;
@@ -79,13 +102,24 @@ export const getScamAlertComments = cache(
     alertId: string,
     skip: number = 0,
     take: number = 10,
-  ): Promise<commentsControllerFindByScamAlertResponse["data"] | null> => {
+  ): Promise<PaginatedCommentsDto | null> => {
     try {
       const params: CommentsControllerFindByScamAlertParams = { skip, take };
-      const res = await commentsControllerFindByScamAlert(alertId, params, {
+      const query = buildQueryString({
+        skip: params.skip,
+        take: params.take,
+      });
+
+      const response = await apiFetch(`/comments/alert/${alertId}${query}`, {
         next: { revalidate: 300 },
-      } as RequestInit);
-      return res.data;
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const payload: unknown = await response.json();
+      return unwrapApiSuccessData<PaginatedCommentsDto>(payload);
     } catch (error) {
       console.error("[getScamAlertComments] Error fetching comments:", error);
       return null;

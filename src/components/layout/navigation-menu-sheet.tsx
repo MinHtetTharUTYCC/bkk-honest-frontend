@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Menu, X, Target, User, Zap } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { useAuth } from "@/components/providers/auth-provider";

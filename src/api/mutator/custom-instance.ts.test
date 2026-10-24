@@ -1,8 +1,0 @@
-import { AxiosRequestConfig } from 'axios';
-
-export const customInstance = <T>(
-  config: AxiosRequestConfig | string,
-  options?: Record<string, unknown>,
-): Promise<T> => {
-    return Promise.resolve({} as T);
-};

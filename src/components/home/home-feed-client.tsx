@@ -19,13 +19,13 @@ import { useGeolocation } from "@/hooks/use-geolocation";
 import SpotCard from "@/components/spots/spot-card";
 import { LeaderboardList } from "@/components/leaderboard-list";
 import ScamAlertCard from "@/components/scams/scam-alert-card";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { useCity } from "@/components/providers/city-provider";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Link from "next/link";
-import { getSpotUrl } from "@/lib/slug";
+import { getSpotUrl } from "@/lib/utils/slug";
 import type { SpotCardData } from "@/components/spots/spot-card";
-import type { ScamAlertResponseDto, LiveVibeDto } from "@/api/generated/model";
+import type { ScamAlertResponseDto, LiveVibeDto } from "@/types/api-models";
 
 interface HomeFeedClientProps {
   fallbackCityName?: string;

@@ -10,12 +10,13 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,md,json}\"",
     "test": "jest",
     "test:watch": "jest --watch",
-    "generate:api": "orval"
+    "openapi:types": "tsx scripts/generate-openapi-types.ts",
+    "openapi:types:check": "pnpm run openapi:types && git diff --exit-code -- src/types/api.d.ts",
+    "ci:contracts": "pnpm run openapi:types:check"
   },
   "dependencies": {
     "@faker-js/faker": "^10.4.0",
     "@hookform/resolvers": "^5.2.2",
-    "@orval/core": "^8.6.2",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
@@ -40,6 +41,7 @@
     "lucide-react": "^0.575.0",
     "mapbox-gl": "^3.19.1",
     "next": "16.1.6",
+    "openapi-fetch": "^0.17.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-hook-form": "^7.71.2",
@@ -51,7 +53,6 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
-    "@orval/query": "^8.6.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -68,7 +69,6 @@
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.3.0",
     "openapi-typescript": "^7.13.0",
-    "orval": "^8.6.2",
     "prettier": "^3.8.1",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4",

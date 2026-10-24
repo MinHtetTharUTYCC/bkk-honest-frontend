@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { ProfileUserInfo } from '@/components/profile/profile-user-info';
 import { ProfileTabsNav } from '@/components/profile/profile-tabs-nav';
-import { ProfileResponseDto } from '@/api/generated/model/profileResponseDto';
+import { ProfileResponseDto } from '@/types/api-models';
 import { Button } from '@/components/ui/button';
 
 function ProfileLayoutContent({

@@ -1,7 +1,7 @@
 import {
   generateBreadcrumbSchema,
   generateSpotSchema,
-} from "@/lib/schema-generator";
+} from "@/lib/api/schema-generator";
 
 interface SpotHeadProps {
   params: Promise<{

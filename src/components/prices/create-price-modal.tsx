@@ -3,10 +3,9 @@
 import { useState } from 'react';
 import { useCreatePriceReport } from '@/hooks/use-api';
 import { DollarSign, Loader2, Send, X, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
 
 interface CreatePriceModalProps {
     spotId: string;
@@ -58,7 +57,7 @@ export default function CreatePriceModal({ spotId, onClose }: CreatePriceModalPr
             toast.success('Price report added successfully');
             onClose();
         } catch (err: unknown) {
-            const message = getApiErrorMessage(err) || 'Failed to publish price report';
+            const message = err instanceof Error ? err.message : 'Failed to publish price report';
             setError(message);
         }
     };

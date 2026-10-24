@@ -3,8 +3,8 @@ import OptimizedImage from "@/components/ui/OptimizedImage";
 
 import { useEffect } from "react";
 import { X } from "lucide-react";
-import type { ImageVariantsDto } from "@/api/generated/model";
-import { getGalleryImageUrl } from "@/lib/image-utils";
+import type { ImageVariantsDto } from "@/types/api-models";
+import { getGalleryImageUrl } from "@/lib/utils/image-utils";
 
 interface ImageViewerProps {
   isOpen: boolean;

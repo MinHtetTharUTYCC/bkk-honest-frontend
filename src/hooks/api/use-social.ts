@@ -1,17 +1,10 @@
 'use client';
 
-import { useMutation } from '@tanstack/react-query';
-import {
-    useReportsControllerCreateReport,
-    useReportsControllerGetReports,
-} from '@/api/generated/reports/reports';
-import {
-    votesControllerCreateTipVote,
-    votesControllerCreateAlertVote,
-    votesControllerCreateImageVote,
-    votesControllerCreateSpotVote,
-    votesControllerDeleteVote,
-} from '@/api/generated/votes/votes';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { unwrapApiSuccessData } from '@/lib/api/api-envelope';
+import { throwApiError } from '@/lib/errors/throw-api-error';
+import { openApiClient } from '@/lib/api/openapi-client';
+import type { CreateVoteResponseDto, ReportResponseDto } from '@/types/api-models';
 
 export function useCreateVote() {
     return useMutation({
@@ -23,15 +16,29 @@ export function useCreateVote() {
             type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
             if (type === 'tip') {
-                return await votesControllerCreateTipVote({ communityTipId: targetId });
-            } else if (type === 'alert') {
-                return await votesControllerCreateAlertVote({ scamAlertId: targetId });
-            } else if (type === 'image') {
-                return await votesControllerCreateImageVote({
-                    galleryImageId: targetId,
+                const { data, error } = await openApiClient.POST('/votes/tip', {
+                    body: { communityTipId: targetId },
                 });
+                if (error) throwApiError(error);
+                return { data: unwrapApiSuccessData<CreateVoteResponseDto>(data) };
+            } else if (type === 'alert') {
+                const { data, error } = await openApiClient.POST('/votes/alert', {
+                    body: { scamAlertId: targetId },
+                });
+                if (error) throwApiError(error);
+                return { data: unwrapApiSuccessData<CreateVoteResponseDto>(data) };
+            } else if (type === 'image') {
+                const { data, error } = await openApiClient.POST('/votes/image', {
+                    body: { galleryImageId: targetId },
+                });
+                if (error) throwApiError(error);
+                return { data: unwrapApiSuccessData<CreateVoteResponseDto>(data) };
             } else if (type === 'spot') {
-                return await votesControllerCreateSpotVote({ spotId: targetId });
+                const { data, error } = await openApiClient.POST('/votes/spot', {
+                    body: { spotId: targetId },
+                });
+                if (error) throwApiError(error);
+                return { data: unwrapApiSuccessData<CreateVoteResponseDto>(data) };
             }
             throw new Error('Invalid vote type');
         },
@@ -47,38 +54,57 @@ export function useDeleteVote() {
             voteId: string;
             type: 'tip' | 'alert' | 'image' | 'spot';
         }) => {
-            return await votesControllerDeleteVote(voteId);
+            const { data, error } = await openApiClient.DELETE('/votes/{id}', {
+                params: { path: { id: voteId } },
+            });
+            if (error) throwApiError(error);
+            return unwrapApiSuccessData(data);
         },
     });
 }
 
 export function useCreateReport() {
-    const mutation = useReportsControllerCreateReport();
-    return {
-        ...mutation,
-        mutate: (payload: {
+    return useMutation({
+        mutationKey: ['reports-create'],
+        mutationFn: async (payload: {
             reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
             targetId: string;
             reason: string;
             description?: string;
-        }) => mutation.mutate({ data: payload }),
-        mutateAsync: (payload: {
-            reportType: 'SPOT' | 'COMMUNITY_TIP' | 'SCAM_ALERT' | 'COMMENT' | 'PROFILE';
-            targetId: string;
-            reason: string;
-            description?: string;
-        }) => mutation.mutateAsync({ data: payload }),
-    };
+        }) => {
+            const { data, error } = await openApiClient.POST('/reports', {
+                body: payload,
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ReportResponseDto>(data);
+        },
+    });
 }
 
 export function useGetReports(status?: string, limit = 10, offset = 0) {
-    const query = useReportsControllerGetReports(
-        {
-            status: status || '',
-            limit,
-            offset,
+    const query = useQuery({
+        queryKey: ['reports', status, limit, offset],
+        queryFn: async () => {
+            const { data, error } = await openApiClient.GET('/reports', {
+                params: {
+                    query: {
+                        status: status || '',
+                        limit,
+                        offset,
+                    },
+                },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ReportResponseDto[]>(data);
         },
-        { query: { queryKey: ['reports', status, limit, offset] } },
-    );
+    });
     return { ...query, data: query.data || [] };
 }

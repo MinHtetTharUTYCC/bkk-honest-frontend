@@ -2,9 +2,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Send } from 'lucide-react';
 import SearchableSpotSelect from '@/components/spots/searchable-spot-select';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import { priceFormValidation, type PriceFormData } from '@/lib/validations/price-form.validation';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
 
 interface PriceFormProps {
     selectedCityId?: string;
@@ -39,7 +38,7 @@ export default function PriceForm({
             await onSubmit(data);
             onSuccess();
         } catch (err: unknown) {
-            const message = getApiErrorMessage(err) || 'Failed to publish price report';
+            const message = err instanceof Error ? err.message : 'Failed to publish price report';
             console.error(message);
             onError(message);
         }

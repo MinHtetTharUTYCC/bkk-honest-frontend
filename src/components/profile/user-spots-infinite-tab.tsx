@@ -4,11 +4,11 @@ import { useRef, useEffect, useMemo } from 'react';
 import { useInfiniteUserSpots } from '@/hooks/use-api';
 import { useInView } from 'react-intersection-observer';
 import { Loader2 } from 'lucide-react';
-import { getSpotUrl } from '@/lib/slug';
+import { getSpotUrl } from '@/lib/utils/slug';
 import Link from 'next/link';
 import OptimizedImage from '@/components/ui/OptimizedImage';
-import type { PaginatedSpotsWithStatsResponseDto } from '@/api/generated/model';
-import type { ImageVariantsDto } from '@/api/generated/model';
+import type { PaginatedSpotsWithStatsResponseDto } from '@/types/api-models';
+import type { ImageVariantsDto } from '@/types/api-models';
 
 interface UserSpotsInfiniteTabProps {
     userId: string;

@@ -1,5 +1,10 @@
 import { cache } from "react";
-import { useProfilesControllerFindOne } from "@/api/generated/profiles/profiles";
+import { useQuery } from "@tanstack/react-query";
+import type { ProfileResponseDto } from "@/types/api-models";
+import { unwrapApiSuccessData } from "@/lib/api/api-envelope";
+import { throwApiError } from "@/lib/errors/throw-api-error";
+import { openApiClient } from "@/lib/api/openapi-client";
+import { apiFetch } from "@/lib/api/api-server";
 
 /**
  * Shared server-side profile fetcher.
@@ -9,10 +14,16 @@ import { useProfilesControllerFindOne } from "@/api/generated/profiles/profiles"
  */
 export const getUserProfile = cache(async (userId: string) => {
   try {
-    // Note: This uses a React hook which won't work in server-side context.
-    // For server-side rendering, use direct fetch instead.
-    console.warn(`[getUserProfile] Using hook-based fetch for user ${userId} - consider server-side implementation`);
-    return null;
+    const response = await apiFetch(`/profiles/${userId}`, {
+      next: { revalidate: 300 },
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload: unknown = await response.json();
+    return unwrapApiSuccessData<ProfileResponseDto>(payload);
   } catch (error) {
     console.error(`[getUserProfile] Error fetching profile ${userId}:`, error);
     return null;
@@ -24,9 +35,19 @@ export const getUserProfile = cache(async (userId: string) => {
  * Returns profile data with full type safety via generated Orval types.
  */
 export function useUserProfile(userId: string | null) {
-  return useProfilesControllerFindOne(userId || '', {
-    query: {
-      enabled: !!userId,
+  return useQuery({
+    queryKey: ["profile", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await openApiClient.GET("/profiles/{id}", {
+        params: { path: { id: userId as string } },
+      });
+
+      if (error) {
+        throwApiError(error);
+      }
+
+      return unwrapApiSuccessData<ProfileResponseDto>(data);
     },
   });
 }

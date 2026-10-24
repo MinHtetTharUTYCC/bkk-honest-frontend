@@ -6,13 +6,14 @@ import { SearchInput } from "@/components/ui/search-input";
 import { SearchFilters } from "@/components/search/search-filters";
 import { SearchHistoryDropdown } from "@/components/search/search-history-dropdown";
 import { SearchResultsTabs } from "@/components/search/search-results-tabs";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 import {
   useSearchHistory,
   SearchHistoryItem,
 } from "@/hooks/use-search-history";
 import { useCity } from "@/components/providers/city-provider";
 import { MapPin } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 function SearchPageContent() {
   const router = useRouter();
@@ -246,12 +247,14 @@ function SearchPageContent() {
 
 export default function SearchPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />
-      }
-    >
-      <SearchPageContent />
-    </Suspense>
+    <ErrorBoundary name="Search Page">
+      <Suspense
+        fallback={
+          <div className="animate-pulse h-screen bg-white/5 rounded-2xl m-4" />
+        }
+      >
+        <SearchPageContent />
+      </Suspense>
+    </ErrorBoundary>
   );
 }

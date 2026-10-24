@@ -1,7 +1,7 @@
 import {
   generateBreadcrumbSchema,
   generateScamAlertSchema,
-} from "@/lib/schema-generator";
+} from "@/lib/api/schema-generator";
 
 interface ScamAlertHeadProps {
   params: Promise<{

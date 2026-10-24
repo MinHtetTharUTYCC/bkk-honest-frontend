@@ -1,4 +1,4 @@
-import "@/lib/fetch-wrapper"; // Global fetch wrapper for API base URL handling
+import "@/lib/api/fetch-wrapper"; // Global fetch wrapper for API base URL handling
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";

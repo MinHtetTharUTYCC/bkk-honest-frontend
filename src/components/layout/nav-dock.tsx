@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import NavigationMenuSheet from "./navigation-menu-sheet";
 import { useAuth } from "@/components/providers/auth-provider";
 

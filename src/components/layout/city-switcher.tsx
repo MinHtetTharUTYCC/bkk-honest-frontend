@@ -4,7 +4,7 @@ import { MapPin, ChevronDown } from "lucide-react";
 import { useCity } from "@/components/providers/city-provider";
 import { useCities } from "@/hooks/use-api";
 import { useState, useRef, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 
 interface CityOption {
   id: string;

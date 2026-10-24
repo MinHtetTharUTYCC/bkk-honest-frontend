@@ -1,11 +1,11 @@
 "use client";
 import OptimizedImage from "@/components/ui/OptimizedImage";
-import type { ImageVariantsDto } from "@/api/generated/model";
+import type { ImageVariantsDto } from "@/types/api-models";
 
 import { useState, useRef } from "react";
 import { X, Loader2, Camera, Save } from "lucide-react";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { useUpdateScamAlert, useCategories, useCities } from "@/hooks/use-api";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";

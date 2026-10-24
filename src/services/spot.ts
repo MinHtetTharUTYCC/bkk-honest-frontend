@@ -1,7 +1,7 @@
 import { cache } from "react";
-import { spotsControllerFindBySlug } from "@/api/generated/spots/spots";
-import { createClient as createServerClient } from "@/lib/supabase/server";
-import type { SpotWithStatsResponseDto } from "@/api/generated/model";
+import { apiFetch } from "@/lib/api/api-server";
+import { unwrapApiSuccessData } from "@/lib/api/api-envelope";
+import type { SpotWithStatsResponseDto } from "@/types/api-models";
 
 /**
  * Shared server-side spot fetcher.
@@ -9,30 +9,22 @@ import type { SpotWithStatsResponseDto } from "@/api/generated/model";
  * Automatically handles Supabase Auth headers if a session exists.
  */
 export const getSpot = cache(async (citySlug: string, spotSlug: string): Promise<SpotWithStatsResponseDto | null> => {
-  console.log('[getSpot] Fetching slug:', `${citySlug}/${spotSlug}`);
   try {
-    const supabase = await createServerClient();
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const headers = session?.access_token
-      ? { Authorization: `Bearer ${session.access_token}` }
-      : {};
-
-    const res = await spotsControllerFindBySlug(citySlug, spotSlug, {
+    const response = await apiFetch(`/spots/by-slug/${citySlug}/${spotSlug}`, {
       cache: "no-store",
-      headers,
-    } as RequestInit);
+    });
 
-    console.log('[getSpot] Response:', res ? 'exists' : 'null');
-    console.log('[getSpot] Response.data:', res?.data ? 'exists' : 'null');
-    console.log('[getSpot] Has id?:', res?.data && "id" in res.data);
-
-    if (res && res.data && typeof res.data === "object" && "id" in res.data) {
-      console.log('[getSpot] SUCCESS - Returning spot:', res.data.id);
-      return res.data as SpotWithStatsResponseDto;
+    if (!response.ok) {
+      return null;
     }
-    console.log('[getSpot] FAILED - Returning null');
+
+    const payload: unknown = await response.json();
+    const spot = unwrapApiSuccessData<SpotWithStatsResponseDto>(payload);
+
+    if (spot && typeof spot === "object" && "id" in spot) {
+      return spot;
+    }
+
     return null;
   } catch (error) {
     console.error(`[getSpot] Error fetching ${citySlug}/${spotSlug}:`, error);

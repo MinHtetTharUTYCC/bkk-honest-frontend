@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { DropdownMenu, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import ReportButton from '@/components/report/report-button';
 import { useState } from 'react';
-import { ProfileResponseDto } from '@/api/generated/model';
+import { ProfileResponseDto } from '@/types/api-models';
 
 interface ProfileUserInfoProps {
     /** User ID to display profile for. Use "me" for authenticated user */

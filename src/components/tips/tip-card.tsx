@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import { useState } from "react";
 import { MessageSquare, User as UserIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/core";
 import { LikeButton } from "@/components/ui/like-button";
 import { TipActionsMenu } from "./tip-actions-menu";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Loader2 } from "lucide-react";
-import { CommunityTipResponseDto } from "@/api/generated/model/communityTipResponseDto";
+import { CommunityTipResponseDto } from "@/types/api-models";
 
 interface TipCardProps {
   tip: CommunityTipResponseDto;
@@ -50,17 +50,8 @@ export function TipCard({
     await onVoteClick();
   };
 
-  const handleConfirmDelete = async () => {
-    setIsDeleting(true);
-    try {
-      if (onDeleteClick) {
-        await onDeleteClick();
-      }
-      setShowDeleteDialog(false);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
+  const voteCount = tip.voteCount ?? (tip._count && typeof tip._count === 'object' && 'votes' in tip._count ? (tip._count as { votes: number }).votes : 0);
+  const commentCount = tip.commentCount ?? (tip._count && typeof tip._count === 'object' && 'comments' in tip._count ? (tip._count as { comments: number }).comments : 0);
 
   return (
     <div
@@ -105,8 +96,8 @@ export function TipCard({
           >
             {tip.user?.avatarUrl ? (
               <Image
-                src={tip.user.avatarUrl}
-                alt={tip.user.name}
+                src={typeof tip.user.avatarUrl === 'string' ? tip.user.avatarUrl : ''}
+                alt={typeof tip.user.name === 'string' ? tip.user.name : 'Local'}
                 fill
                 sizes="48px"
                 className="object-cover"
@@ -124,7 +115,7 @@ export function TipCard({
                 href={`/profile/${tip.userId}`}
                 className="font-bold text-white text-sm md:text-base truncate hover:text-amber-400 transition-colors"
               >
-                {tip.user?.name || "Local"}
+                {typeof tip.user?.name === 'string' ? tip.user.name : "Local"}
               </Link>
               {tip.user?.level && (
                 <span
@@ -174,12 +165,12 @@ export function TipCard({
         >
           <MessageSquare size={16} className="transition-colors duration-200" />
           <span className="transition-colors duration-200">
-            {tip.voteCount || 0}
+            {commentCount}
           </span>
         </button>
 
         <LikeButton
-          count={tip.voteCount || 0}
+          count={voteCount}
           isVoted={tip.hasVoted}
           onVote={handleVote}
           isPending={isVotePending || isDeleting}
@@ -199,13 +190,13 @@ export function TipCard({
         >
           <MessageSquare size={14} className="transition-colors duration-200" />
           <span className="transition-colors duration-200">
-            {tip.commentCount || 0}
+            {commentCount}
           </span>
         </button>
 
         <div className="flex-1">
           <LikeButton
-            count={tip.voteCount || 0}
+            count={voteCount}
             isVoted={tip.hasVoted}
             onVote={handleVote}
             isPending={isVotePending || isDeleting}

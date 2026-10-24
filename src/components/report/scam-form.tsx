@@ -6,9 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { AlertCircle, Upload, X } from 'lucide-react';
 import { Dropdown } from '@/components/ui/dropdown';
 import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/core';
 import { scamFormValidation, type ScamFormData } from '@/lib/validations/scam-form.validation';
-import { getApiErrorMessage } from '@/lib/errors/api-error';
 
 interface ScamFormProps {
     categories: Array<{ id: string; name: string }>;
@@ -68,7 +67,7 @@ export default function ScamForm({
             await onSubmit(data);
             onSuccess();
         } catch (err: unknown) {
-            const message = getApiErrorMessage(err) || 'Failed to publish scam alert';
+            const message = err instanceof Error ? err.message : 'Failed to publish scam alert';
             console.error(message);
             onError(message);
         }

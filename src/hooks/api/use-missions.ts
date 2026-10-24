@@ -1,14 +1,10 @@
 'use client';
 
-import { useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import {
-    useChecklistControllerCreate,
-    useChecklistControllerUpdate,
-    useChecklistControllerDelete,
-    useChecklistControllerGetStats,
-    checklistControllerFindAll,
-} from '@/api/generated/checklist/checklist';
-import type { ChecklistItemDto } from '@/api/generated/model';
+import { useQueryClient, useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { unwrapApiSuccessData } from '@/lib/api/api-envelope';
+import { throwApiError } from '@/lib/errors/throw-api-error';
+import { openApiClient } from '@/lib/api/openapi-client';
+import type { ChecklistItemDto, ChecklistStatsDto, PaginatedChecklistItemResponseDto } from '@/types/api-models';
 import { getNextSkipFromPage } from './base';
 
 export function useMissions(
@@ -25,7 +21,15 @@ export function useMissions(
         queryKey: ['missions-infinite', userId, status, sort] as const,
         queryFn: async ({ pageParam = 0 }) => {
             const skip = pageParam > 0 ? String(pageParam) : undefined;
-            return checklistControllerFindAll({ ...params, skip });
+            const { data, error } = await openApiClient.GET('/checklist', {
+                params: { query: { ...params, skip } },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<PaginatedChecklistItemResponseDto>(data);
         },
         getNextPageParam: (lastPage: unknown) => {
             const skip = getNextSkipFromPage(lastPage);
@@ -37,8 +41,17 @@ export function useMissions(
 }
 
 export function useMissionStats() {
-    const query = useChecklistControllerGetStats({
-        query: { queryKey: ['mission-stats'] },
+    const query = useQuery({
+        queryKey: ['mission-stats'],
+        queryFn: async () => {
+            const { data, error } = await openApiClient.GET('/checklist/stats');
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ChecklistStatsDto>(data);
+        },
     });
     return { ...query, data: query.data };
 }
@@ -102,19 +115,29 @@ function updateItemInCache<T extends { id: string }>(
 }
 
 export function useAddMission() {
-    const mutation = useChecklistControllerCreate();
+    const mutation = useMutation({
+        mutationKey: ['missions-add'],
+        mutationFn: async ({ spotId }: { spotId: string }) => {
+            const { data, error } = await openApiClient.POST('/checklist', {
+                body: { spotId },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ChecklistItemDto>(data);
+        },
+    });
     const queryClient = useQueryClient();
     return {
         ...mutation,
         mutate: (spotId: string) =>
             mutation.mutate(
-                { data: { spotId } },
+                { spotId },
                 {
                     onSuccess: (data) => {
-                        const newItem =
-                            ((data as unknown as Record<string, unknown>)
-                                ?.data as ChecklistItemDto) ||
-                            (data as unknown as ChecklistItemDto);
+                        const newItem = data as ChecklistItemDto;
 
                         // 1. Update all variations of the missions list cache
                         queryClient.setQueriesData(
@@ -155,12 +178,26 @@ export function useAddMission() {
                     },
                 },
             ),
-        mutateAsync: (spotId: string) => mutation.mutateAsync({ data: { spotId } }),
+        mutateAsync: (spotId: string) => mutation.mutateAsync({ spotId }),
     };
 }
 
 export function useUpdateMission() {
-    const mutation = useChecklistControllerUpdate();
+    const mutation = useMutation({
+        mutationKey: ['missions-update'],
+        mutationFn: async ({ id, completed }: { id: string; completed: boolean }) => {
+            const { data, error } = await openApiClient.PATCH('/checklist/{id}', {
+                params: { path: { id } },
+                body: { completed },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData<ChecklistItemDto>(data);
+        },
+    });
     const queryClient = useQueryClient();
     return {
         ...mutation,
@@ -176,10 +213,10 @@ export function useUpdateMission() {
             currentSort?: string;
         }) =>
             mutation.mutate(
-                { id, data: { completed } },
+                { id, completed },
                 {
                     onSuccess: (response) => {
-                        const updatedItem = response.data;
+                        const updatedItem = response;
                         const currentKey = [
                             'missions-infinite',
                             'me',
@@ -243,12 +280,25 @@ export function useUpdateMission() {
             completed: boolean;
             currentStatus?: string;
             currentSort?: string;
-        }) => mutation.mutateAsync({ id, data: { completed } }),
+        }) => mutation.mutateAsync({ id, completed }),
     };
 }
 
 export function useDeleteMission() {
-    const mutation = useChecklistControllerDelete();
+    const mutation = useMutation({
+        mutationKey: ['missions-delete'],
+        mutationFn: async ({ id }: { id: string }) => {
+            const { data, error } = await openApiClient.DELETE('/checklist/{id}', {
+                params: { path: { id } },
+            });
+
+            if (error) {
+                throwApiError(error);
+            }
+
+            return unwrapApiSuccessData(data);
+        },
+    });
     const queryClient = useQueryClient();
     return {
         ...mutation,
